@@ -12,9 +12,9 @@
 /// ________________________________________________
 /// ±¸Á¶ 
 ///					OVERLAPPED 
-///						¡è
+///						¡é
 ///				 OverlappedObject
-///						¡è
+///						¡é
 ///				 Overlapped_Accept
 ///				 Overlapped_Connect
 ///				 Overlapped_DisConnect
@@ -36,16 +36,18 @@ namespace OverlappedIO {
 
 class OverlappedObject : public OVERLAPPED
 {
-public:
-
-
 private:
-	OverlappedIO::Type mIoType;
-
+	OverlappedIO::Type  mIoType;
+	SPtr_NetObj			mOwner;		// Session? Listener?
 
 public:
 	OverlappedObject(OverlappedIO::Type ioType);
 	virtual ~OverlappedObject();
+
+public:
+	OverlappedIO::Type& GetIoType() { return mIoType; }
+	void Clear_OVERLAPPED();
+	void SetOwner(SPtr_NetObj owner) { mOwner = owner; }
 
 };
 

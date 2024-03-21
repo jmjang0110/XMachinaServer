@@ -22,7 +22,7 @@ public:
 	void Init(std::wstring ip, UINT16 port);
 	void Clear();
 
-	SOCKET& GetSocket() { return mSocket; }
+	const SOCKET& GetSocket() { return mSocket; }
 
 public:
 	/// +-----------------------------
@@ -47,7 +47,7 @@ public:
 	///		   NET ADDRESS
 	/// ------------------------+
 
-	SOCKADDR_IN&	GetSockAddr() { return mSockAddr; }
+	SOCKADDR_IN& 	GetSockAddr() { return mSockAddr; }
 	std::wstring	GetIpAddress();
 	UINT16			GetPort() { return ::ntohs(mSockAddr.sin_port); }
 

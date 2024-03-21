@@ -46,17 +46,11 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="pch.h">
-      <Filter>Framework</Filter>
-    </ClInclude>
     <ClInclude Include="Framework.h">
       <Filter>Framework</Filter>
     </ClInclude>
     <ClInclude Include="Resource.h">
       <Filter>Framework\header</Filter>
-    </ClInclude>
-    <ClInclude Include="ServerLib\UtilityMacro.h">
-      <Filter>Framework</Filter>
     </ClInclude>
     <ClInclude Include="WindowUI\WindowUI.h">
       <Filter>WindowUI</Filter>
@@ -64,14 +58,8 @@
     <ClInclude Include="Contents\LogManager.h">
       <Filter>Framework\Log</Filter>
     </ClInclude>
-    <ClInclude Include="ServerLib\NetworkHeaders.h">
-      <Filter>ServerLib\Network</Filter>
-    </ClInclude>
     <ClInclude Include="ServerLib\ThreadManager.h">
       <Filter>ServerLib\Thread</Filter>
-    </ClInclude>
-    <ClInclude Include="ServerLib\NetworkManager.h">
-      <Filter>ServerLib\Network</Filter>
     </ClInclude>
     <ClInclude Include="ServerLib\Listener.h">
       <Filter>ServerLib\Network\Iocp\Netowork</Filter>
@@ -88,12 +76,39 @@
     <ClInclude Include="ServerLib\SocketData.h">
       <Filter>ServerLib\Network\Iocp\Netowork</Filter>
     </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Framework\header</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerLib\UtilityMacro.h">
+      <Filter>Framework\header</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerLib\PacketRecvBuf.h">
+      <Filter>ServerLib\Network\Packet</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerLib\PacketSendBuf.h">
+      <Filter>ServerLib\Network\Packet</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerLib\NetworkManager.h">
+      <Filter>ServerLib\Network\Iocp\Netowork</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerLib\NetworkHeaders.h">
+      <Filter>ServerLib\Network\Iocp\Netowork</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerLib\MemoryPool.h">
+      <Filter>ServerLib\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerLib\NetworkInterface.h">
+      <Filter>ServerLib\Network\Iocp\Netowork</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerLib\ClientNetwork.h">
+      <Filter>ServerLib\Network\Iocp\Netowork</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerLib\ServerNetwork.h">
+      <Filter>ServerLib\Network\Iocp\Netowork</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="pch.cpp">
       <Filter>Framework</Filter>
     </ClCompile>
     <ClCompile Include="Framework.cpp">
@@ -108,9 +123,6 @@
     <ClCompile Include="ServerLib\ThreadManager.cpp">
       <Filter>ServerLib\Thread</Filter>
     </ClCompile>
-    <ClCompile Include="ServerLib\NetworkManager.cpp">
-      <Filter>ServerLib\Network</Filter>
-    </ClCompile>
     <ClCompile Include="ServerLib\Listener.cpp">
       <Filter>ServerLib\Network\Iocp\Netowork</Filter>
     </ClCompile>
@@ -124,6 +136,30 @@
       <Filter>ServerLib\Network\Iocp\Overlapped</Filter>
     </ClCompile>
     <ClCompile Include="ServerLib\SocketData.cpp">
+      <Filter>ServerLib\Network\Iocp\Netowork</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Framework\header</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerLib\PacketRecvBuf.cpp">
+      <Filter>ServerLib\Network\Packet</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerLib\PacketSendBuf.cpp">
+      <Filter>ServerLib\Network\Packet</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerLib\NetworkManager.cpp">
+      <Filter>ServerLib\Network\Iocp\Netowork</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerLib\MemoryPool.cpp">
+      <Filter>ServerLib\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerLib\NetworkInterface.cpp">
+      <Filter>ServerLib\Network\Iocp\Netowork</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerLib\ClientNetwork.cpp">
+      <Filter>ServerLib\Network\Iocp\Netowork</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerLib\ServerNetwork.cpp">
       <Filter>ServerLib\Network\Iocp\Netowork</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,17 +1,21 @@
 #pragma once
 
 /// +-----------------------------------------------
-///					   Listener 
+///					   ServerNetwork 
 /// ________________________________________________
 
 /// -----------------------------------------------+
 
-#include "NetworkObject.h"
+#include "NetworkInterface.h"
 
-class Listener : public NetworkObject
+class ServerNetwork : public NetworkInterface
 {
+
 private:
 
 public:
 
+
+
 };
+

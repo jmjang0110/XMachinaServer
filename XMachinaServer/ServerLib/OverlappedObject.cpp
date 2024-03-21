@@ -10,4 +10,9 @@ OverlappedObject::OverlappedObject(OverlappedIO::Type ioType) : mIoType(ioType)
 OverlappedObject::~OverlappedObject()
 {
 }
+
+void OverlappedObject::Clear_OVERLAPPED()
+{
+	::ZeroMemory(this, sizeof(OVERLAPPED));
+}
 	

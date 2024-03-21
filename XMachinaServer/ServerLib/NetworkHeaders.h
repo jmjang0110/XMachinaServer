@@ -16,12 +16,19 @@
 #pragma comment(lib, "iphlpapi.lib")
 #pragma endregion
 
+#include <malloc.h> 
+#include <memory.h>
 
 /* vector */
 #include <vector>
-
-/* Network Lib Headers */
-#include "Session.h"
+#include <queue>
+#include <unordered_map>
 
 /* Shared ptr */
-using SPtr_Session = std::shared_ptr<class Session>;
+using SPtr_Session    = std::shared_ptr<class Session>;
+using SPtr_SendPktBuf = std::shared_ptr<class PacketSendBuf>;
+using SPtr_RecvPktBuf = std::shared_ptr<class PacketRecvBuf>;
+using SPtr_NetObj     = std::shared_ptr<class NetworkObject>;
+
+
+#include "Session.h"
