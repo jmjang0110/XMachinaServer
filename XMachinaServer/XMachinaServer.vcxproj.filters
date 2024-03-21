@@ -35,6 +35,15 @@
     <Filter Include="ServerLib\Network\Packet">
       <UniqueIdentifier>{f6163b56-c159-4160-b1f1-23cb628af53f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ServerLib\Memory">
+      <UniqueIdentifier>{d84ee8d9-af6d-4ad0-b4a1-7b0bbcd00406}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ServerLib\Network\Iocp\Netowork">
+      <UniqueIdentifier>{5b3f44f9-1b21-4fc5-9fae-6c00f67f2eb4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ServerLib\Network\Iocp\Overlapped">
+      <UniqueIdentifier>{79f72133-5128-45c3-84fb-8d1eeb54b222}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -61,6 +70,24 @@
     <ClInclude Include="ServerLib\ThreadManager.h">
       <Filter>ServerLib\Thread</Filter>
     </ClInclude>
+    <ClInclude Include="ServerLib\NetworkManager.h">
+      <Filter>ServerLib\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerLib\Listener.h">
+      <Filter>ServerLib\Network\Iocp\Netowork</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerLib\NetworkObject.h">
+      <Filter>ServerLib\Network\Iocp\Netowork</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerLib\Session.h">
+      <Filter>ServerLib\Network\Iocp\Netowork</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerLib\OverlappedObject.h">
+      <Filter>ServerLib\Network\Iocp\Overlapped</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerLib\SocketData.h">
+      <Filter>ServerLib\Network\Iocp\Netowork</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -80,6 +107,24 @@
     </ClCompile>
     <ClCompile Include="ServerLib\ThreadManager.cpp">
       <Filter>ServerLib\Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerLib\NetworkManager.cpp">
+      <Filter>ServerLib\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerLib\Listener.cpp">
+      <Filter>ServerLib\Network\Iocp\Netowork</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerLib\NetworkObject.cpp">
+      <Filter>ServerLib\Network\Iocp\Netowork</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerLib\Session.cpp">
+      <Filter>ServerLib\Network\Iocp\Netowork</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerLib\OverlappedObject.cpp">
+      <Filter>ServerLib\Network\Iocp\Overlapped</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerLib\SocketData.cpp">
+      <Filter>ServerLib\Network\Iocp\Netowork</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -8,6 +8,7 @@
 /* C++ */
 #include <iostream>
 #include <Windows.h>
+#include <cassert>
 
 #include <string>
 
@@ -16,5 +17,6 @@
 
 
 /* My Utility Hedaers */
+#include "ServerLib/NetworkHeaders.h"
 #include "ServerLib\UtilityMacro.h"
 #include "Contents/LogManager.h"

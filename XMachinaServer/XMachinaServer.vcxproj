@@ -159,7 +159,13 @@
     <ClInclude Include="Framework.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="ServerLib\Listener.h" />
     <ClInclude Include="ServerLib\NetworkHeaders.h" />
+    <ClInclude Include="ServerLib\NetworkManager.h" />
+    <ClInclude Include="ServerLib\NetworkObject.h" />
+    <ClInclude Include="ServerLib\OverlappedObject.h" />
+    <ClInclude Include="ServerLib\Session.h" />
+    <ClInclude Include="ServerLib\SocketData.h" />
     <ClInclude Include="ServerLib\ThreadManager.h" />
     <ClInclude Include="ServerLib\UtilityMacro.h" />
     <ClInclude Include="WindowUI\WindowUI.h" />
@@ -178,6 +184,12 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="ServerLib\Listener.cpp" />
+    <ClCompile Include="ServerLib\NetworkManager.cpp" />
+    <ClCompile Include="ServerLib\NetworkObject.cpp" />
+    <ClCompile Include="ServerLib\OverlappedObject.cpp" />
+    <ClCompile Include="ServerLib\Session.cpp" />
+    <ClCompile Include="ServerLib\SocketData.cpp" />
     <ClCompile Include="ServerLib\ThreadManager.cpp" />
     <ClCompile Include="WindowUI\WindowUI.cpp" />
   </ItemGroup>

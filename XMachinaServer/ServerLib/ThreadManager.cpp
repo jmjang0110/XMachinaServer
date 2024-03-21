@@ -66,7 +66,7 @@ void ThreadLocalStorageManager::Init_TlsInfoData(std::string threadName)
 {
 	/// TLS 데이터 생성 
 	TLS::TlsInfoData* TlsData = new TLS::TlsInfoData;
-	TlsData->id               = TlsMgr::NewThreadID.fetch_add(1);
+	TlsData->id               = TlsMgr::NewThreadID.fetch_add(1); // atomic 
 	TlsData->threadName       = threadName;
 
 	/* lock! */

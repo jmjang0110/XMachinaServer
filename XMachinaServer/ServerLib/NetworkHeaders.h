@@ -19,3 +19,9 @@
 
 /* vector */
 #include <vector>
+
+/* Network Lib Headers */
+#include "Session.h"
+
+/* Shared ptr */
+using SPtr_Session = std::shared_ptr<class Session>;

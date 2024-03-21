@@ -2,6 +2,8 @@
 #include "Framework.h"
 #include "WindowUI/WindowUI.h"
 #include "ServerLib/ThreadManager.h"
+#include "ServerLib/NetworkManager.h"
+
 
 
 DEFINE_SINGLETON(Framework);
@@ -20,13 +22,16 @@ Framework::~Framework()
 	/* Thread Manager Destroy --> (TLS) threadLocalStorageManager Destroy */
 	THREAD_MGR->Destroy();
 
+	/* Network Manager Destroy */
+	NETWORK_MGR->Destroy();
+
 }
 
 bool Framework::Init(HINSTANCE& hInst)
 {
-	/// +----------------------------------
-	///	 LOG MGR : Console I/O, File I/O 
-	/// ----------------------------------+
+	/// +------------------------------------
+	///	 Log Manager : Console I/O, File I/O 
+	/// ------------------------------------+
 	if (FALSE == LOG_MGR->Init()) {
 		return false;
 	}
@@ -38,24 +43,24 @@ bool Framework::Init(HINSTANCE& hInst)
 		return false;
 	}
 
+	/// +---------------------------------------
+	///	Network Manager : 
+	/// ---------------------------------------+
+	if (FALSE == NETWORK_MGR->Init()) {
+
+	}
 
 	return true;
 }
 
 void test() {
 	while (true) {
-		static int i = 0;
-		i++;
-		TLS_MGR->Get_TlsInfoData()->threadName = std::to_string(i);
 		std::cout << TLS_MGR->Get_TlsInfoData()->threadName << " ID : " << TLS_MGR->Get_TlsInfoData()->id << std::endl;
 	}
 }
 
 void test2() {
 	while (true) {
-		static int i = 0;
-		i--;
-		TLS_MGR->Get_TlsInfoData()->threadName = std::to_string(i);
 		std::cout << TLS_MGR->Get_TlsInfoData()->threadName << " ID : " << TLS_MGR->Get_TlsInfoData()->id << std::endl;
 
 	}
