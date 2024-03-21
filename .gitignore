@@ -34,3 +34,5 @@
 # etc..
 *.vs
 /x64
+/XMachinaServer/x64
+/Executable

@@ -1,49 +1,98 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="소스 파일">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="Framework">
+      <UniqueIdentifier>{1eb4f2a5-9ae7-41ca-a952-17fec127a14e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    <Filter Include="ServerLib">
+      <UniqueIdentifier>{345ac32d-cfe8-4276-bf8a-06139cf8b084}</UniqueIdentifier>
     </Filter>
-    <Filter Include="리소스 파일">
+    <Filter Include="WindowUI">
+      <UniqueIdentifier>{d13743c8-39d1-4a51-b17c-6a50fd03c5ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Log">
+      <UniqueIdentifier>{955e9ae8-4f1b-4b37-915b-11e630be02e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\header">
+      <UniqueIdentifier>{0ec37b5b-7944-4e2c-958d-4b2e7bac3d88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\etc">
+      <UniqueIdentifier>{b21e502b-4376-43a6-be3a-7d609d522022}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\etc\리소스 파일">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="ServerLib\Thread">
+      <UniqueIdentifier>{63e534cf-f503-4712-95ae-9a6d46076589}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ServerLib\Network">
+      <UniqueIdentifier>{d145bd93-88c2-46a3-b720-29081f0e5076}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ServerLib\Network\Iocp">
+      <UniqueIdentifier>{b062e99d-be02-4f05-b7e1-4c6bf20648bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ServerLib\Network\Packet">
+      <UniqueIdentifier>{f6163b56-c159-4160-b1f1-23cb628af53f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="framework.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="pch.h">
+      <Filter>Framework</Filter>
     </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="Framework.h">
+      <Filter>Framework</Filter>
     </ClInclude>
     <ClInclude Include="Resource.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>Framework\header</Filter>
     </ClInclude>
-    <ClInclude Include="XMachinaServer.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="ServerLib\UtilityMacro.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowUI\WindowUI.h">
+      <Filter>WindowUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\LogManager.h">
+      <Filter>Framework\Log</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerLib\NetworkHeaders.h">
+      <Filter>ServerLib\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerLib\ThreadManager.h">
+      <Filter>ServerLib\Thread</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="XMachinaServer.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="main.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowUI\WindowUI.cpp">
+      <Filter>WindowUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\LogManager.cpp">
+      <Filter>Framework\Log</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerLib\ThreadManager.cpp">
+      <Filter>ServerLib\Thread</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="XMachinaServer.rc">
-      <Filter>리소스 파일</Filter>
+      <Filter>Framework\etc\리소스 파일</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
-      <Filter>리소스 파일</Filter>
+      <Filter>Framework\etc\리소스 파일</Filter>
     </Image>
     <Image Include="XMachinaServer.ico">
-      <Filter>리소스 파일</Filter>
+      <Filter>Framework\etc\리소스 파일</Filter>
     </Image>
   </ItemGroup>
 </Project>
