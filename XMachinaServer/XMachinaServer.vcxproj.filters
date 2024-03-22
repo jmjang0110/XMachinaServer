@@ -44,6 +44,9 @@
     <Filter Include="ServerLib\Network\Iocp\Overlapped">
       <UniqueIdentifier>{79f72133-5128-45c3-84fb-8d1eeb54b222}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ServerLib\Network\Iocp\Netowork\Service">
+      <UniqueIdentifier>{6c649662-a7bc-4d69-922a-a9bd818c1093}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework.h">
@@ -97,14 +100,18 @@
     <ClInclude Include="ServerLib\MemoryPool.h">
       <Filter>ServerLib\Memory</Filter>
     </ClInclude>
-    <ClInclude Include="ServerLib\NetworkInterface.h">
-      <Filter>ServerLib\Network\Iocp\Netowork</Filter>
-    </ClInclude>
     <ClInclude Include="ServerLib\ClientNetwork.h">
-      <Filter>ServerLib\Network\Iocp\Netowork</Filter>
+      <Filter>ServerLib\Network\Iocp\Netowork\Service</Filter>
     </ClInclude>
     <ClInclude Include="ServerLib\ServerNetwork.h">
-      <Filter>ServerLib\Network\Iocp\Netowork</Filter>
+      <Filter>ServerLib\Network\Iocp\Netowork\Service</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerLib\NetworkInterface.h">
+      <Filter>ServerLib\Network\Iocp\Netowork\Service</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\GameSession.h" />
+    <ClInclude Include="ServerLib\MemoryManager.h">
+      <Filter>ServerLib\Memory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -147,20 +154,24 @@
     <ClCompile Include="ServerLib\PacketSendBuf.cpp">
       <Filter>ServerLib\Network\Packet</Filter>
     </ClCompile>
-    <ClCompile Include="ServerLib\NetworkManager.cpp">
-      <Filter>ServerLib\Network\Iocp\Netowork</Filter>
-    </ClCompile>
     <ClCompile Include="ServerLib\MemoryPool.cpp">
       <Filter>ServerLib\Memory</Filter>
     </ClCompile>
-    <ClCompile Include="ServerLib\NetworkInterface.cpp">
-      <Filter>ServerLib\Network\Iocp\Netowork</Filter>
-    </ClCompile>
     <ClCompile Include="ServerLib\ClientNetwork.cpp">
-      <Filter>ServerLib\Network\Iocp\Netowork</Filter>
+      <Filter>ServerLib\Network\Iocp\Netowork\Service</Filter>
     </ClCompile>
     <ClCompile Include="ServerLib\ServerNetwork.cpp">
+      <Filter>ServerLib\Network\Iocp\Netowork\Service</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerLib\NetworkManager.cpp">
       <Filter>ServerLib\Network\Iocp\Netowork</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerLib\NetworkInterface.cpp">
+      <Filter>ServerLib\Network\Iocp\Netowork\Service</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\GameSession.cpp" />
+    <ClCompile Include="ServerLib\MemoryManager.cpp">
+      <Filter>ServerLib\Memory</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

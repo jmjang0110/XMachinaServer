@@ -3,8 +3,12 @@
 
 NetworkObject::NetworkObject()
 {
+	mSocketData.CreateSocket();
+
 }
 
 NetworkObject::~NetworkObject()
 {
+	mSocketData.Close();
+
 }

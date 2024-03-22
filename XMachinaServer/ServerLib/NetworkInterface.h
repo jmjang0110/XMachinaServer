@@ -21,22 +21,40 @@ private:
 	UINT32		mCurSessionCnt = 0;
 	UINT32		mMaxSessionCnt = 0;
 
-	std::unordered_map<std::wstring, SPtr_Session> mSessions = {}; // Key : Ip / Value : Session Obj
+	std::unordered_map<std::wstring, SPtr_Session> mSessions    = {}; // Key : Ip / Value : Session Obj
+	std::function<SPtr_Session(void)>	mSessionConstructorFunc = {}; // Session 생성자 함수 포인터 ( session상속클래스 생성자 )
 
 public:
 	NetworkInterface() = default;
 	NetworkInterface(std::wstring ip, UINT16 portNum);
 	virtual ~NetworkInterface();
 
-
 public:
+	virtual bool Start() abstract;
+	virtual void Close();
+
 	void BroadCast(SPtr_SendPktBuf sendBuf);
 	void Send(UINT32 sessionID, SPtr_SendPktBuf sendBuf);
 
-	void CreateSession();
+	bool RegisterIocp(SPtr_NetObj netObj);
+	SPtr_Session CreateSession();
 	void AddSession(SPtr_Session session);
 	void ReleaseSession(SPtr_Session session);
 
+	/// +---------------------------
+	///			   S E T 
+	/// ---------------------------+
+	void SetMaxSessionCnt(UINT32 sessionLimit) { mMaxSessionCnt = sessionLimit; }
+	void SetSessionConstructorFunc(std::function<SPtr_Session(void)> func) { mSessionConstructorFunc = func; }
+
+
+	/// +---------------------------
+	///			   G E T 
+	/// ---------------------------+
+	UINT32 GetCurSessionCnt() { return mCurSessionCnt; }
+	UINT32 GetMaxSEssionCnt() { return mMaxSessionCnt; }
+	HANDLE GetIocpHandle()	  { return mIocpHandle; }
+	SOCKADDR_IN GetSockAddr() { return mSockAddr; }
 
 };
 

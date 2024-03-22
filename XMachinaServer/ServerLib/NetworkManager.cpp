@@ -16,8 +16,15 @@ NetworkManager::~NetworkManager()
 	::WSACleanup();
 }
 
-bool NetworkManager::Init()
+bool NetworkManager::Init(SocketData socket)
 {
+	/* LPFN √ ±‚»≠ */
+	SocketData dummy;
+	dummy.CreateSocket();
+	dummy.BindWindowsFunction(WSAID_CONNECTEX, reinterpret_cast<LPVOID*>(&mLpfn_ConnectEx));
+	dummy.BindWindowsFunction(WSAID_DISCONNECTEX, reinterpret_cast<LPVOID*>(&mLpfn_DisconnectEx));
+	dummy.BindWindowsFunction(WSAID_ACCEPTEX, reinterpret_cast<LPVOID*>(&mLpfn_AcceptEx));
+	dummy.Close();
 
 	return true;
 }

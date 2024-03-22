@@ -40,6 +40,8 @@ public:
 	Session();
 	virtual ~Session();
 
+	virtual void Dispatch(class OverlappedObject* overlapped, UINT32 bytes = 0) override;
+
 protected:
 	/* Session class을 상속받은 class는 신호를 받는다. */
 	virtual void	OnConnected() {};
@@ -63,9 +65,10 @@ public:
 
 public:
 	/* Set */
-
+	void SetOwerNetworkInterface(SPtr_NI networkInterface) { mOwnerNI = networkInterface; }
 	/* Get */
 	bool IsConnected() { return mIsConnected.load(); }
+	PacketRecvBuf& GetRecvPktBuf() { return mRecvPkt; }
 
 
 };

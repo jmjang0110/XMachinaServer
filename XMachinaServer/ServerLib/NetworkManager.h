@@ -21,7 +21,7 @@ public:
 	~NetworkManager();
 
 public:
-	bool Init();
+	bool Init(SocketData socket);
 
 public:
 	LPFN_CONNECTEX		ConnectEx()		{ return mLpfn_ConnectEx; }

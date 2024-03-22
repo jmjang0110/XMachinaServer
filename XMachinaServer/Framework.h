@@ -12,6 +12,10 @@ class Framework
 {
 	DECLARE_SINGLETON(Framework);
 
+private:
+	SPtr_ServerNetwork mServer = {};
+
+
 public:
 	Framework();
 	~Framework();

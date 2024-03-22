@@ -19,11 +19,12 @@ public:
 	~SocketData();
 
 public:
-	void Init(std::wstring ip, UINT16 port);
-	void Clear();
-
+	void	Init(std::wstring ip, UINT16 port);
+	SOCKET	CreateSocket();
+	void	Clear();
+		
 	const SOCKET& GetSocket() { return mSocket; }
-
+	void SetSockAddrIn(SOCKADDR_IN sockaddrIn) { mSockAddr = sockaddrIn; }
 public:
 	/// +-----------------------------
 	///		Bind / Listen / close 
@@ -42,6 +43,7 @@ public:
 	bool SetRecvPacketBufferSize(INT32 size);
 	bool SetSendBufferSize(INT32 size);
 	bool SetTcpNoDelay(bool flag);
+	bool SetUpdateAcceptSocket(SOCKET listenSocket);
 
 	/// +------------------------
 	///		   NET ADDRESS

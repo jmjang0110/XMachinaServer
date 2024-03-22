@@ -155,12 +155,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Contents\GameSession.h" />
     <ClInclude Include="Contents\LogManager.h" />
     <ClInclude Include="Framework.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ServerLib\ClientNetwork.h" />
     <ClInclude Include="ServerLib\Listener.h" />
+    <ClInclude Include="ServerLib\MemoryManager.h" />
     <ClInclude Include="ServerLib\MemoryPool.h" />
     <ClInclude Include="ServerLib\NetworkHeaders.h" />
     <ClInclude Include="ServerLib\NetworkInterface.h" />
@@ -177,6 +179,7 @@
     <ClInclude Include="WindowUI\WindowUI.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Contents\GameSession.cpp" />
     <ClCompile Include="Contents\LogManager.cpp" />
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="main.cpp" />
@@ -192,6 +195,7 @@
     </ClCompile>
     <ClCompile Include="ServerLib\ClientNetwork.cpp" />
     <ClCompile Include="ServerLib\Listener.cpp" />
+    <ClCompile Include="ServerLib\MemoryManager.cpp" />
     <ClCompile Include="ServerLib\MemoryPool.cpp" />
     <ClCompile Include="ServerLib\NetworkInterface.cpp" />
     <ClCompile Include="ServerLib\NetworkManager.cpp" />

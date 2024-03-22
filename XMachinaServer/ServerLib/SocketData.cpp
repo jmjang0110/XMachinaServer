@@ -22,7 +22,15 @@ void SocketData::Init(std::wstring ip, UINT16 port)
 	mSockAddr.sin_port		= ::htons(port); // 포트 번호 : 16비트 숫자-host to Network - short(16bit)
 
 	/* Socket */
-	mSocket = ::WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, 0, WSA_FLAG_OVERLAPPED);
+	CreateSocket();
+}
+
+SOCKET SocketData::CreateSocket()
+{
+	if (mSocket == INVALID_SOCKET) {
+		mSocket = ::WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, 0, WSA_FLAG_OVERLAPPED);
+	}
+	return mSocket;
 }
 
 void SocketData::Clear()
@@ -31,7 +39,7 @@ void SocketData::Clear()
 
 bool SocketData::Bind(SOCKADDR_IN netAddr)
 {
-	return SOCKET_ERROR != ::bind(mSocket, reinterpret_cast<const SOCKADDR*>(&mSockAddr), sizeof(SOCKADDR_IN));
+	return SOCKET_ERROR != ::bind(mSocket, reinterpret_cast<const SOCKADDR*>(&netAddr), sizeof(SOCKADDR_IN));
 }
 
 bool SocketData::BindAnyAddress(UINT16 port)
@@ -87,6 +95,11 @@ bool SocketData::SetSendBufferSize(INT32 size)
 bool SocketData::SetTcpNoDelay(bool flag)
 {
 	return SetSockOpt<bool>(mSocket, SOL_SOCKET, TCP_NODELAY, flag);
+}
+
+bool SocketData::SetUpdateAcceptSocket(SOCKET listenSocket)
+{
+	return SetSockOpt(mSocket, SOL_SOCKET, SO_UPDATE_ACCEPT_CONTEXT, listenSocket);
 }
 
 std::wstring SocketData::GetIpAddress()

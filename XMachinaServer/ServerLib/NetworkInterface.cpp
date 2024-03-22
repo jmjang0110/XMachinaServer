@@ -26,6 +26,19 @@ NetworkInterface::~NetworkInterface()
 	::CloseHandle(mIocpHandle);
 }
 
+bool NetworkInterface::RegisterIocp(SPtr_NetObj netObj)
+{
+	// Iocp Handle 을 통해서 해당 소켓을 관찰하도록 등록한다.
+	return ::CreateIoCompletionPort(netObj->GetSocketHandle()
+									, mIocpHandle
+									, 0
+									, 0);
+}
+
+void NetworkInterface::Close()
+{
+}
+
 void NetworkInterface::BroadCast(SPtr_SendPktBuf sendBuf)
 {
 }
@@ -34,8 +47,13 @@ void NetworkInterface::Send(UINT32 sessionID, SPtr_SendPktBuf sendBuf)
 {
 }
 
-void NetworkInterface::CreateSession()
+
+SPtr_Session NetworkInterface::CreateSession()
 {
+	SPtr_Session session = mSessionConstructorFunc();
+	session->SetOwerNetworkInterface(shared_from_this());
+	RegisterIocp(session);
+	return session;
 }
 
 void NetworkInterface::AddSession(SPtr_Session session)

@@ -8,9 +8,15 @@
 
 Session::Session()
 {
+	mRecvPkt = PacketRecvBuf(static_cast<INT32>(PacketRecvBuf::Info::Size));
+
 }
 
 Session::~Session()
+{
+}
+
+void Session::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 {
 }
 
@@ -193,11 +199,16 @@ void Session::Send(SPtr_SendPktBuf buf)
 
 void Session::Connect()
 {
-
+	RegisterIO(OverlappedIO::Type::Connect);
 }
 
 void Session::Disconnect(const WCHAR* cause)
 {
+	if (mIsConnected.exchange(false) == false)
+		return;	
+	std::wcout << "Disconnect : " << cause << std::endl;
+
+	RegisterIO(OverlappedIO::Type::DisConnect);
 }
 
 

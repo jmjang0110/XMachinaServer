@@ -48,12 +48,21 @@ public:
 	OverlappedIO::Type& GetIoType() { return mIoType; }
 	void Clear_OVERLAPPED();
 	void SetOwner(SPtr_NetObj owner) { mOwner = owner; }
+	SPtr_NetObj GetOwner() { return mOwner; }
+
 
 };
 
 /* Accept Overlapped Obeject */
 class Overlapped_Accept : public OverlappedObject 
 {
+private:
+	SPtr_Session  mSession;
+
+public:
+	SPtr_Session GetSession() { return mSession; }
+	void SetSession(SPtr_Session session) { mSession = session; }
+
 public:
 	Overlapped_Accept() : OverlappedObject(OverlappedIO::Type::Accept)
 	{

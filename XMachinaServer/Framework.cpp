@@ -4,6 +4,14 @@
 #include "ServerLib/ThreadManager.h"
 #include "ServerLib/NetworkManager.h"
 
+#include "ServerLib/ServerNetwork.h"
+#include "ServerLib/Listener.h"
+#include "ServerLib/SocketData.h"
+
+
+#include "Contents/GameSession.h"
+
+
 
 
 DEFINE_SINGLETON(Framework);
@@ -46,9 +54,18 @@ bool Framework::Init(HINSTANCE& hInst)
 	/// +---------------------------------------
 	///	Network Manager : 
 	/// ---------------------------------------+
-	if (FALSE == NETWORK_MGR->Init()) {
+	mServer = std::make_shared<ServerNetwork>(L"127.0.0.1", 7777);
+	mServer->SetMaxSessionCnt(100);
+	mServer->SetSessionConstructorFunc(std::make_shared<GameSession>);
 
+	if (FALSE == NETWORK_MGR->Init(mServer->GetListener()->GetSocketData())) {
+		return false;
 	}
+
+
+	mServer->Start();
+
+
 
 	return true;
 }

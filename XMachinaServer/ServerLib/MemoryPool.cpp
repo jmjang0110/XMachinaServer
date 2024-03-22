@@ -2,32 +2,21 @@
 #include "MemoryPool.h"
 
 MemoryPool::MemoryPool(size_t MemorySize, size_t numBlocks) 
-    : mBlockSize(MemorySize)
+    : mBlockSize(MemorySize), mMemorySize(MemorySize)
 {
     // SLIST 헤더 초기화
-    InitializeSListHead(&mSListHeader);
-
-    // 메모리 블록을 미리 할당하여 SLIST에 추가
-    for (size_t i = 0; i < numBlocks; ++i) {
-        MemoryBlock* ptr = static_cast<MemoryBlock*>(_aligned_malloc(sizeof(MemoryBlock) + MemorySize, MEMORY_ALLOCATION_ALIGNMENT));
-        
-        if (ptr == nullptr) {
-            // 할당 실패 시, 이전에 할당한 메모리 해제
-            for (size_t j = 0; j < i; ++j) {
-                _aligned_free(mMemoryBlocks[j]);
-            }
-        }
-
-        InterlockedPushEntrySList(&mSListHeader, reinterpret_cast<PSLIST_ENTRY>(ptr));
-        mMemoryBlocks.push_back(ptr); // 메모리 블록을 추적하기 위해 벡터에 추가
-    }
+    ::InitializeSListHead(&mSListHeader);
+    AddMemory();
 }
+
 
 
 MemoryPool::~MemoryPool()
 {
-    // 할당된 메모리 블록들 해제
-    for (auto ptr : mMemoryBlocks) {
+    // 메모리 블록들을 해제
+    PSLIST_ENTRY entry;
+    while ((entry = ::InterlockedPopEntrySList(&mSListHeader)) != nullptr) {
+        MemoryBlock* ptr = reinterpret_cast<MemoryBlock*>(entry);
         _aligned_free(ptr);
     }
 }
@@ -35,7 +24,7 @@ MemoryPool::~MemoryPool()
 void* MemoryPool::Allocate() 
 {
     // SLIST에서 메모리 블록 가져오기
-    PSLIST_ENTRY entry = InterlockedPopEntrySList(&mSListHeader);
+    PSLIST_ENTRY entry = ::InterlockedPopEntrySList(&mSListHeader);
 
     if (entry) {
         return reinterpret_cast<void*>(entry);
@@ -46,5 +35,15 @@ void* MemoryPool::Allocate()
 void MemoryPool::Free(void* ptr)
 {
     // SLIST에 메모리 블록 추가
-    InterlockedPushEntrySList(&mSListHeader, reinterpret_cast<PSLIST_ENTRY>(ptr));
+    ::InterlockedPushEntrySList(&mSListHeader, reinterpret_cast<PSLIST_ENTRY>(ptr));
+}
+
+void MemoryPool::AddMemory()
+{
+    // SLIST에 메모리 블록 추가
+    MemoryBlock* ptr = static_cast<MemoryBlock*>(::_aligned_malloc(sizeof(MemoryBlock) + mMemorySize, MEMORY_ALLOCATION_ALIGNMENT));
+    if (ptr) {
+        InterlockedPushEntrySList(&mSListHeader, reinterpret_cast<PSLIST_ENTRY>(ptr));
+    }
+
 }
