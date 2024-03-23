@@ -11,7 +11,7 @@ class NetworkInterface : public std::enable_shared_from_this<NetworkInterface>
 {
 	enum class EnumInfo 
 	{
-		Max_Session_Limit_Count 
+		Max_Session_Limit_Count = 5000,
 	};
 
 private:
@@ -26,20 +26,21 @@ private:
 
 public:
 	NetworkInterface() = default;
-	NetworkInterface(std::wstring ip, UINT16 portNum);
 	virtual ~NetworkInterface();
 
 public:
-	virtual bool Start() abstract;
+	virtual bool Start(std::wstring ip, UINT16 portNum) ;
 	virtual void Close();
+
+	bool RegisterIocp(SPtr_NetObj netObj);
+	bool Dispatch_CompletedTasks_FromIOCP(UINT32 msTimeOut);
 
 	void BroadCast(SPtr_SendPktBuf sendBuf);
 	void Send(UINT32 sessionID, SPtr_SendPktBuf sendBuf);
 
-	bool RegisterIocp(SPtr_NetObj netObj);
-	SPtr_Session CreateSession();
-	void AddSession(SPtr_Session session);
-	void ReleaseSession(SPtr_Session session);
+	SPtr_Session	CreateSession();
+	void			AddSession(SPtr_Session session);
+	void			ReleaseSession(SPtr_Session session);
 
 	/// +---------------------------
 	///			   S E T 
@@ -54,7 +55,7 @@ public:
 	UINT32 GetCurSessionCnt() { return mCurSessionCnt; }
 	UINT32 GetMaxSEssionCnt() { return mMaxSessionCnt; }
 	HANDLE GetIocpHandle()	  { return mIocpHandle; }
-	SOCKADDR_IN GetSockAddr() { return mSockAddr; }
+	SOCKADDR_IN& GetSockAddr() { return mSockAddr; }
 
 };
 

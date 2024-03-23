@@ -1,14 +1,10 @@
 #include "pch.h"
 #include "ServerNetwork.h"
 #include "NetworkInterface.h"
-#include "Listener.h"
 
 
-ServerNetwork::ServerNetwork(std::wstring ip, UINT16 portNum)
-	: NetworkInterface(ip, portNum)
+ServerNetwork::ServerNetwork()
 {
-	mListener = std::make_shared<Listener>();
-
 }
 
 ServerNetwork::~ServerNetwork()
@@ -16,12 +12,15 @@ ServerNetwork::~ServerNetwork()
 
 }
 
-bool ServerNetwork::Start()
+bool ServerNetwork::Start(std::wstring ip, UINT16 portNum)
 {
+	NetworkInterface::Start(ip, portNum);
 
-	mListener->Start(shared_from_this());
-
-
+	mListener = std::make_shared<Listener>();
+	if (FALSE == mListener->Start(ip, portNum, shared_from_this()))
+		return false;
+	else 
+		mListener->RegisterAccept();
 
 	return true;
 }

@@ -11,9 +11,8 @@
 class Listener : public NetworkObject
 {
 private:
-	class SocketData				mListenSocket = {};
-	std::vector<Overlapped_Accept*> mAccepts	  = {};
-	SPtr_NI							mOwnerNI      = {}; // Owner Network Interface 
+	std::vector<Overlapped_Accept*> mAccepts	      = {};
+	SPtr_NI							mOwnerNI          = {}; // Owner Network Interface 
 
 private:
 	void Register_OverlappedIO_Accept(Overlapped_Accept* overlapped);
@@ -21,12 +20,14 @@ private:
 
 
 public:
-	Listener() = default;
+	Listener();
 	virtual ~Listener();
 
 public:
-	bool Start(SPtr_NI netInterface);
+	bool Start(std::wstring ip, UINT16 portNum, SPtr_NI netInterface);
 	void Close();
+	void RegisterAccept();
+
 
 	virtual void Dispatch(class OverlappedObject* overlapped, UINT32 bytes = 0) override;
 

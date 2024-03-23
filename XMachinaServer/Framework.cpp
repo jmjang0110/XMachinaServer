@@ -21,6 +21,7 @@ Framework::Framework()
 
 Framework::~Framework()
 {
+	
 	/* Window UI Destroy */
 	WINDOW_UI->Destroy();
 
@@ -33,10 +34,13 @@ Framework::~Framework()
 	/* Network Manager Destroy */
 	NETWORK_MGR->Destroy();
 
+	
 }
 
 bool Framework::Init(HINSTANCE& hInst)
 {
+
+
 	/// +------------------------------------
 	///	 Log Manager : Console I/O, File I/O 
 	/// ------------------------------------+
@@ -51,49 +55,61 @@ bool Framework::Init(HINSTANCE& hInst)
 		return false;
 	}
 
-	/// +---------------------------------------
-	///	Network Manager : 
-	/// ---------------------------------------+
-	mServer = std::make_shared<ServerNetwork>(L"127.0.0.1", 7777);
-	mServer->SetMaxSessionCnt(100);
-	mServer->SetSessionConstructorFunc(std::make_shared<GameSession>);
-
-	if (FALSE == NETWORK_MGR->Init(mServer->GetListener()->GetSocketData())) {
+	/// +----------------------------------------------------------------
+	///	Network Manager : 2.2버젼 Winsock 초기화 및 비동기 함수 Lpfn 초기화
+	/// ----------------------------------------------------------------+
+	if (FALSE == NETWORK_MGR->Init()) {
 		return false;
 	}
 
+	mServer = std::make_shared<ServerNetwork>();
+	mServer->SetMaxSessionCnt(100);
+	mServer->SetSessionConstructorFunc(std::make_shared<GameSession>);
+	mServer->Start(L"127.0.0.1", 7777);
 
-	mServer->Start();
+
 
 
 
 	return true;
 }
 
-void test() {
-	while (true) {
-		std::cout << TLS_MGR->Get_TlsInfoData()->threadName << " ID : " << TLS_MGR->Get_TlsInfoData()->id << std::endl;
-	}
-}
 
 void test2() {
 	while (true) {
-		std::cout << TLS_MGR->Get_TlsInfoData()->threadName << " ID : " << TLS_MGR->Get_TlsInfoData()->id << std::endl;
+		//std::cout << TLS_MGR->Get_TlsInfoData()->threadName << " ID : " << TLS_MGR->Get_TlsInfoData()->id << std::endl;
 
+	
 	}
 }
+
+
 void Framework::Launch()
 {
-	LOG_MGR->SetColor(TextColor::BrightGreen);
+	LOG_MGR->SetColor(TextColor::BrightYellow);
 	LOG_MGR->Cout("+-------------------------------\n");
 	LOG_MGR->Cout("   X-MACHINA Server Framework   \n");
 	LOG_MGR->Cout("-------------------------------+\n");
 	LOG_MGR->SetColor(TextColor::Default);
 
-	THREAD_MGR->RunThread("Testtherad", test);
-	THREAD_MGR->RunThread("Testtherad2", test2);
+	//THREAD_MGR->RunThread("Testtherad", [&]() {
+	//		while (true) {
+	//			std::cout << TLS_MGR->Get_TlsInfoData()->threadName 
+	//				<< " ID : " << TLS_MGR->Get_TlsInfoData()->id << std::endl;
+	//		}
+	//	});
 
+
+	for (INT32 i = 0; i < 6; ++i) {
+		THREAD_MGR->RunThread("Network Dispatch " + std::to_string(i), [&]() {
+			//std::cout << TLS_MGR->Get_TlsInfoData()->threadName << std::endl;
+			while (true)
+			{
+				mServer->Dispatch_CompletedTasks_FromIOCP(10);
+			}
+			});
+	}
+	
 
 	THREAD_MGR->JoinAllThreads();
-
 }

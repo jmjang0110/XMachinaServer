@@ -11,11 +11,11 @@ public:
 	virtual ~GameSession();
 
 
-	virtual void OnConnected() override;
-	virtual void OnDisconnected() override;
-	virtual void OnSend(UINT32 len) override;
+	virtual void	OnConnected() override;
+	virtual void	OnDisconnected() override;
+	virtual void	OnSend(UINT32 len) override;
 
-	void OnRecvPacket(BYTE* buffer, UINT32 len);
+	void			OnRecvPacket(BYTE* buffer, UINT32 len);
 
 
 };

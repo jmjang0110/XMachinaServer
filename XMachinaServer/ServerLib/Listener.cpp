@@ -8,6 +8,12 @@
 
 
 
+Listener::Listener()
+	: NetworkObject()
+{
+	NetworkObject::SetName("Listener");
+}
+
 Listener::~Listener()
 {
 	Close();
@@ -27,11 +33,11 @@ void Listener::Register_OverlappedIO_Accept(Overlapped_Accept* overlapped)
 
 	DWORD recvBytes     = 0;
 
-	SOCKET ListenSock  = mListenSocket.GetSocket();
+	SOCKET ListenSock  = GetSocketData().GetSocket();
 	SOCKET ClientSock  = session->GetSocketData().GetSocket();
 	BYTE*  RecvBufPtr  = session->GetRecvPktBuf().GetWritePos();
 
-	bool result       = NETWORK_MGR->AcceptEx()(ListenSock 
+	bool result       = NETWORK_MGR->AcceptEx()(ListenSock
 											  , ClientSock 
 											  , RecvBufPtr 
 											  , 0
@@ -54,7 +60,7 @@ void Listener::Process_OverlappedIO_Accept(Overlapped_Accept* overlapped)
 {
 	SPtr_Session session = overlapped->GetSession();
 
-	if (false == session->GetSocketData().SetUpdateAcceptSocket(mListenSocket.GetSocket())){
+	if (false == session->GetSocketData().SetUpdateAcceptSocket(GetSocketData().GetSocket())) {
 		Register_OverlappedIO_Accept(overlapped);
 		return;
 	}
@@ -86,24 +92,34 @@ void Listener::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 }
 
 
-bool Listener::Start(SPtr_NI netInterface)
+bool Listener::Start(std::wstring ip, UINT16 portNum, SPtr_NI netInterface)
 {
 	mOwnerNI = netInterface;
 
-	if (mListenSocket.CreateSocket() == INVALID_SOCKET)
-		return false;
+	/* Create Listen Socket + Update Socket Option */
+	SocketData ListenSockData = {};
+	ListenSockData.CreateSocket();
+	ListenSockData.Init(ip, portNum);
 
-	mListenSocket.SetSockAddrIn(netInterface->GetSockAddr());
+	if (ListenSockData.SetReuseAddress(true) == false)				
+		return false;
+	if (ListenSockData.SetLinger(0, 0) == false)						
+		return false;
+	if (ListenSockData.Bind(ListenSockData.GetSockAddr()) == false)	
+		return false;
+	if (ListenSockData.Listen() == false)							
+		return false;
+	NetworkObject::SetSocketData(ListenSockData);
 	
 	/* Register Iocp */
-	if (mOwnerNI->RegisterIocp(shared_from_this()) == false)		return false;
-	
-	/* Create Listen Socket + Update Socket Option */
-	if (mListenSocket.SetReuseAddress(true) == false)				return false;
-	if (mListenSocket.SetLinger(0, 0) == false)						return false;
-	if (mListenSocket.Bind(mListenSocket.GetSockAddr()) == false)	return false;
-	if (mListenSocket.Listen() == false)							return false;
+	if (mOwnerNI->RegisterIocp(shared_from_this()) == false)
+		return false;
 
+	return true;
+}
+
+void Listener::RegisterAccept()
+{
 	/* Register Accept IO */
 	const UINT32 MaxAcceptCnt = mOwnerNI->GetMaxSEssionCnt();
 	for (INT32 i = 0; i < MaxAcceptCnt; ++i) {
@@ -112,14 +128,13 @@ bool Listener::Start(SPtr_NI netInterface)
 		mAccepts.push_back(acceptIO);
 		Register_OverlappedIO_Accept(acceptIO);
 	}
-
-	return true;
 }
-
 
 void Listener::Close()
 {
-	mListenSocket.Close();
+	SocketData ListenSockData = NetworkObject::GetSocketData();
+	ListenSockData.Close();
 
 }
+
 

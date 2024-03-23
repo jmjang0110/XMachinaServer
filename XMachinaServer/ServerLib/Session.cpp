@@ -2,13 +2,18 @@
 #include "Session.h"
 #include "PacketSendBuf.h"
 #include "NetworkManager.h"
+#include "SocketData.h"
 
 
 
-
-Session::Session()
+Session::Session() : NetworkObject()
 {
 	mRecvPkt = PacketRecvBuf(static_cast<INT32>(PacketRecvBuf::Info::Size));
+	
+	SocketData sockdata = {};
+	sockdata.CreateSocket();
+	NetworkObject::SetSocketData(sockdata);
+
 
 }
 

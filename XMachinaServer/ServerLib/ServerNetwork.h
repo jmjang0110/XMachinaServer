@@ -7,6 +7,7 @@
 /// -----------------------------------------------+
 
 #include "NetworkInterface.h"
+#include "Listener.h"
 
 class ServerNetwork : public NetworkInterface
 {
@@ -15,14 +16,15 @@ private:
 	SPtr_Listener mListener = {};
 
 public:
-	ServerNetwork(std::wstring ip, UINT16 portNum);
+	ServerNetwork();
 	virtual ~ServerNetwork();
 
-	virtual bool Start() override;
+	virtual bool Start(std::wstring ip, UINT16 portNum) override;
 	virtual void Close() override;
 	
 public:
 	SPtr_Listener GetListener() { return mListener; }
+	void SetSockAddrIn(SOCKADDR_IN sockaddr) { mListener->GetSocketData().SetSockAddrIn(sockaddr);}
 
 
 };

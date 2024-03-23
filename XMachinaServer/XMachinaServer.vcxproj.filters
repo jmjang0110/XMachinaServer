@@ -16,13 +16,6 @@
     <Filter Include="Framework\header">
       <UniqueIdentifier>{0ec37b5b-7944-4e2c-958d-4b2e7bac3d88}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Framework\etc">
-      <UniqueIdentifier>{b21e502b-4376-43a6-be3a-7d609d522022}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Framework\etc\리소스 파일">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="ServerLib\Thread">
       <UniqueIdentifier>{63e534cf-f503-4712-95ae-9a6d46076589}</UniqueIdentifier>
     </Filter>
@@ -47,6 +40,13 @@
     <Filter Include="ServerLib\Network\Iocp\Netowork\Service">
       <UniqueIdentifier>{6c649662-a7bc-4d69-922a-a9bd818c1093}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\Contents">
+      <UniqueIdentifier>{1c750902-aef0-42ad-8720-eeada2efde93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework.h">
@@ -57,9 +57,6 @@
     </ClInclude>
     <ClInclude Include="WindowUI\WindowUI.h">
       <Filter>WindowUI</Filter>
-    </ClInclude>
-    <ClInclude Include="Contents\LogManager.h">
-      <Filter>Framework\Log</Filter>
     </ClInclude>
     <ClInclude Include="ServerLib\ThreadManager.h">
       <Filter>ServerLib\Thread</Filter>
@@ -109,10 +106,16 @@
     <ClInclude Include="ServerLib\NetworkInterface.h">
       <Filter>ServerLib\Network\Iocp\Netowork\Service</Filter>
     </ClInclude>
-    <ClInclude Include="Contents\GameSession.h" />
     <ClInclude Include="ServerLib\MemoryManager.h">
       <Filter>ServerLib\Memory</Filter>
     </ClInclude>
+    <ClInclude Include="Contents\LogManager.h">
+      <Filter>Framework\Log</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\GameSession.h">
+      <Filter>Framework\Contents</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerLib\Iocp.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -123,9 +126,6 @@
     </ClCompile>
     <ClCompile Include="WindowUI\WindowUI.cpp">
       <Filter>WindowUI</Filter>
-    </ClCompile>
-    <ClCompile Include="Contents\LogManager.cpp">
-      <Filter>Framework\Log</Filter>
     </ClCompile>
     <ClCompile Include="ServerLib\ThreadManager.cpp">
       <Filter>ServerLib\Thread</Filter>
@@ -169,22 +169,28 @@
     <ClCompile Include="ServerLib\NetworkInterface.cpp">
       <Filter>ServerLib\Network\Iocp\Netowork\Service</Filter>
     </ClCompile>
-    <ClCompile Include="Contents\GameSession.cpp" />
     <ClCompile Include="ServerLib\MemoryManager.cpp">
       <Filter>ServerLib\Memory</Filter>
     </ClCompile>
+    <ClCompile Include="Contents\LogManager.cpp">
+      <Filter>Framework\Log</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\GameSession.cpp">
+      <Filter>Framework\Contents</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerLib\Iocp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="XMachinaServer.rc">
-      <Filter>Framework\etc\리소스 파일</Filter>
+      <Filter>리소스 파일</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
-      <Filter>Framework\etc\리소스 파일</Filter>
+      <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="XMachinaServer.ico">
-      <Filter>Framework\etc\리소스 파일</Filter>
+      <Filter>리소스 파일</Filter>
     </Image>
   </ItemGroup>
 </Project>

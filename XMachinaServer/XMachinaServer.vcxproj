@@ -71,19 +71,19 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)Executable\Debug\</OutDir>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
     <IncludePath>$(SolutionDir)XMachinaServer\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(SolutionDir)Executable\Debug\</OutDir>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
     <IncludePath>$(SolutionDir)XMachinaServer\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)Executable\Release\</OutDir>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
     <IncludePath>$(SolutionDir)XMachinaServer\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(SolutionDir)Executable\Release\</OutDir>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
     <IncludePath>$(SolutionDir)XMachinaServer\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -161,6 +161,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ServerLib\ClientNetwork.h" />
+    <ClInclude Include="ServerLib\Iocp.h" />
     <ClInclude Include="ServerLib\Listener.h" />
     <ClInclude Include="ServerLib\MemoryManager.h" />
     <ClInclude Include="ServerLib\MemoryPool.h" />
@@ -194,6 +195,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="ServerLib\ClientNetwork.cpp" />
+    <ClCompile Include="ServerLib\Iocp.cpp" />
     <ClCompile Include="ServerLib\Listener.cpp" />
     <ClCompile Include="ServerLib\MemoryManager.cpp" />
     <ClCompile Include="ServerLib\MemoryPool.cpp" />

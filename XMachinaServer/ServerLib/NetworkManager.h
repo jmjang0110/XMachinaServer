@@ -21,7 +21,9 @@ public:
 	~NetworkManager();
 
 public:
-	bool Init(SocketData socket);
+	bool Init();
+	bool WSAStartUp(INT32 major, INT32 minor);
+
 
 public:
 	LPFN_CONNECTEX		ConnectEx()		{ return mLpfn_ConnectEx; }

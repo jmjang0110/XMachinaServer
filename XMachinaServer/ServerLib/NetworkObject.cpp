@@ -3,7 +3,6 @@
 
 NetworkObject::NetworkObject()
 {
-	mSocketData.CreateSocket();
 
 }
 

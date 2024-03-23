@@ -29,12 +29,15 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif // DEBUG
 
+
 	/* Server Framework Start */
 	if (FRAMEWORK->Init(hInstance)) {
 		FRAMEWORK->Launch();
 		FRAMEWORK->Destroy();
 	}
 	/* Server Framework End */
+
+	::WSACleanup();
 
 #ifdef _DEBUG
 	_CrtDumpMemoryLeaks();	

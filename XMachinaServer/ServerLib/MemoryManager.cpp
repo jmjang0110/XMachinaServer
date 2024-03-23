@@ -17,7 +17,7 @@ MemoryManager::~MemoryManager()
 
 void MemoryManager::AddMemoryPool(size_t memorySize, size_t numMemoryBlocks)
 {
-    // Locking
+    /* Locking */
     while (mAtomicFlag.test_and_set(std::memory_order_acquire))
     {
     };
@@ -27,12 +27,12 @@ void MemoryManager::AddMemoryPool(size_t memorySize, size_t numMemoryBlocks)
         mMemoryPools.push_back(Pool);
         mMemoryPoolsDict[memorySize] = Pool;
     }
-    // 해당 메모리 사이즈를 갖는 풀이 존재한다면 
+    // 해당 메모리 사이즈를 갖는 풀이 이미 존재한다면 
     else {
         mMemoryPoolsDict[memorySize]->AddMemory();
     }
 
-    // Unlocking
+    /* UnLocking */
     mAtomicFlag.clear(std::memory_order_release); 
 }
 
@@ -53,7 +53,7 @@ void* MemoryManager::Allocate(size_t size)
 
 void MemoryManager::Free(size_t memorySize, void* ptr)
 {
-    // Locking
+    /* Locking */
     while (mAtomicFlag.test_and_set(std::memory_order_acquire))
     {
     };
@@ -62,6 +62,6 @@ void MemoryManager::Free(size_t memorySize, void* ptr)
         mMemoryPoolsDict[memorySize]->Free(ptr);
     }
 
-    // Unlocking
+    /* UnLocking */
     mAtomicFlag.clear(std::memory_order_release);
 }

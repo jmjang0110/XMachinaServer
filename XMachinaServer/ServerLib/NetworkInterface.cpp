@@ -3,7 +3,82 @@
 #include "NetworkManager.h"
 
 
-NetworkInterface::NetworkInterface(std::wstring ip, UINT16 portNum)
+
+
+NetworkInterface::~NetworkInterface()
+{
+	if (mIocpHandle) {
+		::CloseHandle(mIocpHandle);
+	}
+}
+
+bool NetworkInterface::RegisterIocp(SPtr_NetObj netObj)
+{
+	// Iocp Handle 을 통해서 해당 소켓을 관찰하도록 등록한다.
+	SOCKET sock = netObj->GetSocketData().GetSocket();
+	HANDLE handle = netObj->GetSocketHandle();
+	if (handle) {
+		return ::CreateIoCompletionPort(handle
+									, mIocpHandle
+									, 0
+									, 0);
+	}
+	return false;
+}
+
+bool NetworkInterface::Dispatch_CompletedTasks_FromIOCP(UINT32 msTimeOut)
+{
+	/// +=========================== IOCP Queue ============================
+	///  (완료된 일감들...)
+	/// ____________________________________________________________________
+	/// (+_+) 감시한다...
+	/// (timeoutMs : INFINITE -> 무한대기 (블로킹) / 0 -> (논블로킹)
+	/// +==================================================================+
+
+	DWORD				BytesTransferred = 0;
+	ULONG_PTR			key              = 0;
+	OverlappedObject*	overObj          = nullptr;
+
+	bool IsTaskExisted = ::GetQueuedCompletionStatus(mIocpHandle
+												, OUT &BytesTransferred
+												, OUT &key
+												, OUT reinterpret_cast<LPOVERLAPPED*>(&overObj)
+												, msTimeOut);
+	if (TRUE == IsTaskExisted) {
+		/// +------------
+		///    SUCCESS 
+		/// ------------+
+		std::cout << "hello!\n";
+		SPtr_NetObj netObj = overObj->GetOwner();
+		netObj->Dispatch(overObj, BytesTransferred);
+	}
+	else
+	{
+		/// +------------
+		///     FAIL
+		/// ------------+
+		INT32 errCode = ::WSAGetLastError();
+		// TODO : Log
+		//std::cout << "Handle Error : " << errCode << std::endl;
+
+		switch (errCode)
+		{
+		case WAIT_TIMEOUT:
+			return false;
+		default:
+			// TODO : 로그 찍기
+			SPtr_NetObj netObj = overObj->GetOwner();
+			netObj->Dispatch(overObj, BytesTransferred);
+			break;
+		}
+
+	}
+
+
+	return true;
+}
+
+bool NetworkInterface::Start(std::wstring ip, UINT16 portNum)
 {
 	/* Sock Addr */
 	::memset(&mSockAddr, 0, sizeof(mSockAddr));
@@ -17,22 +92,7 @@ NetworkInterface::NetworkInterface(std::wstring ip, UINT16 portNum)
 											, 0
 											, 0);
 
-	assert(mIocpHandle != INVALID_HANDLE_VALUE);
-
-}
-
-NetworkInterface::~NetworkInterface()
-{
-	::CloseHandle(mIocpHandle);
-}
-
-bool NetworkInterface::RegisterIocp(SPtr_NetObj netObj)
-{
-	// Iocp Handle 을 통해서 해당 소켓을 관찰하도록 등록한다.
-	return ::CreateIoCompletionPort(netObj->GetSocketHandle()
-									, mIocpHandle
-									, 0
-									, 0);
+	return mIocpHandle != INVALID_HANDLE_VALUE;
 }
 
 void NetworkInterface::Close()

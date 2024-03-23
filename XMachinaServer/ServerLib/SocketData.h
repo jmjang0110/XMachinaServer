@@ -14,9 +14,14 @@ private:
 	SOCKET				mSocket		= INVALID_SOCKET;
 	SOCKADDR_IN			mSockAddr	= {};
 
+	std::wstring		mIP			= {};
+	UINT16				mPort		= {};
 public:
 	SocketData();
 	~SocketData();
+
+	static bool BindWindowsFunction(SOCKET socket, GUID guid, LPVOID* fn);
+
 
 public:
 	void	Init(std::wstring ip, UINT16 port);
@@ -24,7 +29,7 @@ public:
 	void	Clear();
 		
 	const SOCKET& GetSocket() { return mSocket; }
-	void SetSockAddrIn(SOCKADDR_IN sockaddrIn) { mSockAddr = sockaddrIn; }
+	void SetSockAddrIn(SOCKADDR_IN& sockaddrIn) { mSockAddr = sockaddrIn; }
 public:
 	/// +-----------------------------
 	///		Bind / Listen / close 

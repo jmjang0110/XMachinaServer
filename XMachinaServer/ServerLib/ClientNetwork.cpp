@@ -9,7 +9,7 @@ ClientNetwork::~ClientNetwork()
 {
 }
 
-bool ClientNetwork::Start()
+bool ClientNetwork::Start(std::wstring ip, UINT16 portNum)
 {
 	return false;
 }

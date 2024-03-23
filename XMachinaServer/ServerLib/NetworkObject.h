@@ -1,6 +1,5 @@
 #pragma once
 
-
 /// +-----------------------------------------------
 ///					 NetworkObject 
 /// ________________________________________________
@@ -9,13 +8,15 @@
 ///						  бщ
 ///					   session
 ///					   Listener
-/// ----------------------------------------------+
+/// -----------------------------------------------+
 
+#include "SocketData.h"
 
 class NetworkObject : public std::enable_shared_from_this<NetworkObject>
 {
 private:
-	class SocketData mSocketData = {};
+	std::string		 mName        = {};
+	class SocketData mSocketData  = {};
 
 public:
 	NetworkObject();
@@ -25,10 +26,12 @@ public:
 	virtual void Dispatch(class OverlappedObject* overlapped, UINT32 bytes = 0) abstract;
 
 public:
-	HANDLE		GetSocketHandle()	{ return reinterpret_cast<HANDLE>(mSocketData.GetSocket()); }
-	SocketData& GetSocketData()		{ return mSocketData; }
+	HANDLE		 GetSocketHandle()	{ return reinterpret_cast<HANDLE>(mSocketData.GetSocket()); }
+	SocketData&  GetSocketData()		{ return mSocketData; }
 
 	void		SetSocketData(SocketData& sockData) { mSocketData = sockData; }
+	void		SetName(std::string name) { mName = name; }
+
 
 };
 

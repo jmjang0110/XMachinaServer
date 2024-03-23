@@ -11,9 +11,18 @@ SocketData::~SocketData()
 {
 }
 
+bool SocketData::BindWindowsFunction(SOCKET socket, GUID guid, LPVOID* fn)
+{
+	DWORD bytes = 0;
+	return SOCKET_ERROR != ::WSAIoctl(socket, SIO_GET_EXTENSION_FUNCTION_POINTER, &guid, sizeof(guid), fn, sizeof(*fn), OUT & bytes, NULL, NULL);
+}
+
 
 void SocketData::Init(std::wstring ip, UINT16 port)
 {
+	mIP   = ip;
+	mPort = port;
+
 	/* Socket Address */
 	::memset(&mSockAddr, 0, sizeof(mSockAddr));
 
@@ -27,9 +36,7 @@ void SocketData::Init(std::wstring ip, UINT16 port)
 
 SOCKET SocketData::CreateSocket()
 {
-	if (mSocket == INVALID_SOCKET) {
-		mSocket = ::WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, 0, WSA_FLAG_OVERLAPPED);
-	}
+	mSocket = ::WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, 0, WSA_FLAG_OVERLAPPED);
 	return mSocket;
 }
 
