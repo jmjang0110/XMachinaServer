@@ -24,5 +24,7 @@ public:
 	bool Init(HINSTANCE& hInst);
 	void Launch();
 
+	SPtr_ServerNetwork GetServerNetwork() { return mServer; }
+
 };
 

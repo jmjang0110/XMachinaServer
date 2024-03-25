@@ -35,7 +35,7 @@ bool NetworkManager::Init()
 	return true;
 }
 
-bool NetworkManager::WSAStartUp(INT32 major, INT32 minor)
+bool NetworkManager::WSAStartUp(INT16 major, INT16 minor)
 {
 	WSADATA wsaData = {};
 	int errCode = ::WSAStartup(MAKEWORD(major, minor), OUT & wsaData);
@@ -44,6 +44,7 @@ bool NetworkManager::WSAStartUp(INT32 major, INT32 minor)
 		return false;
 	}
 	std::cout << wsaData.wVersion << wsaData.wHighVersion << std::endl;
+	return true;
 }
 
 

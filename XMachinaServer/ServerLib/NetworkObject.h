@@ -26,7 +26,7 @@ public:
 	virtual void Dispatch(class OverlappedObject* overlapped, UINT32 bytes = 0) abstract;
 
 public:
-	HANDLE		 GetSocketHandle()	{ return reinterpret_cast<HANDLE>(mSocketData.GetSocket()); }
+	HANDLE		 GetSocketHandle()		{ return reinterpret_cast<HANDLE>(mSocketData.GetSocket()); }
 	SocketData&  GetSocketData()		{ return mSocketData; }
 
 	void		SetSocketData(SocketData& sockData) { mSocketData = sockData; }

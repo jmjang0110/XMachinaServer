@@ -3,6 +3,7 @@
 #include "WindowUI/WindowUI.h"
 #include "ServerLib/ThreadManager.h"
 #include "ServerLib/NetworkManager.h"
+#include "ServerLib/MemoryManager.h"
 
 #include "ServerLib/ServerNetwork.h"
 #include "ServerLib/Listener.h"
@@ -34,7 +35,9 @@ Framework::~Framework()
 	/* Network Manager Destroy */
 	NETWORK_MGR->Destroy();
 
-	
+	/* Memory Manager Destroy */
+	MEMORY->Destroy();
+
 }
 
 bool Framework::Init(HINSTANCE& hInst)
@@ -62,13 +65,14 @@ bool Framework::Init(HINSTANCE& hInst)
 		return false;
 	}
 
+	if (FALSE == TLS_MGR->Init()) {
+		return false;
+	}
+
 	mServer = std::make_shared<ServerNetwork>();
-	mServer->SetMaxSessionCnt(100);
+	mServer->SetMaxSessionCnt(1);
 	mServer->SetSessionConstructorFunc(std::make_shared<GameSession>);
 	mServer->Start(L"127.0.0.1", 7777);
-
-
-
 
 
 	return true;
@@ -102,7 +106,11 @@ void Framework::Launch()
 
 	for (INT32 i = 0; i < 6; ++i) {
 		THREAD_MGR->RunThread("Network Dispatch " + std::to_string(i), [&]() {
-			//std::cout << TLS_MGR->Get_TlsInfoData()->threadName << std::endl;
+	
+			auto d = TLS_MGR->Get_TlsInfoData();
+			auto d2 = TLS_MGR->Get_TlsSendBufFactory();
+			std::cout << d->id  << " " << d2->strFactoryID << std::endl;
+
 			while (true)
 			{
 				mServer->Dispatch_CompletedTasks_FromIOCP(10);

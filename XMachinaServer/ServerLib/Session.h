@@ -53,7 +53,7 @@ protected:
 public:
 	/* I/O - Register / Process */
 	void RegisterIO(OverlappedIO::Type IoType);
-	void ProcessIO(OverlappedIO::Type IoType);
+	void ProcessIO(OverlappedIO::Type IoType, INT32 BytesTransferred = 0);
 
 	/* Error Code 에 따른 Session 처리 */
 	void ProcessError(INT32 errCode);
@@ -69,7 +69,7 @@ public:
 	/* Get */
 	bool IsConnected() { return mIsConnected.load(); }
 	PacketRecvBuf& GetRecvPktBuf() { return mRecvPkt; }
-
+	std::shared_ptr<NetworkInterface> GetOwnerNI() { return mOwnerNI.lock(); }
 
 };
 

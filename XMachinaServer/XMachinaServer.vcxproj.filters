@@ -47,6 +47,15 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Protocol">
+      <UniqueIdentifier>{170c91f9-5ab5-41a6-84a0-d5266fa8b941}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Protocol\FlatBuffers">
+      <UniqueIdentifier>{9f98ec15-0866-4c2c-845e-6ab949cb03eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Protocol\FlatBuffers\bat">
+      <UniqueIdentifier>{60021c15-bb6e-4a40-a69f-e10c57931280}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework.h">
@@ -94,7 +103,7 @@
     <ClInclude Include="ServerLib\NetworkHeaders.h">
       <Filter>ServerLib\Network\Iocp\Netowork</Filter>
     </ClInclude>
-    <ClInclude Include="ServerLib\MemoryPool.h">
+    <ClInclude Include="ServerLib\SListMemoryPool.h">
       <Filter>ServerLib\Memory</Filter>
     </ClInclude>
     <ClInclude Include="ServerLib\ClientNetwork.h">
@@ -116,6 +125,25 @@
       <Filter>Framework\Contents</Filter>
     </ClInclude>
     <ClInclude Include="ServerLib\Iocp.h" />
+    <ClInclude Include="ServerLib\Lock.h" />
+    <ClInclude Include="Protocol\Struct_generated.h">
+      <Filter>Protocol\FlatBuffers</Filter>
+    </ClInclude>
+    <ClInclude Include="Protocol\Transform_generated.h">
+      <Filter>Protocol\FlatBuffers</Filter>
+    </ClInclude>
+    <ClInclude Include="Protocol\Enum_generated.h">
+      <Filter>Protocol\FlatBuffers</Filter>
+    </ClInclude>
+    <ClInclude Include="Protocol\FBProtocol_generated.h">
+      <Filter>Protocol\FlatBuffers</Filter>
+    </ClInclude>
+    <ClInclude Include="Protocol\Player_generated.h">
+      <Filter>Protocol\FlatBuffers</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerLib\SendBuffersFactory.h">
+      <Filter>ServerLib\Network\Packet</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -154,7 +182,7 @@
     <ClCompile Include="ServerLib\PacketSendBuf.cpp">
       <Filter>ServerLib\Network\Packet</Filter>
     </ClCompile>
-    <ClCompile Include="ServerLib\MemoryPool.cpp">
+    <ClCompile Include="ServerLib\SListMemoryPool.cpp">
       <Filter>ServerLib\Memory</Filter>
     </ClCompile>
     <ClCompile Include="ServerLib\ClientNetwork.cpp">
@@ -179,6 +207,10 @@
       <Filter>Framework\Contents</Filter>
     </ClCompile>
     <ClCompile Include="ServerLib\Iocp.cpp" />
+    <ClCompile Include="ServerLib\Lock.cpp" />
+    <ClCompile Include="ServerLib\SendBuffersFactory.cpp">
+      <Filter>ServerLib\Network\Packet</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="XMachinaServer.rc">
@@ -192,5 +224,25 @@
     <Image Include="XMachinaServer.ico">
       <Filter>리소스 파일</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Protocol\FBProtocol.fbs">
+      <Filter>Protocol\FlatBuffers</Filter>
+    </None>
+    <None Include="Protocol\Player.fbs">
+      <Filter>Protocol\FlatBuffers</Filter>
+    </None>
+    <None Include="Protocol\Struct.fbs">
+      <Filter>Protocol\FlatBuffers</Filter>
+    </None>
+    <None Include="Protocol\Transform.fbs">
+      <Filter>Protocol\FlatBuffers</Filter>
+    </None>
+    <None Include="Protocol\Enum.fbs">
+      <Filter>Protocol\FlatBuffers</Filter>
+    </None>
+    <None Include="Protocol\GenFlatBuffersHeader.bat">
+      <Filter>Protocol\FlatBuffers\bat</Filter>
+    </None>
   </ItemGroup>
 </Project>

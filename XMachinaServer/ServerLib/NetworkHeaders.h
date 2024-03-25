@@ -12,9 +12,13 @@
 #pragma comment(lib, "ws2_32.lib")
 
 /* Network */
-//#include <iphlpapi.h>				
-//#pragma comment(lib, "iphlpapi.lib")
+#include <iphlpapi.h>				
+#pragma comment(lib, "iphlpapi.lib")
 #pragma endregion
+
+#include <iostream>
+#include <windows.h>
+
 
 #include <malloc.h> 
 #include <memory.h>
@@ -24,4 +28,19 @@
 #include <vector>
 #include <queue>
 #include <unordered_map>
+
+
+
+/* Shared ptr */
+using SPtr_Session        = std::shared_ptr<class Session>;
+using SPtr_SendPktBuf     = std::shared_ptr<class PacketSendBuf>;
+using SPtr_RecvPktBuf     = std::shared_ptr<class PacketRecvBuf>;
+using SPtr_NetObj         = std::shared_ptr<class NetworkObject>;
+using SPtr_Listener       = std::shared_ptr<class Listener>;
+using SPtr_NI             = std::shared_ptr<class NetworkInterface>;
+using SPtr_ServerNetwork  = std::shared_ptr<class ServerNetwork>;
+using SPtr_ClientNetwork  = std::shared_ptr<class ClientNetwork>;
+using SPtr_SendBufFactory = std::shared_ptr<class SendBuffersFactory>;
+
+#include "ServerLib/Session.h"
 

@@ -2,7 +2,7 @@
 #include "OverlappedObject.h"
 
 /* Overlapped Object */
-OverlappedObject::OverlappedObject(OverlappedIO::Type ioType) : mIoType(ioType)
+OverlappedObject::OverlappedObject(OverlappedIO::Type ioType) : mIoType(static_cast<UINT8>(ioType))
 {
 	::ZeroMemory(this, sizeof(OVERLAPPED));
 }

@@ -42,15 +42,21 @@ public:
 
 /* TLS Data */
 namespace TLS {
-	
-	enum class MutexInfo : UINT8 {
+	enum class TlsIndex : UINT8 {
 		TlsInfoData,
+		TlsSendBufferFactory,
 		end,
 	};
+
 
 	struct TlsInfoData {
 		int			id;
 		std::string threadName;
+	};
+
+	struct TlsSendPacketFactory {
+		std::string			strFactoryID;
+		SPtr_SendBufFactory SendBufFactory;
 	};
 
 }
@@ -61,22 +67,29 @@ using TlsMgr = class ThreadLocalStorageManager;
 class ThreadLocalStorageManager 
 {
 	DECLARE_SINGLETON(TlsMgr);
+
 private:
-	DWORD mTlsIndex = {};
+	DWORD mTlsIndex[static_cast<UINT8>(TLS::TlsIndex::end)] = {};
+
 public:
 	static std::atomic<UINT32> NewThreadID; // TLS에 Id 를 부여하기 위한 atomic 변수 
-	std::mutex mMutexArr[static_cast<UINT8>(TLS::MutexInfo::end)];
+	std::mutex mMutexArr[static_cast<UINT8>(TLS::TlsIndex::end)];
 
 public:
 	ThreadLocalStorageManager();
 	~ThreadLocalStorageManager();
 
 public:
+	bool Init();
+
 	/* TLS::TlsInfoData */
 	void Init_TlsInfoData(std::string threadName);
 	TLS::TlsInfoData* Get_TlsInfoData();
 
-	/* TLS:: data... */
+	/* TLS::TlsSendBufFactory */
+	void Init_TlsSendBufFactory(std::string factoryID);
+	TLS::TlsSendPacketFactory* Get_TlsSendBufFactory();
+
 };
 
 

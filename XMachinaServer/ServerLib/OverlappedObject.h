@@ -25,6 +25,7 @@
 
 namespace OverlappedIO {
 	enum class Type : UINT8 {
+		None,
 		Accept,
 		Connect,
 		DisConnect,
@@ -34,18 +35,19 @@ namespace OverlappedIO {
 };
 
 
+
 class OverlappedObject : public OVERLAPPED
 {
 private:
-	OverlappedIO::Type  mIoType;
-	SPtr_NetObj			mOwner;		// Session? Listener?
+	UINT8				mIoType = static_cast<UINT8>(OverlappedIO::Type::None);
+	SPtr_NetObj			mOwner  = nullptr;		// Session? Listener?
 
 public:
 	OverlappedObject(OverlappedIO::Type ioType);
-	virtual ~OverlappedObject();
+	 ~OverlappedObject();
 
 public:
-	OverlappedIO::Type& GetIoType() { return mIoType; }
+	OverlappedIO::Type GetIoType() { return static_cast<OverlappedIO::Type>(mIoType); }
 	void Clear_OVERLAPPED();
 	void SetOwner(SPtr_NetObj owner) { mOwner = owner; }
 	SPtr_NetObj GetOwner() { return mOwner; }
@@ -57,17 +59,18 @@ public:
 class Overlapped_Accept : public OverlappedObject 
 {
 private:
-	SPtr_Session  mSession;
+	SPtr_Session  mSession = nullptr;
 
 public:
 	SPtr_Session GetSession() { return mSession; }
 	void SetSession(SPtr_Session session) { mSession = session; }
 
 public:
-	Overlapped_Accept() : OverlappedObject(OverlappedIO::Type::Accept)
+	Overlapped_Accept() 
+		: OverlappedObject(OverlappedIO::Type::Accept)
 	{
 	}
-	virtual ~Overlapped_Accept()
+	~Overlapped_Accept()
 	{
 	}
 };
@@ -76,10 +79,11 @@ public:
 class Overlapped_Connect : public OverlappedObject
 {
 public:
-	Overlapped_Connect() : OverlappedObject(OverlappedIO::Type::Connect)
+	Overlapped_Connect() 
+		: OverlappedObject(OverlappedIO::Type::Connect)
 	{
 	}
-	virtual ~Overlapped_Connect()
+	~Overlapped_Connect()
 	{
 	}
 };
@@ -88,10 +92,11 @@ public:
 class Overlapped_DisConnect : public OverlappedObject
 {
 public:
-	Overlapped_DisConnect() : OverlappedObject(OverlappedIO::Type::DisConnect)
+	Overlapped_DisConnect() 
+		: OverlappedObject(OverlappedIO::Type::DisConnect)
 	{
 	}
-	virtual ~Overlapped_DisConnect()
+	 ~Overlapped_DisConnect()
 	{
 	}
 };
@@ -99,11 +104,21 @@ public:
 /* Send Overlapped Object */
 class Overlapped_Send : public OverlappedObject
 {
+private:
+	std::vector<SPtr_SendPktBuf> mSendBuffers;
+
 public:
-	Overlapped_Send() : OverlappedObject(OverlappedIO::Type::Send)
+	void   BufPush(SPtr_SendPktBuf sendBuf)		{ mSendBuffers.push_back(sendBuf); }
+	size_t BufSize()							{ return mSendBuffers.size(); }
+	void   BufClear() { mSendBuffers.clear(); }
+	std::vector<SPtr_SendPktBuf>& GetSendBuffers() { return mSendBuffers; }
+
+public:
+	Overlapped_Send() 
+		: OverlappedObject(OverlappedIO::Type::Send)
 	{
 	}
-	virtual ~Overlapped_Send()
+	 ~Overlapped_Send()
 	{
 	}
 };
@@ -112,10 +127,11 @@ public:
 class Overlapped_Recv : public OverlappedObject
 {
 public:
-	Overlapped_Recv() : OverlappedObject(OverlappedIO::Type::Recv)
+	Overlapped_Recv() 
+		: OverlappedObject(OverlappedIO::Type::Recv)
 	{
 	}
-	virtual ~Overlapped_Recv()
+	 ~Overlapped_Recv()
 	{
 	}
 };

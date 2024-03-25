@@ -59,6 +59,11 @@ int WindowUI::Loop()
         }
         else
         {
+
+            const int bufferSize = 100; // 버퍼 크기 정의
+            char buffer[bufferSize];    // 입력을 저장할 배열
+            std::cout << "종료하려면 아무 키나 입력하세요 : ";
+            std::cin.getline(buffer, bufferSize); // 사용자로부터 문자열 입력 받음
         }
     }
 

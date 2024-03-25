@@ -36,8 +36,7 @@ void Listener::Register_OverlappedIO_Accept(Overlapped_Accept* overlapped)
 	SOCKET ListenSock  = GetSocketData().GetSocket();
 	SOCKET ClientSock  = session->GetSocketData().GetSocket();
 	BYTE*  RecvBufPtr  = session->GetRecvPktBuf().GetWritePos();
-
-	bool result       = NETWORK_MGR->AcceptEx()(ListenSock
+	bool result        = NETWORK_MGR->AcceptEx()(ListenSock
 											  , ClientSock 
 											  , RecvBufPtr 
 											  , 0
@@ -123,10 +122,12 @@ void Listener::RegisterAccept()
 	/* Register Accept IO */
 	const UINT32 MaxAcceptCnt = mOwnerNI->GetMaxSEssionCnt();
 	for (INT32 i = 0; i < MaxAcceptCnt; ++i) {
-		Overlapped_Accept* acceptIO = new Overlapped_Accept;
+
+		Overlapped_Accept* acceptIO = new Overlapped_Accept();
 		acceptIO->SetOwner(shared_from_this());
 		mAccepts.push_back(acceptIO);
 		Register_OverlappedIO_Accept(acceptIO);
+
 	}
 }
 

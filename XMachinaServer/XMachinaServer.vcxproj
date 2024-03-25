@@ -72,19 +72,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
-    <IncludePath>$(SolutionDir)XMachinaServer\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)XMachinaServer\;$(SolutionDir)XMachinaServer\FlatBuffers\flatbuffers-24.3.7\include\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
-    <IncludePath>$(SolutionDir)XMachinaServer\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)XMachinaServer\;$(SolutionDir)XMachinaServer\FlatBuffers\flatbuffers-24.3.7\include\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
-    <IncludePath>$(SolutionDir)XMachinaServer\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)XMachinaServer\;$(SolutionDir)XMachinaServer\FlatBuffers\flatbuffers-24.3.7\include\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
-    <IncludePath>$(SolutionDir)XMachinaServer\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)XMachinaServer\;$(SolutionDir)XMachinaServer\FlatBuffers\flatbuffers-24.3.7\include\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -159,12 +159,18 @@
     <ClInclude Include="Contents\LogManager.h" />
     <ClInclude Include="Framework.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Protocol\Enum_generated.h" />
+    <ClInclude Include="Protocol\FBProtocol_generated.h" />
+    <ClInclude Include="Protocol\Player_generated.h" />
+    <ClInclude Include="Protocol\Struct_generated.h" />
+    <ClInclude Include="Protocol\Transform_generated.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ServerLib\ClientNetwork.h" />
     <ClInclude Include="ServerLib\Iocp.h" />
     <ClInclude Include="ServerLib\Listener.h" />
+    <ClInclude Include="ServerLib\Lock.h" />
     <ClInclude Include="ServerLib\MemoryManager.h" />
-    <ClInclude Include="ServerLib\MemoryPool.h" />
+    <ClInclude Include="ServerLib\SListMemoryPool.h" />
     <ClInclude Include="ServerLib\NetworkHeaders.h" />
     <ClInclude Include="ServerLib\NetworkInterface.h" />
     <ClInclude Include="ServerLib\NetworkManager.h" />
@@ -172,6 +178,7 @@
     <ClInclude Include="ServerLib\OverlappedObject.h" />
     <ClInclude Include="ServerLib\PacketRecvBuf.h" />
     <ClInclude Include="ServerLib\PacketSendBuf.h" />
+    <ClInclude Include="ServerLib\SendBuffersFactory.h" />
     <ClInclude Include="ServerLib\ServerNetwork.h" />
     <ClInclude Include="ServerLib\Session.h" />
     <ClInclude Include="ServerLib\SocketData.h" />
@@ -197,14 +204,16 @@
     <ClCompile Include="ServerLib\ClientNetwork.cpp" />
     <ClCompile Include="ServerLib\Iocp.cpp" />
     <ClCompile Include="ServerLib\Listener.cpp" />
+    <ClCompile Include="ServerLib\Lock.cpp" />
     <ClCompile Include="ServerLib\MemoryManager.cpp" />
-    <ClCompile Include="ServerLib\MemoryPool.cpp" />
+    <ClCompile Include="ServerLib\SListMemoryPool.cpp" />
     <ClCompile Include="ServerLib\NetworkInterface.cpp" />
     <ClCompile Include="ServerLib\NetworkManager.cpp" />
     <ClCompile Include="ServerLib\NetworkObject.cpp" />
     <ClCompile Include="ServerLib\OverlappedObject.cpp" />
     <ClCompile Include="ServerLib\PacketRecvBuf.cpp" />
     <ClCompile Include="ServerLib\PacketSendBuf.cpp" />
+    <ClCompile Include="ServerLib\SendBuffersFactory.cpp" />
     <ClCompile Include="ServerLib\ServerNetwork.cpp" />
     <ClCompile Include="ServerLib\Session.cpp" />
     <ClCompile Include="ServerLib\SocketData.cpp" />
@@ -217,6 +226,14 @@
   <ItemGroup>
     <Image Include="small.ico" />
     <Image Include="XMachinaServer.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Protocol\Enum.fbs" />
+    <None Include="Protocol\FBProtocol.fbs" />
+    <None Include="Protocol\GenFlatBuffersHeader.bat" />
+    <None Include="Protocol\Player.fbs" />
+    <None Include="Protocol\Struct.fbs" />
+    <None Include="Protocol\Transform.fbs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

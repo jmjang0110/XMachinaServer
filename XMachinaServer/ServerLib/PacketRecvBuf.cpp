@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "PacketRecvBuf.h"
 #include "MemoryManager.h"
-#include "MemoryPool.h"
+#include "SListMemoryPool.h"
 
 
 
@@ -10,10 +10,10 @@ PacketRecvBuf::PacketRecvBuf(UINT32 bufSize)
 {
 	mCapacity = bufSize * static_cast<UINT32>(PacketRecvBuf::Info::bufferCount);
 
-	// Use MemoryPool
+	// Use SListMemoryPool
 	const size_t MemoryBlockSize	 = mCapacity;
 	const size_t NumBlock			 = 1;
-	MEMORY->AddMemoryPool(MemoryBlockSize, NumBlock);
+	MEMORY->AddSListMemoryPool("RecvBuf", MemoryBlockSize, NumBlock);
 
 	mBuffer.reserve(MemoryBlockSize);
 	void* block = MEMORY->Allocate(MemoryBlockSize);

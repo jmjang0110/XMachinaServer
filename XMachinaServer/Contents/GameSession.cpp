@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "GameSession.h"
 
-GameSession::GameSession() : Session()
+GameSession::GameSession() 
 {
 }
 
@@ -17,10 +17,17 @@ void GameSession::OnDisconnected()
 {
 }
 
-void GameSession::OnRecvPacket(BYTE* buffer, UINT32 len)
-{
-}
+
 
 void GameSession::OnSend(UINT32 len)
 {
+}
+
+UINT32 GameSession::OnRecv(BYTE* buffer, UINT32 len)
+{
+	// 패킷 해석 
+	std::cout << static_cast<void*>(buffer) << "  : Bytes-" << len << std::endl;
+
+
+	return len;
 }

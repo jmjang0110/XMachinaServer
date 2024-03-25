@@ -2,7 +2,8 @@
 #include "NetworkInterface.h"
 #include "NetworkManager.h"
 
-
+#include "ServerNetwork.h"
+#include "../Framework.h"
 
 
 NetworkInterface::~NetworkInterface()
@@ -39,21 +40,28 @@ bool NetworkInterface::Dispatch_CompletedTasks_FromIOCP(UINT32 msTimeOut)
 	ULONG_PTR			key              = 0;
 	OverlappedObject*	overObj          = nullptr;
 
+	LPOVERLAPPED lpOverlapped = nullptr;
+
+	auto listener = FRAMEWORK->GetServerNetwork()->GetListener();
+
 	bool IsTaskExisted = ::GetQueuedCompletionStatus(mIocpHandle
 												, OUT &BytesTransferred
 												, OUT &key
-												, OUT reinterpret_cast<LPOVERLAPPED*>(&overObj)
+												, OUT &lpOverlapped/*reinterpret_cast<LPOVERLAPPED*>(&overObj)*/
 												, msTimeOut);
 	if (TRUE == IsTaskExisted) {
 		/// +------------
 		///    SUCCESS 
 		/// ------------+
-		std::cout << "hello!\n";
+		overObj = reinterpret_cast<OverlappedObject*>(lpOverlapped);
 		SPtr_NetObj netObj = overObj->GetOwner();
 		netObj->Dispatch(overObj, BytesTransferred);
+
 	}
 	else
 	{
+		overObj = reinterpret_cast<OverlappedObject*>(lpOverlapped);
+
 		/// +------------
 		///     FAIL
 		/// ------------+
@@ -66,7 +74,7 @@ bool NetworkInterface::Dispatch_CompletedTasks_FromIOCP(UINT32 msTimeOut)
 		case WAIT_TIMEOUT:
 			return false;
 		default:
-			// TODO : ·Î±× Âï±â
+			/* errCode : 64 = Disconnect ( Recv 0 ) */
 			SPtr_NetObj netObj = overObj->GetOwner();
 			netObj->Dispatch(overObj, BytesTransferred);
 			break;
@@ -112,7 +120,8 @@ SPtr_Session NetworkInterface::CreateSession()
 {
 	SPtr_Session session = mSessionConstructorFunc();
 	session->SetOwerNetworkInterface(shared_from_this());
-	RegisterIocp(session);
+	if(RegisterIocp(session) == false)
+		return nullptr;
 	return session;
 }
 

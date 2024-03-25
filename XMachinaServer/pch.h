@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ServerLib/NetworkHeaders.h"
-
 /// +------------------------
 ///			COMMON
 /// ------------------------+
@@ -31,14 +30,4 @@
 #include "ServerLib/UtilityMacro.h"
 #include "Contents/LogManager.h"
 
-/* Shared ptr */
-using SPtr_Session       = std::shared_ptr<class Session>;
-using SPtr_SendPktBuf    = std::shared_ptr<class PacketSendBuf>;
-using SPtr_RecvPktBuf    = std::shared_ptr<class PacketRecvBuf>;
-using SPtr_NetObj        = std::shared_ptr<class NetworkObject>;
-using SPtr_Listener      = std::shared_ptr<class Listener>;
-using SPtr_NI            = std::shared_ptr<class NetworkInterface>;
-using SPtr_ServerNetwork = std::shared_ptr<class ServerNetwork>;
-using SPtr_ClientNetwork = std::shared_ptr<class ClientNetwork>;
 
-#include "ServerLib/Session.h"

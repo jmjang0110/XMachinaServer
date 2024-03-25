@@ -11,10 +11,11 @@
 class NetworkManager
 {
 	DECLARE_SINGLETON(NetworkManager);
+
 private:
-	LPFN_CONNECTEX		mLpfn_ConnectEx    = {};
-	LPFN_DISCONNECTEX	mLpfn_DisconnectEx = {};
-	LPFN_ACCEPTEX		mLpfn_AcceptEx     = {};
+	inline static LPFN_CONNECTEX		mLpfn_ConnectEx    = {};
+	inline static LPFN_DISCONNECTEX		mLpfn_DisconnectEx = {};
+	inline static LPFN_ACCEPTEX			mLpfn_AcceptEx     = {};
 
 public:
 	NetworkManager();
@@ -22,7 +23,7 @@ public:
 
 public:
 	bool Init();
-	bool WSAStartUp(INT32 major, INT32 minor);
+	bool WSAStartUp(INT16 major, INT16 minor);
 
 
 public:

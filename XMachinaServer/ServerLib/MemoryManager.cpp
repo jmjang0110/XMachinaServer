@@ -9,27 +9,27 @@ MemoryManager::MemoryManager()
 
 MemoryManager::~MemoryManager()
 {
-	for (auto Pool : mMemoryPools) {
+	for (auto Pool : mSListMemoryPools) {
 		SAFE_DELETE(Pool);
 	}
-	mMemoryPools.clear();
+	mSListMemoryPools.clear();
 }
 
-void MemoryManager::AddMemoryPool(size_t memorySize, size_t numMemoryBlocks)
+void MemoryManager::AddSListMemoryPool(std::string mpName, size_t MemorySize, size_t numMemoryBlocks)
 {
     /* Locking */
     while (mAtomicFlag.test_and_set(std::memory_order_acquire))
     {
     };
     
-    if (mMemoryPoolsDict[memorySize] == nullptr) {
-        MemoryPool* Pool = new MemoryPool(memorySize, numMemoryBlocks);
-        mMemoryPools.push_back(Pool);
-        mMemoryPoolsDict[memorySize] = Pool;
+    if (mSListMemoryPoolsDict[mpName] == nullptr) {
+        SListMemoryPool* Pool = new SListMemoryPool(MemorySize , numMemoryBlocks);
+        mSListMemoryPools.push_back(Pool);
+        mSListMemoryPoolsDict[mpName] = Pool;
     }
     // 해당 메모리 사이즈를 갖는 풀이 이미 존재한다면 
     else {
-        mMemoryPoolsDict[memorySize]->AddMemory();
+        mSListMemoryPoolsDict[mpName]->AddMemory();
     }
 
     /* UnLocking */
@@ -41,9 +41,9 @@ void* MemoryManager::Allocate(size_t size)
     while (mAtomicFlag.test_and_set(std::memory_order_acquire)); // Locking
     void* ptr = nullptr;
     // Find a suitable memory pool
-    for (auto pool : mMemoryPools) {
-        if (size <= pool->GetBlockSize()) {
-            ptr = pool->Allocate();
+    for (auto pool : mSListMemoryPools) {
+        if (size <= pool->GetMemorySize()) {
+            ptr = pool->Pull();
             break;
         }
     }
@@ -51,15 +51,15 @@ void* MemoryManager::Allocate(size_t size)
     return ptr;
 }
 
-void MemoryManager::Free(size_t memorySize, void* ptr)
+void MemoryManager::Free(std::string mpName, void* ptr)
 {
     /* Locking */
     while (mAtomicFlag.test_and_set(std::memory_order_acquire))
     {
     };
 
-    if (mMemoryPoolsDict[memorySize] != nullptr) {
-        mMemoryPoolsDict[memorySize]->Free(ptr);
+    if (mSListMemoryPoolsDict[mpName] != nullptr) {
+        mSListMemoryPoolsDict[mpName]->Push(ptr);
     }
 
     /* UnLocking */
