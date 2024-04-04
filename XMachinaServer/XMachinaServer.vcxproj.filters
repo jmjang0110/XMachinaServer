@@ -37,9 +37,6 @@
     <Filter Include="ServerLib\Network\Iocp\Overlapped">
       <UniqueIdentifier>{79f72133-5128-45c3-84fb-8d1eeb54b222}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ServerLib\Network\Iocp\Netowork\Service">
-      <UniqueIdentifier>{6c649662-a7bc-4d69-922a-a9bd818c1093}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Framework\Contents">
       <UniqueIdentifier>{1c750902-aef0-42ad-8720-eeada2efde93}</UniqueIdentifier>
     </Filter>
@@ -56,6 +53,12 @@
     <Filter Include="Protocol\FlatBuffers\bat">
       <UniqueIdentifier>{60021c15-bb6e-4a40-a69f-e10c57931280}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ServerLib\Network\Iocp\Netowork\Interface">
+      <UniqueIdentifier>{6c649662-a7bc-4d69-922a-a9bd818c1093}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ServerLib\Network\Iocp\Netowork\Object">
+      <UniqueIdentifier>{a0afefed-0e6f-4d1f-b942-2b45819f1a3a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework.h">
@@ -69,15 +72,6 @@
     </ClInclude>
     <ClInclude Include="ServerLib\ThreadManager.h">
       <Filter>ServerLib\Thread</Filter>
-    </ClInclude>
-    <ClInclude Include="ServerLib\Listener.h">
-      <Filter>ServerLib\Network\Iocp\Netowork</Filter>
-    </ClInclude>
-    <ClInclude Include="ServerLib\NetworkObject.h">
-      <Filter>ServerLib\Network\Iocp\Netowork</Filter>
-    </ClInclude>
-    <ClInclude Include="ServerLib\Session.h">
-      <Filter>ServerLib\Network\Iocp\Netowork</Filter>
     </ClInclude>
     <ClInclude Include="ServerLib\OverlappedObject.h">
       <Filter>ServerLib\Network\Iocp\Overlapped</Filter>
@@ -107,13 +101,13 @@
       <Filter>ServerLib\Memory</Filter>
     </ClInclude>
     <ClInclude Include="ServerLib\ClientNetwork.h">
-      <Filter>ServerLib\Network\Iocp\Netowork\Service</Filter>
+      <Filter>ServerLib\Network\Iocp\Netowork\Interface</Filter>
     </ClInclude>
     <ClInclude Include="ServerLib\ServerNetwork.h">
-      <Filter>ServerLib\Network\Iocp\Netowork\Service</Filter>
+      <Filter>ServerLib\Network\Iocp\Netowork\Interface</Filter>
     </ClInclude>
     <ClInclude Include="ServerLib\NetworkInterface.h">
-      <Filter>ServerLib\Network\Iocp\Netowork\Service</Filter>
+      <Filter>ServerLib\Network\Iocp\Netowork\Interface</Filter>
     </ClInclude>
     <ClInclude Include="ServerLib\MemoryManager.h">
       <Filter>ServerLib\Memory</Filter>
@@ -124,7 +118,6 @@
     <ClInclude Include="Contents\GameSession.h">
       <Filter>Framework\Contents</Filter>
     </ClInclude>
-    <ClInclude Include="ServerLib\Iocp.h" />
     <ClInclude Include="ServerLib\Lock.h" />
     <ClInclude Include="Protocol\Struct_generated.h">
       <Filter>Protocol\FlatBuffers</Filter>
@@ -144,6 +137,18 @@
     <ClInclude Include="ServerLib\SendBuffersFactory.h">
       <Filter>ServerLib\Network\Packet</Filter>
     </ClInclude>
+    <ClInclude Include="Protocol\FBsPacketFactory.h">
+      <Filter>Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerLib\Listener.h">
+      <Filter>ServerLib\Network\Iocp\Netowork\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerLib\NetworkObject.h">
+      <Filter>ServerLib\Network\Iocp\Netowork\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerLib\Session.h">
+      <Filter>ServerLib\Network\Iocp\Netowork\Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -157,15 +162,6 @@
     </ClCompile>
     <ClCompile Include="ServerLib\ThreadManager.cpp">
       <Filter>ServerLib\Thread</Filter>
-    </ClCompile>
-    <ClCompile Include="ServerLib\Listener.cpp">
-      <Filter>ServerLib\Network\Iocp\Netowork</Filter>
-    </ClCompile>
-    <ClCompile Include="ServerLib\NetworkObject.cpp">
-      <Filter>ServerLib\Network\Iocp\Netowork</Filter>
-    </ClCompile>
-    <ClCompile Include="ServerLib\Session.cpp">
-      <Filter>ServerLib\Network\Iocp\Netowork</Filter>
     </ClCompile>
     <ClCompile Include="ServerLib\OverlappedObject.cpp">
       <Filter>ServerLib\Network\Iocp\Overlapped</Filter>
@@ -186,16 +182,16 @@
       <Filter>ServerLib\Memory</Filter>
     </ClCompile>
     <ClCompile Include="ServerLib\ClientNetwork.cpp">
-      <Filter>ServerLib\Network\Iocp\Netowork\Service</Filter>
+      <Filter>ServerLib\Network\Iocp\Netowork\Interface</Filter>
     </ClCompile>
     <ClCompile Include="ServerLib\ServerNetwork.cpp">
-      <Filter>ServerLib\Network\Iocp\Netowork\Service</Filter>
+      <Filter>ServerLib\Network\Iocp\Netowork\Interface</Filter>
     </ClCompile>
     <ClCompile Include="ServerLib\NetworkManager.cpp">
       <Filter>ServerLib\Network\Iocp\Netowork</Filter>
     </ClCompile>
     <ClCompile Include="ServerLib\NetworkInterface.cpp">
-      <Filter>ServerLib\Network\Iocp\Netowork\Service</Filter>
+      <Filter>ServerLib\Network\Iocp\Netowork\Interface</Filter>
     </ClCompile>
     <ClCompile Include="ServerLib\MemoryManager.cpp">
       <Filter>ServerLib\Memory</Filter>
@@ -206,10 +202,21 @@
     <ClCompile Include="Contents\GameSession.cpp">
       <Filter>Framework\Contents</Filter>
     </ClCompile>
-    <ClCompile Include="ServerLib\Iocp.cpp" />
     <ClCompile Include="ServerLib\Lock.cpp" />
     <ClCompile Include="ServerLib\SendBuffersFactory.cpp">
       <Filter>ServerLib\Network\Packet</Filter>
+    </ClCompile>
+    <ClCompile Include="Protocol\FBsPacketFactory.cpp">
+      <Filter>Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerLib\Listener.cpp">
+      <Filter>ServerLib\Network\Iocp\Netowork\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerLib\NetworkObject.cpp">
+      <Filter>ServerLib\Network\Iocp\Netowork\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerLib\Session.cpp">
+      <Filter>ServerLib\Network\Iocp\Netowork\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

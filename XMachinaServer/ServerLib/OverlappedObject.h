@@ -34,9 +34,7 @@ namespace OverlappedIO {
 	};
 };
 
-
-
-class OverlappedObject : public OVERLAPPED
+class OverlappedObject : public WSAOVERLAPPED
 {
 private:
 	UINT8				mIoType = static_cast<UINT8>(OverlappedIO::Type::None);
@@ -47,12 +45,16 @@ public:
 	 ~OverlappedObject();
 
 public:
-	OverlappedIO::Type GetIoType() { return static_cast<OverlappedIO::Type>(mIoType); }
+	/* Get */
+	SPtr_NetObj			GetOwner()	{ return mOwner; }
+	OverlappedIO::Type	GetIoType() { return static_cast<OverlappedIO::Type>(mIoType); }
+
+	/* Set */
+	void				SetOwner(SPtr_NetObj owner) { mOwner = owner; }
+
+	/* Ref Counting бщ */
+	void ReleaseReferenceCount() { mOwner = nullptr; }
 	void Clear_OVERLAPPED();
-	void SetOwner(SPtr_NetObj owner) { mOwner = owner; }
-	SPtr_NetObj GetOwner() { return mOwner; }
-
-
 };
 
 /* Accept Overlapped Obeject */
@@ -108,10 +110,12 @@ private:
 	std::vector<SPtr_SendPktBuf> mSendBuffers;
 
 public:
-	void   BufPush(SPtr_SendPktBuf sendBuf)		{ mSendBuffers.push_back(sendBuf); }
-	size_t BufSize()							{ return mSendBuffers.size(); }
-	void   BufClear() { mSendBuffers.clear(); }
-	std::vector<SPtr_SendPktBuf>& GetSendBuffers() { return mSendBuffers; }
+	void   BufPush(SPtr_SendPktBuf sendBuf)			{ mSendBuffers.push_back(sendBuf); }
+	size_t BufSize()								{ return mSendBuffers.size(); }
+	void   BufClear()								{ mSendBuffers.clear(); }
+	std::vector<SPtr_SendPktBuf>& GetSendBuffers()	{ return mSendBuffers; }
+
+	void ReleaseSendBuffersReferenceCount() { mSendBuffers.clear(); }
 
 public:
 	Overlapped_Send() 

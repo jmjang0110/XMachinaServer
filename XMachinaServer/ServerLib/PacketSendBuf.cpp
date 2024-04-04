@@ -4,7 +4,7 @@
 
 
 PacketSendBuf::PacketSendBuf(BYTE* buffer, UINT32 allocSize)
-	: mBuffer(buffer), mAllocSize(allocSize)
+	: mBuffer(buffer), mBufferTotalSize(allocSize)
 {
 }
 

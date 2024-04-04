@@ -23,9 +23,14 @@ void ThreadManager::RunThread(std::string threadName, std::function<void(void)> 
 
 	mThreads.push_back(std::thread([=]() {
 		
+		/* Init Thread Local Storage */
 		TLS_MGR->Init_TlsInfoData(threadName);
-		TLS_MGR->Init_TlsSendBufFactory("SendPacketFactory");
+		TLS_MGR->Init_TlsSendBufFactory("SendPacketFactory" );
+		
+		
 		func();
+		
+		/* Destroy Thread Local Storage */
 		auto tlsDataPtr = TLS_MGR->Get_TlsInfoData();
 		SAFE_DELETE(tlsDataPtr);
 		auto tlsDataPtr2 = TLS_MGR->Get_TlsSendBufFactory();
@@ -105,11 +110,13 @@ void ThreadLocalStorageManager::Init_TlsSendBufFactory(std::string factoryID)
 	const UINT8 TlsIndexIdx = static_cast<UINT8>(TLS::TlsIndex::TlsSendBufferFactory);
 	TLS::TlsSendPacketFactory* TlsData = new TLS::TlsSendPacketFactory;
 
+	/* Fill Data Info */
 	std::lock_guard<std::mutex> lock(mMutexArr[TlsIndexIdx]);
 	TlsData->strFactoryID				= factoryID;
 	TlsData->SendBufFactory				= std::make_shared<SendBuffersFactory>();
 	TlsData->SendBufFactory->InitPacketMemoryPools();
 
+	/* Set Value Tls Data */
 	::TlsSetValue(mTlsIndex[TlsIndexIdx], TlsData);
 }
 TLS::TlsSendPacketFactory* ThreadLocalStorageManager::Get_TlsSendBufFactory()
@@ -117,6 +124,7 @@ TLS::TlsSendPacketFactory* ThreadLocalStorageManager::Get_TlsSendBufFactory()
 	// 현재 쓰레드의 TLS 데이터를 가져온다. 
 	//std::lock_guard<std::mutex> lock(mMutexArr[static_cast<UINT8>(TLS::MutexInfo::TlsInfoData)]);
 
+	/* Get Data From Tls */
 	const UINT8 TlsIndexIdx = static_cast<UINT8>(TLS::TlsIndex::TlsSendBufferFactory);
 	return static_cast<TLS::TlsSendPacketFactory*>(::TlsGetValue(mTlsIndex[TlsIndexIdx]));
 }

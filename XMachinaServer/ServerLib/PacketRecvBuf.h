@@ -20,8 +20,8 @@ private:
 
 	UINT32 mCapacity          = 0;
 	UINT32 mBufferSize        = 0;
-	UINT32 mReadCursor        = 0;
-	UINT32 mWriteCursor       = 0;
+	UINT32 mRead_Idx          = 0;
+	UINT32 mWrite_Idx         = 0;
 public:
 	PacketRecvBuf() = default;
 	PacketRecvBuf(UINT32 bufSize);
@@ -32,10 +32,10 @@ public:
 	bool OnRead(UINT32 numOfBytes);
 	bool OnWrite(UINT32 numOfBytes);
 
-	BYTE*	GetReadPos()  { return &mBuffer[mReadCursor]; }
-	BYTE*	GetWritePos() { return &mBuffer[mWriteCursor]; }
-	UINT32	GetDataSize() { return mWriteCursor - mReadCursor; }
-	UINT32	GetFreeSize() { return mCapacity - mWriteCursor; }
+	BYTE*	GetReadPos()  { return &mBuffer[mRead_Idx]; }
+	BYTE*	GetWritePos() { return &mBuffer[mWrite_Idx]; }
+	UINT32	GetDataSize() { return mWrite_Idx - mRead_Idx; }
+	UINT32	GetFreeSize() { return mCapacity - mWrite_Idx; }
 
 };
 

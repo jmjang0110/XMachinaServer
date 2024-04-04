@@ -89,20 +89,9 @@ bool SocketData::SetReuseAddress(bool flag)
 	return SetSockOpt<bool>(mSocket, SOL_SOCKET, SO_REUSEADDR, flag);
 }
 
-bool SocketData::SetRecvPacketBufferSize(INT32 size)
-{
-	return SetSockOpt<INT32>(mSocket, SOL_SOCKET, SO_RCVBUF, size);
-}
 
-bool SocketData::SetSendBufferSize(INT32 size)
-{
-	return SetSockOpt<INT32>(mSocket, SOL_SOCKET, SO_SNDBUF, size);
-}
 
-bool SocketData::SetTcpNoDelay(bool flag)
-{
-	return SetSockOpt<bool>(mSocket, SOL_SOCKET, TCP_NODELAY, flag);
-}
+
 
 bool SocketData::SetUpdateAcceptSocket(SOCKET listenSocket)
 {

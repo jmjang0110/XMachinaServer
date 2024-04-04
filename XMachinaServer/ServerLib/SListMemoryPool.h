@@ -26,7 +26,7 @@ private:
 
 
 public:
-    SListMemoryPool(size_t MemorySize, size_t numBlocks);
+    SListMemoryPool(size_t MemorySize);
     ~SListMemoryPool();
 
 public:

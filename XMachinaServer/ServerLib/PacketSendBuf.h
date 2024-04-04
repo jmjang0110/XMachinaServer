@@ -4,11 +4,14 @@
 /// +-----------------------------------------------
 ///					 PacketSendBuf 
 /// ________________________________________________
-
+/// 
+/// ※ 주의사항
+///  	
+/// - WSASend()를 한 후 완료 통지가 올때까지 데이터가 
+///   유지되어야한다. ==>  std::shared_ptr 로 관리하자!
 /// -----------------------------------------------+
 
 /*
-* 
 	어차피 패킷은 프로토콜 아이디에 따라 패킷의 크기는 정해져있다.
 	ex) Transform 패킷 이라거 할 때 sizeof(float) * 3 * 3 이겠지?
 
@@ -25,24 +28,22 @@
 	그렇다면 가변 길이 버퍼는 어떻게 하나?
 	그래서 32 64 128 256 512 바이트 메모리풀들을 미리 만들어놓고
 	여기다가 쓰자 !
-
-
 */
 
 
 class PacketSendBuf
 {
 private:
-	BYTE*					mBuffer;
-	UINT32					mAllocSize = 0;
-	UINT32					mWriteSize = 0;
+	BYTE*					mBuffer          = {}; // 메모리 포인터
+	UINT32					mBufferTotalSize = 0;  // SListMemoryPool 에서 가져온 메모리의 전체 크기 
+	UINT32					mWriteSize       = 0;  // 메모리에서 쓰여진 크기 
 
 public:
 	PacketSendBuf(BYTE* buffer, UINT32 allocSize);
 	~PacketSendBuf();
 
-	BYTE*	GetBuffer()	{ return mBuffer; }
-	UINT32	GetAllocSize() { return mAllocSize; }
+	BYTE*	GetBuffer()	   { return mBuffer; }
+	UINT32	GetTotalSize() { return mBufferTotalSize; }
 	UINT32	GetWriteSize() { return mWriteSize; }
 	void	Close(UINT32 writeSize); 
 

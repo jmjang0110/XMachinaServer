@@ -11,7 +11,7 @@
 
 
 #include "Contents/GameSession.h"
-
+#include "ServerLib/SendBuffersFactory.h"
 
 
 
@@ -69,7 +69,12 @@ bool Framework::Init(HINSTANCE& hInst)
 		return false;
 	}
 
-	mServer = std::make_shared<ServerNetwork>();
+	if (FALSE == MEMORY->InitMemories()) {
+		return false;
+	}
+
+	//mServer = std::make_shared<ServerNetwork>();
+	mServer = MemoryManager::Make_Shared<ServerNetwork>();
 	mServer->SetMaxSessionCnt(1);
 	mServer->SetSessionConstructorFunc(std::make_shared<GameSession>);
 	mServer->Start(L"127.0.0.1", 7777);
@@ -78,15 +83,19 @@ bool Framework::Init(HINSTANCE& hInst)
 	return true;
 }
 
-
-void test2() {
-	while (true) {
-		//std::cout << TLS_MGR->Get_TlsInfoData()->threadName << " ID : " << TLS_MGR->Get_TlsInfoData()->id << std::endl;
-
-	
+class Test {
+private:
+	int a; 
+	int b;
+	int c;
+public:
+	Test() {};
+	Test(int _a, int _b, int _c) { a = _a; b = _b; c = _c; }
+	~Test()
+	{
+		;
 	}
-}
-
+};
 
 void Framework::Launch()
 {
@@ -104,16 +113,17 @@ void Framework::Launch()
 	//	});
 
 
-	for (INT32 i = 0; i < 6; ++i) {
+	for (INT32 i = 0; i < 4; ++i) {
 		THREAD_MGR->RunThread("Network Dispatch " + std::to_string(i), [&]() {
 	
-			auto d = TLS_MGR->Get_TlsInfoData();
+			auto d  = TLS_MGR->Get_TlsInfoData();
 			auto d2 = TLS_MGR->Get_TlsSendBufFactory();
 			std::cout << d->id  << " " << d2->strFactoryID << std::endl;
-
+			//std::shared_ptr<Test> mtest = MemoryManager::Make_Shared<Test>(1, 2, 3);
 			while (true)
 			{
-				mServer->Dispatch_CompletedTasks_FromIOCP(10);
+				mServer->Dispatch_CompletedTasks_FromIOCP(0);
+
 			}
 			});
 	}

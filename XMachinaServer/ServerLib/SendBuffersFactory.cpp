@@ -31,8 +31,7 @@ void SendBuffersFactory::InitPacketMemoryPools()
 	/* BYTES_32 */
 	{
 		const size_t MemoryBlockSize = 32;
-		const size_t NumBlock = 1;
-		SListMemoryPool* Pool = new SListMemoryPool(MemoryBlockSize, NumBlock);
+		SListMemoryPool* Pool = new SListMemoryPool(MemoryBlockSize);
 		mMemPools_VarPkt[SendPktInfo::Var::BYTES_32] = Pool;
 		for (UINT16 i = 1; i < SendPktInfo::MemoryNum; ++i) {
 			mMemPools_VarPkt[SendPktInfo::Var::BYTES_32]->AddMemory();
@@ -41,8 +40,7 @@ void SendBuffersFactory::InitPacketMemoryPools()
 	/* BYTES_64 */
 	{
 		const size_t MemoryBlockSize = 64;
-		const size_t NumBlock = 1;
-		SListMemoryPool* Pool = new SListMemoryPool(MemoryBlockSize, NumBlock);
+		SListMemoryPool* Pool = new SListMemoryPool(MemoryBlockSize);
 		mMemPools_VarPkt[SendPktInfo::Var::BYTES_64] = Pool;
 		for (UINT16 i = 1; i < SendPktInfo::MemoryNum; ++i) {
 			mMemPools_VarPkt[SendPktInfo::Var::BYTES_64]->AddMemory();
@@ -52,8 +50,7 @@ void SendBuffersFactory::InitPacketMemoryPools()
 	/* BYTES_128 */
 	{
 		const size_t MemoryBlockSize = 128;
-		const size_t NumBlock = 1;
-		SListMemoryPool* Pool = new SListMemoryPool(MemoryBlockSize, NumBlock);
+		SListMemoryPool* Pool = new SListMemoryPool(MemoryBlockSize);
 		mMemPools_VarPkt[SendPktInfo::Var::BYTES_128] = Pool;
 		for (UINT16 i = 1; i < SendPktInfo::MemoryNum; ++i) {
 			mMemPools_VarPkt[SendPktInfo::Var::BYTES_128]->AddMemory();
@@ -63,8 +60,7 @@ void SendBuffersFactory::InitPacketMemoryPools()
 	/* BYTES_256 */
 	{
 		const size_t MemoryBlockSize = 256;
-		const size_t NumBlock = 1;
-		SListMemoryPool* Pool = new SListMemoryPool(MemoryBlockSize, NumBlock);
+		SListMemoryPool* Pool = new SListMemoryPool(MemoryBlockSize);
 		mMemPools_VarPkt[SendPktInfo::Var::BYTES_256] = Pool;
 		for (UINT16 i = 1; i < SendPktInfo::MemoryNum; ++i) {
 			mMemPools_VarPkt[SendPktInfo::Var::BYTES_256]->AddMemory();
@@ -74,8 +70,7 @@ void SendBuffersFactory::InitPacketMemoryPools()
 	/* BYTES_512 */
 	{
 		const size_t MemoryBlockSize = 512;
-		const size_t NumBlock = 1;
-		SListMemoryPool* Pool = new SListMemoryPool(MemoryBlockSize, NumBlock);
+		SListMemoryPool* Pool = new SListMemoryPool(MemoryBlockSize);
 		mMemPools_VarPkt[SendPktInfo::Var::BYTES_512] = Pool;
 		for (UINT16 i = 1; i < SendPktInfo::MemoryNum; ++i) {
 			mMemPools_VarPkt[SendPktInfo::Var::BYTES_512]->AddMemory();

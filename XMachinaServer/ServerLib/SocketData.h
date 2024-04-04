@@ -45,15 +45,11 @@ public:
 	/// -----------------------------+
 	bool SetLinger(UINT16 onoff, UINT16 linger);
 	bool SetReuseAddress(bool flag);
-	bool SetRecvPacketBufferSize(INT32 size);
-	bool SetSendBufferSize(INT32 size);
-	bool SetTcpNoDelay(bool flag);
 	bool SetUpdateAcceptSocket(SOCKET listenSocket);
 
 	/// +------------------------
 	///		   NET ADDRESS
 	/// ------------------------+
-
 	SOCKADDR_IN& 	GetSockAddr() { return mSockAddr; }
 	std::wstring	GetIpAddress();
 	UINT16			GetPort() { return ::ntohs(mSockAddr.sin_port); }

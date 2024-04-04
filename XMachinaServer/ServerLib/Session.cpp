@@ -11,7 +11,7 @@
 
 Session::Session() : NetworkObject()
 {
-	mRecvPkt = PacketRecvBuf(static_cast<INT32>(PacketRecvBuf::Info::Size));
+	mPacketBuffer.RecvPkt = PacketRecvBuf(static_cast<INT32>(PacketRecvBuf::Info::Size));
 	
 	SocketData sockdata = {};
 	sockdata.CreateSocket();
@@ -26,12 +26,13 @@ Session::~Session()
 
 void Session::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 {
+	/* What is the Type of Task? */
 	OverlappedIO::Type IoType = overlapped->GetIoType();
-	int ThreadID = TLS_MGR->Get_TlsInfoData()->id;
 
+	/* Print.. Info */
+	int ThreadID = TLS_MGR->Get_TlsInfoData()->id;
 	switch (IoType)
 	{
-
 	case OverlappedIO::Type::Accept:
 		std::cout << "Thread " << ThreadID << " Dispatch Accept\n";
 		break;
@@ -49,6 +50,7 @@ void Session::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 		break;
 	}
 
+	/* Process Task! */
 	ProcessIO(IoType, bytes);
 }
 
@@ -65,8 +67,8 @@ void Session::RegisterIO(OverlappedIO::Type IoType)
 			return;
 
 		/* Clear & Set - Connect Overlapped IO Object */
-		mConnect.Clear_OVERLAPPED();
-		mConnect.SetOwner(shared_from_this());
+		mOverlapped.Connect.Clear_OVERLAPPED();
+		mOverlapped.Connect.SetOwner(shared_from_this());
 
 		/* Register Connect I/O */
 		DWORD numOfBytes = {};
@@ -76,12 +78,12 @@ void Session::RegisterIO(OverlappedIO::Type IoType)
 										, nullptr
 										, 0
 										, &numOfBytes
-										, &mConnect);
+										, &mOverlapped.Connect);
 		
 		if (ConnectExResult == false) {
 			INT32 errCode = ::WSAGetLastError();
 			if (errCode != WSA_IO_PENDING) {
-				mConnect.SetOwner(nullptr);
+				mOverlapped.Connect.SetOwner(nullptr);
 			}
 		}
 	}
@@ -91,18 +93,18 @@ void Session::RegisterIO(OverlappedIO::Type IoType)
 		/// -------------------+
 	case OverlappedIO::Type::DisConnect:
 	{
-		mDisconnect.Clear_OVERLAPPED();
-		mDisconnect.SetOwner(shared_from_this());
+		mOverlapped.Disconnect.Clear_OVERLAPPED();
+		mOverlapped.Disconnect.SetOwner(shared_from_this());
 
 		bool DisconnectExResult = NETWORK_MGR->DiscconectEx()(GetSocketData().GetSocket()
-															, &mDisconnect
+															, &mOverlapped.Disconnect
 															, TF_REUSE_SOCKET /* 소켓이 종료되어도 해당 주소와 포트를 다른 소켓이 사용가능 */
 															, 0);
 
 		if (DisconnectExResult == false) {
 			INT32 errCode = ::WSAGetLastError();
 			if (errCode != WSA_IO_PENDING) {
-				mDisconnect.SetOwner(nullptr);
+				mOverlapped.Disconnect.SetOwner(nullptr);
 			}
 		}
 	}
@@ -116,24 +118,23 @@ void Session::RegisterIO(OverlappedIO::Type IoType)
 			return;
 		}
 
-		mSend.Clear_OVERLAPPED();
-		mSend.SetOwner(shared_from_this());
+		mOverlapped.Send.Clear_OVERLAPPED();
+		mOverlapped.Send.SetOwner(shared_from_this());
 
 		/* Push SendPkt to Overlapped_Send */
 		{
-			while (mSendPkt_Queue.empty() == false) {
-				SPtr_SendPktBuf sendPktBuf = mSendPkt_Queue.front();
-				mSendPkt_Queue.pop();
+			while (mPacketBuffer.SendPkt_Queue.empty() == false) {
+				SPtr_SendPktBuf sendPktBuf = mPacketBuffer.SendPkt_Queue.front();
+				mPacketBuffer.SendPkt_Queue.pop();
 				if(sendPktBuf)
-					mSend.BufPush(sendPktBuf);
-
+					mOverlapped.Send.BufPush(sendPktBuf);
 			}
 		}
 
 		/* Scatter-Gather */
 		std::vector<WSABUF> wsaBufs = { };
-		wsaBufs.reserve(mSend.BufSize());
-		for (SPtr_SendPktBuf sendBuf : mSend.GetSendBuffers()) {
+		wsaBufs.reserve(mOverlapped.Send.BufSize());
+		for (SPtr_SendPktBuf sendBuf : mOverlapped.Send.GetSendBuffers()) {
 		
 			WSABUF wsaBuf = {};
 			wsaBuf.buf    = reinterpret_cast<char*>(sendBuf->GetBuffer());
@@ -148,16 +149,16 @@ void Session::RegisterIO(OverlappedIO::Type IoType)
 									, static_cast<DWORD>(wsaBufs.size())
 									, OUT & numOfBytes
 									, 0
-									, &mSend
+									, &mOverlapped.Send
 									, nullptr))
 		{
 			INT32 errCode = ::WSAGetLastError();
 			if (errCode != WSA_IO_PENDING)
 			{
 				ProcessError(errCode);
-				mSend.SetOwner(nullptr); // shared_ptr Release
-				mSend.BufClear();
-				mIsSendRegistered.store(false);
+				mOverlapped.Send.ReleaseReferenceCount();
+				mOverlapped.Send.ReleaseSendBuffersReferenceCount();
+				mPacketBuffer.IsSendRegistered.store(false);
 			}
 		}
 
@@ -171,13 +172,13 @@ void Session::RegisterIO(OverlappedIO::Type IoType)
 		if (mIsConnected.load() == false) {
 			return;
 		}
-		mRecv.Clear_OVERLAPPED();
-		mRecv.SetOwner(shared_from_this());
+		mOverlapped.Recv.Clear_OVERLAPPED();
+		mOverlapped.Recv.SetOwner(shared_from_this());
 
 		/* ::WSARecv */
 		WSABUF wsaBuf{};
-		wsaBuf.buf = reinterpret_cast<char*>(mRecvPkt.GetWritePos());
-		wsaBuf.len = mRecvPkt.GetFreeSize();
+		wsaBuf.buf = reinterpret_cast<char*>(mPacketBuffer.RecvPkt.GetWritePos());
+		wsaBuf.len = mPacketBuffer.RecvPkt.GetFreeSize();
 
 		DWORD numOfBytes = 0;
 		DWORD flags      = 0;
@@ -186,14 +187,14 @@ void Session::RegisterIO(OverlappedIO::Type IoType)
 									, 1
 									, &numOfBytes
 									, &flags
-									, &mRecv
+									, &mOverlapped.Recv
 									, nullptr);
 
 		if (WSARecvResult == SOCKET_ERROR) {
 			INT32 errCode = ::WSAGetLastError();
 			if (errCode != WSA_IO_PENDING) {
 				ProcessError(errCode);
-				mRecv.SetOwner(nullptr);
+				mOverlapped.Recv.SetOwner(nullptr);
 			}
 		}
 	}
@@ -211,7 +212,7 @@ void Session::ProcessIO(OverlappedIO::Type IoType, INT32 BytesTransferred)
 	/// -------------------+
 	case OverlappedIO::Type::Connect:
 	{
-		mConnect.SetOwner(nullptr); // Shared_ptr -> release
+		mOverlapped.Connect.ReleaseReferenceCount(); // Shared_ptr -> release
 		mIsConnected.store(true);
 
 		GetOwnerNI()->AddSession(std::static_pointer_cast<Session>(shared_from_this()));
@@ -229,7 +230,7 @@ void Session::ProcessIO(OverlappedIO::Type IoType, INT32 BytesTransferred)
 	/// -------------------+
 	case OverlappedIO::Type::DisConnect:
 	{
-		mDisconnect.SetOwner(nullptr); // Shared_ptr -> release 
+		mOverlapped.Disconnect.ReleaseReferenceCount(); // Shared_ptr -> release 
 
 		OnDisconnected();
 		GetOwnerNI()->ReleaseSession(std::static_pointer_cast<Session>(shared_from_this()));
@@ -243,8 +244,8 @@ void Session::ProcessIO(OverlappedIO::Type IoType, INT32 BytesTransferred)
 	/// -------------------+
 	case OverlappedIO::Type::Send:
 	{
-		mSend.SetOwner(nullptr); // shared_ptr -> release 
-		
+		mOverlapped.Send.ReleaseReferenceCount(); 
+		mOverlapped.Send.ReleaseSendBuffersReferenceCount(); /* SendBuffers Send Complete → Release Reference Count */
 
 		/* Exception Disconnect */
 		if (BytesTransferred == 0) {
@@ -254,9 +255,12 @@ void Session::ProcessIO(OverlappedIO::Type IoType, INT32 BytesTransferred)
 
 		OnSend(BytesTransferred);
 
-		if (mSendPkt_Queue.empty()) {
-			mIsSendRegistered.store(false);
+		/* TODO : Lock 걸자!*/
+		/* 다 보냄 */
+		if (mPacketBuffer.SendPkt_Queue.empty()) {
+			mPacketBuffer.IsSendRegistered.store(false);
 		}
+		/* 다 안보냄 */
 		else {
 			RegisterIO(OverlappedIO::Type::Send);
 		}
@@ -268,28 +272,28 @@ void Session::ProcessIO(OverlappedIO::Type IoType, INT32 BytesTransferred)
 	/// -------------------+
 	case OverlappedIO::Type::Recv:
 	{
-		mRecv.SetOwner(nullptr); // shared_ptr -> Release 
+		mOverlapped.Recv.ReleaseReferenceCount();
 
 		/* Exception Disconnect */
 		if (BytesTransferred == 0) {
 			Disconnect(L"Recv 0 - Disconnect!");
 			break;
 		}
-		if (FALSE == mRecvPkt.OnWrite(BytesTransferred)) {
+		if (FALSE == mPacketBuffer.RecvPkt.OnWrite(BytesTransferred)) {
 			Disconnect(L"OnWirte Overflow - Disconnect!");
 			break;
 		}
 
 		/* On Recv */
-		UINT32 DataSize = mRecvPkt.GetDataSize();
-		UINT32 ProcessLen = OnRecv(mRecvPkt.GetReadPos(), DataSize);
-		if (FALSE == (ProcessLen < 0 || DataSize < ProcessLen || mRecvPkt.OnRead(ProcessLen))) {
+		UINT32 DataSize = mPacketBuffer.RecvPkt.GetDataSize();
+		UINT32 ProcessLen = OnRecv(mPacketBuffer.RecvPkt.GetReadPos(), DataSize);
+		if (FALSE == (ProcessLen < 0 || DataSize < ProcessLen || mPacketBuffer.RecvPkt.OnRead(ProcessLen))) {
 			Disconnect(L"OnRead Overflow - Disconnect!");
 			break;
 		}
 
 		/* Register IO */
-		mRecvPkt.Clean();
+		mPacketBuffer.RecvPkt.Clean();
 		RegisterIO(OverlappedIO::Type::Recv);
 
 		break;
@@ -321,9 +325,9 @@ void Session::Send(SPtr_SendPktBuf buf)
 
 	{
 
-		mSendPkt_Queue.push(buf);
+		mPacketBuffer.SendPkt_Queue.push(buf);
 
-		if (mIsSendRegistered.exchange(true) == false)
+		if (mPacketBuffer.IsSendRegistered.exchange(true) == false)
 			RegisterSend = true;
 	}
 

@@ -7,6 +7,7 @@
 /// SendPktBuf  ( SLIST )
 /// ________________________________________________
 /// 
+/// 각 Thread 별로 SendBufferFactory 를 소유하고 있다. ( TLS ) 
 /// Variable Length PktBuf				
 /// [32] [64] [128] [256] [512]
 /// [32] [64] [128] [256] [512]
@@ -15,13 +16,15 @@
 /// ________________________________________________
 /// Fixed Length PktBuf
 /// 
+/// 
+/// - TLS 영역에 생성시킬것이기에 싱글쓰레드처럼 사용가능
 /// -----------------------------------------------+
 
 
 namespace SendPktInfo {
 	enum class Type {
-		Variable_Length,
-		Fixed_Length
+		Variable_Length, // 가변 길이 Send Packet 
+		Fixed_Length	 // 고정 길이 Send Packet 
 	};
 
 	/* Variable - 크기에 맞는 바이트 메모리 풀에 가변길이 데이터를 Write */

@@ -14,33 +14,30 @@
 #include "PacketRecvBuf.h"
 #include "PacketSendBuf.h"
 
+struct OverLapped {
+	Overlapped_Connect			Connect    = {};
+	Overlapped_DisConnect		Disconnect = {};
+	Overlapped_Recv				Recv       = {};
+	Overlapped_Send				Send       = {};
+};
+
+struct PacketBuffer {
+	/* Send */
+	std::queue<SPtr_SendPktBuf> SendPkt_Queue    = {}; /* Scatter-Gather를 위해서 Queue에 저장 */
+	std::atomic<bool>			IsSendRegistered = false;
+	
+	/* Recv */
+	PacketRecvBuf				RecvPkt		 	 = {};
+};
+
+
 class Session : public NetworkObject
 {
 private:
-	/* Check If Client Connect to Server */
-	std::atomic<bool>			mIsConnected		= false;
-
-	/* Overlapped I/O Object */
-	Overlapped_Connect			mConnect			= {};
-	Overlapped_DisConnect		mDisconnect			= {};
-	Overlapped_Recv				mRecv				= {};
-	Overlapped_Send				mSend				= {};
-
-	/* send Packet Buffer */
-	std::queue<SPtr_SendPktBuf> mSendPkt_Queue		= {};
-	std::atomic<bool>			mIsSendRegistered	= false;
-
-	/* Recv Packet Buffer */	
-	PacketRecvBuf				mRecvPkt			= {};
-
-	/* Server Network or Client Network - Set Owner */
-	std::weak_ptr<class NetworkInterface> mOwnerNI	= {};
-
-public:
-	Session();
-	virtual ~Session();
-
-	virtual void Dispatch(class OverlappedObject* overlapped, UINT32 bytes = 0) override;
+	std::weak_ptr<class NetworkInterface> mOwnerNI	      = {};		/* Server Network or Client Network - Set Owner */
+	std::atomic<bool>					  mIsConnected    = false;	/* Check If Client Connect to Server */
+	OverLapped							  mOverlapped     = {};		/* Overlapped I/O Object */
+	PacketBuffer						  mPacketBuffer   = {};		/* send / recv Packet Buffer */
 
 protected:
 	/* Session class을 상속받은 class는 신호를 받는다. */
@@ -49,9 +46,13 @@ protected:
 	virtual void	OnSend(UINT32 len) {};
 	virtual UINT32	OnRecv(BYTE* buf, UINT32 len) { return len; }
 
+public:
+	Session();
+	virtual ~Session();
+	virtual void Dispatch(class OverlappedObject* overlapped, UINT32 bytes = 0) override;
 
 public:
-	/* I/O - Register / Process */
+	/* I/O - Register → Overlapped Complete → Process */
 	void RegisterIO(OverlappedIO::Type IoType);
 	void ProcessIO(OverlappedIO::Type IoType, INT32 BytesTransferred = 0);
 
@@ -67,9 +68,9 @@ public:
 	/* Set */
 	void SetOwerNetworkInterface(SPtr_NI networkInterface) { mOwnerNI = networkInterface; }
 	/* Get */
-	bool IsConnected() { return mIsConnected.load(); }
-	PacketRecvBuf& GetRecvPktBuf() { return mRecvPkt; }
-	std::shared_ptr<NetworkInterface> GetOwnerNI() { return mOwnerNI.lock(); }
+	std::shared_ptr<NetworkInterface> GetOwnerNI()	{ return mOwnerNI.lock(); }
+	PacketRecvBuf& GetRecvPktBuf()					{ return mPacketBuffer.RecvPkt; }
+	bool IsConnected()								{ return mIsConnected.load(); }
 
 };
 

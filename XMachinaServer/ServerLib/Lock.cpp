@@ -1,6 +1,10 @@
 #include "pch.h"
 #include "Lock.h"
 
+/// +-----------------------------
+///          SPIN LOCK
+/// -----------------------------+
+
 Lock::SpinLock::SpinLock()
 {
     mAtomicFlag.store(false);
@@ -42,3 +46,45 @@ void Lock::SpinLock::SpinWait()
 
 }
 
+
+/// +-----------------------------
+///            R/W LOCK 
+/// -----------------------------+
+
+Lock::RWLock::RWLock()
+    : mReaderCount(0), mWriterCount(0) {}
+
+Lock::RWLock::~RWLock()
+{
+}
+void Lock::RWLock::lockRead()
+{
+    while (true) {
+        while (mWriterCount.load() > 0) {
+            std::this_thread::yield(); // 기다림
+        }
+        mReaderCount.fetch_add(1, std::memory_order_acquire);
+        if (mWriterCount.load() == 0) {
+            break;
+        }
+        mReaderCount.fetch_sub(1, std::memory_order_release);
+    }
+}
+
+void Lock::RWLock::unlockRead()
+{
+    mReaderCount.fetch_sub(1, std::memory_order_release);
+}
+
+void Lock::RWLock::lockWrite()
+{
+    mWriterCount.fetch_add(1, std::memory_order_acquire);
+    while (mReaderCount.load() > 0) {
+        std::this_thread::yield(); // 기다림
+    }
+}
+
+void Lock::RWLock::unlockWrite()
+{
+    mWriterCount.fetch_sub(1, std::memory_order_release);
+}
