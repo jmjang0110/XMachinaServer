@@ -4,6 +4,7 @@
 
 #include "ServerNetwork.h"
 #include "../Framework.h"
+#include "Lock.h"
 
 
 NetworkInterface::~NetworkInterface()
@@ -109,6 +110,22 @@ void NetworkInterface::Close()
 
 void NetworkInterface::BroadCast(SPtr_SendPktBuf sendBuf)
 {
+	//Lock::RWLock::GetInst()->lockWrite();
+	//mSessionRWLock.lockWrite();
+
+	//mSessionsMutex.lock();
+
+	WRITE_LOCK;
+
+	for (const auto& iter : mSessions) {
+		iter.second->Send(sendBuf);
+	}
+	
+	//mSessionRWLock.unlockWrite();
+
+	//Lock::RWLock::GetInst()->unlockWrite();
+
+	//mSessionsMutex.unlock();
 }
 
 void NetworkInterface::Send(UINT32 sessionID, SPtr_SendPktBuf sendBuf)
@@ -118,6 +135,7 @@ void NetworkInterface::Send(UINT32 sessionID, SPtr_SendPktBuf sendBuf)
 
 SPtr_Session NetworkInterface::CreateSession()
 {
+
 	SPtr_Session session = mSessionConstructorFunc();
 	session->SetOwerNetworkInterface(shared_from_this());
 	if(RegisterIocp(session) == false)
@@ -125,10 +143,30 @@ SPtr_Session NetworkInterface::CreateSession()
 	return session;
 }
 
-void NetworkInterface::AddSession(SPtr_Session session)
+void NetworkInterface::AddSession(std::wstring sessionName, SPtr_Session session)
 {
+	//mSessionsMutex.lock();
+	//mSessionRWLock.lockWrite();
+
+	WRITE_LOCK;
+
+	mCurSessionCnt.fetch_add(1);
+	mSessions[sessionName] = session;
+
+	//mSessionRWLock.unlockWrite();
+
+	//mSessionsMutex.unlock();
+
 }
 
 void NetworkInterface::ReleaseSession(SPtr_Session session)
 {
+	//mSessionsMutex.lock();
+	//mSessionRWLock.lockWrite();
+	WRITE_LOCK;
+
+
+	//mSessionRWLock.unlockWrite();
+
+	//mSessionsMutex.unlock();
 }

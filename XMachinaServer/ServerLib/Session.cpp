@@ -7,6 +7,8 @@
 #include "NetworkInterface.h"
 
 #include "ThreadManager.h"
+#include "Lock.h"
+
 
 
 Session::Session() : NetworkObject()
@@ -123,12 +125,23 @@ void Session::RegisterIO(OverlappedIO::Type IoType)
 
 		/* Push SendPkt to Overlapped_Send */
 		{
+		
+			//sendLock.lock();
+			//mRWSendLock.lockWrite();
+			WRITE_LOCK;
+
+
 			while (mPacketBuffer.SendPkt_Queue.empty() == false) {
 				SPtr_SendPktBuf sendPktBuf = mPacketBuffer.SendPkt_Queue.front();
 				mPacketBuffer.SendPkt_Queue.pop();
 				if(sendPktBuf)
 					mOverlapped.Send.BufPush(sendPktBuf);
 			}
+
+			//mRWSendLock.unlockWrite();
+			//sendLock.unlock();
+
+
 		}
 
 		/* Scatter-Gather */
@@ -138,7 +151,7 @@ void Session::RegisterIO(OverlappedIO::Type IoType)
 		
 			WSABUF wsaBuf = {};
 			wsaBuf.buf    = reinterpret_cast<char*>(sendBuf->GetBuffer());
-			wsaBuf.len    = static_cast<LONG>(sendBuf->GetWriteSize());
+			wsaBuf.len    = static_cast<LONG>(sendBuf->GetTotalSize());
 			wsaBufs.push_back(wsaBuf);
 		}
 
@@ -215,7 +228,8 @@ void Session::ProcessIO(OverlappedIO::Type IoType, INT32 BytesTransferred)
 		mOverlapped.Connect.ReleaseReferenceCount(); // Shared_ptr -> release
 		mIsConnected.store(true);
 
-		GetOwnerNI()->AddSession(std::static_pointer_cast<Session>(shared_from_this()));
+		std::wstring SessionName = std::to_wstring(static_cast<long>(GetSocketData().GetSocket()));
+		GetOwnerNI()->AddSession(SessionName, std::static_pointer_cast<Session>(shared_from_this()));
 
 		/* On Connect */
 		OnConnected();
@@ -244,6 +258,7 @@ void Session::ProcessIO(OverlappedIO::Type IoType, INT32 BytesTransferred)
 	/// -------------------+
 	case OverlappedIO::Type::Send:
 	{
+
 		mOverlapped.Send.ReleaseReferenceCount(); 
 		mOverlapped.Send.ReleaseSendBuffersReferenceCount(); /* SendBuffers Send Complete ¡æ Release Reference Count */
 
@@ -257,13 +272,25 @@ void Session::ProcessIO(OverlappedIO::Type IoType, INT32 BytesTransferred)
 
 		/* TODO : Lock °ÉÀÚ!*/
 		/* ´Ù º¸³¿ */
-		if (mPacketBuffer.SendPkt_Queue.empty()) {
-			mPacketBuffer.IsSendRegistered.store(false);
+		{
+		
+			//sendLock.lock();
+			//mRWSendLock.lockWrite();
+			WRITE_LOCK;
+
+			if (mPacketBuffer.SendPkt_Queue.empty() == true) {
+				mPacketBuffer.IsSendRegistered.store(false);
+
+			}
+			//sendLock.unlock();
+			//mRWSendLock.unlockWrite();
+
+			/* ´Ù ¾Èº¸³¿ */
+			if(mPacketBuffer.SendPkt_Queue.empty() == false){
+				RegisterIO(OverlappedIO::Type::Send);
+			}
 		}
-		/* ´Ù ¾Èº¸³¿ */
-		else {
-			RegisterIO(OverlappedIO::Type::Send);
-		}
+
 
 	}
 	break;
@@ -321,14 +348,23 @@ void Session::Send(SPtr_SendPktBuf buf)
 		return;
 	}
 
-	volatile bool RegisterSend = false;
+	bool RegisterSend = false;
 
 	{
+		//sendLock.lock();
+		//mRWSendLock.lockWrite();
+		WRITE_LOCK;
 
 		mPacketBuffer.SendPkt_Queue.push(buf);
 
 		if (mPacketBuffer.IsSendRegistered.exchange(true) == false)
 			RegisterSend = true;
+
+		//mRWSendLock.unlockWrite();
+
+		//sendLock.unlock();
+
+
 	}
 
 	if (RegisterSend)

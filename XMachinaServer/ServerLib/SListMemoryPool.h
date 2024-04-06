@@ -23,7 +23,9 @@ private:
 
     size_t                      mMemorySize   = {};
     std::atomic<size_t>         mNumBlocks    = {};      // 할당할 메모리 블록의 크기
-
+    
+    std::atomic<size_t>         mPushCount = {};      // 할당할 메모리 블록의 크기
+    std::atomic<size_t>         mPullCount = {};      // 할당할 메모리 블록의 크기
 
 public:
     SListMemoryPool(size_t MemorySize);

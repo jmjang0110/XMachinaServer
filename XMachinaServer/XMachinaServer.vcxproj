@@ -72,19 +72,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
-    <IncludePath>$(SolutionDir)XMachinaServer\;$(SolutionDir)XMachinaServer\FlatBuffers\flatbuffers-24.3.7\include\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)XMachinaServer\;$(SolutionDir)XMachinaServer\Protocol\FlatBuffers\flatbuffers-24.3.7\include\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
-    <IncludePath>$(SolutionDir)XMachinaServer\;$(SolutionDir)XMachinaServer\FlatBuffers\flatbuffers-24.3.7\include\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)XMachinaServer\;$(SolutionDir)XMachinaServer\Protocol\FlatBuffers\flatbuffers-24.3.7\include\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
-    <IncludePath>$(SolutionDir)XMachinaServer\;$(SolutionDir)XMachinaServer\FlatBuffers\flatbuffers-24.3.7\include\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)XMachinaServer\;$(SolutionDir)XMachinaServer\Protocol\FlatBuffers\flatbuffers-24.3.7\include\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
-    <IncludePath>$(SolutionDir)XMachinaServer\;$(SolutionDir)XMachinaServer\FlatBuffers\flatbuffers-24.3.7\include\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)XMachinaServer\;$(SolutionDir)XMachinaServer\Protocol\FlatBuffers\flatbuffers-24.3.7\include\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

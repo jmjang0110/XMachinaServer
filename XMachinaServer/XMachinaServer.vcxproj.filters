@@ -40,10 +40,6 @@
     <Filter Include="Framework\Contents">
       <UniqueIdentifier>{1c750902-aef0-42ad-8720-eeada2efde93}</UniqueIdentifier>
     </Filter>
-    <Filter Include="리소스 파일">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="Protocol">
       <UniqueIdentifier>{170c91f9-5ab5-41a6-84a0-d5266fa8b941}</UniqueIdentifier>
     </Filter>
@@ -58,6 +54,10 @@
     </Filter>
     <Filter Include="ServerLib\Network\Iocp\Netowork\Object">
       <UniqueIdentifier>{a0afefed-0e6f-4d1f-b942-2b45819f1a3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindowUI\리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -221,15 +221,15 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="XMachinaServer.rc">
-      <Filter>리소스 파일</Filter>
+      <Filter>WindowUI\리소스 파일</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
-      <Filter>리소스 파일</Filter>
+      <Filter>WindowUI\리소스 파일</Filter>
     </Image>
     <Image Include="XMachinaServer.ico">
-      <Filter>리소스 파일</Filter>
+      <Filter>WindowUI\리소스 파일</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

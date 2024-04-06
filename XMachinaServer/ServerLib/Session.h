@@ -13,6 +13,8 @@
 #include "NetworkObject.h"
 #include "PacketRecvBuf.h"
 #include "PacketSendBuf.h"
+#include "Lock.h"
+
 
 struct OverLapped {
 	Overlapped_Connect			Connect    = {};
@@ -23,6 +25,8 @@ struct OverLapped {
 
 struct PacketBuffer {
 	/* Send */
+	//concurrency::concurrent_queue<SPtr_SendPktBuf> SendPkt_Queue;
+
 	std::queue<SPtr_SendPktBuf> SendPkt_Queue    = {}; /* Scatter-Gather를 위해서 Queue에 저장 */
 	std::atomic<bool>			IsSendRegistered = false;
 	
@@ -34,6 +38,12 @@ struct PacketBuffer {
 class Session : public NetworkObject
 {
 private:
+	USE_LOCK;
+
+private:
+	//std::mutex sendLock;
+	class Lock::RWLock mRWSendLock;
+
 	std::weak_ptr<class NetworkInterface> mOwnerNI	      = {};		/* Server Network or Client Network - Set Owner */
 	std::atomic<bool>					  mIsConnected    = false;	/* Check If Client Connect to Server */
 	OverLapped							  mOverlapped     = {};		/* Overlapped I/O Object */

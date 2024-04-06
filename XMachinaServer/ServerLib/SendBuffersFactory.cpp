@@ -147,6 +147,50 @@ void SendBuffersFactory::Push_FixPkt(SendPktInfo::Fix type, void* ptr)
 	mMemPools_FixPkt[type]->Push(ptr);
 }
 
+SPtr_PacketSendBuf SendBuffersFactory::CreateVarSendPacketBuf(size_t memorySize)
+{
+	SPtr_PacketSendBuf sendBuf{};
 
+	/* 메모리 풀에서 메모리를 받아와서 shared_ptr 로 SendPacket Buffer 를 만들어 반환하자! */
+	
+	UINT16 offsetMemSize = 0;
+	if (memorySize <= 32) {
+		offsetMemSize = 32 - memorySize;
+	}
+	else if (memorySize <= 64) {
+		offsetMemSize = 64 - memorySize;
+	}
+	else if (memorySize <= 128) {
+		offsetMemSize = 128 - memorySize;
+	}
+	else if (memorySize <= 256) {
+		offsetMemSize = 256 - memorySize;
+	}
+	else if (memorySize <= 512) {
+		offsetMemSize = 512 - memorySize;
+	}
+	if (offsetMemSize < 0)
+		return nullptr;
 
+	/*                    실질적으로 쓰는 메모리								 */		
+	/*                           ↓ 					                         */		
+	/* [     offset = 28    [ memsize = 4 ]] - 32byte 메모리에 4바이트만 사용  */
+	
+	/* 실직적으로 사용하는 메모리의 시작위치로 이동 */
+	void* ptr = Pull_VarPkt(memorySize + offsetMemSize);
+	if (ptr == nullptr)
+		return nullptr;
+
+	void* usePtr = static_cast<UINT8*>(ptr) + offsetMemSize; 
+	sendBuf      = Make_Shared(this, static_cast<BYTE*>(usePtr), static_cast<UINT32>(memorySize)); /* 실직적으로 쓰이는 메모리의 위치와 메모리 사이즈*/
+	sendBuf->SetOwnerInfo(ptr, memorySize + offsetMemSize); /* 다시 반납하기 위해서 ptr과 메모리 풀에서 받은 메모리 사이즈를 저장한다. */
+	return sendBuf;
+}
+
+SPtr_PacketSendBuf SendBuffersFactory::CreateFixSendPacketBuf(SendPktInfo::Fix pktDataType)
+{
+	SPtr_PacketSendBuf sendBuf{};
+
+	return sendBuf;
+}
 

@@ -27,6 +27,7 @@ struct SListMemoryPoolInfo {
 };
 
 #define MEMORY MemoryManager::GetInst()
+using Memory = class MemoryManager;
 class MemoryManager
 {
 	DECLARE_SINGLETON(MemoryManager);

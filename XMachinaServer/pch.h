@@ -25,6 +25,8 @@
 /* STL */
 #include <vector>
 
+#include <concurrent_queue.h>
+
 
 /* My Utility Hedaers */
 #include "ServerLib/UtilityMacro.h"

@@ -43,7 +43,7 @@ namespace SendPktInfo {
 		// ... 
 	};
 
-	constexpr UINT16 MemoryNum = 50;
+	constexpr UINT16 MemoryNum = 100;
 }
 
 
@@ -70,6 +70,33 @@ public:
 	void  Push_VarPkt(size_t memorySize, void* ptr);
 	void  Push_FixPkt(SendPktInfo::Fix type, void* ptr); 
 
+	SPtr_PacketSendBuf CreateVarSendPacketBuf(size_t memorySize);
+	SPtr_PacketSendBuf CreateFixSendPacketBuf(SendPktInfo::Fix pktDataType);
+
+
+public:
+	static PacketSendBuf* New(SendBuffersFactory* factory, BYTE* buffer, UINT32 allocSize);
+	template<typename Type>
+	static void Delete(Type* ptr);
+	
+	std::shared_ptr<PacketSendBuf> Make_Shared(SendBuffersFactory* factory, BYTE* buffer, UINT32 allocSize);
 
 };
 
+template<typename Type>
+inline void SendBuffersFactory::Delete(Type* ptr)
+{
+	ptr->~Type();
+}
+
+inline PacketSendBuf* SendBuffersFactory::New(SendBuffersFactory* factory, BYTE* buffer, UINT32 allocSize)
+{
+	PacketSendBuf* Memory = static_cast<PacketSendBuf*>(static_cast<void*>(buffer));
+	new(Memory)PacketSendBuf(buffer, allocSize); /* Placement New */
+	return Memory;;
+}
+
+inline std::shared_ptr<PacketSendBuf> SendBuffersFactory::Make_Shared(SendBuffersFactory* factory, BYTE* buffer, UINT32 allocSize)
+{
+	return std::shared_ptr<PacketSendBuf>{ SendBuffersFactory::New(factory,buffer, allocSize), SendBuffersFactory::Delete<PacketSendBuf>};
+}

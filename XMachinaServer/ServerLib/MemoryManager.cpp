@@ -161,9 +161,9 @@ void MemoryManager::Free(size_t size, void* ptr)
     {
     };
 
-    //if (mSLMemPoolsDict_Size[size] != nullptr) {
-    //    mSLMemPoolsDict_Size[size]->Push(ptr);
-    //}
+    if (mSLMemPoolsDict_Size[static_cast<MemorySize>(size)] != nullptr) {
+        mSLMemPoolsDict_Size[static_cast<MemorySize>(size)]->Push(ptr);
+    }
 
     /* UnLocking */
     mAtomicFlag.clear(std::memory_order_release);

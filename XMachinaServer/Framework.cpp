@@ -13,6 +13,9 @@
 #include "Contents/GameSession.h"
 #include "ServerLib/SendBuffersFactory.h"
 
+#undef max 
+#include <flatbuffers/flatbuffers.h>
+#include "Protocol/FBProtocol_generated.h"
 
 
 DEFINE_SINGLETON(Framework);
@@ -74,7 +77,7 @@ bool Framework::Init(HINSTANCE& hInst)
 	}
 
 	//mServer = std::make_shared<ServerNetwork>();
-	mServer = MemoryManager::Make_Shared<ServerNetwork>();
+	mServer = Memory::Make_Shared<ServerNetwork>();
 	mServer->SetMaxSessionCnt(1);
 	mServer->SetSessionConstructorFunc(std::make_shared<GameSession>);
 	mServer->Start(L"127.0.0.1", 7777);
@@ -83,51 +86,45 @@ bool Framework::Init(HINSTANCE& hInst)
 	return true;
 }
 
-class Test {
+struct test {
 private:
-	int a; 
-	int b;
-	int c;
-public:
-	Test() {};
-	Test(int _a, int _b, int _c) { a = _a; b = _b; c = _c; }
-	~Test()
-	{
-		;
-	}
+	int a{};
 };
 
 void Framework::Launch()
 {
+
 	LOG_MGR->SetColor(TextColor::BrightYellow);
 	LOG_MGR->Cout("+-------------------------------\n");
 	LOG_MGR->Cout("   X-MACHINA Server Framework   \n");
 	LOG_MGR->Cout("-------------------------------+\n");
 	LOG_MGR->SetColor(TextColor::Default);
 
-	//THREAD_MGR->RunThread("Testtherad", [&]() {
-	//		while (true) {
-	//			std::cout << TLS_MGR->Get_TlsInfoData()->threadName 
-	//				<< " ID : " << TLS_MGR->Get_TlsInfoData()->id << std::endl;
-	//		}
-	//	});
-
-
-	for (INT32 i = 0; i < 4; ++i) {
+	int ThreadNum = 4;
+	for (INT32 i = 0; i < ThreadNum; ++i) {
 		THREAD_MGR->RunThread("Network Dispatch " + std::to_string(i), [&]() {
 	
 			auto d  = TLS_MGR->Get_TlsInfoData();
-			auto d2 = TLS_MGR->Get_TlsSendBufFactory();
-			std::cout << d->id  << " " << d2->strFactoryID << std::endl;
-			//std::shared_ptr<Test> mtest = MemoryManager::Make_Shared<Test>(1, 2, 3);
+			auto Tls_sendFactory = TLS_MGR->Get_TlsSendBufFactory();
+			std::cout << d->id  << " " << Tls_sendFactory->strFactoryID << std::endl;
 			while (true)
 			{
 				mServer->Dispatch_CompletedTasks_FromIOCP(0);
-
+				//std::cout << TLS_MGR->Get_TlsSendBufFactory()->SendBufFactory << std::endl;
 			}
 			});
 	}
+
+	THREAD_MGR->RunThread("Send Test", [&]() {
+			while (true) {
+				test Data;
+				SPtr_PacketSendBuf sendBuf = TLS_MGR->Get_TlsSendBufFactory()->SendBufFactory->CreateVarSendPacketBuf(sizeof(Data));
+				std::cout << sendBuf.get() << std::endl;
+				mServer->BroadCast(sendBuf);
+			}
+		});
 	
+
 
 	THREAD_MGR->JoinAllThreads();
 }

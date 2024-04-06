@@ -44,6 +44,7 @@ using SPtr_ClientNetwork     = std::shared_ptr<class ClientNetwork>;
 using SPtr_SendBufFactory    = std::shared_ptr<class SendBuffersFactory>;
 using SPtr_PacketSendBuf     = std::shared_ptr<class PacketSendBuf>;
 
+
 /* Server Library Headers */
 #include "ServerLib/Session.h"
 

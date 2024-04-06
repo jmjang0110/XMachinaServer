@@ -16,12 +16,17 @@ class NetworkInterface : public std::enable_shared_from_this<NetworkInterface>
 	{
 		Max_Session_Limit_Count = 5000,
 	};
+	std::mutex	mSessionsMutex;
+	Lock::RWLock mSessionRWLock;
+
+private:
+	USE_LOCK;
 
 private:
 	HANDLE		mIocpHandle    = {};
 	SOCKADDR_IN mSockAddr      = {};
 
-	UINT32		mCurSessionCnt = 0;
+	std::atomic_int mCurSessionCnt = 0;
 	UINT32		mMaxSessionCnt = 0;
 
 	std::unordered_map<std::wstring, SPtr_Session> mSessions    = {}; // Key : Ip / Value : Session Obj
@@ -42,7 +47,7 @@ public:
 	void Send(UINT32 sessionID, SPtr_SendPktBuf sendBuf);
 
 	SPtr_Session	CreateSession();
-	void			AddSession(SPtr_Session session);
+	void			AddSession(std::wstring sessionName, SPtr_Session session);
 	void			ReleaseSession(SPtr_Session session);
 
 	/// +---------------------------
