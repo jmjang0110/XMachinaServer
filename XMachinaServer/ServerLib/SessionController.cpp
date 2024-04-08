@@ -19,43 +19,22 @@ SPtr_Session SessionController::CreateSession(SPtr_NI netInterfaceOwner)
 
 void SessionController::AddSession(UINT32 sessionID, SPtr_Session session)
 {
-#ifdef USE_MY_MADE_LOCK
-	//mSessionsSpLock.Lock();
-	WRITE_LOCK;
-#else 
-	mSessionsMutex.lock();
-#endif // USE_MY_MADE_LOCK
 
 	//mSessionsMutex.lock();
-	//mSessionRWLock.lockWrite();
+	mSessionRWLock.lockWrite();
 
 	//WRITE_LOCK;
 	mCurrSessionCnt.fetch_add(1);
-	session->SetID(sessionID);
 	mSessionsMap[sessionID] = session;
 
-	//mSessionRWLock.unlockWrite();
+	mSessionRWLock.unlockWrite();
 	//mSessionsMutex.unlock();
-#ifdef USE_MY_MADE_LOCK
-	//mSessionsSpLock.UnLock();
-#else 
-	mSessionsMutex.unlock();
-#endif // USE_MY_MADE_LOCK
+
 }
 
 void SessionController::ReleaseSession(UINT32 sessionID)
 {
-	//mSessionRWLock.lockWrite();
-	//mSessionsMutex.lock();
-
-#ifdef USE_MY_MADE_LOCK
-	//mSessionsSpLock.Lock();
-	WRITE_LOCK;
-#else 
-	mSessionsMutex.lock();
-#endif // USE_MY_MADE_LOCK
-
-	mCurrSessionCnt.fetch_sub(1);
+	mSessionRWLock.lockWrite();
 
 	auto iter = mSessionsMap.find(sessionID);
 	if (iter != mSessionsMap.end()) {
@@ -66,47 +45,26 @@ void SessionController::ReleaseSession(UINT32 sessionID)
 		std::cout << "Session with key " << sessionID << " not found in the map." << std::endl;
 	}
 
-#ifdef USE_MY_MADE_LOCK
-	//mSessionsSpLock.UnLock();
-	
-#else 
-	mSessionsMutex.unlock();
-#endif // USE_MY_MADE_LOCK	//mSessionsMutex.unlock();
-	//mSessionRWLock.unlockWrite();
+	mSessionRWLock.unlockWrite();
 }
 
 void SessionController::Broadcast(SPtr_SendPktBuf sendBuf)
 {
 	//Lock::RWLock::GetInst()->lockWrite();		
-	//mSessionRWLock.lockWrite();
+	mSessionRWLock.lockWrite();
 
 	//mSessionsMutex.lock();
-#ifdef USE_MY_MADE_LOCK
-	//mSessionsSpLock.Lock();
-	WRITE_LOCK;
-#else 
-	mSessionsMutex.lock();
-#endif // USE_MY_MADE_LOCK
 
 	//WRITE_LOCK;
 
 	for (const auto& iter : mSessionsMap) {
 		SPtr_Session session = iter.second;
-		if (session) {
-			std::cout << session.get() << std::endl;
-			iter.second->Send(sendBuf);
-		}
-	
+		std::cout << session.get() << std::endl;
+		iter.second->Send(sendBuf);
 	}
 
-	//mSessionRWLock.unlockWrite();
+	mSessionRWLock.unlockWrite();
 	//Lock::RWLock::GetInst()->unlockWrite();
-	//mSessionsSpLock.UnLock();
-#ifdef USE_MY_MADE_LOCK
-	//mSessionsSpLock.UnLock();
-#else 
-	mSessionsMutex.unlock();
-#endif // USE_MY_MADE_LOCK
 
 	//mSessionsMutex.unlock();
 }

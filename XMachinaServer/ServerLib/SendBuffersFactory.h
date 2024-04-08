@@ -70,8 +70,8 @@ public:
 	void  Push_VarPkt(size_t memorySize, void* ptr);
 	void  Push_FixPkt(SendPktInfo::Fix type, void* ptr); 
 
-	SPtr_SendPktBuf CreateVarSendPacketBuf(size_t memorySize);
-	SPtr_SendPktBuf CreateFixSendPacketBuf(SendPktInfo::Fix pktDataType);
+	SPtr_PacketSendBuf CreateVarSendPacketBuf(size_t memorySize);
+	SPtr_PacketSendBuf CreateFixSendPacketBuf(SendPktInfo::Fix pktDataType);
 
 
 public:
