@@ -18,6 +18,9 @@ private:
 	std::string		 mName        = {};
 	class SocketData mSocketData  = {};
 
+protected:
+	UINT32		     ID			  = {};
+
 public:
 	NetworkObject();
 	virtual ~NetworkObject();

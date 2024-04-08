@@ -119,8 +119,8 @@ void Framework::Launch()
 			while (true) {
 				test Data;
 				SPtr_PacketSendBuf sendBuf = TLS_MGR->Get_TlsSendBufFactory()->SendBufFactory->CreateVarSendPacketBuf(sizeof(Data));
-				std::cout << sendBuf.get() << std::endl;
-				mServer->BroadCast(sendBuf);
+				//std::cout << sendBuf.get() << std::endl;
+				mServer->Broadcast(sendBuf);
 			}
 		});
 	

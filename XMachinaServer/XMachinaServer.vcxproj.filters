@@ -149,6 +149,9 @@
     <ClInclude Include="ServerLib\Session.h">
       <Filter>ServerLib\Network\Iocp\Netowork\Object</Filter>
     </ClInclude>
+    <ClInclude Include="ServerLib\SessionController.h">
+      <Filter>ServerLib\Network\Iocp\Netowork\Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -216,6 +219,9 @@
       <Filter>ServerLib\Network\Iocp\Netowork\Object</Filter>
     </ClCompile>
     <ClCompile Include="ServerLib\Session.cpp">
+      <Filter>ServerLib\Network\Iocp\Netowork\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerLib\SessionController.cpp">
       <Filter>ServerLib\Network\Iocp\Netowork\Object</Filter>
     </ClCompile>
   </ItemGroup>

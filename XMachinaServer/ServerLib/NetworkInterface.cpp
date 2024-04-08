@@ -1,11 +1,17 @@
 #include "pch.h"
 #include "NetworkInterface.h"
 #include "NetworkManager.h"
+#include "SessionController.h"
 
 #include "ServerNetwork.h"
 #include "../Framework.h"
 #include "Lock.h"
 
+
+NetworkInterface::NetworkInterface()
+{
+	mSessionController = std::make_shared<SessionController>();
+}
 
 NetworkInterface::~NetworkInterface()
 {
@@ -101,6 +107,7 @@ bool NetworkInterface::Start(std::wstring ip, UINT16 portNum)
 											, 0
 											, 0);
 
+
 	return mIocpHandle != INVALID_HANDLE_VALUE;
 }
 
@@ -108,65 +115,36 @@ void NetworkInterface::Close()
 {
 }
 
-void NetworkInterface::BroadCast(SPtr_SendPktBuf sendBuf)
-{
-	//Lock::RWLock::GetInst()->lockWrite();
-	//mSessionRWLock.lockWrite();
-
-	//mSessionsMutex.lock();
-
-	WRITE_LOCK;
-
-	for (const auto& iter : mSessions) {
-		iter.second->Send(sendBuf);
-	}
-	
-	//mSessionRWLock.unlockWrite();
-
-	//Lock::RWLock::GetInst()->unlockWrite();
-
-	//mSessionsMutex.unlock();
-}
 
 void NetworkInterface::Send(UINT32 sessionID, SPtr_SendPktBuf sendBuf)
 {
+	mSessionController->Send(sessionID, sendBuf);
+
+}
+
+void NetworkInterface::Broadcast(SPtr_SendPktBuf sendBuf)
+{
+	mSessionController->Broadcast(sendBuf);
+
 }
 
 
 SPtr_Session NetworkInterface::CreateSession()
 {
 
-	SPtr_Session session = mSessionConstructorFunc();
-	session->SetOwerNetworkInterface(shared_from_this());
+	SPtr_Session session = mSessionController->CreateSession(shared_from_this());
 	if(RegisterIocp(session) == false)
 		return nullptr;
 	return session;
 }
 
-void NetworkInterface::AddSession(std::wstring sessionName, SPtr_Session session)
+void NetworkInterface::AddSession(UINT32 sessionID, SPtr_Session session)
 {
-	//mSessionsMutex.lock();
-	//mSessionRWLock.lockWrite();
-
-	WRITE_LOCK;
-
-	mCurSessionCnt.fetch_add(1);
-	mSessions[sessionName] = session;
-
-	//mSessionRWLock.unlockWrite();
-
-	//mSessionsMutex.unlock();
-
+	mSessionController->AddSession(sessionID, session); // lock 
 }
 
-void NetworkInterface::ReleaseSession(SPtr_Session session)
+void NetworkInterface::DeleteSession(UINT32 sessionID)
 {
-	//mSessionsMutex.lock();
-	//mSessionRWLock.lockWrite();
-	WRITE_LOCK;
-
-
-	//mSessionRWLock.unlockWrite();
-
-	//mSessionsMutex.unlock();
+	mSessionController->ReleaseSession(sessionID); // lock
 }
+

@@ -38,17 +38,13 @@ struct PacketBuffer {
 class Session : public NetworkObject
 {
 private:
-	USE_LOCK;
-
-private:
 	//std::mutex sendLock;
-	class Lock::RWLock mRWSendLock;
+	class Lock::RWLock					  mRWSendLock;
 
 	std::weak_ptr<class NetworkInterface> mOwnerNI	      = {};		/* Server Network or Client Network - Set Owner */
 	std::atomic<bool>					  mIsConnected    = false;	/* Check If Client Connect to Server */
 	OverLapped							  mOverlapped     = {};		/* Overlapped I/O Object */
 	PacketBuffer						  mPacketBuffer   = {};		/* send / recv Packet Buffer */
-
 protected:
 	/* Session class을 상속받은 class는 신호를 받는다. */
 	virtual void	OnConnected() {};

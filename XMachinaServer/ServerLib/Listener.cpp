@@ -120,7 +120,7 @@ bool Listener::Start(std::wstring ip, UINT16 portNum, SPtr_NI netInterface)
 void Listener::RegisterAccept()
 {
 	/* Register Accept IO */
-	const UINT32 MaxAcceptCnt = mOwnerNI->GetMaxSEssionCnt();
+	const UINT32 MaxAcceptCnt = mOwnerNI->GetMaxSessionCnt();
 	for (INT32 i = 0; i < MaxAcceptCnt; ++i) {
 
 		Overlapped_Accept* acceptIO = new Overlapped_Accept();

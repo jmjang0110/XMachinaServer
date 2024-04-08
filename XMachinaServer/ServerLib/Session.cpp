@@ -127,8 +127,8 @@ void Session::RegisterIO(OverlappedIO::Type IoType)
 		{
 		
 			//sendLock.lock();
-			//mRWSendLock.lockWrite();
-			WRITE_LOCK;
+			mRWSendLock.lockWrite();
+			//WRITE_LOCK;
 
 
 			while (mPacketBuffer.SendPkt_Queue.empty() == false) {
@@ -138,7 +138,7 @@ void Session::RegisterIO(OverlappedIO::Type IoType)
 					mOverlapped.Send.BufPush(sendPktBuf);
 			}
 
-			//mRWSendLock.unlockWrite();
+			mRWSendLock.unlockWrite();
 			//sendLock.unlock();
 
 
@@ -228,8 +228,10 @@ void Session::ProcessIO(OverlappedIO::Type IoType, INT32 BytesTransferred)
 		mOverlapped.Connect.ReleaseReferenceCount(); // Shared_ptr -> release
 		mIsConnected.store(true);
 
-		std::wstring SessionName = std::to_wstring(static_cast<long>(GetSocketData().GetSocket()));
-		GetOwnerNI()->AddSession(SessionName, std::static_pointer_cast<Session>(shared_from_this()));
+		//std::wstring SessionName = std::to_wstring(static_cast<long>(GetSocketData().GetSocket()));
+		//GetOwnerNI()->AddSession(SessionName, std::static_pointer_cast<Session>(shared_from_this()));
+		UINT32 sessionID = static_cast<UINT32>(GetSocketData().GetSocket());
+		GetOwnerNI()->AddSession(sessionID, std::static_pointer_cast<Session>(shared_from_this()));
 
 		/* On Connect */
 		OnConnected();
@@ -247,9 +249,8 @@ void Session::ProcessIO(OverlappedIO::Type IoType, INT32 BytesTransferred)
 		mOverlapped.Disconnect.ReleaseReferenceCount(); // Shared_ptr -> release 
 
 		OnDisconnected();
-		GetOwnerNI()->ReleaseSession(std::static_pointer_cast<Session>(shared_from_this()));
-
-
+		GetOwnerNI()->DeleteSession(NetworkObject::ID); /* ID : protected */
+		//GetOwnerNI()->ReleaseSession(std::static_pointer_cast<Session>(shared_from_this()));
 
 	}
 	break;
@@ -275,15 +276,15 @@ void Session::ProcessIO(OverlappedIO::Type IoType, INT32 BytesTransferred)
 		{
 		
 			//sendLock.lock();
-			//mRWSendLock.lockWrite();
-			WRITE_LOCK;
+			mRWSendLock.lockWrite();
+			//WRITE_LOCK;
 
 			if (mPacketBuffer.SendPkt_Queue.empty() == true) {
 				mPacketBuffer.IsSendRegistered.store(false);
 
 			}
 			//sendLock.unlock();
-			//mRWSendLock.unlockWrite();
+			mRWSendLock.unlockWrite();
 
 			/* ´Ù ¾Èº¸³¿ */
 			if(mPacketBuffer.SendPkt_Queue.empty() == false){
@@ -352,15 +353,15 @@ void Session::Send(SPtr_SendPktBuf buf)
 
 	{
 		//sendLock.lock();
-		//mRWSendLock.lockWrite();
-		WRITE_LOCK;
+		mRWSendLock.lockWrite();
+		//WRITE_LOCK;
 
 		mPacketBuffer.SendPkt_Queue.push(buf);
 
 		if (mPacketBuffer.IsSendRegistered.exchange(true) == false)
 			RegisterSend = true;
 
-		//mRWSendLock.unlockWrite();
+		mRWSendLock.unlockWrite();
 
 		//sendLock.unlock();
 
