@@ -20,6 +20,7 @@ public:
 	{
 		Max_Session_Limit_Count = 5000,
 	};
+	USE_LOCK;
 
 private:
 	Concurrency::concurrent_unordered_map<UINT32, SPtr_Session> mSessionsMap; // Key : ID / Value : Session ( Shared Ptr )
@@ -28,6 +29,7 @@ private:
 	UINT32				mMaxSessionCnt  = 0;  /* 최대 접속 세션 수 */
 	std::mutex		    mSessionsMutex  = {}; /* 세션 접속 뮤텍스	 */
 	Lock::RWLock	    mSessionRWLock  = {}; /* 세션 접속 뮤텍스 (RWLock) */
+	Lock::SpinLock      mSessionsSpLock = {};
 
 	std::function<SPtr_Session(void)>	mSessionConstructorFunc = {}; // Session 생성자 함수 포인터 ( session상속클래스 생성자 )
 

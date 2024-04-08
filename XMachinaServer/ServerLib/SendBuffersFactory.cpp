@@ -147,9 +147,9 @@ void SendBuffersFactory::Push_FixPkt(SendPktInfo::Fix type, void* ptr)
 	mMemPools_FixPkt[type]->Push(ptr);
 }
 
-SPtr_PacketSendBuf SendBuffersFactory::CreateVarSendPacketBuf(size_t memorySize)
+SPtr_SendPktBuf SendBuffersFactory::CreateVarSendPacketBuf(size_t memorySize)
 {
-	SPtr_PacketSendBuf sendBuf{};
+	SPtr_SendPktBuf sendBuf{};
 
 	/* 메모리 풀에서 메모리를 받아와서 shared_ptr 로 SendPacket Buffer 를 만들어 반환하자! */
 	
@@ -187,9 +187,9 @@ SPtr_PacketSendBuf SendBuffersFactory::CreateVarSendPacketBuf(size_t memorySize)
 	return sendBuf;
 }
 
-SPtr_PacketSendBuf SendBuffersFactory::CreateFixSendPacketBuf(SendPktInfo::Fix pktDataType)
+SPtr_SendPktBuf SendBuffersFactory::CreateFixSendPacketBuf(SendPktInfo::Fix pktDataType)
 {
-	SPtr_PacketSendBuf sendBuf{};
+	SPtr_SendPktBuf sendBuf{};
 
 	return sendBuf;
 }

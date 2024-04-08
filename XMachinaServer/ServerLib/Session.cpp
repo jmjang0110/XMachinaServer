@@ -14,7 +14,7 @@
 Session::Session() : NetworkObject()
 {
 	mPacketBuffer.RecvPkt = PacketRecvBuf(static_cast<INT32>(PacketRecvBuf::Info::Size));
-	
+
 	SocketData sockdata = {};
 	sockdata.CreateSocket();
 	NetworkObject::SetSocketData(sockdata);
@@ -75,13 +75,13 @@ void Session::RegisterIO(OverlappedIO::Type IoType)
 		/* Register Connect I/O */
 		DWORD numOfBytes = {};
 		bool ConnectExResult = NETWORK_MGR->ConnectEx()(GetSocketData().GetSocket()
-										, reinterpret_cast<SOCKADDR*>(&GetSocketData().GetSockAddr())
-										, sizeof(GetSocketData().GetSockAddr())
-										, nullptr
-										, 0
-										, &numOfBytes
-										, &mOverlapped.Connect);
-		
+			, reinterpret_cast<SOCKADDR*>(&GetSocketData().GetSockAddr())
+			, sizeof(GetSocketData().GetSockAddr())
+			, nullptr
+			, 0
+			, &numOfBytes
+			, &mOverlapped.Connect);
+
 		if (ConnectExResult == false) {
 			INT32 errCode = ::WSAGetLastError();
 			if (errCode != WSA_IO_PENDING) {
@@ -89,19 +89,19 @@ void Session::RegisterIO(OverlappedIO::Type IoType)
 			}
 		}
 	}
-		break;
-		/// +-------------------
-		///	REGISTER DISCONNECT
-		/// -------------------+
+	break;
+	/// +-------------------
+	///	REGISTER DISCONNECT
+	/// -------------------+
 	case OverlappedIO::Type::DisConnect:
 	{
 		mOverlapped.Disconnect.Clear_OVERLAPPED();
 		mOverlapped.Disconnect.SetOwner(shared_from_this());
 
 		bool DisconnectExResult = NETWORK_MGR->DiscconectEx()(GetSocketData().GetSocket()
-															, &mOverlapped.Disconnect
-															, TF_REUSE_SOCKET /* 소켓이 종료되어도 해당 주소와 포트를 다른 소켓이 사용가능 */
-															, 0);
+			, &mOverlapped.Disconnect
+			, TF_REUSE_SOCKET /* 소켓이 종료되어도 해당 주소와 포트를 다른 소켓이 사용가능 */
+			, 0);
 
 		if (DisconnectExResult == false) {
 			INT32 errCode = ::WSAGetLastError();
@@ -110,10 +110,10 @@ void Session::RegisterIO(OverlappedIO::Type IoType)
 			}
 		}
 	}
-		break;
-		/// +-------------------
-		///	   REGISTER SEND 
-		/// -------------------+
+	break;
+	/// +-------------------
+	///	   REGISTER SEND 
+	/// -------------------+
 	case OverlappedIO::Type::Send:
 	{
 		if (mIsConnected.load() == false) {
@@ -125,45 +125,35 @@ void Session::RegisterIO(OverlappedIO::Type IoType)
 
 		/* Push SendPkt to Overlapped_Send */
 		{
-		
-			//sendLock.lock();
-			mRWSendLock.lockWrite();
-			//WRITE_LOCK;
-
-
+			WRITE_LOCK;
 			while (mPacketBuffer.SendPkt_Queue.empty() == false) {
 				SPtr_SendPktBuf sendPktBuf = mPacketBuffer.SendPkt_Queue.front();
 				mPacketBuffer.SendPkt_Queue.pop();
-				if(sendPktBuf)
+				if (sendPktBuf)
 					mOverlapped.Send.BufPush(sendPktBuf);
 			}
-
-			mRWSendLock.unlockWrite();
-			//sendLock.unlock();
-
-
 		}
 
 		/* Scatter-Gather */
 		std::vector<WSABUF> wsaBufs = { };
 		wsaBufs.reserve(mOverlapped.Send.BufSize());
 		for (SPtr_SendPktBuf sendBuf : mOverlapped.Send.GetSendBuffers()) {
-		
+
 			WSABUF wsaBuf = {};
-			wsaBuf.buf    = reinterpret_cast<char*>(sendBuf->GetBuffer());
-			wsaBuf.len    = static_cast<LONG>(sendBuf->GetTotalSize());
+			wsaBuf.buf = reinterpret_cast<char*>(sendBuf->GetBuffer());
+			wsaBuf.len = static_cast<LONG>(sendBuf->GetTotalSize());
 			wsaBufs.push_back(wsaBuf);
 		}
 
 		/* ::WSASend */
 		DWORD numOfBytes = 0;
 		if (SOCKET_ERROR == ::WSASend(GetSocketData().GetSocket()
-									, wsaBufs.data()
-									, static_cast<DWORD>(wsaBufs.size())
-									, OUT & numOfBytes
-									, 0
-									, &mOverlapped.Send
-									, nullptr))
+			, wsaBufs.data()
+			, static_cast<DWORD>(wsaBufs.size())
+			, OUT & numOfBytes
+			, 0
+			, &mOverlapped.Send
+			, nullptr))
 		{
 			INT32 errCode = ::WSAGetLastError();
 			if (errCode != WSA_IO_PENDING)
@@ -176,10 +166,10 @@ void Session::RegisterIO(OverlappedIO::Type IoType)
 		}
 
 	}
-		break;
-		/// +-------------------
-		///    REGISTER RECV
-		/// -------------------+
+	break;
+	/// +-------------------
+	///    REGISTER RECV
+	/// -------------------+
 	case OverlappedIO::Type::Recv:
 	{
 		if (mIsConnected.load() == false) {
@@ -194,14 +184,14 @@ void Session::RegisterIO(OverlappedIO::Type IoType)
 		wsaBuf.len = mPacketBuffer.RecvPkt.GetFreeSize();
 
 		DWORD numOfBytes = 0;
-		DWORD flags      = 0;
+		DWORD flags = 0;
 		int WSARecvResult = ::WSARecv(GetSocketData().GetSocket()
-									, &wsaBuf
-									, 1
-									, &numOfBytes
-									, &flags
-									, &mOverlapped.Recv
-									, nullptr);
+			, &wsaBuf
+			, 1
+			, &numOfBytes
+			, &flags
+			, &mOverlapped.Recv
+			, nullptr);
 
 		if (WSARecvResult == SOCKET_ERROR) {
 			INT32 errCode = ::WSAGetLastError();
@@ -211,7 +201,7 @@ void Session::RegisterIO(OverlappedIO::Type IoType)
 			}
 		}
 	}
-		break;
+	break;
 	}
 
 }
@@ -220,9 +210,9 @@ void Session::ProcessIO(OverlappedIO::Type IoType, INT32 BytesTransferred)
 {
 	switch (IoType)
 	{
-	/// +-------------------
-	///    PROCESS CONNECT
-	/// -------------------+
+		/// +-------------------
+		///    PROCESS CONNECT
+		/// -------------------+
 	case OverlappedIO::Type::Connect:
 	{
 		mOverlapped.Connect.ReleaseReferenceCount(); // Shared_ptr -> release
@@ -260,7 +250,7 @@ void Session::ProcessIO(OverlappedIO::Type IoType, INT32 BytesTransferred)
 	case OverlappedIO::Type::Send:
 	{
 
-		mOverlapped.Send.ReleaseReferenceCount(); 
+		mOverlapped.Send.ReleaseReferenceCount();
 		mOverlapped.Send.ReleaseSendBuffersReferenceCount(); /* SendBuffers Send Complete → Release Reference Count */
 
 		/* Exception Disconnect */
@@ -271,27 +261,13 @@ void Session::ProcessIO(OverlappedIO::Type IoType, INT32 BytesTransferred)
 
 		OnSend(BytesTransferred);
 
-		/* TODO : Lock 걸자!*/
-		/* 다 보냄 */
-		{
-		
-			//sendLock.lock();
-			mRWSendLock.lockWrite();
-			//WRITE_LOCK;
+		WRITE_LOCK;
 
-			if (mPacketBuffer.SendPkt_Queue.empty() == true) {
-				mPacketBuffer.IsSendRegistered.store(false);
-
-			}
-			//sendLock.unlock();
-			mRWSendLock.unlockWrite();
-
-			/* 다 안보냄 */
-			if(mPacketBuffer.SendPkt_Queue.empty() == false){
-				RegisterIO(OverlappedIO::Type::Send);
-			}
+		if (mPacketBuffer.SendPkt_Queue.empty()) {
+			mPacketBuffer.IsSendRegistered.store(false);
 		}
-
+		else
+			RegisterIO(OverlappedIO::Type::Send);
 
 	}
 	break;
@@ -353,16 +329,31 @@ void Session::Send(SPtr_SendPktBuf buf)
 
 	{
 		//sendLock.lock();
-		mRWSendLock.lockWrite();
+		//mRWSendLock.lockWrite();
 		//WRITE_LOCK;
+
+
+
+#ifdef USE_MY_MADE_LOCK
+		WRITE_LOCK;
+		//mSendSpLock.Lock();5
+#else 
+		std::cout << "LOCK - " << TLS_MGR->Get_TlsInfoData()->id << '\n';
+
+		mSendLock.lock();
+#endif // USE_MY_MADE_LOCK
 
 		mPacketBuffer.SendPkt_Queue.push(buf);
 
 		if (mPacketBuffer.IsSendRegistered.exchange(true) == false)
 			RegisterSend = true;
 
-		mRWSendLock.unlockWrite();
-
+		//mRWSendLock.unlockWrite();
+#ifdef USE_MY_MADE_LOCK
+			//mSendSpLock.UnLock();
+#else 
+		mSendLock.unlock();
+#endif // USE_MY_MADE_LOCK		
 		//sendLock.unlock();
 
 
@@ -381,7 +372,7 @@ void Session::Connect()
 void Session::Disconnect(const WCHAR* cause)
 {
 	if (mIsConnected.exchange(false) == false)
-		return;	
+		return;
 	std::wcout << "Disconnect : " << cause << std::endl;
 
 	RegisterIO(OverlappedIO::Type::DisConnect);

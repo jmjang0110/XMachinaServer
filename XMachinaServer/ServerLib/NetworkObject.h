@@ -35,6 +35,7 @@ public:
 	void		SetSocketData(SocketData& sockData) { mSocketData = sockData; }
 	void		SetName(std::string name) { mName = name; }
 
+	void SetID(UINT32 id);
 
 };
 

@@ -34,3 +34,4 @@
 #include "Contents/LogManager.h"
 
 
+#define USE_MY_MADE_LOCK 
