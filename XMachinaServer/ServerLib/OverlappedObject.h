@@ -110,7 +110,7 @@ private:
 	std::vector<SPtr_SendPktBuf> mSendBuffers;
 
 public:
-	void   BufPush(SPtr_SendPktBuf sendBuf)			{ mSendBuffers.push_back(sendBuf); }
+	void   BufPush(SPtr_SendPktBuf sendBuf)			{ mSendBuffers.emplace_back(sendBuf); }
 	size_t BufSize()								{ return mSendBuffers.size(); }
 	void   BufClear()								{ mSendBuffers.clear(); }
 	std::vector<SPtr_SendPktBuf>& GetSendBuffers()	{ return mSendBuffers; }

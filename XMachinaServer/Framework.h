@@ -14,7 +14,7 @@ class Framework
 
 private:
 	SPtr_ServerNetwork mServer = {};
-
+	SPtr_SendBufFactory mSendFactory = {};
 
 public:
 	Framework();
@@ -25,6 +25,7 @@ public:
 	void Launch();
 
 	SPtr_ServerNetwork GetServerNetwork() { return mServer; }
+	SPtr_SendBufFactory GetSendFactory() { return mSendFactory; }
 
 };
 

@@ -50,6 +50,7 @@ namespace SendPktInfo {
 // 각 쓰레드 마다 하나씩 생성 시킬 것 ( 안전하게 shared_ptr 로 생성 )
 class SendBuffersFactory : public std::enable_shared_from_this<SendBuffersFactory>
 {
+	USE_LOCK;
 private:
 	std::unordered_map<SendPktInfo::Var, class SListMemoryPool*> mMemPools_VarPkt = {}; // 가변길이 패킷 전용 메모리 풀 
 	std::unordered_map<SendPktInfo::Fix, class SListMemoryPool*> mMemPools_FixPkt = {}; // 고정길이 패킷 전용 메모리 풀 

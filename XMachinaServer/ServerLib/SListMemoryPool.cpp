@@ -10,6 +10,9 @@ SListMemoryPool::SListMemoryPool(size_t MemorySize)
     : mMemorySize(MemorySize)
 {
     mNumBlocks.store(0);
+    mPushCount.store(0);
+    mPullCount.store(0);
+
     // SLIST 헤더 초기화
     ::InitializeSListHead(&mSListHeader);
      AddMemory();
@@ -38,7 +41,7 @@ void* SListMemoryPool::Pull()
      //   return nullptr;
 
 
-
+    
     // SLIST에서 메모리 블록 가져오기
     mNumBlocks.fetch_sub(1);
     PSLIST_ENTRY ptr = ::InterlockedPopEntrySList(&mSListHeader);
@@ -49,10 +52,25 @@ void* SListMemoryPool::Pull()
     }
 
     mPullCount.fetch_add(1);
+    std::cout << "Pull Count : " << mPullCount.load() << std::endl;
 
-
-
+    
     if (ptr) {
+        if (TLS_MGR->Get_TlsInfoData()) {
+            if (TLS_MGR->Get_TlsInfoData()->id) {
+                std::cout << TLS_MGR->Get_TlsInfoData()->id << " Thread - " << "Pull..." << reinterpret_cast<void*>(reinterpret_cast<char*>(ptr) + sizeof(SLIST_ENTRY)) << std::endl;
+            }
+            if (TLS_MGR->Get_TlsInfoData()->id) {
+                // std::cout << TLS_MGR->Get_TlsInfoData()->id << " Thread - " << "Push..." << reinterpret_cast<void*>(reinterpret_cast<char*>(ptr) + sizeof(SLIST_ENTRY)) << std::endl;
+                // std::cout << "Push count : " << mPushCount.load() << std::endl;
+                std::cout << TLS_MGR->Get_TlsInfoData()->id << " thread[PULL] " << " Total Count : "
+                    << "pull = " << mPullCount << " Push = " << mPushCount << " "
+                    << mPullCount - mPushCount << std::endl;
+
+            }
+        }
+
+
         /* ptr-------->ptr                  */       
         /* ↓            ↓                   */       
         /* [SLIST_ENTRY][ ... memory ... ]  */
@@ -61,8 +79,23 @@ void* SListMemoryPool::Pull()
     else {
         /* 없으면 만들어서.. */
         AddMemory();
-        mNumBlocks.fetch_sub(1);
-        PSLIST_ENTRY ptr = ::InterlockedPopEntrySList(&mSListHeader);
+        ptr = ::InterlockedPopEntrySList(&mSListHeader);
+
+        if (TLS_MGR->Get_TlsInfoData()) {
+            if (TLS_MGR->Get_TlsInfoData()->id) {
+                std::cout << TLS_MGR->Get_TlsInfoData()->id << " Thread - " << "Pull..." << reinterpret_cast<void*>(reinterpret_cast<char*>(ptr) + sizeof(SLIST_ENTRY)) << std::endl;
+            }
+            if (TLS_MGR->Get_TlsInfoData()->id) {
+                // std::cout << TLS_MGR->Get_TlsInfoData()->id << " Thread - " << "Push..." << reinterpret_cast<void*>(reinterpret_cast<char*>(ptr) + sizeof(SLIST_ENTRY)) << std::endl;
+                // std::cout << "Push count : " << mPushCount.load() << std::endl;
+                std::cout << TLS_MGR->Get_TlsInfoData()->id << " thread[PULL] " << " Total Count : "
+                    << "pull = " << mPullCount << " Push = " << mPushCount << " "
+                    << mPullCount - mPushCount << std::endl;
+
+            }
+        }
+
+
         return reinterpret_cast<void*>(reinterpret_cast<char*>(ptr) + sizeof(SLIST_ENTRY));
 
     }
@@ -79,6 +112,14 @@ void SListMemoryPool::Push(void* ptr)
     mNumBlocks.fetch_add(1);
     //std::cout << TLS_MGR->Get_TlsSendBufFactory()->SendBufFactory << "반납 아이디 : " << TLS_MGR->Get_TlsInfoData()->id << " 메모리 포인터 - "  << ptr << " 갯수 : " << mNumBlocks.load() << std::endl;
 
+    if (TLS_MGR->Get_TlsInfoData()->id) {
+       // std::cout << TLS_MGR->Get_TlsInfoData()->id << " Thread - " << "Push..." << reinterpret_cast<void*>(reinterpret_cast<char*>(ptr) + sizeof(SLIST_ENTRY)) << std::endl;
+       // std::cout << "Push count : " << mPushCount.load() << std::endl;
+        std::cout << TLS_MGR->Get_TlsInfoData()->id << " thread[PUSH] " << " Total Count : " 
+            << "pull = " << mPullCount << " Push = " << mPushCount << " " 
+            << mPullCount - mPushCount << std::endl;
+
+    }
 
     // SLIST에 메모리 블록 추가
         /* ptr<--------ptr                  */       
@@ -91,10 +132,13 @@ void SListMemoryPool::AddMemory()
 {
     // SLIST에 메모리 블록 추가
     /* [SLIST_ENTRY][ ... memory ... ] */
-    SListMemoryBlock* ptr = static_cast<SListMemoryBlock*>(::_aligned_malloc(sizeof(SLIST_ENTRY) + mMemorySize, MEMORY_ALLOCATION_ALIGNMENT));
+    const UINT32 AllocSizse = sizeof(SLIST_ENTRY) + mMemorySize;
+    SListMemoryBlock* ptr = reinterpret_cast<SListMemoryBlock*>(::_aligned_malloc(AllocSizse, MEMORY_ALLOCATION_ALIGNMENT));
     if (ptr) {
+
         mNumBlocks.fetch_add(1);
-        InterlockedPushEntrySList(&mSListHeader, reinterpret_cast<PSLIST_ENTRY>(ptr));
+        ::InterlockedPushEntrySList(&mSListHeader, reinterpret_cast<PSLIST_ENTRY>(ptr));
+        std::cout  << " AddMemory : " << mNumBlocks.load() << std::endl;
     }
 
 }

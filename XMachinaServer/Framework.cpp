@@ -82,6 +82,8 @@ bool Framework::Init(HINSTANCE& hInst)
 	mServer->SetSessionConstructorFunc(std::make_shared<GameSession>);
 	mServer->Start(L"127.0.0.1", 7777);
 
+	mSendFactory = std::make_shared<SendBuffersFactory>();
+	mSendFactory->InitPacketMemoryPools();
 
 	return true;
 }
@@ -100,7 +102,7 @@ void Framework::Launch()
 	LOG_MGR->Cout("-------------------------------+\n");
 	LOG_MGR->SetColor(TextColor::Default);
 
-	int ThreadNum = 4;
+	int ThreadNum = 3;
 	for (INT32 i = 0; i < ThreadNum; ++i) {
 		THREAD_MGR->RunThread("Network Dispatch " + std::to_string(i), [&]() {
 	
@@ -110,7 +112,6 @@ void Framework::Launch()
 			while (true)
 			{
 				mServer->Dispatch_CompletedTasks_FromIOCP(0);
-				//std::cout << TLS_MGR->Get_TlsSendBufFactory()->SendBufFactory << std::endl;
 			}
 			});
 	}
@@ -118,9 +119,11 @@ void Framework::Launch()
 	THREAD_MGR->RunThread("Send Test", [&]() {
 			while (true) {
 				test Data;
-				SPtr_SendPktBuf sendBuf = TLS_MGR->Get_TlsSendBufFactory()->SendBufFactory->CreateVarSendPacketBuf(sizeof(Data));
+				SPtr_SendPktBuf sendBuf = mSendFactory->CreateVarSendPacketBuf(sizeof(Data));
 				//std::cout << sendBuf.get() << std::endl;
-				mServer->Broadcast(sendBuf);
+				if(sendBuf)
+					mServer->Broadcast(sendBuf);
+				//sendBuf->Close(0);
 			}
 		});
 	
