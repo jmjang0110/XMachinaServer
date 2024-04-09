@@ -11,8 +11,3 @@ NetworkObject::~NetworkObject()
 	mSocketData.Close();
 
 }
-
-void NetworkObject::SetID(UINT32 id)
-{
-	ID = id;
-}

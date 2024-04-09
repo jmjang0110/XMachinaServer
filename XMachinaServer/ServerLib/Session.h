@@ -25,9 +25,9 @@ struct OverLapped {
 
 struct PacketBuffer {
 	/* Send */
-	//Concurrency::concurrent_queue<SPtr_SendPktBuf> SendPkt_Queue{};
+	//concurrency::concurrent_queue<SPtr_SendPktBuf> SendPkt_Queue;
 
-	std::queue<SPtr_SendPktBuf> SendPkt_Queue = {}; /* Scatter-Gather를 위해서 Queue에 저장 */
+	std::queue<SPtr_SendPktBuf> SendPkt_Queue    = {}; /* Scatter-Gather를 위해서 Queue에 저장 */
 	std::atomic<bool>			IsSendRegistered = false;
 	
 	/* Recv */
@@ -37,12 +37,9 @@ struct PacketBuffer {
 
 class Session : public NetworkObject
 {
-	USE_LOCK;
 private:
 	//std::mutex sendLock;
 	class Lock::RWLock					  mRWSendLock;
-	Lock::SpinLock						  mSendSpLock;
-	std::mutex							  mSendLock;
 
 	std::weak_ptr<class NetworkInterface> mOwnerNI	      = {};		/* Server Network or Client Network - Set Owner */
 	std::atomic<bool>					  mIsConnected    = false;	/* Check If Client Connect to Server */
