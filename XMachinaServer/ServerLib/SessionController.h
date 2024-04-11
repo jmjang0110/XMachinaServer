@@ -15,6 +15,8 @@
 class NetworkInterface;
 class SessionController
 {
+	USE_LOCK;
+
 public:
 	enum class EnumInfo
 	{

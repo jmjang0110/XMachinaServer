@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Lock.h"
 #include "ThreadManager.h"
 
@@ -21,7 +21,7 @@ Lock::SpinLock::~SpinLock()
 void Lock::SpinLock::Lock()
 {
     while (mAtomicFlag.exchange(true, std::memory_order_acquire)) {
-        SpinWait();   // ÂªÀº ´ë±â ½Ã°£ µ¿¾È ½ºÇÉÇÕ´Ï´Ù.
+        SpinWait();   // ì§§ì€ ëŒ€ê¸° ì‹œê°„ ë™ì•ˆ ìŠ¤í•€í•©ë‹ˆë‹¤.
     }
 }
 
@@ -32,19 +32,19 @@ void Lock::SpinLock::UnLock()
 
 void Lock::SpinLock::SpinWait()
 {
-    // ½ºÇÉ ´ë±â ½Ã°£À» Á¶ÀıÇÒ ¼ö ÀÖ½À´Ï´Ù.
+    // ìŠ¤í•€ ëŒ€ê¸° ì‹œê°„ì„ ì¡°ì ˆí•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.
     for (INT32 i = 0; i < mMaxSpinCount; ++i) {
-        // ¾Æ¹« ÀÛ¾÷µµ ÇÏÁö ¾Ê°í ½Ã°£À» ¼Ò¸ğÇÕ´Ï´Ù.
-        volatile INT32 dummy = 0; // ÂªÀº ´ë±â ½Ã°£À» À§ÇØ volatile º¯¼ö »ç¿ë
+        // ì•„ë¬´ ì‘ì—…ë„ í•˜ì§€ ì•Šê³  ì‹œê°„ì„ ì†Œëª¨í•©ë‹ˆë‹¤.
+        volatile INT32 dummy = 0; // ì§§ì€ ëŒ€ê¸° ì‹œê°„ì„ ìœ„í•´ volatile ë³€ìˆ˜ ì‚¬ìš©
         
         for (volatile INT32 j = 0; j < 100; ++j) {
             dummy += j;
         }
-        // ·çÇÁ Á¾·á Á¶°Ç
+        // ë£¨í”„ ì¢…ë£Œ ì¡°ê±´
         if (FALSE == mAtomicFlag.load(std::memory_order_relaxed)) {
             return;
         }
-        std::this_thread::yield(); // ÂªÀº ´ë±â ½Ã°£À» À§ÇØ yield
+        std::this_thread::yield(); // ì§§ì€ ëŒ€ê¸° ì‹œê°„ì„ ìœ„í•´ yield
     }
 
 }
@@ -66,7 +66,7 @@ void Lock::RWLock::lockRead()
 {
     while (true) {
         while (mWriterCount.load() > 0) {
-            std::this_thread::yield(); // ±â´Ù¸²
+            std::this_thread::yield(); // ê¸°ë‹¤ë¦¼
         }
         mReaderCount.fetch_add(1, std::memory_order_acquire);
         if (mWriterCount.load() == 0) {
@@ -85,11 +85,89 @@ void Lock::RWLock::lockWrite()
 {
     mWriterCount.fetch_add(1, std::memory_order_acquire);
     while (mReaderCount.load() > 0) {
-        std::this_thread::yield(); // ±â´Ù¸²
+        std::this_thread::yield(); // ê¸°ë‹¤ë¦¼
     }
 }
 
 void Lock::RWLock::unlockWrite()
 {
     mWriterCount.fetch_sub(1, std::memory_order_release);
+}
+
+
+
+
+void Lock::Lock::WriteLock(const char* name)
+{
+    const UINT32 lockThreadId = (mLogFlag.load() & static_cast<UINT32>(LockFlag::Write_Thread_Mask)) >> 16;
+    if (TLS_MGR->Get_TlsInfoData()->id == lockThreadId)
+    {
+        mWriteCount++;
+        return;
+    }
+
+    const INT64 beginTick = ::GetTickCount64();
+    const UINT32 desired = ((TLS_MGR->Get_TlsInfoData()->id << 16) & static_cast<UINT32>(LockFlag::Write_Thread_Mask));
+    while (true)
+    {
+        for (UINT32 spinCount = 0; spinCount < static_cast<UINT32>(LockFlag::Max_Spin_Count); spinCount++)
+        {
+            UINT32 expected = static_cast<UINT32>(LockFlag::Empty_Mask);
+            if (mLogFlag.compare_exchange_strong(OUT expected, desired))
+            {
+                mWriteCount++;
+                return;
+            }
+        }
+
+        if (::GetTickCount64() - beginTick >= static_cast<UINT32>(LockFlag::Acquire_Timeout_Tick))
+            assert(false); /* Time Out */
+
+        std::this_thread::yield(); 
+    }
+}
+
+void Lock::Lock::WriteUnlock(const char* name)
+{
+    // ReadLock ë‹¤ í’€ê¸° ì „ì—ëŠ” WriteUnlock ë¶ˆê°€ëŠ¥.
+    if ((mLogFlag.load() & static_cast<UINT32>(LockFlag::Read_Count_Mask)) != 0)
+        assert(false); /* "INVALID_UNLOCK_ORDER" */
+
+    const INT32 lockCount = --mWriteCount;
+    if (lockCount == 0)
+        mLogFlag.store(static_cast<UINT32>(LockFlag::Empty_Mask));
+}
+
+
+void Lock::Lock::ReadLock(const char* name)
+{
+
+    const UINT32 lockThreadId = (mLogFlag.load() & static_cast<UINT32>(LockFlag::Write_Thread_Mask)) >> 16;
+    if (TLS_MGR->Get_TlsInfoData()->id == lockThreadId)
+    {
+        mLogFlag.fetch_add(1);
+        return;
+    }
+
+    const INT64 beginTick = ::GetTickCount64();
+    while (true)
+    {
+        for (UINT32 spinCount = 0; spinCount < static_cast<UINT32>(LockFlag::Max_Spin_Count); spinCount++)
+        {
+            UINT32 expected = (mLogFlag.load() & static_cast<UINT32>(LockFlag::Read_Count_Mask));
+            if (mLogFlag.compare_exchange_strong(OUT expected, expected + 1))
+                return;
+        }
+
+        if (::GetTickCount64() - beginTick >= static_cast<UINT32>(LockFlag::Acquire_Timeout_Tick))
+            assert(false); /* Time Out */
+
+        std::this_thread::yield();
+    }
+}
+
+void Lock::Lock::ReadUnlock(const char* name)
+{
+    if ((mLogFlag.fetch_sub(1) & static_cast<UINT32>(LockFlag::Read_Count_Mask)) == 0)
+       assert(FALSE); /* MULTIPLE_UNLOCK */
 }

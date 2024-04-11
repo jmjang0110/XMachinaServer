@@ -18,6 +18,7 @@ struct SListMemoryBlock
 
 DECLSPEC_ALIGN(MEMORY_ALLOCATION_ALIGNMENT) /* 16바이트 메모리 정렬 */
 class SListMemoryPool {
+
 private:
     SLIST_HEADER                mSListHeader  = {};       
 

@@ -11,3 +11,4 @@ NetworkObject::~NetworkObject()
 	mSocketData.Close();
 
 }
+

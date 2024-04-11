@@ -6,6 +6,7 @@
 
 SendBuffersFactory::SendBuffersFactory()
 {
+
 }
 
 SendBuffersFactory::~SendBuffersFactory()
@@ -97,7 +98,6 @@ void SendBuffersFactory::InitPacketMemoryPools()
 /* PULL */
 void* SendBuffersFactory::Pull_VarPkt(size_t memorySize)
 {
-	WRITE_LOCK;
 	if (memorySize <= 32) {
 		return mMemPools_VarPkt[SendPktInfo::Var::BYTES_32]->Pull();
 	}

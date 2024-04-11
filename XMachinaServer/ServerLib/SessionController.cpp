@@ -21,20 +21,21 @@ void SessionController::AddSession(UINT32 sessionID, SPtr_Session session)
 {
 
 	//mSessionsMutex.lock();
-	mSessionRWLock.lockWrite();
+	//mSessionRWLock.lockWrite();
 
-	//WRITE_LOCK;
+	WRITE_LOCK;
 	mCurrSessionCnt.fetch_add(1);
 	mSessionsMap[sessionID] = session;
 
-	mSessionRWLock.unlockWrite();
+	//mSessionRWLock.unlockWrite();
 	//mSessionsMutex.unlock();
 
 }
 
 void SessionController::ReleaseSession(UINT32 sessionID)
 {
-	mSessionRWLock.lockWrite();
+	//mSessionRWLock.lockWrite();
+	WRITE_LOCK;
 
 	auto iter = mSessionsMap.find(sessionID);
 	if (iter != mSessionsMap.end()) {
@@ -45,17 +46,17 @@ void SessionController::ReleaseSession(UINT32 sessionID)
 		std::cout << "Session with key " << sessionID << " not found in the map." << std::endl;
 	}
 
-	mSessionRWLock.unlockWrite();
+	//mSessionRWLock.unlockWrite();
 }
 
 void SessionController::Broadcast(SPtr_SendPktBuf sendBuf)
 {
 	//Lock::RWLock::GetInst()->lockWrite();		
-	mSessionRWLock.lockWrite();
+	//mSessionRWLock.lockWrite();
 
 	//mSessionsMutex.lock();
 
-	//WRITE_LOCK;
+	WRITE_LOCK;
 
 	for (const auto& iter : mSessionsMap) {
 		SPtr_Session session = iter.second;
@@ -63,7 +64,7 @@ void SessionController::Broadcast(SPtr_SendPktBuf sendBuf)
 		iter.second->Send(sendBuf);
 	}
 
-	mSessionRWLock.unlockWrite();
+	//mSessionRWLock.unlockWrite();
 	//Lock::RWLock::GetInst()->unlockWrite();
 
 	//mSessionsMutex.unlock();

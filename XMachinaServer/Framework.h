@@ -13,7 +13,7 @@ class Framework
 	DECLARE_SINGLETON(Framework);
 
 private:
-	SPtr_ServerNetwork mServer = {};
+	SPtr_ServerNetwork  mServer = {};
 	SPtr_SendBufFactory mSendFactory = {};
 
 public:
@@ -25,7 +25,7 @@ public:
 	void Launch();
 
 	SPtr_ServerNetwork GetServerNetwork() { return mServer; }
-	SPtr_SendBufFactory GetSendFactory() { return mSendFactory; }
+	SPtr_SendBufFactory GetSendFactory()  { return mSendFactory; }
 
 };
 

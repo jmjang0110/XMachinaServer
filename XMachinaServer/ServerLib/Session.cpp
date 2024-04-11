@@ -19,6 +19,7 @@ Session::Session() : NetworkObject()
 	sockdata.CreateSocket();
 	NetworkObject::SetSocketData(sockdata);
 
+	NetworkObject::ID = static_cast<UINT32>(sockdata.GetSocket());
 
 }
 

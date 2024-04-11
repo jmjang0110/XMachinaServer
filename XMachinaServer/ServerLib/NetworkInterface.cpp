@@ -133,6 +133,7 @@ SPtr_Session NetworkInterface::CreateSession()
 {
 
 	SPtr_Session session = mSessionController->CreateSession(shared_from_this());
+	
 	if(RegisterIocp(session) == false)
 		return nullptr;
 	return session;

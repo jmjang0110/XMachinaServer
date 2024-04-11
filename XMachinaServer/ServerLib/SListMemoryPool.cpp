@@ -37,35 +37,19 @@ SListMemoryPool::~SListMemoryPool()
 
 void* SListMemoryPool::Pull() 
 {
-    //if (mNumBlocks.load() == 0)
-     //   return nullptr;
-
-
-    
     // SLIST에서 메모리 블록 가져오기
     mNumBlocks.fetch_sub(1);
     PSLIST_ENTRY ptr = ::InterlockedPopEntrySList(&mSListHeader);
 
-    if (TLS_MGR->Get_TlsInfoData()) {
-       
-       //std::cout  << TLS_MGR->Get_TlsSendBufFactory()->SendBufFactory << " 발급 아이디 : " << TLS_MGR->Get_TlsInfoData()->id << " 메모리 포인터 - " << reinterpret_cast<void*>(reinterpret_cast<char*>(ptr) + sizeof(SLIST_ENTRY)) << " "  << mNumBlocks.load() << std::endl;
-    }
-
     mPullCount.fetch_add(1);
-    std::cout << "Pull Count : " << mPullCount.load() << std::endl;
-
+    //std::cout << "Pull Count : " << mPullCount.load() << std::endl;
     
     if (ptr) {
         if (TLS_MGR->Get_TlsInfoData()) {
             if (TLS_MGR->Get_TlsInfoData()->id) {
-                std::cout << TLS_MGR->Get_TlsInfoData()->id << " Thread - " << "Pull..." << reinterpret_cast<void*>(reinterpret_cast<char*>(ptr) + sizeof(SLIST_ENTRY)) << std::endl;
-            }
-            if (TLS_MGR->Get_TlsInfoData()->id) {
-                // std::cout << TLS_MGR->Get_TlsInfoData()->id << " Thread - " << "Push..." << reinterpret_cast<void*>(reinterpret_cast<char*>(ptr) + sizeof(SLIST_ENTRY)) << std::endl;
-                // std::cout << "Push count : " << mPushCount.load() << std::endl;
                 std::cout << TLS_MGR->Get_TlsInfoData()->id << " thread[PULL] " << " Total Count : "
-                    << "pull = " << mPullCount << " Push = " << mPushCount << " "
-                    << mPullCount - mPushCount << std::endl;
+                    << "pull = " << mPullCount << " Push = " << mPushCount << " Total " 
+                    << mPullCount - mPushCount << " Memory - " << reinterpret_cast<PSLIST_ENTRY>(reinterpret_cast<char*>(ptr) + sizeof(SLIST_ENTRY)) << std::endl;
 
             }
         }
@@ -82,24 +66,19 @@ void* SListMemoryPool::Pull()
         ptr = ::InterlockedPopEntrySList(&mSListHeader);
 
         if (TLS_MGR->Get_TlsInfoData()) {
-            if (TLS_MGR->Get_TlsInfoData()->id) {
-                std::cout << TLS_MGR->Get_TlsInfoData()->id << " Thread - " << "Pull..." << reinterpret_cast<void*>(reinterpret_cast<char*>(ptr) + sizeof(SLIST_ENTRY)) << std::endl;
-            }
+
             if (TLS_MGR->Get_TlsInfoData()->id) {
                 // std::cout << TLS_MGR->Get_TlsInfoData()->id << " Thread - " << "Push..." << reinterpret_cast<void*>(reinterpret_cast<char*>(ptr) + sizeof(SLIST_ENTRY)) << std::endl;
                 // std::cout << "Push count : " << mPushCount.load() << std::endl;
                 std::cout << TLS_MGR->Get_TlsInfoData()->id << " thread[PULL] " << " Total Count : "
-                    << "pull = " << mPullCount << " Push = " << mPushCount << " "
-                    << mPullCount - mPushCount << std::endl;
+                    << "pull = " << mPullCount << " Push = " << mPushCount << " Total " 
+                    << mPullCount - mPushCount << " Memory - " << reinterpret_cast<PSLIST_ENTRY>(reinterpret_cast<char*>(ptr) + sizeof(SLIST_ENTRY)) << std::endl;
 
             }
         }
 
-
         return reinterpret_cast<void*>(reinterpret_cast<char*>(ptr) + sizeof(SLIST_ENTRY));
-
     }
-
 
     return nullptr; // 사용 가능한 블록이 없는 경우
 }
@@ -107,18 +86,12 @@ void* SListMemoryPool::Pull()
 void SListMemoryPool::Push(void* ptr)
 {
     mPushCount.fetch_add(1);
-    //std::cout << TLS_MGR->Get_TlsSendBufFactory()->SendBufFactory << "반납 아이디 : " << TLS_MGR->Get_TlsInfoData()->id << " 메모리 포인터 - " << ptr << " PUSHCNT : " << mPushCount.load() << std::endl;
-
     mNumBlocks.fetch_add(1);
-    //std::cout << TLS_MGR->Get_TlsSendBufFactory()->SendBufFactory << "반납 아이디 : " << TLS_MGR->Get_TlsInfoData()->id << " 메모리 포인터 - "  << ptr << " 갯수 : " << mNumBlocks.load() << std::endl;
 
     if (TLS_MGR->Get_TlsInfoData()->id) {
-       // std::cout << TLS_MGR->Get_TlsInfoData()->id << " Thread - " << "Push..." << reinterpret_cast<void*>(reinterpret_cast<char*>(ptr) + sizeof(SLIST_ENTRY)) << std::endl;
-       // std::cout << "Push count : " << mPushCount.load() << std::endl;
         std::cout << TLS_MGR->Get_TlsInfoData()->id << " thread[PUSH] " << " Total Count : " 
-            << "pull = " << mPullCount << " Push = " << mPushCount << " " 
-            << mPullCount - mPushCount << std::endl;
-
+            << "pull = " << mPullCount << " Push = " << mPushCount << " Total " 
+            << mPullCount - mPushCount  << " Memory - " << reinterpret_cast<PSLIST_ENTRY>(reinterpret_cast<char*>(ptr) ) << std::endl;
     }
 
     // SLIST에 메모리 블록 추가
@@ -132,6 +105,7 @@ void SListMemoryPool::AddMemory()
 {
     // SLIST에 메모리 블록 추가
     /* [SLIST_ENTRY][ ... memory ... ] */
+
     const UINT32 AllocSizse = sizeof(SLIST_ENTRY) + mMemorySize;
     SListMemoryBlock* ptr = reinterpret_cast<SListMemoryBlock*>(::_aligned_malloc(AllocSizse, MEMORY_ALLOCATION_ALIGNMENT));
     if (ptr) {

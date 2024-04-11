@@ -91,6 +91,7 @@ bool Framework::Init(HINSTANCE& hInst)
 struct test {
 private:
 	int a{};
+	float x, y, z;
 };
 
 void Framework::Launch()
@@ -102,13 +103,14 @@ void Framework::Launch()
 	LOG_MGR->Cout("-------------------------------+\n");
 	LOG_MGR->SetColor(TextColor::Default);
 
-	int ThreadNum = 3;
-	for (INT32 i = 0; i < ThreadNum; ++i) {
+	int CoreNum = 4;
+	std::cout << "Core : " << CoreNum << std::endl;
+	for (INT32 i = 0; i < CoreNum; ++i) {
 		THREAD_MGR->RunThread("Network Dispatch " + std::to_string(i), [&]() {
 	
 			auto d  = TLS_MGR->Get_TlsInfoData();
 			auto Tls_sendFactory = TLS_MGR->Get_TlsSendBufFactory();
-			std::cout << d->id  << " " << Tls_sendFactory->strFactoryID << std::endl;
+			//std::cout << d->id  << " " << Tls_sendFactory->strFactoryID << std::endl;
 			while (true)
 			{
 				mServer->Dispatch_CompletedTasks_FromIOCP(0);
