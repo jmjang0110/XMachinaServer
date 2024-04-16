@@ -21,8 +21,10 @@
 /// -----------------------------------------------+
 
 
+
 namespace SendPktInfo {
 	enum class Type {
+		SendPacket,
 		Variable_Length, // 가변 길이 Send Packet 
 		Fixed_Length	 // 고정 길이 Send Packet 
 	};
@@ -51,8 +53,9 @@ namespace SendPktInfo {
 class SendBuffersFactory : public std::enable_shared_from_this<SendBuffersFactory>
 {
 private:
-	std::unordered_map<SendPktInfo::Var, class SListMemoryPool*> mMemPools_VarPkt = {}; // 가변길이 패킷 전용 메모리 풀 
-	std::unordered_map<SendPktInfo::Fix, class SListMemoryPool*> mMemPools_FixPkt = {}; // 고정길이 패킷 전용 메모리 풀 
+	class SListMemoryPool*									     mMemPools_SptrSendPkt = {}; // SendPkt 메모리 풀 
+	std::unordered_map<SendPktInfo::Var, class SListMemoryPool*> mMemPools_VarPkt      = {}; // 가변길이 패킷 전용 메모리 풀 
+	std::unordered_map<SendPktInfo::Fix, class SListMemoryPool*> mMemPools_FixPkt      = {}; // 고정길이 패킷 전용 메모리 풀 
 
 public:
 	SendBuffersFactory();
@@ -63,23 +66,32 @@ public:
 
 public:
 	/* 메모리 풀에서 메모리를 가져온다. */ 
+	void* Pull_SendPkt();
 	void* Pull_VarPkt(size_t memorySize);
 	void* Pull_FixPkt(SendPktInfo::Fix type);
 
 	/*  메모리 풀에 메모리를 반납한다. */
 	void  Push_VarPkt(size_t memorySize, void* ptr);
 	void  Push_FixPkt(SendPktInfo::Fix type, void* ptr); 
+	void  Push_SendPkt(void* ptr);
 
-	SPtr_PacketSendBuf CreateVarSendPacketBuf(size_t memorySize);
+
+	SPtr_PacketSendBuf CreateVarSendPacketBuf(const uint8_t* bufPtr, const uint16_t SerializedDataSize, uint16_t ProtocolId, size_t memorySize);
 	SPtr_PacketSendBuf CreateFixSendPacketBuf(SendPktInfo::Fix pktDataType);
+
+public:
+	/* 패킷을 만든다. */
+	SPtr_PacketSendBuf CreatePacket(const uint8_t* bufPtr, const uint16_t SerializedDataSize, uint16_t ProtocolId);
+
+	SPtr_SendPktBuf SPkt_Chat(UINT32 sessionID, std::string msg);
 
 
 public:
-	static PacketSendBuf* New(SendBuffersFactory* factory, BYTE* buffer, UINT32 allocSize);
+	static PacketSendBuf* New(void* dst, BYTE* ptr, UINT16 memsize, BYTE* buffer, UINT32 allocSize);
 	template<typename Type>
 	static void Delete(Type* ptr);
 	
-	std::shared_ptr<PacketSendBuf> Make_Shared(SendBuffersFactory* factory, BYTE* buffer, UINT32 allocSize);
+	std::shared_ptr<PacketSendBuf> Make_Shared(void* dst, BYTE* ownerptr, UINT16 memsize, BYTE* buffer, UINT32 allocSize);
 
 };
 
@@ -89,14 +101,15 @@ inline void SendBuffersFactory::Delete(Type* ptr)
 	ptr->~Type();
 }
 
-inline PacketSendBuf* SendBuffersFactory::New(SendBuffersFactory* factory, BYTE* buffer, UINT32 allocSize)
+inline PacketSendBuf* SendBuffersFactory::New(void* dst, BYTE* ptr, UINT16 memsize, BYTE* buffer, UINT32 allocSize)
 {
-	PacketSendBuf* Memory = static_cast<PacketSendBuf*>(static_cast<void*>(buffer));
-	new(Memory)PacketSendBuf(buffer, allocSize); /* Placement New */
+	PacketSendBuf* Memory = static_cast<PacketSendBuf*>(static_cast<void*>(dst));
+	new(Memory)PacketSendBuf(ptr, memsize, buffer, allocSize); /* Placement New */
 	return Memory;;
 }
 
-inline std::shared_ptr<PacketSendBuf> SendBuffersFactory::Make_Shared(SendBuffersFactory* factory, BYTE* buffer, UINT32 allocSize)
+/* dst에 메모리를 쓴다... */
+inline std::shared_ptr<PacketSendBuf> SendBuffersFactory::Make_Shared(void* dst, BYTE* ownerptr, UINT16 memsize, BYTE* buffer, UINT32 allocSize)
 {
-	return std::shared_ptr<PacketSendBuf>{ SendBuffersFactory::New(factory,buffer, allocSize), SendBuffersFactory::Delete<PacketSendBuf>};
+	return std::shared_ptr<PacketSendBuf>{ SendBuffersFactory::New(dst, ownerptr, memsize, buffer, allocSize), SendBuffersFactory::Delete<PacketSendBuf>};
 }

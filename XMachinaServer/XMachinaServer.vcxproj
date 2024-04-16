@@ -170,6 +170,7 @@
     <ClInclude Include="ServerLib\Listener.h" />
     <ClInclude Include="ServerLib\Lock.h" />
     <ClInclude Include="ServerLib\MemoryManager.h" />
+    <ClInclude Include="ServerLib\PacketHeader.h" />
     <ClInclude Include="ServerLib\SessionController.h" />
     <ClInclude Include="ServerLib\SListMemoryPool.h" />
     <ClInclude Include="ServerLib\NetworkHeaders.h" />
@@ -207,6 +208,7 @@
     <ClCompile Include="ServerLib\Listener.cpp" />
     <ClCompile Include="ServerLib\Lock.cpp" />
     <ClCompile Include="ServerLib\MemoryManager.cpp" />
+    <ClCompile Include="ServerLib\PacketHeader.cpp" />
     <ClCompile Include="ServerLib\SessionController.cpp" />
     <ClCompile Include="ServerLib\SListMemoryPool.cpp" />
     <ClCompile Include="ServerLib\NetworkInterface.cpp" />

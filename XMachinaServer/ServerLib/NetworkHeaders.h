@@ -48,4 +48,5 @@ using SPtr_SessionController = std::shared_ptr<class SessionController>;
 
 /* Server Library Headers */
 #include "ServerLib/Session.h"
+#include "PacketHeader.h"
 

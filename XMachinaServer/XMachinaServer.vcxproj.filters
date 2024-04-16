@@ -40,15 +40,6 @@
     <Filter Include="Framework\Contents">
       <UniqueIdentifier>{1c750902-aef0-42ad-8720-eeada2efde93}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Protocol">
-      <UniqueIdentifier>{170c91f9-5ab5-41a6-84a0-d5266fa8b941}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Protocol\FlatBuffers">
-      <UniqueIdentifier>{9f98ec15-0866-4c2c-845e-6ab949cb03eb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Protocol\FlatBuffers\bat">
-      <UniqueIdentifier>{60021c15-bb6e-4a40-a69f-e10c57931280}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ServerLib\Network\Iocp\Netowork\Interface">
       <UniqueIdentifier>{6c649662-a7bc-4d69-922a-a9bd818c1093}</UniqueIdentifier>
     </Filter>
@@ -58,6 +49,15 @@
     <Filter Include="WindowUI\리소스 파일">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Protocol">
+      <UniqueIdentifier>{170c91f9-5ab5-41a6-84a0-d5266fa8b941}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Protocol\FlatBuffers">
+      <UniqueIdentifier>{9f98ec15-0866-4c2c-845e-6ab949cb03eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Protocol\FlatBuffers\bat">
+      <UniqueIdentifier>{60021c15-bb6e-4a40-a69f-e10c57931280}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -152,6 +152,9 @@
     <ClInclude Include="ServerLib\SessionController.h">
       <Filter>ServerLib\Network\Iocp\Netowork\Object</Filter>
     </ClInclude>
+    <ClInclude Include="ServerLib\PacketHeader.h">
+      <Filter>ServerLib\Network\Packet</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -223,6 +226,9 @@
     </ClCompile>
     <ClCompile Include="ServerLib\SessionController.cpp">
       <Filter>ServerLib\Network\Iocp\Netowork\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerLib\PacketHeader.cpp">
+      <Filter>ServerLib\Network\Packet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

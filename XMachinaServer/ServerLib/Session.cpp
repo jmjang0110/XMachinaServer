@@ -128,8 +128,8 @@ void Session::RegisterIO(OverlappedIO::Type IoType)
 		{
 		
 			//sendLock.lock();
-			mRWSendLock.lockWrite();
-			//WRITE_LOCK;
+			//mRWSendLock.lockWrite();
+			WRITE_LOCK;
 
 
 			while (mPacketBuffer.SendPkt_Queue.empty() == false) {
@@ -139,7 +139,7 @@ void Session::RegisterIO(OverlappedIO::Type IoType)
 					mOverlapped.Send.BufPush(sendPktBuf);
 			}
 
-			mRWSendLock.unlockWrite();
+			//mRWSendLock.unlockWrite();
 			//sendLock.unlock();
 
 
@@ -152,6 +152,7 @@ void Session::RegisterIO(OverlappedIO::Type IoType)
 		
 			WSABUF wsaBuf = {};
 			wsaBuf.buf    = reinterpret_cast<char*>(sendBuf->GetBuffer());
+			PacketHeader* test = reinterpret_cast<PacketHeader*>(wsaBuf.buf);
 			wsaBuf.len    = static_cast<LONG>(sendBuf->GetTotalSize());
 			wsaBufs.push_back(wsaBuf);
 		}
@@ -277,15 +278,15 @@ void Session::ProcessIO(OverlappedIO::Type IoType, INT32 BytesTransferred)
 		{
 		
 			//sendLock.lock();
-			mRWSendLock.lockWrite();
-			//WRITE_LOCK;
+			//mRWSendLock.lockWrite();
+			WRITE_LOCK;
 
 			if (mPacketBuffer.SendPkt_Queue.empty() == true) {
 				mPacketBuffer.IsSendRegistered.store(false);
 
 			}
 			//sendLock.unlock();
-			mRWSendLock.unlockWrite();
+			//mRWSendLock.unlockWrite();
 
 			/* ´Ù ¾Èº¸³¿ */
 			if(mPacketBuffer.SendPkt_Queue.empty() == false){
@@ -354,15 +355,15 @@ void Session::Send(SPtr_SendPktBuf buf)
 
 	{
 		//sendLock.lock();
-		mRWSendLock.lockWrite();
-		//WRITE_LOCK;
+		//mRWSendLock.lockWrite();
+		WRITE_LOCK;
 
 		mPacketBuffer.SendPkt_Queue.push(buf);
 
 		if (mPacketBuffer.IsSendRegistered.exchange(true) == false)
 			RegisterSend = true;
 
-		mRWSendLock.unlockWrite();
+		//mRWSendLock.unlockWrite();
 
 		//sendLock.unlock();
 

@@ -112,7 +112,6 @@ void SListMemoryPool::AddMemory()
 
         mNumBlocks.fetch_add(1);
         ::InterlockedPushEntrySList(&mSListHeader, reinterpret_cast<PSLIST_ENTRY>(ptr));
-        std::cout  << " AddMemory : " << mNumBlocks.load() << std::endl;
     }
 
 }

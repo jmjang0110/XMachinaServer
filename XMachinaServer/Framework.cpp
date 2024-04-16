@@ -88,12 +88,6 @@ bool Framework::Init(HINSTANCE& hInst)
 	return true;
 }
 
-struct test {
-private:
-	int a{};
-	float x, y, z;
-};
-
 void Framework::Launch()
 {
 
@@ -113,6 +107,10 @@ void Framework::Launch()
 			//std::cout << d->id  << " " << Tls_sendFactory->strFactoryID << std::endl;
 			while (true)
 			{
+				SPtr_SendPktBuf SPkt = mSendFactory->SPkt_Chat(0, "test Chat");
+				if (SPkt) {
+					mServer->Broadcast(SPkt);
+				}
 				mServer->Dispatch_CompletedTasks_FromIOCP(0);
 			}
 			});
@@ -120,12 +118,10 @@ void Framework::Launch()
 
 	THREAD_MGR->RunThread("Send Test", [&]() {
 			while (true) {
-				test Data;
-				SPtr_SendPktBuf sendBuf = mSendFactory->CreateVarSendPacketBuf(sizeof(Data));
-				//std::cout << sendBuf.get() << std::endl;
-				if(sendBuf)
-					mServer->Broadcast(sendBuf);
-				//sendBuf->Close(0);
+				SPtr_SendPktBuf SPkt = mSendFactory->SPkt_Chat(0, "test Chat");
+				if (SPkt) {
+					mServer->Broadcast(SPkt);
+				}
 			}
 		});
 	

@@ -2,7 +2,11 @@
 #include "SendBuffersFactory.h"
 #include "SListMemoryPool.h"
 #include "MemoryManager.h"
+#include "../Framework.h"
 
+#undef max
+#include <flatbuffers/flatbuffers.h>
+#include "Protocol/FBProtocol_generated.h"
 
 SendBuffersFactory::SendBuffersFactory()
 {
@@ -25,6 +29,14 @@ SendBuffersFactory::~SendBuffersFactory()
 
 void SendBuffersFactory::InitPacketMemoryPools()
 {
+	{
+		SListMemoryPool* pool = new SListMemoryPool(sizeof(PacketSendBuf));
+		mMemPools_SptrSendPkt = pool;
+		for (size_t i = 0; i < 100; ++i) {
+			mMemPools_SptrSendPkt->AddMemory();
+		}
+	}
+
 /// +-------------------------
 ///	  Variable Length Buffer
 /// -------------------------+
@@ -95,6 +107,11 @@ void SendBuffersFactory::InitPacketMemoryPools()
 
 }
 
+void* SendBuffersFactory::Pull_SendPkt()
+{
+	return mMemPools_SptrSendPkt->Pull();
+}
+
 /* PULL */
 void* SendBuffersFactory::Pull_VarPkt(size_t memorySize)
 {
@@ -148,13 +165,17 @@ void SendBuffersFactory::Push_FixPkt(SendPktInfo::Fix type, void* ptr)
 	mMemPools_FixPkt[type]->Push(ptr);
 }
 
-SPtr_PacketSendBuf SendBuffersFactory::CreateVarSendPacketBuf(size_t memorySize)
+void SendBuffersFactory::Push_SendPkt(void* ptr)
 {
-	SPtr_PacketSendBuf sendBuf{};
+	mMemPools_SptrSendPkt->Push(ptr);
+}
+
+SPtr_PacketSendBuf SendBuffersFactory::CreateVarSendPacketBuf(const uint8_t* bufPtr, const uint16_t SerializedDataSize, uint16_t ProtocolId, size_t memorySize)
+{
 
 	/* 메모리 풀에서 메모리를 받아와서 shared_ptr 로 SendPacket Buffer 를 만들어 반환하자! */
 	
-	UINT16 offsetMemSize = 0;
+	UINT8 offsetMemSize = 0;
 	if (memorySize <= 32) {
 		offsetMemSize = 32 - memorySize;
 	}
@@ -173,18 +194,21 @@ SPtr_PacketSendBuf SendBuffersFactory::CreateVarSendPacketBuf(size_t memorySize)
 	if (offsetMemSize < 0)
 		return nullptr;
 
-	/*                    실질적으로 쓰는 메모리								 */		
-	/*                           ↓ 					                         */		
+
+	/*               실질적으로 쓰는 메모리								 */		
+	/*                      ↓ 					                         */		
 	/* [     offset = 28    [ memsize = 4 ]] - 32byte 메모리에 4바이트만 사용  */
 	
 	/* 실직적으로 사용하는 메모리의 시작위치로 이동 */
-	void* ptr = Pull_VarPkt(memorySize + offsetMemSize);
-	if (ptr == nullptr)
-		return nullptr;
+ 	BYTE* ptr                  = reinterpret_cast<BYTE*>(Pull_VarPkt(memorySize));
+	BYTE* StartPtr             = ptr + offsetMemSize;
+	SPtr_PacketSendBuf sendBuf = Make_Shared(Pull_SendPkt(), ptr, memorySize + offsetMemSize, StartPtr, memorySize);
 
-	void* usePtr = static_cast<UINT8*>(ptr) + offsetMemSize; 
-	sendBuf      = Make_Shared(this, static_cast<BYTE*>(usePtr), static_cast<UINT32>(memorySize)); /* 실직적으로 쓰이는 메모리의 위치와 메모리 사이즈*/
-	sendBuf->SetOwnerInfo(ptr, memorySize + offsetMemSize); /* 다시 반납하기 위해서 ptr과 메모리 풀에서 받은 메모리 사이즈를 저장한다. */
+	PacketHeader* pktHeader = reinterpret_cast<PacketHeader*>(StartPtr);
+	pktHeader->PacketSize = memorySize;
+	pktHeader->ProtocolID = ProtocolId;
+	std::memcpy(&pktHeader[1], bufPtr, SerializedDataSize);
+
 	return sendBuf;
 }
 
@@ -193,5 +217,50 @@ SPtr_PacketSendBuf SendBuffersFactory::CreateFixSendPacketBuf(SendPktInfo::Fix p
 	SPtr_PacketSendBuf sendBuf{};
 
 	return sendBuf;
+}
+
+SPtr_PacketSendBuf SendBuffersFactory::CreatePacket(const uint8_t* bufPtr, const uint16_t SerializedDataSize, uint16_t ProtocolId)
+{
+
+	/* [[PacketHeader][SendMemory]] */
+
+	const SPtr_PacketSendBuf sendBuf = CreateVarSendPacketBuf(bufPtr, SerializedDataSize, ProtocolId, sizeof(PacketHeader) + SerializedDataSize);
+	PacketHeader* pktheader = reinterpret_cast<PacketHeader*>(sendBuf->GetBuffer());
+
+
+	//BYTE* dataPtr = static_cast<BYTE*>(sendBuf->GetBuffer()) + sizeof(PacketHeader);
+	//std::memcpy(dataPtr, bufPtr, SerializedDataSize);
+	//std::cout << pktheader->PacketSize << " " << pktheader->ProtocolID << std::endl;
+	/* 1. PacketHeader 정보를 담는다. */
+	
+
+	//PacketHeader* SendBufPktHeader = reinterpret_cast<PacketHeader*>(sendBuf->GetBuffer());
+	/* 문제발생! - mPtrFromMemPool 이게 왜 바뀌는거야 도대체 이 바뀌네?? */
+	//SendBufPktHeader->PacketSize = sizeof(PacketHeader) + SerializedDataSize;
+	//SendBufPktHeader->ProtocolID = ProtocolId;
+	
+
+	/* 2. PacketBuffer 정보를 담는다. */
+	if (sendBuf == nullptr) {
+		std::cout << "SendBufferFactory::CreatePacket - SendBuf = nullptr\n";
+		return nullptr;
+	}
+
+	return sendBuf;
+}
+
+SPtr_SendPktBuf SendBuffersFactory::SPkt_Chat(UINT32 sessionID, std::string msg)
+{
+	flatbuffers::FlatBufferBuilder builder;
+
+	auto msgOffset    = builder.CreateString(msg);
+	auto ServerPacket = FBProtocol::CreateSPkt_Chat(builder, sessionID, msgOffset);
+
+	builder.Finish(ServerPacket);
+
+	const uint8_t* bufferPtr = builder.GetBufferPointer();
+	const uint16_t serializedDataSize = static_cast<uint16_t>(builder.GetSize());
+
+	return CreatePacket(bufferPtr, serializedDataSize, FBsProtocolID::SPkt_Chat);
 }
 

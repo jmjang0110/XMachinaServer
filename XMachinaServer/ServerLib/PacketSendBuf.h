@@ -33,9 +33,9 @@
 
 class PacketSendBuf
 {
-private:
+public:
 	/* 다시 반납하기 위해서 필요한 정보 */
-	void*  mPtrFromMemPool = nullptr;
+	BYTE*  mPtrFromMemPool  = nullptr;
 	UINT16 mMemoryPoolSize  = 0;
 
 private:
@@ -43,13 +43,16 @@ private:
 	UINT32					mBufferTotalSize = 0;  // SListMemoryPool 에서 가져온 메모리의 전체 크기 
 
 public:
-	PacketSendBuf(BYTE* buffer, UINT32 allocSize);
+	PacketSendBuf(BYTE* ptrMem, UINT16 MemSize, BYTE* buffer, UINT32 allocSize);
 	~PacketSendBuf();
 
-	void    SetOwnerInfo(void* ownerPtr, UINT16 ownerMemSize) { mPtrFromMemPool = ownerPtr; mMemoryPoolSize = ownerMemSize; }
+	void    SetOwnerInfo(BYTE* ownerPtr, UINT16 ownerMemSize) { mPtrFromMemPool = ownerPtr; mMemoryPoolSize = ownerMemSize; }
+	void    SetPacketHederInfo(class PacketHeader info);
+
+	void     SetBuffer(BYTE* buf);
+
+
 	BYTE*	GetBuffer()	   { return mBuffer; }
 	UINT32	GetTotalSize() { return mBufferTotalSize; }
-	void	Close(UINT32 writeSize); 
-
 };
 
