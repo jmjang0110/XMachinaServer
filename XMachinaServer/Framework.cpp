@@ -107,10 +107,6 @@ void Framework::Launch()
 			//std::cout << d->id  << " " << Tls_sendFactory->strFactoryID << std::endl;
 			while (true)
 			{
-				SPtr_SendPktBuf SPkt = mSendFactory->SPkt_Chat(0, "test Chat");
-				if (SPkt) {
-					mServer->Broadcast(SPkt);
-				}
 				mServer->Dispatch_CompletedTasks_FromIOCP(0);
 			}
 			});

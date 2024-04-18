@@ -34,25 +34,7 @@ void Session::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 
 	/* Print.. Info */
 	int ThreadID = TLS_MGR->Get_TlsInfoData()->id;
-	switch (IoType)
-	{
-	case OverlappedIO::Type::Accept:
-		std::cout << "Thread " << ThreadID << " Dispatch Accept\n";
-		break;
-	case OverlappedIO::Type::Connect:
-		std::cout << "Thread " << ThreadID << " Dispatch Connect\n";
-		break;
-	case OverlappedIO::Type::DisConnect:
-		std::cout << "Thread " << ThreadID << " Dispatch DisConnect\n";
-		break;
-	case OverlappedIO::Type::Send:
-		std::cout << "Thread " << ThreadID << " Dispatch Send\n";
-		break;
-	case OverlappedIO::Type::Recv:
-		std::cout << "Thread " << ThreadID << " Dispatch Recv : " << bytes << " bytes" << "\n";
-		break;
-	}
-
+	
 	/* Process Task! */
 	ProcessIO(IoType, bytes);
 }

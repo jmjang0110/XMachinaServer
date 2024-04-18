@@ -194,12 +194,6 @@ SPtr_PacketSendBuf SendBuffersFactory::CreateVarSendPacketBuf(const uint8_t* buf
 	if (offsetMemSize < 0)
 		return nullptr;
 
-
-	/*               실질적으로 쓰는 메모리								 */		
-	/*                      ↓ 					                         */		
-	/* [     offset = 28    [ memsize = 4 ]] - 32byte 메모리에 4바이트만 사용  */
-	
-	/* 실직적으로 사용하는 메모리의 시작위치로 이동 */
  	BYTE* ptr                  = reinterpret_cast<BYTE*>(Pull_VarPkt(memorySize));
 	BYTE* StartPtr             = ptr + offsetMemSize;
 	SPtr_PacketSendBuf sendBuf = Make_Shared(Pull_SendPkt(), ptr, memorySize + offsetMemSize, StartPtr, memorySize);
@@ -221,31 +215,13 @@ SPtr_PacketSendBuf SendBuffersFactory::CreateFixSendPacketBuf(SendPktInfo::Fix p
 
 SPtr_PacketSendBuf SendBuffersFactory::CreatePacket(const uint8_t* bufPtr, const uint16_t SerializedDataSize, uint16_t ProtocolId)
 {
-
 	/* [[PacketHeader][SendMemory]] */
-
 	const SPtr_PacketSendBuf sendBuf = CreateVarSendPacketBuf(bufPtr, SerializedDataSize, ProtocolId, sizeof(PacketHeader) + SerializedDataSize);
 	PacketHeader* pktheader = reinterpret_cast<PacketHeader*>(sendBuf->GetBuffer());
-
-
-	//BYTE* dataPtr = static_cast<BYTE*>(sendBuf->GetBuffer()) + sizeof(PacketHeader);
-	//std::memcpy(dataPtr, bufPtr, SerializedDataSize);
-	//std::cout << pktheader->PacketSize << " " << pktheader->ProtocolID << std::endl;
-	/* 1. PacketHeader 정보를 담는다. */
-	
-
-	//PacketHeader* SendBufPktHeader = reinterpret_cast<PacketHeader*>(sendBuf->GetBuffer());
-	/* 문제발생! - mPtrFromMemPool 이게 왜 바뀌는거야 도대체 이 바뀌네?? */
-	//SendBufPktHeader->PacketSize = sizeof(PacketHeader) + SerializedDataSize;
-	//SendBufPktHeader->ProtocolID = ProtocolId;
-	
-
-	/* 2. PacketBuffer 정보를 담는다. */
 	if (sendBuf == nullptr) {
 		std::cout << "SendBufferFactory::CreatePacket - SendBuf = nullptr\n";
 		return nullptr;
 	}
-
 	return sendBuf;
 }
 

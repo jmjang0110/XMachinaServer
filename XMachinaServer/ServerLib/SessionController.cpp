@@ -60,7 +60,6 @@ void SessionController::Broadcast(SPtr_SendPktBuf sendBuf)
 
 	for (const auto& iter : mSessionsMap) {
 		SPtr_Session session = iter.second;
-		std::cout << session.get() << std::endl;
 		iter.second->Send(sendBuf);
 	}
 
