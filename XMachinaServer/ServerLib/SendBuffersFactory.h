@@ -84,7 +84,7 @@ public:
 	SPtr_PacketSendBuf CreatePacket(const uint8_t* bufPtr, const uint16_t SerializedDataSize, uint16_t ProtocolId);
 
 	SPtr_SendPktBuf SPkt_Chat(UINT32 sessionID, std::string msg);
-
+	SPtr_SendPktBuf SPkt_NewtorkLatency(long long timestamp);
 
 public:
 	static PacketSendBuf* New(void* dst, BYTE* ptr, UINT16 memsize, BYTE* buffer, UINT32 allocSize);

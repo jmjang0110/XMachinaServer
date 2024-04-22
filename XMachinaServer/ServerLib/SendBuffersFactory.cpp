@@ -240,3 +240,19 @@ SPtr_SendPktBuf SendBuffersFactory::SPkt_Chat(UINT32 sessionID, std::string msg)
 	return CreatePacket(bufferPtr, serializedDataSize, FBsProtocolID::SPkt_Chat);
 }
 
+SPtr_SendPktBuf SendBuffersFactory::SPkt_NewtorkLatency(long long timestamp)
+{
+	flatbuffers::FlatBufferBuilder builder;
+	
+	auto ServerPacket = FBProtocol::CreateSPkt_NetworkLatency(builder, timestamp);
+
+	builder.Finish(ServerPacket);
+
+	const uint8_t* bufferPtr          = builder.GetBufferPointer();
+	const uint16_t serializedDataSize = static_cast<uint16_t>(builder.GetSize());
+	
+	return CreatePacket(bufferPtr, serializedDataSize, FBsProtocolID::SPkt_NetworkLatency);
+}
+
+
+

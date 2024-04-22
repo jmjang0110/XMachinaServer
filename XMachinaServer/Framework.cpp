@@ -102,7 +102,7 @@ void Framework::Launch()
 	for (INT32 i = 0; i < CoreNum; ++i) {
 		THREAD_MGR->RunThread("Network Dispatch " + std::to_string(i), [&]() {
 	
-			auto d  = TLS_MGR->Get_TlsInfoData();
+			auto d               = TLS_MGR->Get_TlsInfoData();
 			auto Tls_sendFactory = TLS_MGR->Get_TlsSendBufFactory();
 			//std::cout << d->id  << " " << Tls_sendFactory->strFactoryID << std::endl;
 			while (true)
@@ -112,14 +112,14 @@ void Framework::Launch()
 			});
 	}
 
-	THREAD_MGR->RunThread("Send Test", [&]() {
+	/*THREAD_MGR->RunThread("Send Test", [&]() {
 			while (true) {
 				SPtr_SendPktBuf SPkt = mSendFactory->SPkt_Chat(0, "test Chat");
 				if (SPkt) {
 					mServer->Broadcast(SPkt);
 				}
 			}
-		});
+		});*/
 	
 
 

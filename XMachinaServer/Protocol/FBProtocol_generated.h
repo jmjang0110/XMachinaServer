@@ -43,6 +43,12 @@ struct CPkt_TransformBuilder;
 struct SPkt_Transform;
 struct SPkt_TransformBuilder;
 
+struct CPkt_NetworkLatency;
+struct CPkt_NetworkLatencyBuilder;
+
+struct SPkt_NetworkLatency;
+struct SPkt_NetworkLatencyBuilder;
+
 struct CPkt_LogIn FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef CPkt_LogInBuilder Builder;
   bool Verify(::flatbuffers::Verifier &verifier) const {
@@ -423,6 +429,88 @@ inline ::flatbuffers::Offset<SPkt_Transform> CreateSPkt_Transform(
   SPkt_TransformBuilder builder_(_fbb);
   builder_.add_object_id(object_id);
   builder_.add_trans(trans);
+  return builder_.Finish();
+}
+
+struct CPkt_NetworkLatency FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
+  typedef CPkt_NetworkLatencyBuilder Builder;
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
+    VT_TIMESTAMP = 4
+  };
+  int64_t timestamp() const {
+    return GetField<int64_t>(VT_TIMESTAMP, 0);
+  }
+  bool Verify(::flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<int64_t>(verifier, VT_TIMESTAMP, 8) &&
+           verifier.EndTable();
+  }
+};
+
+struct CPkt_NetworkLatencyBuilder {
+  typedef CPkt_NetworkLatency Table;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_timestamp(int64_t timestamp) {
+    fbb_.AddElement<int64_t>(CPkt_NetworkLatency::VT_TIMESTAMP, timestamp, 0);
+  }
+  explicit CPkt_NetworkLatencyBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  ::flatbuffers::Offset<CPkt_NetworkLatency> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = ::flatbuffers::Offset<CPkt_NetworkLatency>(end);
+    return o;
+  }
+};
+
+inline ::flatbuffers::Offset<CPkt_NetworkLatency> CreateCPkt_NetworkLatency(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    int64_t timestamp = 0) {
+  CPkt_NetworkLatencyBuilder builder_(_fbb);
+  builder_.add_timestamp(timestamp);
+  return builder_.Finish();
+}
+
+struct SPkt_NetworkLatency FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
+  typedef SPkt_NetworkLatencyBuilder Builder;
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
+    VT_TIMESTAMP = 4
+  };
+  int64_t timestamp() const {
+    return GetField<int64_t>(VT_TIMESTAMP, 0);
+  }
+  bool Verify(::flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<int64_t>(verifier, VT_TIMESTAMP, 8) &&
+           verifier.EndTable();
+  }
+};
+
+struct SPkt_NetworkLatencyBuilder {
+  typedef SPkt_NetworkLatency Table;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_timestamp(int64_t timestamp) {
+    fbb_.AddElement<int64_t>(SPkt_NetworkLatency::VT_TIMESTAMP, timestamp, 0);
+  }
+  explicit SPkt_NetworkLatencyBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  ::flatbuffers::Offset<SPkt_NetworkLatency> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = ::flatbuffers::Offset<SPkt_NetworkLatency>(end);
+    return o;
+  }
+};
+
+inline ::flatbuffers::Offset<SPkt_NetworkLatency> CreateSPkt_NetworkLatency(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    int64_t timestamp = 0) {
+  SPkt_NetworkLatencyBuilder builder_(_fbb);
+  builder_.add_timestamp(timestamp);
   return builder_.Finish();
 }
 

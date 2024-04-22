@@ -10,6 +10,10 @@ include "Transform.fbs";
 
 namespace FBProtocol;
 
+// +--------------------
+//    LOG-IN PACKET 
+// --------------------+
+
 table CPkt_LogIn
 {
 
@@ -21,6 +25,10 @@ table SPkt_LogIn
 	players: [Player];
 }
 
+// +--------------------
+// ENTER GAME PACKET 
+// --------------------+
+
 table CPkt_EnterGame
 {
 	player_index: ulong;
@@ -30,6 +38,10 @@ table SPkt_EnterGame
 {
 	success: bool;
 }
+
+// +--------------------
+//      CHAT PACKET 
+// --------------------+
 
 table CPkt_Chat
 {
@@ -42,6 +54,9 @@ table SPkt_Chat
 	message: string;
 }
 
+// +--------------------
+//   TRANSFORM PACKET 
+// --------------------+
 table CPkt_Transform
 {
 	trans: Transform;
@@ -51,4 +66,17 @@ table SPkt_Transform
 {
 	object_id: ulong;
 	trans: Transform;
+}
+
+// +--------------------
+// LATENCY CHECK PACKET 
+// --------------------+
+table CPkt_NetworkLatency
+{
+	timestamp : long;
+}
+
+table SPkt_NetworkLatency
+{
+	timestamp : long;
 }
