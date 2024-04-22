@@ -7,6 +7,10 @@ SessionController::SessionController()
 
 SessionController::~SessionController()
 {
+	for (int i = 0; i < mSessionsMap.size(); ++i) {
+		mSessionsMap[i] = nullptr;
+	}
+
 }
 
 SPtr_Session SessionController::CreateSession(SPtr_NI netInterfaceOwner)

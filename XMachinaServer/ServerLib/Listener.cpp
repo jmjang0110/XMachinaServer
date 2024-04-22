@@ -18,8 +18,10 @@ Listener::~Listener()
 {
 	Close();
 	for (auto obj : mAccepts) {
+		obj->DecRef_Session();
 		SAFE_DELETE(obj);
 	}
+	mOwnerNI = nullptr;
 
 }
 
@@ -94,12 +96,11 @@ void Listener::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 bool Listener::Start(std::wstring ip, UINT16 portNum, SPtr_NI netInterface)
 {
 	mOwnerNI = netInterface;
-
 	/* Create Listen Socket + Update Socket Option */
 	SocketData ListenSockData = {};
 	ListenSockData.CreateSocket();
 	ListenSockData.Init(ip, portNum);
-
+	
 	if (ListenSockData.SetReuseAddress(true) == false)				
 		return false;
 	if (ListenSockData.SetLinger(0, 0) == false)						
@@ -109,7 +110,7 @@ bool Listener::Start(std::wstring ip, UINT16 portNum, SPtr_NI netInterface)
 	if (ListenSockData.Listen() == false)							
 		return false;
 	NetworkObject::SetSocketData(ListenSockData);
-	
+
 	/* Register Iocp */
 	if (mOwnerNI->RegisterIocp(shared_from_this()) == false)
 		return false;
@@ -128,6 +129,14 @@ void Listener::RegisterAccept()
 		mAccepts.push_back(acceptIO);
 		Register_OverlappedIO_Accept(acceptIO);
 
+	}
+}
+
+void Listener::DecRef_Accepts()
+{
+	for (auto& acc : mAccepts) {
+		acc->DecRef_NetObj();
+		acc->DecRef_Session();
 	}
 }
 

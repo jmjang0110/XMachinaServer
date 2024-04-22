@@ -31,7 +31,7 @@ struct PacketBuffer {
 	std::atomic<bool>			IsSendRegistered = false;
 	
 	/* Recv */
-	PacketRecvBuf				RecvPkt		 	 = {};
+	PacketRecvBuf*				RecvPkt		 	 = {};
 };
 
 
@@ -76,7 +76,7 @@ public:
 	void SetOwerNetworkInterface(SPtr_NI networkInterface) { mOwnerNI = networkInterface; }
 	/* Get */
 	std::shared_ptr<NetworkInterface> GetOwnerNI()	{ return mOwnerNI.lock(); }
-	PacketRecvBuf& GetRecvPktBuf()					{ return mPacketBuffer.RecvPkt; }
+	PacketRecvBuf& GetRecvPktBuf()					{ return *mPacketBuffer.RecvPkt; }
 	bool IsConnected()								{ return mIsConnected.load(); }
 
 };

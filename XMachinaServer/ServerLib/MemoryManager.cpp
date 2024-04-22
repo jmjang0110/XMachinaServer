@@ -9,6 +9,21 @@ MemoryManager::MemoryManager()
 
 MemoryManager::~MemoryManager()
 {
+    /* Delete SListMemoryPool !!! */
+    for (auto& entry : mSLMemPoolsDict_Name) {
+        delete entry.second;
+        mSLMemPoolsDict_Name[entry.first] = nullptr;
+
+    }
+    mSLMemPoolsDict_Name.clear();
+
+    for (auto& entry : mSLMemPoolsDict_Size) {
+        SListMemoryPool* ptr = entry.second;
+        delete ptr;
+        mSLMemPoolsDict_Size[entry.first] = nullptr;
+    }
+    mSLMemPoolsDict_Size.clear();
+
 
 }
 
@@ -65,6 +80,8 @@ void MemoryManager::AddSListMemoryPool(std::string mpName, size_t MemorySize)
         SListMemoryPool* Pool = new SListMemoryPool(MemorySize);
         /* dict (unordered_map) */
         mSLMemPoolsDict_Name[mpName] = Pool;
+        mSLMemPoolsDict_Name[mpName]->AddMemory();
+
     }
     // 해당 메모리 사이즈를 갖는 풀이 이미 존재한다면 
     else {
@@ -161,10 +178,33 @@ void MemoryManager::Free(size_t size, void* ptr)
     {
     };
 
-    if (mSLMemPoolsDict_Size[static_cast<MemorySize>(size)] != nullptr) {
-        mSLMemPoolsDict_Size[static_cast<MemorySize>(size)]->Push(ptr);
+    if (size <= 32) {
+        mSLMemPoolsDict_Size[MemorySize::BYTES_32]->Push(ptr);
     }
+    else if (size <= 64) {
+        mSLMemPoolsDict_Size[MemorySize::BYTES_64]->Push(ptr);
+    }
+    else if (size <= 128) {
+        mSLMemPoolsDict_Size[MemorySize::BYTES_128]->Push(ptr);
 
+    }
+    else if (size <= 256) {
+        mSLMemPoolsDict_Size[MemorySize::BYTES_256]->Push(ptr);
+
+    }
+    else if (size <= 512) {
+        mSLMemPoolsDict_Size[MemorySize::BYTES_512]->Push(ptr);
+
+    }
+    else if (size <= 1024) {
+        mSLMemPoolsDict_Size[MemorySize::BYTES_1024]->Push(ptr);
+
+    }
+  
+  /*  if (mSLMemPoolsDict_Size[static_cast<MemorySize>(size)] != nullptr) {
+       mSLMemPoolsDict_Size[static_cast<MemorySize>(size)]->Push(ptr);
+    }*/
+  
     /* UnLocking */
     mAtomicFlag.clear(std::memory_order_release);
 }

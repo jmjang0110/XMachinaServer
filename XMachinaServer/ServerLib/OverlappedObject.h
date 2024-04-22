@@ -53,7 +53,7 @@ public:
 	void				SetOwner(SPtr_NetObj owner) { mOwner = owner; }
 
 	/* Ref Counting бщ */
-	void ReleaseReferenceCount() { mOwner = nullptr; }
+	void DecRef_NetObj() { mOwner = nullptr; }
 	void Clear_OVERLAPPED();
 };
 
@@ -66,7 +66,7 @@ private:
 public:
 	SPtr_Session GetSession() { return mSession; }
 	void SetSession(SPtr_Session session) { mSession = session; }
-
+	void DecRef_Session() { mSession = nullptr; }
 public:
 	Overlapped_Accept() 
 		: OverlappedObject(OverlappedIO::Type::Accept)
@@ -74,6 +74,7 @@ public:
 	}
 	~Overlapped_Accept()
 	{
+		mSession = nullptr;
 	}
 };
 

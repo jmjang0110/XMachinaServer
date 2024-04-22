@@ -18,6 +18,7 @@ NetworkInterface::~NetworkInterface()
 	if (mIocpHandle) {
 		::CloseHandle(mIocpHandle);
 	}
+	mSessionController = nullptr;
 }
 
 bool NetworkInterface::RegisterIocp(SPtr_NetObj netObj)

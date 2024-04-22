@@ -15,9 +15,12 @@ PacketRecvBuf::PacketRecvBuf(UINT32 bufSize)
 	const size_t NumBlock			 = 1;
 	MEMORY->AddSListMemoryPool("RecvBuf", MemoryBlockSize);
 
+
 	/* Use RecvBuf MemoryBlock From SListMemoryPool */
 	mBuffer.reserve(MemoryBlockSize);
-	void* blockPtr = MEMORY->Allocate(MemoryBlockSize);
+	//void* blockPtr = MEMORY->Allocate(MemoryBlockSize);
+	void* blockPtr = MEMORY->Allocate("RecvBuf");
+	mReturnBlockPtr = blockPtr;
 	if (blockPtr) {
 		// 메모리 블록을 0으로 초기화
 		ZeroMemory(blockPtr, MemoryBlockSize);
@@ -32,7 +35,7 @@ PacketRecvBuf::PacketRecvBuf(UINT32 bufSize)
 
 PacketRecvBuf::~PacketRecvBuf()
 {
-	
+	MEMORY->Free("RecvBuf", mReturnBlockPtr);
 }
 
 void PacketRecvBuf::Clean()

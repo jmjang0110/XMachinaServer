@@ -25,6 +25,7 @@ SendBuffersFactory::~SendBuffersFactory()
 	mMemPools_VarPkt.clear();
 	mMemPools_FixPkt.clear();
 
+	SAFE_DELETE(mMemPools_SptrSendPkt);
 }
 
 void SendBuffersFactory::InitPacketMemoryPools()

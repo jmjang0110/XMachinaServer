@@ -30,6 +30,7 @@ SListMemoryPool::~SListMemoryPool()
     }
     mNumBlocks.store(0);
 
+
     mPushCount.store(0);
     mPullCount.store(0);
 

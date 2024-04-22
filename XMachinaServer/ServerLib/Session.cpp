@@ -13,7 +13,7 @@
 
 Session::Session() : NetworkObject()
 {
-	mPacketBuffer.RecvPkt = PacketRecvBuf(static_cast<INT32>(PacketRecvBuf::Info::Size));
+	mPacketBuffer.RecvPkt = new PacketRecvBuf(static_cast<INT32>(PacketRecvBuf::Info::Size));
 	
 	SocketData sockdata = {};
 	sockdata.CreateSocket();
@@ -25,6 +25,8 @@ Session::Session() : NetworkObject()
 
 Session::~Session()
 {
+	SAFE_DELETE(mPacketBuffer.RecvPkt);
+
 }
 
 void Session::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
@@ -153,8 +155,7 @@ void Session::RegisterIO(OverlappedIO::Type IoType)
 			if (errCode != WSA_IO_PENDING)
 			{
 				ProcessError(errCode);
-				mOverlapped.Send.ReleaseReferenceCount();
-				mOverlapped.Send.ReleaseSendBuffersReferenceCount();
+				mOverlapped.Send.DecRef_NetObj();
 				mPacketBuffer.IsSendRegistered.store(false);
 			}
 		}
@@ -174,8 +175,8 @@ void Session::RegisterIO(OverlappedIO::Type IoType)
 
 		/* ::WSARecv */
 		WSABUF wsaBuf{};
-		wsaBuf.buf = reinterpret_cast<char*>(mPacketBuffer.RecvPkt.GetWritePos());
-		wsaBuf.len = mPacketBuffer.RecvPkt.GetFreeSize();
+		wsaBuf.buf = reinterpret_cast<char*>(mPacketBuffer.RecvPkt->GetWritePos());
+		wsaBuf.len = mPacketBuffer.RecvPkt->GetFreeSize();
 
 		DWORD numOfBytes = 0;
 		DWORD flags      = 0;
@@ -209,7 +210,7 @@ void Session::ProcessIO(OverlappedIO::Type IoType, INT32 BytesTransferred)
 	/// -------------------+
 	case OverlappedIO::Type::Connect:
 	{
-		mOverlapped.Connect.ReleaseReferenceCount(); // Shared_ptr -> release
+		mOverlapped.Connect.DecRef_NetObj(); // Shared_ptr -> release
 		mIsConnected.store(true);
 
 		//std::wstring SessionName = std::to_wstring(static_cast<long>(GetSocketData().GetSocket()));
@@ -230,7 +231,7 @@ void Session::ProcessIO(OverlappedIO::Type IoType, INT32 BytesTransferred)
 	/// -------------------+
 	case OverlappedIO::Type::DisConnect:
 	{
-		mOverlapped.Disconnect.ReleaseReferenceCount(); // Shared_ptr -> release 
+		mOverlapped.Disconnect.DecRef_NetObj(); // Shared_ptr -> release 
 
 		OnDisconnected();
 		GetOwnerNI()->DeleteSession(NetworkObject::ID); /* ID : protected */
@@ -244,7 +245,7 @@ void Session::ProcessIO(OverlappedIO::Type IoType, INT32 BytesTransferred)
 	case OverlappedIO::Type::Send:
 	{
 
-		mOverlapped.Send.ReleaseReferenceCount(); 
+		mOverlapped.Send.DecRef_NetObj(); 
 		mOverlapped.Send.ReleaseSendBuffersReferenceCount(); /* SendBuffers Send Complete ¡æ Release Reference Count */
 
 		/* Exception Disconnect */
@@ -284,28 +285,28 @@ void Session::ProcessIO(OverlappedIO::Type IoType, INT32 BytesTransferred)
 	/// -------------------+
 	case OverlappedIO::Type::Recv:
 	{
-		mOverlapped.Recv.ReleaseReferenceCount();
+		mOverlapped.Recv.DecRef_NetObj();
 
 		/* Exception Disconnect */
 		if (BytesTransferred == 0) {
 			Disconnect(L"Recv 0 - Disconnect!");
 			break;
 		}
-		if (FALSE == mPacketBuffer.RecvPkt.OnWrite(BytesTransferred)) {
+		if (FALSE == mPacketBuffer.RecvPkt->OnWrite(BytesTransferred)) {
 			Disconnect(L"OnWirte Overflow - Disconnect!");
 			break;
 		}
 
 		/* On Recv */
-		UINT32 DataSize = mPacketBuffer.RecvPkt.GetDataSize();
-		UINT32 ProcessLen = OnRecv(mPacketBuffer.RecvPkt.GetReadPos(), DataSize);
-		if (FALSE == (ProcessLen < 0 || DataSize < ProcessLen || mPacketBuffer.RecvPkt.OnRead(ProcessLen))) {
+		UINT32 DataSize = mPacketBuffer.RecvPkt->GetDataSize();
+		UINT32 ProcessLen = OnRecv(mPacketBuffer.RecvPkt->GetReadPos(), DataSize);
+		if (FALSE == (ProcessLen < 0 || DataSize < ProcessLen || mPacketBuffer.RecvPkt->OnRead(ProcessLen))) {
 			Disconnect(L"OnRead Overflow - Disconnect!");
 			break;
 		}
 
 		/* Register IO */
-		mPacketBuffer.RecvPkt.Clean();
+		mPacketBuffer.RecvPkt->Clean();
 		RegisterIO(OverlappedIO::Type::Recv);
 
 		break;

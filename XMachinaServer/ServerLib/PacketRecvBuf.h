@@ -22,6 +22,8 @@ private:
 	UINT32 mBufferSize        = 0;
 	UINT32 mRead_Idx          = 0;
 	UINT32 mWrite_Idx         = 0;
+
+	void* mReturnBlockPtr = nullptr;
 public:
 	PacketRecvBuf() = default;
 	PacketRecvBuf(UINT32 bufSize);

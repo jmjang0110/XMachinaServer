@@ -25,7 +25,11 @@ Framework::Framework()
 
 Framework::~Framework()
 {
-	
+	mServer->DecRef_AccpetOverlapped();
+	mServer->DecRef_Listener();
+
+	mServer      = nullptr;
+	mSendFactory = nullptr;
 	/* Window UI Destroy */
 	WINDOW_UI->Destroy();
 
@@ -41,12 +45,14 @@ Framework::~Framework()
 	/* Memory Manager Destroy */
 	MEMORY->Destroy();
 
+
 }
 
 bool Framework::Init(HINSTANCE& hInst)
 {
 
 
+	
 	/// +------------------------------------
 	///	 Log Manager : Console I/O, File I/O 
 	/// ------------------------------------+
@@ -70,21 +76,27 @@ bool Framework::Init(HINSTANCE& hInst)
 
 	if (FALSE == TLS_MGR->Init()) {
 		return false;
+
 	}
 
 	if (FALSE == MEMORY->InitMemories()) {
 		return false;
 	}
-
+	
+	
 	//mServer = std::make_shared<ServerNetwork>();
 	mServer = Memory::Make_Shared<ServerNetwork>();
 	mServer->SetMaxSessionCnt(1);
 	mServer->SetSessionConstructorFunc(std::make_shared<GameSession>);
+
+
 	mServer->Start(L"127.0.0.1", 7777);
+	
 
 	mSendFactory = std::make_shared<SendBuffersFactory>();
 	mSendFactory->InitPacketMemoryPools();
 
+	
 	return true;
 }
 

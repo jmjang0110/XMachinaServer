@@ -12,13 +12,13 @@ GameSession::~GameSession()
 
 void GameSession::OnConnected()
 {
+
 }
 
 void GameSession::OnDisconnected()
 {
+
 }
-
-
 
 void GameSession::OnSend(UINT32 len)
 {

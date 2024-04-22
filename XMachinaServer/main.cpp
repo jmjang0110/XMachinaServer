@@ -59,7 +59,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		FRAMEWORK->Launch();
 		FRAMEWORK->Destroy();
 	}
+    else {
+        FRAMEWORK->Destroy();
+      //  delete FRAMEWORK;
+    }
 	/* Server Framework End */
+
 
 	::WSACleanup();
 

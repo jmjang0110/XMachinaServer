@@ -28,6 +28,8 @@ public:
 	void Close();
 	void RegisterAccept();
 
+	void DecRef_Accepts();
+
 
 	virtual void Dispatch(class OverlappedObject* overlapped, UINT32 bytes = 0) override;
 

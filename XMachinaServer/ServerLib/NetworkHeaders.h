@@ -34,6 +34,7 @@
 
 /* Shared ptr */
 using SPtr_Session           = std::shared_ptr<class Session>;
+using SPtr_GameSession       = std::shared_ptr<class GameSession>;
 using SPtr_SendPktBuf        = std::shared_ptr<class PacketSendBuf>;
 using SPtr_RecvPktBuf        = std::shared_ptr<class PacketRecvBuf>;
 using SPtr_NetObj            = std::shared_ptr<class NetworkObject>;
