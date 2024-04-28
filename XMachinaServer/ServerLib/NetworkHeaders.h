@@ -32,7 +32,7 @@
 
 /* Lock */
 #include <mutex>
-
+#include <synchapi.h> // SRWLock ( slim Read Swrite Lock )  
 #include <ranges>
 
 

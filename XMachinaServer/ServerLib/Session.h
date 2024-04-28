@@ -38,7 +38,8 @@ struct PacketBuffer {
 class Session : public NetworkObject
 {
 private:
-	USE_LOCK;
+	Lock::SRWLockGuard mSRWLock{};
+	//USE_LOCK;
 	//std::mutex sendLock;
 	//class Lock::RWLock					  mRWSendLock;
 

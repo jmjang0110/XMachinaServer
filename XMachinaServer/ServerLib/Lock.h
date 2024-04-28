@@ -98,5 +98,27 @@ namespace Lock
     };
 
 
+    class SRWLockGuard
+    {
+    private:
+        SRWLOCK mSrwLock;
+
+    public:
+        SRWLockGuard() { InitializeSRWLock(&mSrwLock); }
+
+        /* Read Lock - Unlock */
+        void LockRead() { AcquireSRWLockShared(&mSrwLock); }
+        void UnlockRead() { ReleaseSRWLockShared(&mSrwLock); }
+
+        /* Write Lock - Unlock */
+        void LockWrite() { AcquireSRWLockExclusive(&mSrwLock); }
+        void UnloockWrite() { ReleaseSRWLockExclusive(&mSrwLock); }
+        
+        // 읽기 잠금을 획득한 상태인지 확인
+        bool IsReadLocked() const { return TryAcquireSRWLockShared(const_cast<SRWLOCK*>(&mSrwLock)) == FALSE; }
+        bool IsWriteLocked() const { return TryAcquireSRWLockExclusive(const_cast<SRWLOCK*>(&mSrwLock)) == FALSE; }
+
+    };
+
 }
 

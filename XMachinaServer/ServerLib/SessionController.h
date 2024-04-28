@@ -15,7 +15,8 @@
 class NetworkInterface;
 class SessionController
 {
-	USE_LOCK;
+	//USE_LOCK;
+	Lock::SRWLockGuard mSRWLock{};
 
 public:
 	enum class EnumInfo

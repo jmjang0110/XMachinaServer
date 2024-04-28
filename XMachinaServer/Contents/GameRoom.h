@@ -8,7 +8,9 @@ enum class RoomInfo
 };
 class GameRoom
 {
-	USE_LOCK;
+	//USE_LOCK;
+	Lock::SRWLockGuard mSRWLock;
+
 
 private:
 	std::atomic_int32_t mCurrPlayerCnt = {};

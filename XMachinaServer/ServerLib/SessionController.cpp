@@ -27,10 +27,13 @@ void SessionController::AddSession(UINT32 sessionID, SPtr_Session session)
 	//mSessionsMutex.lock();
 	//mSessionRWLock.lockWrite();
 
-	WRITE_LOCK;
+	//WRITE_LOCK;
+	mSRWLock.LockWrite();
+
 	mCurrSessionCnt.fetch_add(1);
 	mSessionsMap[sessionID] = session;
 
+	mSRWLock.UnloockWrite();
 	//mSessionRWLock.unlockWrite();
 	//mSessionsMutex.unlock();
 
@@ -39,7 +42,8 @@ void SessionController::AddSession(UINT32 sessionID, SPtr_Session session)
 void SessionController::ReleaseSession(UINT32 sessionID)
 {
 	//mSessionRWLock.lockWrite();
-	WRITE_LOCK;
+	//WRITE_LOCK;
+	mSRWLock.LockWrite();
 
 	auto iter = mSessionsMap.find(sessionID);
 	if (iter != mSessionsMap.end()) {
@@ -55,6 +59,7 @@ void SessionController::ReleaseSession(UINT32 sessionID)
 		LOG_MGR->SetColor(TextColor::Default);
 
 	}
+	mSRWLock.UnloockWrite();
 
 	//mSessionRWLock.unlockWrite();
 }
@@ -66,12 +71,15 @@ void SessionController::Broadcast(SPtr_SendPktBuf sendBuf)
 
 	//mSessionsMutex.lock();
 
-	WRITE_LOCK;
+	//WRITE_LOCK;
+	
+	mSRWLock.LockWrite();
 
 	for (const auto& iter : mSessionsMap) {
 		SPtr_Session session = iter.second;
 		iter.second->Send(sendBuf);
 	}
+	mSRWLock.UnloockWrite();
 
 	//mSessionRWLock.unlockWrite();
 	//Lock::RWLock::GetInst()->unlockWrite();
