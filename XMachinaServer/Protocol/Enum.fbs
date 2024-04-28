@@ -7,7 +7,7 @@ namespace FBProtocol;
 
 enum OBJECTTYPE : byte {
   NONE,
-  PlayerInfo,
-  OBJECT,
-  GAMEOBJECT
+  PLAYER,
+  MONSTER,
+  STRUCTURE
 }

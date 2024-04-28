@@ -21,6 +21,7 @@ Listener::~Listener()
 		obj->DecRef_Session();
 		SAFE_DELETE(obj);
 	}
+	mAccepts.clear();
 	mOwnerNI = nullptr;
 
 }
@@ -138,6 +139,8 @@ void Listener::DecRef_Accepts()
 		acc->DecRef_NetObj();
 		acc->DecRef_Session();
 	}
+
+
 }
 
 void Listener::Close()

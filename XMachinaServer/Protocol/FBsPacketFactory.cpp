@@ -6,7 +6,7 @@
 #include "../ServerLib/SendBuffersFactory.h"
 #include "../Contents/GameSession.h"
 #include "../ServerLib/SocketData.h"
-
+#include "Contents/GamePlayer.h"
 
 
 bool FBsPacketFactory::ProcessFBsPacket(SPtr_Session session, BYTE* packetBuf, UINT32 Datalen)
@@ -74,22 +74,37 @@ bool FBsPacketFactory::Process_CPkt_NetworkLatency(SPtr_Session session, const F
 	auto pkt_time       = std::chrono::time_point<std::chrono::steady_clock>(std::chrono::milliseconds(timestamp));
 	auto latency        = end - pkt_time;
 
-	std::cout << "Now : "		<< end.time_since_epoch().count() / 1e-6 <<
+	/*std::cout << "Now : "		<< end.time_since_epoch().count() / 1e-6 <<
 				" pkt_time : "	<< pkt_time.time_since_epoch().count() / 1e-6
-		<< "Server Latency: " << std::chrono::duration_cast<std::chrono::milliseconds>(latency).count() << "ms" << std::endl;
+		<< "Server Latency: " << std::chrono::duration_cast<std::chrono::milliseconds>(latency).count() << "ms" << std::endl;*/
 
-	session->Send(FRAMEWORK->GetSendFactory()->SPkt_NewtorkLatency(timestamp)); // 클라이언트에 받았던 시간 그대로를 서버 패킷으로 만들어서 다시 클라에게 보낸다. 
 
 	return true;
 }
 
 bool FBsPacketFactory::Process_CPkt_LogIn(SPtr_Session session, const FBProtocol::CPkt_LogIn& pkt)
 {
-	//SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
-	//std::cout << "LOG IN SESSION ID : " << gameSession->GetID();
-	//std::wcout << L" IP : " << gameSession->GetSocketData().GetIpAddress().c_str() << std::endl;
+#ifdef CONNECT_WITH_TEST_CLIENT
+	return true;
+#endif
 
+	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
+	LOG_MGR->SetColor(TextColor::BrightBlue);
+	LOG_MGR->Cout("LOG IN SESSION ID : ", gameSession->GetID());
+	LOG_MGR->WCout(L"-- LOG-IN-IP : IPv4-", gameSession->GetSocketData().GetIpAddress().c_str(), '\n');
+	LOG_MGR->SetColor(TextColor::Default);
 
+	PlayerInfo MyInfo{};
+	MyInfo.Name     = std::to_string(session->GetID());
+	MyInfo.PlayerID = session->GetID();
+	MyInfo.Type     = FBProtocol::OBJECTTYPE_PLAYER;
+
+	std::vector<PlayerInfo> RemotePlayersInfo{ };
+	bool LogInSuccess = true;
+
+	/* Send Log In Packet to Session */
+	auto SendBuffer = SEND_FACTORY->SPkt_LogIn(MyInfo, RemotePlayersInfo, LogInSuccess);
+	session->Send(SendBuffer);
 
 	return true;
 }

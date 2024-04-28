@@ -30,11 +30,14 @@
 #include <queue>
 #include <unordered_map>
 
+/* Lock */
+#include <mutex>
+
+#include <ranges>
 
 
 /* Shared ptr */
 using SPtr_Session           = std::shared_ptr<class Session>;
-using SPtr_GameSession       = std::shared_ptr<class GameSession>;
 using SPtr_SendPktBuf        = std::shared_ptr<class PacketSendBuf>;
 using SPtr_RecvPktBuf        = std::shared_ptr<class PacketRecvBuf>;
 using SPtr_NetObj            = std::shared_ptr<class NetworkObject>;
@@ -45,6 +48,7 @@ using SPtr_ClientNetwork     = std::shared_ptr<class ClientNetwork>;
 using SPtr_SendBufFactory    = std::shared_ptr<class SendBuffersFactory>;
 using SPtr_PacketSendBuf     = std::shared_ptr<class PacketSendBuf>;
 using SPtr_SessionController = std::shared_ptr<class SessionController>;
+using SPtr_SListMemoryPool   = std::shared_ptr<class SListMemoryPool>;
 
 
 /* Server Library Headers */

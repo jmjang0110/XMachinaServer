@@ -72,19 +72,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
-    <IncludePath>$(SolutionDir)XMachinaServer\;$(SolutionDir)XMachinaServer\Protocol\FlatBuffers\flatbuffers-24.3.7\include\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)XMachinaServer\;$(SolutionDir)XMachinaServer\Protocol\;$(SolutionDir)XMachinaServer\Protocol\FlatBuffers\flatbuffers-24.3.7\include\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
-    <IncludePath>$(SolutionDir)XMachinaServer\;$(SolutionDir)XMachinaServer\Protocol\FlatBuffers\flatbuffers-24.3.7\include\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)XMachinaServer\;$(SolutionDir)XMachinaServer\Protocol\;$(SolutionDir)XMachinaServer\Protocol\FlatBuffers\flatbuffers-24.3.7\include\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
-    <IncludePath>$(SolutionDir)XMachinaServer\;$(SolutionDir)XMachinaServer\Protocol\FlatBuffers\flatbuffers-24.3.7\include\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)XMachinaServer\;$(SolutionDir)XMachinaServer\Protocol\;$(SolutionDir)XMachinaServer\Protocol\FlatBuffers\flatbuffers-24.3.7\include\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
-    <IncludePath>$(SolutionDir)XMachinaServer\;$(SolutionDir)XMachinaServer\Protocol\FlatBuffers\flatbuffers-24.3.7\include\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)XMachinaServer\;$(SolutionDir)XMachinaServer\Protocol\;$(SolutionDir)XMachinaServer\Protocol\FlatBuffers\flatbuffers-24.3.7\include\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -155,6 +155,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Contents\GameEntity.h" />
+    <ClInclude Include="Contents\GamePlayer.h" />
+    <ClInclude Include="Contents\GameRoom.h" />
     <ClInclude Include="Contents\GameSession.h" />
     <ClInclude Include="Contents\LogManager.h" />
     <ClInclude Include="Framework.h" />
@@ -189,6 +192,9 @@
     <ClInclude Include="WindowUI\WindowUI.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Contents\GameEntity.cpp" />
+    <ClCompile Include="Contents\GamePlayer.cpp" />
+    <ClCompile Include="Contents\GameRoom.cpp" />
     <ClCompile Include="Contents\GameSession.cpp" />
     <ClCompile Include="Contents\LogManager.cpp" />
     <ClCompile Include="Framework.cpp" />

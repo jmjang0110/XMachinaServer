@@ -12,14 +12,12 @@ namespace Lock
     /* SpinLock */
     class SpinLock {
     private:
-        std::atomic<bool> mAtomicFlag   = {};
-        UINT64            mMaxSpinCount = 5000;
+        std::atomic_flag  mAtomicFlag = ATOMIC_FLAG_INIT;
     public:
         SpinLock();
         ~SpinLock();
         void Lock();
         void UnLock();
-        void SpinWait();
     };
 
 //#define RWLOCK RWLock::GetInst()

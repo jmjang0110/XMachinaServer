@@ -10,7 +10,7 @@ SessionController::~SessionController()
 	for (int i = 0; i < mSessionsMap.size(); ++i) {
 		mSessionsMap[i] = nullptr;
 	}
-
+	mSessionsMap.clear();
 }
 
 SPtr_Session SessionController::CreateSession(SPtr_NI netInterfaceOwner)
@@ -44,10 +44,16 @@ void SessionController::ReleaseSession(UINT32 sessionID)
 	auto iter = mSessionsMap.find(sessionID);
 	if (iter != mSessionsMap.end()) {
 		mSessionsMap.unsafe_erase(iter);
+		LOG_MGR->SetColor(TextColor::BrightRed);
 		std::cout << "Session with key " << sessionID << " removed from the map." << std::endl;
+		LOG_MGR->SetColor(TextColor::Default);
+
 	}
 	else {
+		LOG_MGR->SetColor(TextColor::Magenta);
 		std::cout << "Session with key " << sessionID << " not found in the map." << std::endl;
+		LOG_MGR->SetColor(TextColor::Default);
+
 	}
 
 	//mSessionRWLock.unlockWrite();

@@ -8,6 +8,7 @@
 
 
 #define FRAMEWORK Framework::GetInst()
+#define SEND_FACTORY Framework::GetInst()->GetSendFactory()
 class Framework
 {
 	DECLARE_SINGLETON(Framework);

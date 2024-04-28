@@ -38,6 +38,8 @@ BOOL WINAPI ConsoleHandler(DWORD dwCtrlType) {
     return FALSE; // FALSE를 반환하여 기존의 핸들러가 동작하도록 합니다.
 }
 
+
+
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
 	_In_ LPWSTR    lpCmdLine,
@@ -48,21 +50,20 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 #endif // DEBUG
 
-    // 프로세스 종료 핸들러를 등록합니다.
-    if (!SetConsoleCtrlHandler(ConsoleHandler, TRUE)) {
-        std::cerr << "Error setting console control handler" << std::endl;
-        return 1;
-    }
+	// 프로세스 종료 핸들러를 등록합니다.
+	if (!SetConsoleCtrlHandler(ConsoleHandler, TRUE)) {
+		std::cerr << "Error setting console control handler" << std::endl;
+		return 1;
+	}
 
 	/* Server Framework Start */
 	if (FRAMEWORK->Init(hInstance)) {
 		FRAMEWORK->Launch();
 		FRAMEWORK->Destroy();
 	}
-    else {
-        FRAMEWORK->Destroy();
-      //  delete FRAMEWORK;
-    }
+	else {
+		FRAMEWORK->Destroy();
+	}
 	/* Server Framework End */
 
 
@@ -70,7 +71,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 #ifdef _DEBUG
 
-	_CrtDumpMemoryLeaks();	
+	//_CrtDumpMemoryLeaks();	
 #endif // DEBUG
 
 	return 0;

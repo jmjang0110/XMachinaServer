@@ -20,6 +20,7 @@
 /// - TLS 영역에 생성시킬것이기에 싱글쓰레드처럼 사용가능
 /// -----------------------------------------------+
 
+#include "Contents/GamePlayer.h"
 
 
 namespace SendPktInfo {
@@ -45,7 +46,7 @@ namespace SendPktInfo {
 		// ... 
 	};
 
-	constexpr UINT16 MemoryNum = 100;
+	constexpr UINT16 MemoryNum = 1000;
 }
 
 
@@ -53,9 +54,9 @@ namespace SendPktInfo {
 class SendBuffersFactory : public std::enable_shared_from_this<SendBuffersFactory>
 {
 private:
-	class SListMemoryPool*									     mMemPools_SptrSendPkt = {}; // SendPkt 메모리 풀 
-	std::unordered_map<SendPktInfo::Var, class SListMemoryPool*> mMemPools_VarPkt      = {}; // 가변길이 패킷 전용 메모리 풀 
-	std::unordered_map<SendPktInfo::Fix, class SListMemoryPool*> mMemPools_FixPkt      = {}; // 고정길이 패킷 전용 메모리 풀 
+	SPtr_SListMemoryPool									     mMemPools_SptrSendPkt = {}; // SendPkt 메모리 풀 
+	std::unordered_map<SendPktInfo::Var, SPtr_SListMemoryPool> mMemPools_VarPkt      = {}; // 가변길이 패킷 전용 메모리 풀 
+	std::unordered_map<SendPktInfo::Fix, SPtr_SListMemoryPool> mMemPools_FixPkt      = {}; // 고정길이 패킷 전용 메모리 풀 
 
 public:
 	SendBuffersFactory();
@@ -85,6 +86,7 @@ public:
 
 	SPtr_SendPktBuf SPkt_Chat(UINT32 sessionID, std::string msg);
 	SPtr_SendPktBuf SPkt_NewtorkLatency(long long timestamp);
+	SPtr_SendPktBuf SPkt_LogIn(PlayerInfo& plinfo, std::vector<PlayerInfo>& remotePlayers, bool& IsSuccess);
 
 public:
 	static PacketSendBuf* New(void* dst, BYTE* ptr, UINT16 memsize, BYTE* buffer, UINT32 allocSize);

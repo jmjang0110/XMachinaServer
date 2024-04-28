@@ -4,6 +4,7 @@
 #include "MemoryManager.h"
 #include "../Framework.h"
 
+
 #undef max
 #include <flatbuffers/flatbuffers.h>
 #include "Protocol/FBProtocol_generated.h"
@@ -16,24 +17,25 @@ SendBuffersFactory::SendBuffersFactory()
 SendBuffersFactory::~SendBuffersFactory()
 {
 	for (auto& pair : mMemPools_VarPkt) {
-		delete pair.second;
+		pair.second = nullptr;
 	}
 	for (auto& pair : mMemPools_FixPkt) {
-		delete pair.second;
+		pair.second = nullptr;
 	}
 	
 	mMemPools_VarPkt.clear();
 	mMemPools_FixPkt.clear();
 
-	SAFE_DELETE(mMemPools_SptrSendPkt);
+	mMemPools_SptrSendPkt = nullptr;
+
 }
 
 void SendBuffersFactory::InitPacketMemoryPools()
 {
 	{
-		SListMemoryPool* pool = new SListMemoryPool(sizeof(PacketSendBuf));
-		mMemPools_SptrSendPkt = pool;
-		for (size_t i = 0; i < 100; ++i) {
+		SPtr_SListMemoryPool Pool = MEMORY->Make_Shared<SListMemoryPool>(sizeof(PacketSendBuf));
+		mMemPools_SptrSendPkt = Pool;
+		for (size_t i = 0; i < SendPktInfo::MemoryNum; ++i) {
 			mMemPools_SptrSendPkt->AddMemory();
 		}
 	}
@@ -45,7 +47,8 @@ void SendBuffersFactory::InitPacketMemoryPools()
 	/* BYTES_32 */
 	{
 		const size_t MemoryBlockSize = 32;
-		SListMemoryPool* Pool = new SListMemoryPool(MemoryBlockSize);
+		SPtr_SListMemoryPool Pool = MEMORY->Make_Shared<SListMemoryPool>(MemoryBlockSize);
+		//SPtr_SListMemoryPool Pool = new SListMemoryPool(MemoryBlockSize);
 		mMemPools_VarPkt[SendPktInfo::Var::BYTES_32] = Pool;
 		for (UINT16 i = 1; i < SendPktInfo::MemoryNum; ++i) {
 			mMemPools_VarPkt[SendPktInfo::Var::BYTES_32]->AddMemory();
@@ -54,7 +57,7 @@ void SendBuffersFactory::InitPacketMemoryPools()
 	/* BYTES_64 */
 	{
 		const size_t MemoryBlockSize = 64;
-		SListMemoryPool* Pool = new SListMemoryPool(MemoryBlockSize);
+		SPtr_SListMemoryPool Pool = MEMORY->Make_Shared<SListMemoryPool>(MemoryBlockSize);
 		mMemPools_VarPkt[SendPktInfo::Var::BYTES_64] = Pool;
 		for (UINT16 i = 1; i < SendPktInfo::MemoryNum; ++i) {
 			mMemPools_VarPkt[SendPktInfo::Var::BYTES_64]->AddMemory();
@@ -64,7 +67,7 @@ void SendBuffersFactory::InitPacketMemoryPools()
 	/* BYTES_128 */
 	{
 		const size_t MemoryBlockSize = 128;
-		SListMemoryPool* Pool = new SListMemoryPool(MemoryBlockSize);
+		SPtr_SListMemoryPool Pool = MEMORY->Make_Shared<SListMemoryPool>(MemoryBlockSize);
 		mMemPools_VarPkt[SendPktInfo::Var::BYTES_128] = Pool;
 		for (UINT16 i = 1; i < SendPktInfo::MemoryNum; ++i) {
 			mMemPools_VarPkt[SendPktInfo::Var::BYTES_128]->AddMemory();
@@ -74,7 +77,7 @@ void SendBuffersFactory::InitPacketMemoryPools()
 	/* BYTES_256 */
 	{
 		const size_t MemoryBlockSize = 256;
-		SListMemoryPool* Pool = new SListMemoryPool(MemoryBlockSize);
+		SPtr_SListMemoryPool Pool = MEMORY->Make_Shared<SListMemoryPool>(MemoryBlockSize);
 		mMemPools_VarPkt[SendPktInfo::Var::BYTES_256] = Pool;
 		for (UINT16 i = 1; i < SendPktInfo::MemoryNum; ++i) {
 			mMemPools_VarPkt[SendPktInfo::Var::BYTES_256]->AddMemory();
@@ -84,7 +87,7 @@ void SendBuffersFactory::InitPacketMemoryPools()
 	/* BYTES_512 */
 	{
 		const size_t MemoryBlockSize = 512;
-		SListMemoryPool* Pool = new SListMemoryPool(MemoryBlockSize);
+		SPtr_SListMemoryPool Pool = MEMORY->Make_Shared<SListMemoryPool>(MemoryBlockSize);
 		mMemPools_VarPkt[SendPktInfo::Var::BYTES_512] = Pool;
 		for (UINT16 i = 1; i < SendPktInfo::MemoryNum; ++i) {
 			mMemPools_VarPkt[SendPktInfo::Var::BYTES_512]->AddMemory();
@@ -253,6 +256,37 @@ SPtr_SendPktBuf SendBuffersFactory::SPkt_NewtorkLatency(long long timestamp)
 	const uint16_t serializedDataSize = static_cast<uint16_t>(builder.GetSize());
 	
 	return CreatePacket(bufferPtr, serializedDataSize, FBsProtocolID::SPkt_NetworkLatency);
+}
+
+SPtr_SendPktBuf SendBuffersFactory::SPkt_LogIn(PlayerInfo& plinfo, std::vector<PlayerInfo>& remotePlayers, bool& IsSuccess)
+{
+	flatbuffers::FlatBufferBuilder builder;
+
+	/* Create ServerPacket */
+	bool successOffset = true;
+	std::vector<flatbuffers::Offset<FBProtocol::Player>> PlayerInfos_vector;
+	
+	/* Remote Players */
+	for (PlayerInfo& p : remotePlayers) {
+		auto ID             = p.PlayerID;
+		auto name           = builder.CreateString(p.Name);
+		auto PlayerInfoType = p.Type;
+
+		auto PlayerInfo = CreatePlayer(builder, ID, name, FBProtocol::OBJECTTYPE::OBJECTTYPE_PLAYER); // CreatePlayerInfo는 스키마에 정의된 함수입니다.
+		PlayerInfos_vector.push_back(PlayerInfo);
+	}
+	auto PlayerInfosOffset = builder.CreateVector(PlayerInfos_vector);
+	
+	/* My Player Info */
+	auto Myinfo            = CreatePlayer(builder, plinfo.PlayerID, builder.CreateString(plinfo.Name), plinfo.Type);
+	auto ServerPacket      = FBProtocol::CreateSPkt_LogIn(builder, successOffset, Myinfo, PlayerInfosOffset);
+	builder.Finish(ServerPacket);
+
+	/* Create SendBuffer */
+	const uint8_t* bufferPointer      = builder.GetBufferPointer();
+	const uint16_t SerializeddataSize = static_cast<uint16_t>(builder.GetSize());;
+
+	return CreatePacket(bufferPointer, SerializeddataSize, FBsProtocolID::SPkt_LogIn);
 }
 
 

@@ -5,7 +5,7 @@
 class GameSession : public Session
 {
 private:
-
+	UINT32 mRemainDataSize = 0;
 public:
 	GameSession();
 	virtual ~GameSession();

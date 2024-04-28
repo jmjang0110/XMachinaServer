@@ -86,13 +86,11 @@ bool Framework::Init(HINSTANCE& hInst)
 	
 	//mServer = std::make_shared<ServerNetwork>();
 	mServer = Memory::Make_Shared<ServerNetwork>();
-	mServer->SetMaxSessionCnt(1);
+	mServer->SetMaxSessionCnt(5000);
 	mServer->SetSessionConstructorFunc(std::make_shared<GameSession>);
-
 
 	mServer->Start(L"127.0.0.1", 7777);
 	
-
 	mSendFactory = std::make_shared<SendBuffersFactory>();
 	mSendFactory->InitPacketMemoryPools();
 
@@ -111,17 +109,28 @@ void Framework::Launch()
 
 	int CoreNum = 4;
 	std::cout << "Core : " << CoreNum << std::endl;
+	std::atomic<bool> stop(false);
+
 	for (INT32 i = 0; i < CoreNum; ++i) {
 		THREAD_MGR->RunThread("Network Dispatch " + std::to_string(i), [&]() {
 	
 			auto d               = TLS_MGR->Get_TlsInfoData();
 			auto Tls_sendFactory = TLS_MGR->Get_TlsSendBufFactory();
 			//std::cout << d->id  << " " << Tls_sendFactory->strFactoryID << std::endl;
-			while (true)
+			while (!stop.load())
 			{
 				mServer->Dispatch_CompletedTasks_FromIOCP(0);
 			}
 			});
+	}
+
+	std::cout << "Q : stop\n";
+	char key;
+	std::cin >> key;
+
+	// If 'q' is pressed, stop the threads
+	if (key == 'q') {
+		stop = true;
 	}
 
 	/*THREAD_MGR->RunThread("Send Test", [&]() {
