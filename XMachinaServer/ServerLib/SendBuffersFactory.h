@@ -90,6 +90,7 @@ public:
 	SPtr_SendPktBuf SPkt_NewtorkLatency(long long timestamp);
 	SPtr_SendPktBuf SPkt_LogIn(PlayerInfo& plinfo, std::vector<PlayerInfo>& remotePlayers, bool& IsSuccess);
 	SPtr_SendPktBuf SPkt_NewPlayer(PlayerInfo& newPlayerInfo);
+	SPtr_SendPktBuf SPkt_RemovePlayer(int removeSessionID);
 
 
 	/// +-------------------------

@@ -140,9 +140,6 @@
     <ClInclude Include="Protocol\FBProtocol_generated.h">
       <Filter>Protocol\FlatBuffers</Filter>
     </ClInclude>
-    <ClInclude Include="Protocol\Player_generated.h">
-      <Filter>Protocol\FlatBuffers</Filter>
-    </ClInclude>
     <ClInclude Include="ServerLib\SendBuffersFactory.h">
       <Filter>ServerLib\Network\Packet</Filter>
     </ClInclude>
@@ -309,9 +306,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Protocol\FBProtocol.fbs">
-      <Filter>Protocol\FlatBuffers</Filter>
-    </None>
-    <None Include="Protocol\Player.fbs">
       <Filter>Protocol\FlatBuffers</Filter>
     </None>
     <None Include="Protocol\Struct.fbs">

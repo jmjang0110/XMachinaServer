@@ -71,6 +71,7 @@ bool GameManager::ExitInRoom(SPtr_GamePlayer player)
 	mSRWLock.LockWrite();
 
 	mRooms[player->GetInfo().RoomID].get()->ExitPlayer(player->GetID());
+
 	mSRWLock.UnlockWrite();
 
 	return true;

@@ -12,7 +12,6 @@
 #include "Protocol/Enum_generated.h"
 #include "Protocol/Struct_generated.h"
 #include "Protocol/Transform_generated.h"
-#include "Protocol/Player_generated.h"
 
 
 SendBuffersFactory::SendBuffersFactory()
@@ -320,12 +319,13 @@ SPtr_SendPktBuf SendBuffersFactory::SPkt_NewPlayer(PlayerInfo& newPlayerInfo)
 	auto ID             = newPlayerInfo.PlayerID;
 	auto name           = builder.CreateString(newPlayerInfo.Name);
 	auto PlayerInfoType = newPlayerInfo.Type;
-	auto PlayerInfo     = CreatePlayer(builder, ID, name, PlayerInfoType); // CreatePlayerInfo는 스키마에 정의된 함수입니다.
 
 	auto position		= FBProtocol::CreateVector3(builder, newPlayerInfo.Position.x, newPlayerInfo.Position.y, newPlayerInfo.Position.z);
 	auto rotation		= FBProtocol::CreateVector3(builder, newPlayerInfo.Rotation.x, newPlayerInfo.Rotation.y, newPlayerInfo.Rotation.z);
 	auto scale			= FBProtocol::CreateVector3(builder, newPlayerInfo.Scale.x, newPlayerInfo.Scale.y, newPlayerInfo.Scale.z);
 	auto transform		= FBProtocol::CreateTransform(builder, position, rotation, scale);
+	auto Spine_LookDir  = FBProtocol::CreateVector3(builder, newPlayerInfo.SpineDir.x, newPlayerInfo.SpineDir.y, newPlayerInfo.SpineDir.z);
+	auto PlayerInfo		= CreatePlayer(builder, ID, name, PlayerInfoType, transform, Spine_LookDir); // CreatePlayerInfo는 스키마에 정의된 함수입니다.
 
 	auto ServerPacket = FBProtocol::CreateSPkt_NewPlayer(builder, PlayerInfo);
 	builder.Finish(ServerPacket);
@@ -334,6 +334,21 @@ SPtr_SendPktBuf SendBuffersFactory::SPkt_NewPlayer(PlayerInfo& newPlayerInfo)
 	const uint16_t SerializeddataSize = static_cast<uint16_t>(builder.GetSize());;
 	SPtr_SendPktBuf sendBuffer        = CreatePacket(bufferPointer, SerializeddataSize, FBsProtocolID::SPkt_NewPlayer);
 
+
+	return sendBuffer;
+}
+
+SPtr_SendPktBuf SendBuffersFactory::SPkt_RemovePlayer(int removeSessionID)
+{
+	flatbuffers::FlatBufferBuilder builder{};
+
+	int32_t id = static_cast<int32_t>(removeSessionID);
+	auto ServerPacket = FBProtocol::CreateSPkt_RemovePlayer(builder, id);
+	builder.Finish(ServerPacket);
+
+	const uint8_t* bufferPointer = builder.GetBufferPointer();
+	const uint16_t SerializeddataSize = static_cast<uint16_t>(builder.GetSize());;
+	SPtr_SendPktBuf sendBuffer = CreatePacket(bufferPointer, SerializeddataSize, FBsProtocolID::SPkt_RemovePlayer);
 
 	return sendBuffer;
 }

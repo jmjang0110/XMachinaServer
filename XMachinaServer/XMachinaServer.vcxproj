@@ -172,7 +172,6 @@
     <ClInclude Include="Protocol\Enum_generated.h" />
     <ClInclude Include="Protocol\FBProtocol_generated.h" />
     <ClInclude Include="Protocol\FBsPacketFactory.h" />
-    <ClInclude Include="Protocol\Player_generated.h" />
     <ClInclude Include="Protocol\Struct_generated.h" />
     <ClInclude Include="Protocol\Transform_generated.h" />
     <ClInclude Include="Resource.h" />
@@ -253,7 +252,6 @@
     <None Include="Protocol\Enum.fbs" />
     <None Include="Protocol\FBProtocol.fbs" />
     <None Include="Protocol\GenFlatBuffersHeader.bat" />
-    <None Include="Protocol\Player.fbs" />
     <None Include="Protocol\Struct.fbs" />
     <None Include="Protocol\Transform.fbs" />
   </ItemGroup>
