@@ -10,6 +10,7 @@
 #include <functional>
 #include <cassert>
 #pragma endregion
+#include "Contents/Util/Common.h"
 
 
 /* Default */
@@ -24,6 +25,7 @@
 
 /* STL */
 #include <vector>
+#include <array>
 
 /* Concurrent */
 #include <concurrent_queue.h>

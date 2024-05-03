@@ -119,13 +119,13 @@ void NetworkInterface::Close()
 
 void NetworkInterface::Send(UINT32 sessionID, SPtr_SendPktBuf sendBuf)
 {
-	mSessionController->Send(sessionID, sendBuf);
+	mSessionController->Send(sessionID, sendBuf); // READ Lock
 
 }
 
 void NetworkInterface::Broadcast(SPtr_SendPktBuf sendBuf)
 {
-	mSessionController->Broadcast(sendBuf);
+	mSessionController->Broadcast(sendBuf); // READ Lock
 
 }
 
@@ -142,11 +142,11 @@ SPtr_Session NetworkInterface::CreateSession()
 
 void NetworkInterface::AddSession(UINT32 sessionID, SPtr_Session session)
 {
-	mSessionController->AddSession(sessionID, session); // lock 
+	mSessionController->AddSession(sessionID, session); // WRITE lock 
 }
 
 void NetworkInterface::DeleteSession(UINT32 sessionID)
 {
-	mSessionController->ReleaseSession(sessionID); // lock
+	mSessionController->ReleaseSession(sessionID); // WRITE lock
 }
 

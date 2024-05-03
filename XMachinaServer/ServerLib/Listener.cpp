@@ -123,7 +123,7 @@ void Listener::RegisterAccept()
 {
 	/* Register Accept IO */
 	const UINT32 MaxAcceptCnt = mOwnerNI->GetMaxSessionCnt();
-	for (INT32 i = 0; i < MaxAcceptCnt; ++i) {
+	for (UINT32 i = 0; i < MaxAcceptCnt; ++i) {
 
 		Overlapped_Accept* acceptIO = new Overlapped_Accept();
 		acceptIO->SetOwner(shared_from_this());

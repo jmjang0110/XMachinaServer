@@ -30,10 +30,13 @@ void SessionController::AddSession(UINT32 sessionID, SPtr_Session session)
 	//WRITE_LOCK;
 	mSRWLock.LockWrite();
 
-	mCurrSessionCnt.fetch_add(1);
-	mSessionsMap[sessionID] = session;
+	if (mCurrSessionCnt < mMaxSessionCnt) {
+		mCurrSessionCnt.fetch_add(1);
+		mSessionsMap[sessionID] = session;
+	}
 
-	mSRWLock.UnloockWrite();
+
+	mSRWLock.UnlockWrite();
 	//mSessionRWLock.unlockWrite();
 	//mSessionsMutex.unlock();
 
@@ -49,17 +52,18 @@ void SessionController::ReleaseSession(UINT32 sessionID)
 	if (iter != mSessionsMap.end()) {
 		mSessionsMap.unsafe_erase(iter);
 		LOG_MGR->SetColor(TextColor::BrightRed);
-		std::cout << "Session with key " << sessionID << " removed from the map." << std::endl;
+		LOG_MGR->Cout("Session with key ", sessionID, " removed from the map.\n");
 		LOG_MGR->SetColor(TextColor::Default);
 
 	}
 	else {
 		LOG_MGR->SetColor(TextColor::Magenta);
-		std::cout << "Session with key " << sessionID << " not found in the map." << std::endl;
+		LOG_MGR->Cout("Session with key ", sessionID, " not found in the map.\n");
 		LOG_MGR->SetColor(TextColor::Default);
 
 	}
-	mSRWLock.UnloockWrite();
+
+	mSRWLock.UnlockWrite();
 
 	//mSessionRWLock.unlockWrite();
 }
@@ -73,13 +77,13 @@ void SessionController::Broadcast(SPtr_SendPktBuf sendBuf)
 
 	//WRITE_LOCK;
 	
-	mSRWLock.LockWrite();
+	mSRWLock.LockRead();
 
 	for (const auto& iter : mSessionsMap) {
 		SPtr_Session session = iter.second;
 		iter.second->Send(sendBuf);
 	}
-	mSRWLock.UnloockWrite();
+	mSRWLock.UnlockRead();
 
 	//mSessionRWLock.unlockWrite();
 	//Lock::RWLock::GetInst()->unlockWrite();
@@ -89,5 +93,13 @@ void SessionController::Broadcast(SPtr_SendPktBuf sendBuf)
 
 void SessionController::Send(UINT32 sessionID, SPtr_SendPktBuf sendBuf)
 {
+	mSRWLock.LockRead();
+
+	auto se = mSessionsMap.find(sessionID);
+	if (se != mSessionsMap.end()) {
+		se->second->Send(sendBuf);
+	}
+
+	mSRWLock.UnlockRead();
 
 }

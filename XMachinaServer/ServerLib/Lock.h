@@ -97,7 +97,9 @@ namespace Lock
         const char* _name;
     };
 
-
+    /// +---------------------------------
+    ///  SRWLock - Slim Read Write Lock
+    /// ---------------------------------+
     class SRWLockGuard
     {
     private:
@@ -112,7 +114,7 @@ namespace Lock
 
         /* Write Lock - Unlock */
         void LockWrite() { AcquireSRWLockExclusive(&mSrwLock); }
-        void UnloockWrite() { ReleaseSRWLockExclusive(&mSrwLock); }
+        void UnlockWrite() { ReleaseSRWLockExclusive(&mSrwLock); }
         
         // 읽기 잠금을 획득한 상태인지 확인
         bool IsReadLocked() const { return TryAcquireSRWLockShared(const_cast<SRWLOCK*>(&mSrwLock)) == FALSE; }

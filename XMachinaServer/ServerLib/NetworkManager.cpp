@@ -43,7 +43,6 @@ bool NetworkManager::WSAStartUp(INT16 major, INT16 minor)
 		std::cout << "::WSAStartUp Error : " << errCode << std::endl;
 		return false;
 	}
-	std::cout << wsaData.wVersion << wsaData.wHighVersion << std::endl;
 	return true;
 }
 

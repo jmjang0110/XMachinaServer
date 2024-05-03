@@ -81,13 +81,20 @@ public:
 	SPtr_PacketSendBuf CreateFixSendPacketBuf(SendPktInfo::Fix pktDataType);
 
 public:
-	/* 패킷을 만든다. */
+	/// +---------------------
+	///	 CREATE SERVER PACKET
+	/// ---------------------+
 	SPtr_PacketSendBuf CreatePacket(const uint8_t* bufPtr, const uint16_t SerializedDataSize, uint16_t ProtocolId);
 
 	SPtr_SendPktBuf SPkt_Chat(UINT32 sessionID, std::string msg);
 	SPtr_SendPktBuf SPkt_NewtorkLatency(long long timestamp);
 	SPtr_SendPktBuf SPkt_LogIn(PlayerInfo& plinfo, std::vector<PlayerInfo>& remotePlayers, bool& IsSuccess);
+	SPtr_SendPktBuf SPkt_NewPlayer(PlayerInfo& newPlayerInfo);
 
+
+	/// +-------------------------
+	///	 SEND BUF MEMORY OPERATOR
+	/// -------------------------+
 public:
 	static PacketSendBuf* New(void* dst, BYTE* ptr, UINT16 memsize, BYTE* buffer, UINT32 allocSize);
 	template<typename Type>

@@ -2,11 +2,21 @@
 #include "FBsPacketFactory.h"
 #include "ServerLib/PacketHeader.h"
 
+/* RELATED FLAT BUFFERS HEADER */
+#include "Enum_generated.h"
+#include "FBProtocol_generated.h"
+#include "Struct_generated.h"
+#include "Transform_generated.h"
+
 #include "../Framework.h"
 #include "../ServerLib/SendBuffersFactory.h"
 #include "../Contents/GameSession.h"
 #include "../ServerLib/SocketData.h"
 #include "Contents/GamePlayer.h"
+#include "Contents/GameManager.h"
+
+
+
 
 
 bool FBsPacketFactory::ProcessFBsPacket(SPtr_Session session, BYTE* packetBuf, UINT32 Datalen)
@@ -22,6 +32,7 @@ bool FBsPacketFactory::ProcessFBsPacket(SPtr_Session session, BYTE* packetBuf, U
 	{	
 	case FBsProtocolID::CPkt_LogIn:
 	{
+		LOG_MGR->Cout(session->GetID(), " - RECV - ", "[ CPkt_LogIn ]\n");
 		const FBProtocol::CPkt_LogIn* packet = flatbuffers::GetRoot<FBProtocol::CPkt_LogIn>(DataPtr);
 		if (!packet) return false;
 		Process_CPkt_LogIn(session, *packet);
@@ -29,6 +40,8 @@ bool FBsPacketFactory::ProcessFBsPacket(SPtr_Session session, BYTE* packetBuf, U
 	break;
 	case FBsProtocolID::CPkt_EnterGame:
 	{
+		LOG_MGR->Cout(session->GetID(), " - RECV - ", "[ CPkt_EnterGame ]\n");
+
 		const FBProtocol::CPkt_EnterGame* packet = flatbuffers::GetRoot<FBProtocol::CPkt_EnterGame>(DataPtr);
 		if (!packet) return false;
 		Process_CPkt_EnterGame(session, *packet);
@@ -36,6 +49,8 @@ bool FBsPacketFactory::ProcessFBsPacket(SPtr_Session session, BYTE* packetBuf, U
 	break;
 	case FBsProtocolID::CPkt_Chat:
 	{
+		LOG_MGR->Cout(session->GetID(), " - RECV - ", "[ CPkt_Chat ]\n");
+
 		const FBProtocol::CPkt_Chat* packet = flatbuffers::GetRoot<FBProtocol::CPkt_Chat>(DataPtr);
 		if (!packet) return false;
 		Process_CPkt_Chat(session, *packet);
@@ -43,9 +58,20 @@ bool FBsPacketFactory::ProcessFBsPacket(SPtr_Session session, BYTE* packetBuf, U
 	break;
 	case FBsProtocolID::CPkt_NetworkLatency:
 	{
+		LOG_MGR->Cout(session->GetID(), " - RECV - ", "[ CPkt_NetworkLatency ]\n");
+
 		const FBProtocol::CPkt_NetworkLatency* packet = flatbuffers::GetRoot<FBProtocol::CPkt_NetworkLatency>(DataPtr);
 		if (!packet) return false;
 		Process_CPkt_NetworkLatency(session, *packet);
+	}
+	break;
+	case FBsProtocolID::CPkt_Transform:
+	{
+		LOG_MGR->Cout(session->GetID(), " - RECV - ", "[ CPkt_Transform ]\n");
+		
+		const FBProtocol::CPkt_Transform* packet = flatbuffers::GetRoot<FBProtocol::CPkt_Transform>(DataPtr);
+		if (!packet) return false;
+		Process_CPkt_Transform(session, *packet);
 	}
 	break;
 
@@ -89,22 +115,35 @@ bool FBsPacketFactory::Process_CPkt_LogIn(SPtr_Session session, const FBProtocol
 #endif
 
 	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
+
 	LOG_MGR->SetColor(TextColor::BrightBlue);
 	LOG_MGR->Cout("LOG IN SESSION ID : ", gameSession->GetID());
 	LOG_MGR->WCout(L"-- LOG-IN-IP : IPv4-", gameSession->GetSocketData().GetIpAddress().c_str(), '\n');
 	LOG_MGR->SetColor(TextColor::Default);
 
-	PlayerInfo MyInfo{};
-	MyInfo.Name     = std::to_string(session->GetID());
-	MyInfo.PlayerID = session->GetID();
-	MyInfo.Type     = FBProtocol::OBJECTTYPE_PLAYER;
+	/// +---------------------------------------------------------------------------------------------------------------
+	PlayerInfo				MyInfo            = gameSession->GetPlayerInfo();  // MY GAME PLAYER INFO 
+	bool					LogInSuccess      = true;						   // IS MY GAME PLAYER SUCCESS ?
+	std::vector<PlayerInfo> RemotePlayersInfo = GAME_MGR->GetPlayerInfos_Room(gameSession->GetPlayerInfo().RoomID); // REMOTE PLAYERS INFO IN ROOM ( MY PLAYER ROOM ID )
+	/// ---------------------------------------------------------------------------------------------------------------+
 
-	std::vector<PlayerInfo> RemotePlayersInfo{ };
-	bool LogInSuccess = true;
+	/// +-----------------------------------
+	/// GET SEND PKT ( LOG IN / NEW PLAYER )
+	/// -----------------------------------+
+	auto SendPkt_LogIn     = SEND_FACTORY->SPkt_LogIn(MyInfo, RemotePlayersInfo, LogInSuccess);
+	auto SendPkt_NewPlayer = SEND_FACTORY->SPkt_NewPlayer(MyInfo);
 
-	/* Send Log In Packet to Session */
-	auto SendBuffer = SEND_FACTORY->SPkt_LogIn(MyInfo, RemotePlayersInfo, LogInSuccess);
-	session->Send(SendBuffer);
+	/// +--------------------------------
+	/// SEND LOG IN PKT TO ME ( SESSION )
+	/// --------------------------------+
+	session->Send(SendPkt_LogIn);
+
+	/// +---------------------------------------------------------------------------------------
+	/// SEND NEW PLAYER PKT TO SESSIONS IN ROOM ( SESSION->GET ROOM ID ) - EXCEPT ME ( SESSION )
+	/// ---------------------------------------------------------------------------------------+
+	GAME_MGR->BroadcastRoom(gameSession->GetPlayerInfo().RoomID, SendPkt_NewPlayer, gameSession->GetID());
+
+
 
 	return true;
 }
@@ -113,5 +152,25 @@ bool FBsPacketFactory::Process_CPkt_EnterGame(SPtr_Session session, const FBProt
 {
 	
 
+	return true;
+}
+
+bool FBsPacketFactory::Process_CPkt_NewPlayer(SPtr_Session session, const FBProtocol::CPkt_NewPlayer& pkt)
+{
+	return true;
+}
+
+bool FBsPacketFactory::Process_CPkt_Transform(SPtr_Session session, const FBProtocol::CPkt_Transform& pkt)
+{
+	return true;
+}
+
+bool FBsPacketFactory::Process_CPkt_KeyInput(SPtr_Session session, const FBProtocol::CPkt_KeyInput& pkt)
+{
+	return true;
+}
+
+bool FBsPacketFactory::Process_CPkt_PlayerState(SPtr_Session session, const FBProtocol::CPkt_PlayerState& pkt)
+{
 	return true;
 }

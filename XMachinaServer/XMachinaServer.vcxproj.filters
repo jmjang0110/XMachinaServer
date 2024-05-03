@@ -59,6 +59,18 @@
     <Filter Include="Protocol\FlatBuffers\bat">
       <UniqueIdentifier>{60021c15-bb6e-4a40-a69f-e10c57931280}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\Contents\Util">
+      <UniqueIdentifier>{64e9dee7-38e7-493f-b473-5d76e5782034}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\Object">
+      <UniqueIdentifier>{e2f4aa8c-b36e-4d71-98c5-36ff23a10050}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\RoomSession">
+      <UniqueIdentifier>{2fc588fa-255d-4f5e-8eb7-e3bb924c381a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\Component">
+      <UniqueIdentifier>{668a7e04-28dc-40d3-bf72-ffd6cfee81f0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework.h">
@@ -115,9 +127,6 @@
     <ClInclude Include="Contents\LogManager.h">
       <Filter>Framework\Log</Filter>
     </ClInclude>
-    <ClInclude Include="Contents\GameSession.h">
-      <Filter>Framework\Contents</Filter>
-    </ClInclude>
     <ClInclude Include="ServerLib\Lock.h" />
     <ClInclude Include="Protocol\Struct_generated.h">
       <Filter>Protocol\FlatBuffers</Filter>
@@ -155,14 +164,38 @@
     <ClInclude Include="ServerLib\PacketHeader.h">
       <Filter>ServerLib\Network\Packet</Filter>
     </ClInclude>
-    <ClInclude Include="Contents\GameRoom.h">
-      <Filter>Framework\Contents</Filter>
+    <ClInclude Include="Contents\Util\DwordOverloader.h">
+      <Filter>Framework\Contents\Util</Filter>
     </ClInclude>
-    <ClInclude Include="Contents\GamePlayer.h">
-      <Filter>Framework\Contents</Filter>
+    <ClInclude Include="Contents\Util\SimpleMath.h">
+      <Filter>Framework\Contents\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Util\Common.h">
+      <Filter>Framework\Contents\Util</Filter>
     </ClInclude>
     <ClInclude Include="Contents\GameEntity.h">
-      <Filter>Framework\Contents</Filter>
+      <Filter>Framework\Contents\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\GameObject.h">
+      <Filter>Framework\Contents\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\GamePlayer.h">
+      <Filter>Framework\Contents\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\GameRoom.h">
+      <Filter>Framework\Contents\RoomSession</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\GameSession.h">
+      <Filter>Framework\Contents\RoomSession</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\GameManager.h">
+      <Filter>Framework\Contents\RoomSession</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Transform.h">
+      <Filter>Framework\Contents\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Key.h">
+      <Filter>Framework\Contents\Util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -211,9 +244,6 @@
     <ClCompile Include="Contents\LogManager.cpp">
       <Filter>Framework\Log</Filter>
     </ClCompile>
-    <ClCompile Include="Contents\GameSession.cpp">
-      <Filter>Framework\Contents</Filter>
-    </ClCompile>
     <ClCompile Include="ServerLib\Lock.cpp" />
     <ClCompile Include="ServerLib\SendBuffersFactory.cpp">
       <Filter>ServerLib\Network\Packet</Filter>
@@ -239,14 +269,29 @@
     <ClCompile Include="main.cpp">
       <Filter>Framework</Filter>
     </ClCompile>
-    <ClCompile Include="Contents\GameRoom.cpp">
-      <Filter>Framework\Contents</Filter>
+    <ClCompile Include="Contents\GameEntity.cpp">
+      <Filter>Framework\Contents\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\GameObject.cpp">
+      <Filter>Framework\Contents\Object</Filter>
     </ClCompile>
     <ClCompile Include="Contents\GamePlayer.cpp">
-      <Filter>Framework\Contents</Filter>
+      <Filter>Framework\Contents\Object</Filter>
     </ClCompile>
-    <ClCompile Include="Contents\GameEntity.cpp">
-      <Filter>Framework\Contents</Filter>
+    <ClCompile Include="Contents\GameRoom.cpp">
+      <Filter>Framework\Contents\RoomSession</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\GameSession.cpp">
+      <Filter>Framework\Contents\RoomSession</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\GameManager.cpp">
+      <Filter>Framework\Contents\RoomSession</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Transform.cpp">
+      <Filter>Framework\Contents\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Key.cpp">
+      <Filter>Framework\Contents\Util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -280,6 +325,9 @@
     </None>
     <None Include="Protocol\GenFlatBuffersHeader.bat">
       <Filter>Protocol\FlatBuffers\bat</Filter>
+    </None>
+    <None Include="Contents\Util\SimpleMath.inl">
+      <Filter>Framework\Contents\Util</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -4,6 +4,8 @@
 #include "ServerLib/ThreadManager.h"
 #include "ServerLib/NetworkManager.h"
 #include "ServerLib/MemoryManager.h"
+#include "Contents/GameManager.h"
+
 
 #include "ServerLib/ServerNetwork.h"
 #include "ServerLib/Listener.h"
@@ -51,8 +53,6 @@ Framework::~Framework()
 bool Framework::Init(HINSTANCE& hInst)
 {
 
-
-	
 	/// +------------------------------------
 	///	 Log Manager : Console I/O, File I/O 
 	/// ------------------------------------+
@@ -74,27 +74,46 @@ bool Framework::Init(HINSTANCE& hInst)
 		return false;
 	}
 
+
+	/// +------------------------------------
+	///	TLS MGR : Thread Local Storage 包府 
+	/// ------------------------------------+
 	if (FALSE == TLS_MGR->Init()) {
 		return false;
 
 	}
 
+
+	/// +------------------------
+	///	MEMORY : Memory Pool 包府 
+	/// ------------------------+
 	if (FALSE == MEMORY->InitMemories()) {
 		return false;
 	}
-	
-	
+
+	/// +-----------------------------------------
+	///	GAME MANAGER : Game Room, Player ... 包府
+	/// -----------------------------------------+
+	GAME_MGR->Init();
+
+	/// +-----------------------------------------
+	///	SERVER NETWORK : IOCP Server Network 包府 
+	/// -----------------------------------------+
 	//mServer = std::make_shared<ServerNetwork>();
 	mServer = Memory::Make_Shared<ServerNetwork>();
-	mServer->SetMaxSessionCnt(5000);
-	mServer->SetSessionConstructorFunc(std::make_shared<GameSession>);
+	mServer->SetMaxSessionCnt(5000); /* 弥措 立加 技记 */
+	mServer->SetSessionConstructorFunc(std::make_shared<GameSession>); /* GameSession栏肺 包府 */
 
-	mServer->Start(L"127.0.0.1", 7777);
+	mServer->Start(L"127.0.0.1", 7777); /* Bind-Listen-AcceptEx.. */
 	
+
+	/// +-------------------------------------------------------------------
+	///	SEND BUFFERS FACTORY : SendBuffer傈侩 皋葛府 钱 棺 SendPktBuffer 积魂
+	/// -------------------------------------------------------------------+
 	mSendFactory = std::make_shared<SendBuffersFactory>();
 	mSendFactory->InitPacketMemoryPools();
 
-	
+
 	return true;
 }
 

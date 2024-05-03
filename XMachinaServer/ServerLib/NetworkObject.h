@@ -20,6 +20,7 @@ private:
 
 protected:
 	UINT32		     ID			  = {};
+
 public:
 	NetworkObject();
 	virtual ~NetworkObject();

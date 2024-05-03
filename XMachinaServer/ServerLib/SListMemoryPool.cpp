@@ -107,7 +107,7 @@ void SListMemoryPool::AddMemory()
     // SLIST에 메모리 블록 추가
     /* [SLIST_ENTRY][ ... memory ... ] */
 
-    const UINT32 AllocSizse = sizeof(SLIST_ENTRY) + mMemorySize;
+    const size_t AllocSizse = sizeof(SLIST_ENTRY) + mMemorySize;
     SListMemoryBlock* ptr = reinterpret_cast<SListMemoryBlock*>(::_aligned_malloc(AllocSizse, MEMORY_ALLOCATION_ALIGNMENT));
     if (ptr) {
 

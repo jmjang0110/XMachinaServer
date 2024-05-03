@@ -122,7 +122,7 @@ void Session::RegisterIO(OverlappedIO::Type IoType)
 				if(sendPktBuf)
 					mOverlapped.Send.BufPush(sendPktBuf);
 			}
-			mSRWLock.UnloockWrite();
+			mSRWLock.UnlockWrite();
 
 
 			//mRWSendLock.unlockWrite();
@@ -279,7 +279,7 @@ void Session::ProcessIO(OverlappedIO::Type IoType, INT32 BytesTransferred)
 				RegisterIO(OverlappedIO::Type::Send);
 			}
 
-			mSRWLock.UnloockWrite();
+			mSRWLock.UnlockWrite();
 
 		}
 
@@ -357,7 +357,7 @@ void Session::Send(SPtr_SendPktBuf buf)
 
 		//sendLock.unlock();
 
-		mSRWLock.UnloockWrite();
+		mSRWLock.UnlockWrite();
 
 
 	}

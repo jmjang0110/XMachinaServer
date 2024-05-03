@@ -156,10 +156,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Contents\GameEntity.h" />
+    <ClInclude Include="Contents\GameManager.h" />
+    <ClInclude Include="Contents\GameObject.h" />
     <ClInclude Include="Contents\GamePlayer.h" />
     <ClInclude Include="Contents\GameRoom.h" />
     <ClInclude Include="Contents\GameSession.h" />
+    <ClInclude Include="Contents\Key.h" />
     <ClInclude Include="Contents\LogManager.h" />
+    <ClInclude Include="Contents\Transform.h" />
+    <ClInclude Include="Contents\Util\Common.h" />
+    <ClInclude Include="Contents\Util\DwordOverloader.h" />
+    <ClInclude Include="Contents\Util\SimpleMath.h" />
     <ClInclude Include="Framework.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Protocol\Enum_generated.h" />
@@ -193,10 +200,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Contents\GameEntity.cpp" />
+    <ClCompile Include="Contents\GameManager.cpp" />
+    <ClCompile Include="Contents\GameObject.cpp" />
     <ClCompile Include="Contents\GamePlayer.cpp" />
     <ClCompile Include="Contents\GameRoom.cpp" />
     <ClCompile Include="Contents\GameSession.cpp" />
+    <ClCompile Include="Contents\Key.cpp" />
     <ClCompile Include="Contents\LogManager.cpp" />
+    <ClCompile Include="Contents\Transform.cpp" />
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pch.cpp">
@@ -238,6 +249,7 @@
     <Image Include="XMachinaServer.ico" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Contents\Util\SimpleMath.inl" />
     <None Include="Protocol\Enum.fbs" />
     <None Include="Protocol\FBProtocol.fbs" />
     <None Include="Protocol\GenFlatBuffersHeader.bat" />
