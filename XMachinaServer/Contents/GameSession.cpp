@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "GameSession.h"
-#include "Protocol/FBsPacketFactory.h"
+
 #include "../Framework.h"
-#include "../ServerLib/SendBuffersFactory.h"
+#include "Protocol/FBsPacketFactory.h"
 #include "../ServerLib/MemoryManager.h"
 #include "GameManager.h"
 #include "GamePlayer.h"
@@ -26,7 +26,7 @@ void GameSession::OnConnected()
 
 void GameSession::OnDisconnected()
 {
-	SPtr_SendPktBuf removePkt = SEND_FACTORY->SPkt_RemovePlayer(GetID());
+	SPtr_SendPktBuf removePkt = FBS_FACTORY->SPkt_RemovePlayer(GetID());
 	GAME_MGR->BroadcastRoom(GetPlayerInfo().RoomID, removePkt, GetID()); /* SEND REMOVE PKT TO SESSIONS IN ROOM */
 	GAME_MGR->ExitInRoom(mPlayer); // WRITE Lock
 	mPlayer = nullptr; // Dec Ref 
@@ -62,7 +62,7 @@ UINT32 GameSession::OnRecv(BYTE* buffer, UINT32 len)
 	}
 
 	// TEST 
-	this->Send(FRAMEWORK->GetSendFactory()->SPkt_NewtorkLatency(1234)); // 클라이언트에 받았던 시간 그대로를 서버 패킷으로 만들어서 다시 클라에게 보낸다. 
+	this->Send(FBS_FACTORY->SPkt_NewtorkLatency(1234)); // 클라이언트에 받았던 시간 그대로를 서버 패킷으로 만들어서 다시 클라에게 보낸다. 
 
 
 	return len;

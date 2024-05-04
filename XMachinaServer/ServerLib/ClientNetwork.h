@@ -11,6 +11,7 @@
 class ClientNetwork : public NetworkInterface
 {
 private:
+	UINT32	mConnectSessionCnt = 1; /* 立加且 技记 荐 */
 
 public:
 	ClientNetwork(std::wstring ip, UINT32 PortNum);
@@ -18,5 +19,9 @@ public:
 
 	virtual bool Start(std::wstring ip, UINT16 portNum) override;
 	virtual void Close() override;
+
+public:
+	void SetConntSessionMaxCnt(UINT32 maxCnt) { mConnectSessionCnt = maxCnt; }
+
 };
 

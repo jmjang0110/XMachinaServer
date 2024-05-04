@@ -10,7 +10,12 @@
 #undef max 
 #include <flatbuffers/flatbuffers.h>
 #include "FBProtocol_generated.h"
+#include "Contents/GamePlayer.h"
+
 using FBSPKT_FACTORY = class FBsPacketFactory;
+
+#define FBS_FACTORY FBsPacketFactory::GetInst()
+
 class FBsPacketFactory
 {
 	DECLARE_SINGLETON(FBsPacketFactory);
@@ -39,6 +44,13 @@ private:
 	static bool Process_CPkt_NetworkLatency(SPtr_Session session, const FBProtocol::CPkt_NetworkLatency& pkt);
 	/* CHAT */
 	static bool Process_CPkt_Chat(SPtr_Session session, const FBProtocol::CPkt_Chat& pkt);
+
+public:
+	SPtr_SendPktBuf SPkt_Chat(UINT32 sessionID, std::string msg);
+	SPtr_SendPktBuf SPkt_NewtorkLatency(long long timestamp);
+	SPtr_SendPktBuf SPkt_LogIn(PlayerInfo& plinfo, std::vector<PlayerInfo>& remotePlayers, bool& IsSuccess);
+	SPtr_SendPktBuf SPkt_NewPlayer(PlayerInfo& newPlayerInfo);
+	SPtr_SendPktBuf SPkt_RemovePlayer(int removeSessionID);
 
 
 };

@@ -57,48 +57,71 @@ bool Framework::Init(HINSTANCE& hInst)
 	///	 Log Manager : Console I/O, File I/O 
 	/// ------------------------------------+
 	if (FALSE == LOG_MGR->Init()) {
+		LOG_MGR->Cout("LOG_MGR INIT... FAIL\n");
+
 		return false;
 	}
+
+	LOG_MGR->Cout("LOG_MGR INIT... SUCCESS\n");
 
 	/// +---------------------------------------
 	///	XMachina Window Server UI : Dx12, Imgui  
 	/// ---------------------------------------+
 	if (FALSE == WINDOW_UI->Init(hInst, { 1366,768 })) {
+		LOG_MGR->Cout("WINDOW_UI INIT... FAIL\n");
+
 		return false;
 	}
+
+	LOG_MGR->Cout("WINDOW_UI INIT... SUCCESS\n");
 
 	/// +----------------------------------------------------------------
 	///	Network Manager : 2.2버젼 Winsock 초기화 및 비동기 함수 Lpfn 초기화
 	/// ----------------------------------------------------------------+
 	if (FALSE == NETWORK_MGR->Init()) {
+		LOG_MGR->Cout("NETWORK_MGR INIT... FAIL\n");
+
 		return false;
 	}
 
+	LOG_MGR->Cout("NETWORK_MGR INIT... SUCCESS\n");
 
 	/// +------------------------------------
 	///	TLS MGR : Thread Local Storage 관리 
 	/// ------------------------------------+
 	if (FALSE == TLS_MGR->Init()) {
+		LOG_MGR->Cout("TLS_MGR INIT... FAIL\n");
+
 		return false;
 
 	}
+
+	LOG_MGR->Cout("TLS_MGR INIT... SUCCESS\n");
 
 
 	/// +------------------------
 	///	MEMORY : Memory Pool 관리 
 	/// ------------------------+
 	if (FALSE == MEMORY->InitMemories()) {
+		LOG_MGR->Cout("MEMORY INIT... SUCCESS\n");
+
 		return false;
 	}
+
+	LOG_MGR->Cout("MEMORY INIT... SUCCESS\n");
 
 	/// +-----------------------------------------
 	///	GAME MANAGER : Game Room, Player ... 관리
 	/// -----------------------------------------+
 	GAME_MGR->Init();
 
+	LOG_MGR->Cout("GAME_MGR INIT... SUCCESS\n");
+
 	/// +-----------------------------------------
 	///	SERVER NETWORK : IOCP Server Network 관리 
 	/// -----------------------------------------+
+	LOG_MGR->Cout("ServerNetwork INIT... ING... PLEASE WAIT \n");
+
 	//mServer = std::make_shared<ServerNetwork>();
 	mServer = Memory::Make_Shared<ServerNetwork>();
 	mServer->SetMaxSessionCnt(5000); /* 최대 접속 세션 */
@@ -106,12 +129,17 @@ bool Framework::Init(HINSTANCE& hInst)
 
 	mServer->Start(L"127.0.0.1", 7777); /* Bind-Listen-AcceptEx.. */
 	
+	LOG_MGR->Cout("ServerNetwork INIT... SUCCESS\n");
 
 	/// +-------------------------------------------------------------------
 	///	SEND BUFFERS FACTORY : SendBuffer전용 메모리 풀 및 SendPktBuffer 생산
 	/// -------------------------------------------------------------------+
+	LOG_MGR->Cout("SendBuffersFactory INIT... ING... PLEASE WAIT \n");
+
 	mSendFactory = std::make_shared<SendBuffersFactory>();
 	mSendFactory->InitPacketMemoryPools();
+
+	LOG_MGR->Cout("SendBuffersFactory INIT... SUCCESS\n");
 
 
 	return true;

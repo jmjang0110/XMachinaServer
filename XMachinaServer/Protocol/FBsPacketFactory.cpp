@@ -16,7 +16,7 @@
 #include "Contents/GameManager.h"
 
 
-
+DEFINE_SINGLETON(FBsPacketFactory);
 
 
 bool FBsPacketFactory::ProcessFBsPacket(SPtr_Session session, BYTE* packetBuf, UINT32 Datalen)
@@ -130,8 +130,8 @@ bool FBsPacketFactory::Process_CPkt_LogIn(SPtr_Session session, const FBProtocol
 	/// +-----------------------------------
 	/// GET SEND PKT ( LOG IN / NEW PLAYER )
 	/// -----------------------------------+
-	auto SendPkt_LogIn     = SEND_FACTORY->SPkt_LogIn(MyInfo, RemotePlayersInfo, LogInSuccess);
-	auto SendPkt_NewPlayer = SEND_FACTORY->SPkt_NewPlayer(MyInfo);
+	auto SendPkt_LogIn     = FBS_FACTORY->SPkt_LogIn(MyInfo, RemotePlayersInfo, LogInSuccess);
+	auto SendPkt_NewPlayer = FBS_FACTORY->SPkt_NewPlayer(MyInfo);
 
 	/// +--------------------------------
 	/// SEND LOG IN PKT TO ME ( SESSION )
@@ -174,3 +174,126 @@ bool FBsPacketFactory::Process_CPkt_PlayerState(SPtr_Session session, const FBPr
 {
 	return true;
 }
+
+
+
+SPtr_SendPktBuf FBsPacketFactory::SPkt_Chat(UINT32 sessionID, std::string msg)
+{
+	flatbuffers::FlatBufferBuilder builder;
+
+	auto msgOffset = builder.CreateString(msg);
+	auto ServerPacket = FBProtocol::CreateSPkt_Chat(builder, sessionID, msgOffset);
+
+	builder.Finish(ServerPacket);
+
+	const uint8_t* bufferPtr = builder.GetBufferPointer();
+	const uint16_t serializedDataSize = static_cast<uint16_t>(builder.GetSize());
+
+	return SEND_FACTORY->CreatePacket(bufferPtr, serializedDataSize, FBsProtocolID::SPkt_Chat);
+}
+
+SPtr_SendPktBuf FBsPacketFactory::SPkt_NewtorkLatency(long long timestamp)
+{
+	flatbuffers::FlatBufferBuilder builder;
+
+	auto ServerPacket = FBProtocol::CreateSPkt_NetworkLatency(builder, timestamp);
+
+	builder.Finish(ServerPacket);
+
+	const uint8_t* bufferPtr = builder.GetBufferPointer();
+	const uint16_t serializedDataSize = static_cast<uint16_t>(builder.GetSize());
+
+	return SEND_FACTORY->CreatePacket(bufferPtr, serializedDataSize, FBsProtocolID::SPkt_NetworkLatency);
+}
+
+SPtr_SendPktBuf FBsPacketFactory::SPkt_LogIn(PlayerInfo& plinfo, std::vector<PlayerInfo>& remotePlayers, bool& IsSuccess)
+{
+	flatbuffers::FlatBufferBuilder builder;
+
+	/* Create ServerPacket */
+	bool successOffset = true;
+	std::vector<flatbuffers::Offset<FBProtocol::Player>> PlayerInfos_vector;
+
+	/* My Player Info */
+	auto position = FBProtocol::CreateVector3(builder, plinfo.Position.x, plinfo.Position.y, plinfo.Position.z);
+	auto rotation = FBProtocol::CreateVector3(builder, plinfo.Rotation.x, plinfo.Rotation.y, plinfo.Rotation.z);
+	auto scale = FBProtocol::CreateVector3(builder, plinfo.Scale.x, plinfo.Scale.y, plinfo.Scale.z);
+	auto transform = FBProtocol::CreateTransform(builder, position, rotation, scale);
+
+	auto Spine_LookDir = FBProtocol::CreateVector3(builder, plinfo.SpineDir.x, plinfo.SpineDir.y, plinfo.SpineDir.z);
+	auto Myinfo = CreatePlayer(builder, plinfo.PlayerID, builder.CreateString(plinfo.Name), plinfo.Type, transform, Spine_LookDir);
+
+	/* Remote Players */
+	for (PlayerInfo& p : remotePlayers) {
+		auto ID = p.PlayerID;
+		auto name = builder.CreateString(p.Name);
+		auto PlayerInfoType = p.Type;
+
+		auto position = FBProtocol::CreateVector3(builder, p.Position.x, p.Position.y, p.Position.z);
+		auto rotation = FBProtocol::CreateVector3(builder, p.Rotation.x, p.Rotation.y, p.Rotation.z);
+		auto scale = FBProtocol::CreateVector3(builder, p.Scale.x, p.Scale.y, p.Scale.z);
+		auto transform = FBProtocol::CreateTransform(builder, position, rotation, scale);
+
+		auto Spine_LookDir = FBProtocol::CreateVector3(builder, p.SpineDir.x, p.SpineDir.y, p.SpineDir.z);
+
+
+		auto PlayerInfo = CreatePlayer(builder, ID, name, PlayerInfoType, transform, Spine_LookDir); // CreatePlayerInfo는 스키마에 정의된 함수입니다.
+		PlayerInfos_vector.push_back(PlayerInfo);
+	}
+	auto PlayerInfosOffset = builder.CreateVector(PlayerInfos_vector);
+
+
+
+	/* CREATE LOG IN PACKET */
+	auto ServerPacket = FBProtocol::CreateSPkt_LogIn(builder, successOffset, Myinfo, PlayerInfosOffset);
+	builder.Finish(ServerPacket);
+
+	/* Create SendBuffer */
+	const uint8_t* bufferPointer = builder.GetBufferPointer();
+	const uint16_t SerializeddataSize = static_cast<uint16_t>(builder.GetSize());;
+
+	return SEND_FACTORY->CreatePacket(bufferPointer, SerializeddataSize, FBsProtocolID::SPkt_LogIn);
+}
+
+SPtr_SendPktBuf FBsPacketFactory::SPkt_NewPlayer(PlayerInfo& newPlayerInfo)
+{
+	flatbuffers::FlatBufferBuilder builder{};
+
+	auto ID = newPlayerInfo.PlayerID;
+	auto name = builder.CreateString(newPlayerInfo.Name);
+	auto PlayerInfoType = newPlayerInfo.Type;
+
+	auto position = FBProtocol::CreateVector3(builder, newPlayerInfo.Position.x, newPlayerInfo.Position.y, newPlayerInfo.Position.z);
+	auto rotation = FBProtocol::CreateVector3(builder, newPlayerInfo.Rotation.x, newPlayerInfo.Rotation.y, newPlayerInfo.Rotation.z);
+	auto scale = FBProtocol::CreateVector3(builder, newPlayerInfo.Scale.x, newPlayerInfo.Scale.y, newPlayerInfo.Scale.z);
+	auto transform = FBProtocol::CreateTransform(builder, position, rotation, scale);
+	auto Spine_LookDir = FBProtocol::CreateVector3(builder, newPlayerInfo.SpineDir.x, newPlayerInfo.SpineDir.y, newPlayerInfo.SpineDir.z);
+	auto PlayerInfo = CreatePlayer(builder, ID, name, PlayerInfoType, transform, Spine_LookDir); // CreatePlayerInfo는 스키마에 정의된 함수입니다.
+
+	auto ServerPacket = FBProtocol::CreateSPkt_NewPlayer(builder, PlayerInfo);
+	builder.Finish(ServerPacket);
+
+	const uint8_t* bufferPointer = builder.GetBufferPointer();
+	const uint16_t SerializeddataSize = static_cast<uint16_t>(builder.GetSize());;
+	SPtr_SendPktBuf sendBuffer = SEND_FACTORY->CreatePacket(bufferPointer, SerializeddataSize, FBsProtocolID::SPkt_NewPlayer);
+
+
+	return sendBuffer;
+}
+
+SPtr_SendPktBuf FBsPacketFactory::SPkt_RemovePlayer(int removeSessionID)
+{
+	flatbuffers::FlatBufferBuilder builder{};
+
+	int32_t id = static_cast<int32_t>(removeSessionID);
+	auto ServerPacket = FBProtocol::CreateSPkt_RemovePlayer(builder, id);
+	builder.Finish(ServerPacket);
+
+	const uint8_t* bufferPointer = builder.GetBufferPointer();
+	const uint16_t SerializeddataSize = static_cast<uint16_t>(builder.GetSize());;
+	SPtr_SendPktBuf sendBuffer = SEND_FACTORY->CreatePacket(bufferPointer, SerializeddataSize, FBsProtocolID::SPkt_RemovePlayer);
+
+	return sendBuffer;
+}
+
+

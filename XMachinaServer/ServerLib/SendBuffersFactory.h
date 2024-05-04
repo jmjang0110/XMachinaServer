@@ -86,12 +86,6 @@ public:
 	/// ---------------------+
 	SPtr_PacketSendBuf CreatePacket(const uint8_t* bufPtr, const uint16_t SerializedDataSize, uint16_t ProtocolId);
 
-	SPtr_SendPktBuf SPkt_Chat(UINT32 sessionID, std::string msg);
-	SPtr_SendPktBuf SPkt_NewtorkLatency(long long timestamp);
-	SPtr_SendPktBuf SPkt_LogIn(PlayerInfo& plinfo, std::vector<PlayerInfo>& remotePlayers, bool& IsSuccess);
-	SPtr_SendPktBuf SPkt_NewPlayer(PlayerInfo& newPlayerInfo);
-	SPtr_SendPktBuf SPkt_RemovePlayer(int removeSessionID);
-
 
 	/// +-------------------------
 	///	 SEND BUF MEMORY OPERATOR

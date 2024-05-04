@@ -12,7 +12,7 @@
 #include "SessionController.h"
 class NetworkInterface : public std::enable_shared_from_this<NetworkInterface>
 {
-private:
+protected:
 	HANDLE						mIocpHandle        = {};
 	SOCKADDR_IN					mSockAddr          = {};
 	SPtr_SessionController		mSessionController = {};
