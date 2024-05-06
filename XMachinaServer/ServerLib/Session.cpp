@@ -113,11 +113,8 @@ void Session::RegisterIO(OverlappedIO::Type IoType)
 
 		/* Push SendPkt to Overlapped_Send */
 		{
-		
-			//sendLock.lock();
-			//mRWSendLock.lockWrite();
-			//WRITE_LOCK;
-			mSRWLock.LockWrite();
+			WRITE_LOCK;
+			//mSRWLock.LockWrite();
 
 			while (mPacketBuffer.SendPkt_Queue.empty() == false) {
 				SPtr_SendPktBuf sendPktBuf = mPacketBuffer.SendPkt_Queue.front();
@@ -125,13 +122,8 @@ void Session::RegisterIO(OverlappedIO::Type IoType)
 				if(sendPktBuf)
 					mOverlapped.Send.BufPush(sendPktBuf);
 			}
-			mSRWLock.UnlockWrite();
 
-
-			//mRWSendLock.unlockWrite();
-			//sendLock.unlock();
-
-
+			//mSRWLock.UnlockWrite();
 		}
 
 		/* Scatter-Gather */
@@ -239,6 +231,7 @@ void Session::ProcessIO(OverlappedIO::Type IoType, INT32 BytesTransferred)
 		mOverlapped.Disconnect.DecRef_NetObj(); // Shared_ptr -> release 
 
 		OnDisconnected();
+		mSRWLock.UnlockWrite();
 		GetOwnerNI()->DeleteSession(NetworkObject::ID); /* ID : protected */
 		//GetOwnerNI()->ReleaseSession(std::static_pointer_cast<Session>(shared_from_this()));
 
@@ -264,25 +257,21 @@ void Session::ProcessIO(OverlappedIO::Type IoType, INT32 BytesTransferred)
 		/* TODO : Lock °ÉÀÚ!*/
 		/* ´Ù º¸³¿ */
 		{
-		
-			//sendLock.lock();
-			//mRWSendLock.lockWrite();
-			//WRITE_LOCK;
-			mSRWLock.LockWrite();
+			WRITE_LOCK;
+			//mSRWLock.LockWrite();
+
 
 			if (mPacketBuffer.SendPkt_Queue.empty() == true) {
 				mPacketBuffer.IsSendRegistered.store(false);
 
 			}
-			//sendLock.unlock();
-			//mRWSendLock.unlockWrite();
 
 			/* ´Ù ¾Èº¸³¿ */
 			if(mPacketBuffer.SendPkt_Queue.empty() == false){
 				RegisterIO(OverlappedIO::Type::Send);
 			}
 
-			mSRWLock.UnlockWrite();
+			//mSRWLock.UnlockWrite();
 
 		}
 
@@ -344,29 +333,24 @@ void Session::Send(SPtr_SendPktBuf buf)
 	}
 
 	bool RegisterSend = false;
-
 	{
-		//sendLock.lock();
-		//mRWSendLock.lockWrite();
-		//WRITE_LOCK;
-		mSRWLock.LockWrite();
+		WRITE_LOCK;
+
+		//mSRWLock.LockWrite();
+
+		LockWrite_ThreadID.store(TLS_MGR->Get_TlsInfoData()->id);
 
 		mPacketBuffer.SendPkt_Queue.push(buf);
 
 		if (mPacketBuffer.IsSendRegistered.exchange(true) == false)
 			RegisterSend = true;
 
-		//mRWSendLock.unlockWrite();
-
-		//sendLock.unlock();
-
-		mSRWLock.UnlockWrite();
-
-
+		//mSRWLock.UnlockWrite();
 	}
 
-	if (RegisterSend)
+	if (RegisterSend) {
 		RegisterIO(OverlappedIO::Type::Send);
+	}
 
 }
 

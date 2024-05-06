@@ -38,10 +38,14 @@ struct PacketBuffer {
 class Session : public NetworkObject
 {
 private:
-	Lock::SRWLockGuard mSRWLock{};
+	USE_LOCK;
+	Lock::SRWLock mSRWLock{};
 	//USE_LOCK;
 	//std::mutex sendLock;
 	//class Lock::RWLock					  mRWSendLock;
+
+	std::atomic_int LockWrite_ThreadID = -1;
+	std::atomic_bool LockWrite_bool = false;
 
 	std::weak_ptr<class NetworkInterface> mOwnerNI	      = {};		/* Server Network or Client Network - Set Owner */
 	std::atomic<bool>					  mIsConnected    = false;	/* Check If Client Connect to Server */

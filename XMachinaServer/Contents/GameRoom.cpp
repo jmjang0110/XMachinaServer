@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "GameRoom.h"
 #include "GameSession.h"
+#include "ServerLib/ThreadManager.h"
 
 GameRoom::GameRoom()
 {
@@ -54,7 +55,7 @@ bool GameRoom::ExitPlayer(UINT32 sessionID)
 
 SPtr_GamePlayer GameRoom::FindPlayer(UINT32 sessionID)
 {
-	mSRWLock.LockWrite();
+	mSRWLock.LockRead();
 
 	size_t size = mGamePlayers.size();
 	auto obj = mGamePlayers.find(sessionID);
@@ -64,7 +65,7 @@ SPtr_GamePlayer GameRoom::FindPlayer(UINT32 sessionID)
 		return nullptr;
 	}
 
-	mSRWLock.UnlockWrite();
+	mSRWLock.UnlockRead();
 	return obj->second;
 }
 
@@ -77,8 +78,11 @@ void GameRoom::Broadcast(SPtr_SendPktBuf spkt, UINT32 exceptSessionID)
 		if (player.first == exceptSessionID) continue;
 		SPtr_GameSession session = player.second->GetInfo().Owner;
 		session->Send(spkt);
+
 	}
+
 	mSRWLock.UnlockWrite();
+
 }
 
 void GameRoom::SendPacket(UINT32 sessionID, SPtr_SendPktBuf sendPkt)

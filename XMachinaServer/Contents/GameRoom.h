@@ -9,7 +9,7 @@ namespace RoomInfo
 class GameRoom : public GameEntity
 {
 	//USE_LOCK;
-	Lock::SRWLockGuard mSRWLock;
+	Lock::SRWLock mSRWLock;
 
 private:
 	int		mID = -1; /* ROOM ID */

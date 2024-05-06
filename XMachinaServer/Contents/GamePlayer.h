@@ -58,7 +58,7 @@ struct PlayerInfo
 class GamePlayer : public GameObject
 {
 private:
-	Lock::SRWLockGuard mSRWLock;
+	Lock::SRWLock mSRWLock;
 	PlayerInfo	mInfo = {};
 
 public:
