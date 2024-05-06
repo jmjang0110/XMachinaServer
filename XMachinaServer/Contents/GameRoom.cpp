@@ -13,33 +13,39 @@ GameRoom::~GameRoom()
 
 bool GameRoom::EnterPlayer(SPtr_GamePlayer player)
 {
-	mSRWLock.LockWrite();
 	
 	mCurrPlayerCnt.fetch_add(1);
-	mGamePlayers[player->GetID()] = player;
-	player->setRoomID(mID);
+
+	{
+		mSRWLock.LockWrite();
+		mGamePlayers[player->GetID()] = player;
+		player->setRoomID(mID);
+		mSRWLock.UnlockWrite();
+	}
+
 
 	LOG_MGR->SetColor(TextColor::BrightCyan);
 	LOG_MGR->Cout(mID, " - ROOM - ", player->GetID(), " ENTER SUCCESS\n");
 	LOG_MGR->SetColor(TextColor::Default);
 
-	mSRWLock.UnlockWrite();
 
 	return true;
 }
 
 bool GameRoom::ExitPlayer(UINT32 sessionID)
 {
-	mSRWLock.LockWrite();
-
 	mCurrPlayerCnt.fetch_sub(1);
-	mGamePlayers.unsafe_erase(sessionID);
-	
+
+	{
+		mSRWLock.LockWrite();
+		mGamePlayers.unsafe_erase(sessionID);
+		mSRWLock.UnlockWrite();
+	}
+
 	LOG_MGR->SetColor(TextColor::BrightMagenta);
 	LOG_MGR->Cout(mID, " - ROOM ", sessionID, " EXIT SUCCESS\n");
 	LOG_MGR->SetColor(TextColor::Default);
 
-	mSRWLock.UnlockWrite();
 
 	return true;
 }
@@ -48,7 +54,7 @@ bool GameRoom::ExitPlayer(UINT32 sessionID)
 
 SPtr_GamePlayer GameRoom::FindPlayer(UINT32 sessionID)
 {
-	mSRWLock.LockRead();
+	mSRWLock.LockWrite();
 
 	size_t size = mGamePlayers.size();
 	auto obj = mGamePlayers.find(sessionID);
@@ -58,21 +64,21 @@ SPtr_GamePlayer GameRoom::FindPlayer(UINT32 sessionID)
 		return nullptr;
 	}
 
-	mSRWLock.UnlockRead();
+	mSRWLock.UnlockWrite();
 	return obj->second;
 }
 
 
 void GameRoom::Broadcast(SPtr_SendPktBuf spkt, UINT32 exceptSessionID)
 {
-	mSRWLock.LockRead();
+	mSRWLock.LockWrite();
 
 	for (auto& player : mGamePlayers) {
 		if (player.first == exceptSessionID) continue;
 		SPtr_GameSession session = player.second->GetInfo().Owner;
 		session->Send(spkt);
 	}
-	mSRWLock.UnlockRead();
+	mSRWLock.UnlockWrite();
 }
 
 void GameRoom::SendPacket(UINT32 sessionID, SPtr_SendPktBuf sendPkt)
@@ -82,14 +88,14 @@ void GameRoom::SendPacket(UINT32 sessionID, SPtr_SendPktBuf sendPkt)
 
 std::vector<PlayerInfo> GameRoom::GetInsertedPlayersInfo()
 {
-	mSRWLock.LockRead();
+	mSRWLock.LockWrite();
 
 	std::vector<PlayerInfo> playerInfos = {};
 	for (auto& player : mGamePlayers) {
 		playerInfos.push_back(player.second->GetInfo());
 	}
 
-	mSRWLock.UnlockRead();
+	mSRWLock.UnlockWrite();
 
 	return playerInfos;
 }

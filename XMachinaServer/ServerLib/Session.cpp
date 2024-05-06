@@ -53,6 +53,9 @@ void Session::RegisterIO(OverlappedIO::Type IoType)
 		if (mIsConnected.load() == true)
 			return;
 
+		GetSocketData().SetReuseAddress(true);
+		GetSocketData().BindAnyAddress(0);
+
 		/* Clear & Set - Connect Overlapped IO Object */
 		mOverlapped.Connect.Clear_OVERLAPPED();
 		mOverlapped.Connect.SetOwner(shared_from_this());

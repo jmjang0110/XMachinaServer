@@ -103,7 +103,7 @@ namespace Lock
     class SRWLockGuard
     {
     private:
-        SRWLOCK mSrwLock;
+        SRWLOCK mSrwLock; // MSDN 
 
     public:
         SRWLockGuard() { InitializeSRWLock(&mSrwLock); }
@@ -121,6 +121,17 @@ namespace Lock
         bool IsWriteLocked() const { return TryAcquireSRWLockExclusive(const_cast<SRWLOCK*>(&mSrwLock)) == FALSE; }
 
     };
+
+//    class SRW_WriteLockGaurd
+//    {
+//    private:
+//        SRWLock& _lock;
+//    public:
+//        SRW_WriteLockGaurd(SRWLock& lock) : _lock(lock) { _lock.LockWrite() };
+//        ~SRW_WriteLockGaurd() { _lock.UnlockWrite(); };
+//        
+//    };
+//#define WriteLockScope(srwLock) SRW_WriteLockGuard(srwLock)
 
 }
 
