@@ -14,6 +14,7 @@
 
 #include "Contents/GameSession.h"
 #include "ServerLib/SendBuffersFactory.h"
+#include "Protocol/FBsPacketFactory.h"
 
 #undef max 
 #include <flatbuffers/flatbuffers.h>
@@ -193,6 +194,20 @@ void Framework::Launch()
 			});
 	}
 
+#ifdef  CONNECT_WITH_TEST_CLIENT
+	THREAD_MGR->RunThread("Send Test", [&]() {
+		while (true) {
+			SPtr_SendPktBuf SPkt = FBS_FACTORY->SPkt_Chat(0, "test Chat");
+			if (SPkt) {
+				mServer->Broadcast(SPkt);
+				std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+			}
+		}
+		});
+#endif //  CONNECT_WITH_TEST_CLIENT
+
+
 	std::cout << "Q : stop\n";
 	char key;
 	std::cin >> key;
@@ -202,15 +217,7 @@ void Framework::Launch()
 		stop = true;
 	}
 
-	/*THREAD_MGR->RunThread("Send Test", [&]() {
-			while (true) {
-				SPtr_SendPktBuf SPkt = mSendFactory->SPkt_Chat(0, "test Chat");
-				if (SPkt) {
-					mServer->Broadcast(SPkt);
-				}
-			}
-		});*/
-	
+
 
 
 	THREAD_MGR->JoinAllThreads();
