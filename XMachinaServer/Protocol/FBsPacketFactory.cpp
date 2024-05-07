@@ -18,7 +18,9 @@
 
 DEFINE_SINGLETON(FBsPacketFactory);
 
-
+/// ★---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+///	◈ PROCESS CLIENT PACKET ◈
+/// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------★
 bool FBsPacketFactory::ProcessFBsPacket(SPtr_Session session, BYTE* packetBuf, UINT32 Datalen)
 {
 
@@ -67,7 +69,7 @@ bool FBsPacketFactory::ProcessFBsPacket(SPtr_Session session, BYTE* packetBuf, U
 	break;
 	case FBsProtocolID::CPkt_Transform:
 	{
-		LOG_MGR->Cout(session->GetID(), " - RECV - ", "[ CPkt_Transform ]\n");
+		//LOG_MGR->Cout(session->GetID(), " - RECV - ", "[ CPkt_Transform ]\n");
 		
 		const FBProtocol::CPkt_Transform* packet = flatbuffers::GetRoot<FBProtocol::CPkt_Transform>(DataPtr);
 		if (!packet) return false;
@@ -175,8 +177,9 @@ bool FBsPacketFactory::Process_CPkt_PlayerState(SPtr_Session session, const FBPr
 	return true;
 }
 
-
-
+/// ★---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+///	◈ SEND SERVER PACKET ◈
+/// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------★
 SPtr_SendPktBuf FBsPacketFactory::SPkt_Chat(UINT32 sessionID, std::string msg)
 {
 	flatbuffers::FlatBufferBuilder builder;
@@ -215,9 +218,9 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_LogIn(PlayerInfo& plinfo, std::vector<Pla
 	std::vector<flatbuffers::Offset<FBProtocol::Player>> PlayerInfos_vector;
 
 	/* My Player Info */
-	auto position = FBProtocol::CreateVector3(builder, plinfo.Position.x, plinfo.Position.y, plinfo.Position.z);
-	auto rotation = FBProtocol::CreateVector3(builder, plinfo.Rotation.x, plinfo.Rotation.y, plinfo.Rotation.z);
-	auto scale = FBProtocol::CreateVector3(builder, plinfo.Scale.x, plinfo.Scale.y, plinfo.Scale.z);
+	auto position  = FBProtocol::CreateVector3(builder, plinfo.Position.x, plinfo.Position.y, plinfo.Position.z);
+	auto rotation  = FBProtocol::CreateVector3(builder, plinfo.Rotation.x, plinfo.Rotation.y, plinfo.Rotation.z);
+	auto scale     = FBProtocol::CreateVector3(builder, plinfo.Scale.x, plinfo.Scale.y, plinfo.Scale.z);
 	auto transform = FBProtocol::CreateTransform(builder, position, rotation, scale);
 
 	auto Spine_LookDir = FBProtocol::CreateVector3(builder, plinfo.SpineDir.x, plinfo.SpineDir.y, plinfo.SpineDir.z);
@@ -229,9 +232,9 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_LogIn(PlayerInfo& plinfo, std::vector<Pla
 		auto name = builder.CreateString(p.Name);
 		auto PlayerInfoType = p.Type;
 
-		auto position = FBProtocol::CreateVector3(builder, p.Position.x, p.Position.y, p.Position.z);
-		auto rotation = FBProtocol::CreateVector3(builder, p.Rotation.x, p.Rotation.y, p.Rotation.z);
-		auto scale = FBProtocol::CreateVector3(builder, p.Scale.x, p.Scale.y, p.Scale.z);
+		auto position  = FBProtocol::CreateVector3(builder, p.Position.x, p.Position.y, p.Position.z);
+		auto rotation  = FBProtocol::CreateVector3(builder, p.Rotation.x, p.Rotation.y, p.Rotation.z);
+		auto scale     = FBProtocol::CreateVector3(builder, p.Scale.x, p.Scale.y, p.Scale.z);
 		auto transform = FBProtocol::CreateTransform(builder, position, rotation, scale);
 
 		auto Spine_LookDir = FBProtocol::CreateVector3(builder, p.SpineDir.x, p.SpineDir.y, p.SpineDir.z);
@@ -263,19 +266,19 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_NewPlayer(PlayerInfo& newPlayerInfo)
 	auto name = builder.CreateString(newPlayerInfo.Name);
 	auto PlayerInfoType = newPlayerInfo.Type;
 
-	auto position = FBProtocol::CreateVector3(builder, newPlayerInfo.Position.x, newPlayerInfo.Position.y, newPlayerInfo.Position.z);
-	auto rotation = FBProtocol::CreateVector3(builder, newPlayerInfo.Rotation.x, newPlayerInfo.Rotation.y, newPlayerInfo.Rotation.z);
-	auto scale = FBProtocol::CreateVector3(builder, newPlayerInfo.Scale.x, newPlayerInfo.Scale.y, newPlayerInfo.Scale.z);
-	auto transform = FBProtocol::CreateTransform(builder, position, rotation, scale);
+	auto position      = FBProtocol::CreateVector3(builder, newPlayerInfo.Position.x, newPlayerInfo.Position.y, newPlayerInfo.Position.z);
+	auto rotation      = FBProtocol::CreateVector3(builder, newPlayerInfo.Rotation.x, newPlayerInfo.Rotation.y, newPlayerInfo.Rotation.z);
+	auto scale         = FBProtocol::CreateVector3(builder, newPlayerInfo.Scale.x, newPlayerInfo.Scale.y, newPlayerInfo.Scale.z);
+	auto transform     = FBProtocol::CreateTransform(builder, position, rotation, scale);
 	auto Spine_LookDir = FBProtocol::CreateVector3(builder, newPlayerInfo.SpineDir.x, newPlayerInfo.SpineDir.y, newPlayerInfo.SpineDir.z);
-	auto PlayerInfo = CreatePlayer(builder, ID, name, PlayerInfoType, transform, Spine_LookDir); // CreatePlayerInfo는 스키마에 정의된 함수입니다.
+	auto PlayerInfo    = CreatePlayer(builder, ID, name, PlayerInfoType, transform, Spine_LookDir); // CreatePlayerInfo는 스키마에 정의된 함수입니다.
 
 	auto ServerPacket = FBProtocol::CreateSPkt_NewPlayer(builder, PlayerInfo);
 	builder.Finish(ServerPacket);
 
-	const uint8_t* bufferPointer = builder.GetBufferPointer();
+	const uint8_t* bufferPointer      = builder.GetBufferPointer();
 	const uint16_t SerializeddataSize = static_cast<uint16_t>(builder.GetSize());;
-	SPtr_SendPktBuf sendBuffer = SEND_FACTORY->CreatePacket(bufferPointer, SerializeddataSize, FBsProtocolID::SPkt_NewPlayer);
+	SPtr_SendPktBuf sendBuffer        = SEND_FACTORY->CreatePacket(bufferPointer, SerializeddataSize, FBsProtocolID::SPkt_NewPlayer);
 
 
 	return sendBuffer;

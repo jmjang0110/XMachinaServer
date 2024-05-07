@@ -39,10 +39,6 @@ class Session : public NetworkObject
 {
 private:
 	USE_LOCK;
-	Lock::SRWLock mSRWLock{};
-	//USE_LOCK;
-	//std::mutex sendLock;
-	//class Lock::RWLock					  mRWSendLock;
 
 	std::atomic_int LockWrite_ThreadID = -1;
 	std::atomic_bool LockWrite_bool = false;
@@ -79,6 +75,8 @@ public:
 public:
 	/* Set */
 	void SetOwerNetworkInterface(SPtr_NI networkInterface) { mOwnerNI = networkInterface; }
+	void SetIpPort(std::wstring ip, UINT32 port);
+
 	/* Get */
 	std::shared_ptr<NetworkInterface> GetOwnerNI()	{ return mOwnerNI.lock(); }
 	PacketRecvBuf& GetRecvPktBuf()					{ return *mPacketBuffer.RecvPkt; }

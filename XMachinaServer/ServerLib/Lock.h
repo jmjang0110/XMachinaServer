@@ -3,9 +3,9 @@
 #define USE_MANY_LOCKS(count)	Lock::Lock _locks[count];
 #define USE_LOCK				USE_MANY_LOCKS(1)
 #define	READ_LOCK_IDX(idx)		Lock::ReadLockGuard readLockGuard_##idx(_locks[idx], typeid(this).name());
-#define READ_LOCK				READ_LOCK_IDX(0)
+#define READ_LOCK_SCOPE			READ_LOCK_IDX(0)
 #define	WRITE_LOCK_IDX(idx)		Lock::WriteLockGuard writeLockGuard_##idx(_locks[idx], typeid(this).name());
-#define WRITE_LOCK				WRITE_LOCK_IDX(0)
+#define WRITE_LOCK_SCOPE		WRITE_LOCK_IDX(0)
 
 
 namespace Lock
@@ -106,7 +106,6 @@ namespace Lock
         typedef enum { NOT_INIT, UNLOCKED, READLOCKED, WRITELOCKED} MASK;
     private:
         SRWLOCK mSrwLock; // MSDN 
-        std::atomic_bool IsWrite = false;
         MASK lockMask            = NOT_INIT;
 
     public:
@@ -122,7 +121,6 @@ namespace Lock
 
         /* Write Lock - Unlock */
         void LockWrite() { 
-            lockMask = WRITELOCKED;
             AcquireSRWLockExclusive(&mSrwLock); 
         }
         void UnlockWrite() {
@@ -145,7 +143,7 @@ namespace Lock
         SRWLock& _lock;
     public:
         SRW_WriteLockGaurd(SRWLock& lock) : _lock(lock) { _lock.LockWrite(); }
-        ~SRW_WriteLockGaurd() { std::cout << "UNLOCK \n";  _lock.UnlockWrite(); };
+        ~SRW_WriteLockGaurd() { _lock.UnlockWrite(); };
         
     };
 #define WriteLockScope(srwLock) SRW_WriteLockGuard(srwLock)

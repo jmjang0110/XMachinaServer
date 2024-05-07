@@ -113,9 +113,7 @@ void Session::RegisterIO(OverlappedIO::Type IoType)
 
 		/* Push SendPkt to Overlapped_Send */
 		{
-			WRITE_LOCK;
-			//mSRWLock.LockWrite();
-
+			WRITE_LOCK_SCOPE
 			while (mPacketBuffer.SendPkt_Queue.empty() == false) {
 				SPtr_SendPktBuf sendPktBuf = mPacketBuffer.SendPkt_Queue.front();
 				mPacketBuffer.SendPkt_Queue.pop();
@@ -123,7 +121,7 @@ void Session::RegisterIO(OverlappedIO::Type IoType)
 					mOverlapped.Send.BufPush(sendPktBuf);
 			}
 
-			//mSRWLock.UnlockWrite();
+			
 		}
 
 		/* Scatter-Gather */
@@ -231,7 +229,6 @@ void Session::ProcessIO(OverlappedIO::Type IoType, INT32 BytesTransferred)
 		mOverlapped.Disconnect.DecRef_NetObj(); // Shared_ptr -> release 
 
 		OnDisconnected();
-		mSRWLock.UnlockWrite();
 		GetOwnerNI()->DeleteSession(NetworkObject::ID); /* ID : protected */
 		//GetOwnerNI()->ReleaseSession(std::static_pointer_cast<Session>(shared_from_this()));
 
@@ -257,9 +254,7 @@ void Session::ProcessIO(OverlappedIO::Type IoType, INT32 BytesTransferred)
 		/* TODO : Lock 걸자!*/
 		/* 다 보냄 */
 		{
-			WRITE_LOCK;
-			//mSRWLock.LockWrite();
-
+			WRITE_LOCK_SCOPE
 
 			if (mPacketBuffer.SendPkt_Queue.empty() == true) {
 				mPacketBuffer.IsSendRegistered.store(false);
@@ -270,8 +265,6 @@ void Session::ProcessIO(OverlappedIO::Type IoType, INT32 BytesTransferred)
 			if(mPacketBuffer.SendPkt_Queue.empty() == false){
 				RegisterIO(OverlappedIO::Type::Send);
 			}
-
-			//mSRWLock.UnlockWrite();
 
 		}
 
@@ -334,10 +327,7 @@ void Session::Send(SPtr_SendPktBuf buf)
 
 	bool RegisterSend = false;
 	{
-		WRITE_LOCK;
-
-		//mSRWLock.LockWrite();
-
+		WRITE_LOCK_SCOPE;
 		LockWrite_ThreadID.store(TLS_MGR->Get_TlsInfoData()->id);
 
 		mPacketBuffer.SendPkt_Queue.push(buf);
@@ -345,7 +335,6 @@ void Session::Send(SPtr_SendPktBuf buf)
 		if (mPacketBuffer.IsSendRegistered.exchange(true) == false)
 			RegisterSend = true;
 
-		//mSRWLock.UnlockWrite();
 	}
 
 	if (RegisterSend) {
@@ -369,3 +358,19 @@ void Session::Disconnect(const WCHAR* cause)
 }
 
 
+void Session::SetIpPort(std::wstring ip, UINT32 port)
+{
+	SOCKADDR_IN SockAddr{};
+	/* Socket Address */
+	::memset(&SockAddr, 0, sizeof(SockAddr));
+
+	SockAddr.sin_family = AF_INET;
+	SockAddr.sin_addr = NETWORK_MGR->Ip2Address(ip.c_str());
+	SockAddr.sin_port = ::htons(port); // 포트 번호 : 16비트 숫자-host to Network - short(16bit)
+
+	int id = GetID();
+
+	GetSocketData().SetSockAddrIn(SockAddr);
+	SocketData data = GetSocketData();
+
+}
