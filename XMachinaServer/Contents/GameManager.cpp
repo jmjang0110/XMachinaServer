@@ -86,6 +86,17 @@ void GameManager::BroadcastRoom(int roomid, SPtr_SendPktBuf& pkt, int exceptsess
 	mSRWLock.UnlockRead();
 }
 
+void GameManager::BroadcastAllRoom(SPtr_SendPktBuf& pkt)
+{
+	mSRWLock.LockRead();
+
+	for (int i = 0; i < mRooms.size(); ++i) {
+		mRooms[i].get()->Broadcast(pkt);
+	}
+
+	mSRWLock.UnlockRead();
+}
+
 std::vector<PlayerInfo> GameManager::GetPlayerInfos_Room(int roomid)
 {
 	std::vector<PlayerInfo> playerInfos = mRooms[roomid].get()->GetInsertedPlayersInfo(); // READ Lock

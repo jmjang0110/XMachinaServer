@@ -177,20 +177,18 @@ void Framework::Launch()
 	LOG_MGR->Cout("---------------------------------+\n");
 	LOG_MGR->SetColor(TextColor::Default);
 
-	int CoreNum = 4;
+	int CoreNum = 4/* Network Threads */;
 	std::cout << "Core : " << CoreNum << std::endl;
 	std::atomic<bool> stop(false);
 
 	for (INT32 i = 0; i < CoreNum; ++i) {
 		THREAD_MGR->RunThread("Network Dispatch " + std::to_string(i), [&]() {
-	
-			auto d               = TLS_MGR->Get_TlsInfoData();
-			auto Tls_sendFactory = TLS_MGR->Get_TlsSendBufFactory();
-			//std::cout << d->id  << " " << Tls_sendFactory->strFactoryID << std::endl;
+
 			while (!stop.load())
 			{
 				mServer->Dispatch_CompletedTasks_FromIOCP(0);
 			}
+
 			});
 	}
 
@@ -221,4 +219,11 @@ void Framework::Launch()
 
 
 	THREAD_MGR->JoinAllThreads();
+}
+
+long long Framework::GetCurrentTimeMilliseconds()
+{
+	auto now = std::chrono::system_clock::now();
+	auto duration = now.time_since_epoch();
+	return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
 }

@@ -47,10 +47,15 @@ private:
 
 public:
 	SPtr_SendPktBuf SPkt_Chat(UINT32 sessionID, std::string msg);
+	SPtr_SendPktBuf SPkt_Transform(uint64_t ID, Vec3 Pos, Vec3 Rot, Vec3 Scale, Vec3 SpineLookDir, long long latency);
 	SPtr_SendPktBuf SPkt_NewtorkLatency(long long timestamp);
 	SPtr_SendPktBuf SPkt_LogIn(PlayerInfo& plinfo, std::vector<PlayerInfo>& remotePlayers, bool& IsSuccess);
 	SPtr_SendPktBuf SPkt_NewPlayer(PlayerInfo& newPlayerInfo);
 	SPtr_SendPktBuf SPkt_RemovePlayer(int removeSessionID);
+
+
+private:
+	static Vec3 GetVector3(const FBProtocol::Vector3* vec3);
 
 
 };

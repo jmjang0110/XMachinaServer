@@ -33,6 +33,8 @@ public:
 	bool ExitInRoom(SPtr_GamePlayer player);
 
 	void BroadcastRoom(int roomid, SPtr_SendPktBuf& pkt, int exceptsessionid = -1 /* 제외할 세션 대상 */);
+	void BroadcastAllRoom(SPtr_SendPktBuf& pkt);
+
 
 	std::vector<PlayerInfo> GetPlayerInfos_Room(int roomid);
 

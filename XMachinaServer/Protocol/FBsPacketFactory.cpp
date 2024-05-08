@@ -98,14 +98,10 @@ bool FBsPacketFactory::Process_CPkt_NetworkLatency(SPtr_Session session, const F
 {
 	// 패킷으로부터 long long으로 시간을 받음
 	long long timestamp = pkt.timestamp();
-	auto end            = std::chrono::steady_clock::now();
-	auto pkt_time       = std::chrono::time_point<std::chrono::steady_clock>(std::chrono::milliseconds(timestamp));
-	auto latency        = end - pkt_time;
-
-	/*std::cout << "Now : "		<< end.time_since_epoch().count() / 1e-6 <<
-				" pkt_time : "	<< pkt_time.time_since_epoch().count() / 1e-6
-		<< "Server Latency: " << std::chrono::duration_cast<std::chrono::milliseconds>(latency).count() << "ms" << std::endl;*/
-
+	
+	/* 클라이언트의 패킷을 그대로 다시 보낸다. */
+	auto spkt = FBS_FACTORY->SPkt_NewtorkLatency(timestamp);
+	session->Send(spkt);
 
 	return true;
 }
@@ -164,6 +160,18 @@ bool FBsPacketFactory::Process_CPkt_NewPlayer(SPtr_Session session, const FBProt
 
 bool FBsPacketFactory::Process_CPkt_Transform(SPtr_Session session, const FBProtocol::CPkt_Transform& pkt)
 {
+	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
+	UINT32 id           = session->GetID();
+
+	long long latency = pkt.latency();
+	Vec3 pos            = GetVector3(pkt.trans()->position());
+	Vec3 rot            = GetVector3(pkt.trans()->rotation());
+	Vec3 sca            = GetVector3(pkt.trans()->scale());
+	Vec3 SDir           = GetVector3(pkt.spine_look());
+
+	SPtr_SendPktBuf SendPkt = FBS_FACTORY->SPkt_Transform(id, pos, rot, sca, SDir, latency);
+	GAME_MGR->BroadcastRoom(gameSession->GetPlayerInfo().RoomID, SendPkt, id);
+
 	return true;
 }
 
@@ -193,6 +201,26 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_Chat(UINT32 sessionID, std::string msg)
 	const uint16_t serializedDataSize = static_cast<uint16_t>(builder.GetSize());
 
 	return SEND_FACTORY->CreatePacket(bufferPtr, serializedDataSize, FBsProtocolID::SPkt_Chat);
+}
+
+SPtr_SendPktBuf FBsPacketFactory::SPkt_Transform(uint64_t ID, Vec3 Pos, Vec3 Rot, Vec3 Scale, Vec3 SpineLookDir, long long latency)
+{
+	flatbuffers::FlatBufferBuilder builder{};
+
+	auto position      = FBProtocol::CreateVector3(builder, Pos.x, Pos.y, Pos.z);
+	auto rotation      = FBProtocol::CreateVector3(builder, Rot.x, Rot.y, Rot.z);
+	auto scale         = FBProtocol::CreateVector3(builder, Scale.x, Scale.y, Scale.z);
+	auto transform     = FBProtocol::CreateTransform(builder, position, rotation, scale);
+	auto Spine_LookDir = FBProtocol::CreateVector3(builder, SpineLookDir.x, SpineLookDir.y, SpineLookDir.z);
+
+	auto ServerPacket = FBProtocol::CreateSPkt_Transform(builder, ID, latency, transform, Spine_LookDir);
+	builder.Finish(ServerPacket);
+
+
+	const uint8_t* bufferPointer = builder.GetBufferPointer();
+	const uint16_t SerializeddataSize = static_cast<uint16_t>(builder.GetSize());;
+	SPtr_SendPktBuf sendBuffer = SEND_FACTORY->CreatePacket(bufferPointer, SerializeddataSize, FBsProtocolID::SPkt_Transform);
+	return sendBuffer;
 }
 
 SPtr_SendPktBuf FBsPacketFactory::SPkt_NewtorkLatency(long long timestamp)
@@ -297,6 +325,13 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_RemovePlayer(int removeSessionID)
 	SPtr_SendPktBuf sendBuffer = SEND_FACTORY->CreatePacket(bufferPointer, SerializeddataSize, FBsProtocolID::SPkt_RemovePlayer);
 
 	return sendBuffer;
+}
+
+Vec3 FBsPacketFactory::GetVector3(const FBProtocol::Vector3* vec3)
+{
+	Vec3 Vector3 = Vec3(vec3->x(), vec3->y(), vec3->z());
+
+	return Vector3;
 }
 
 

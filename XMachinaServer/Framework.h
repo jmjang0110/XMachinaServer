@@ -27,6 +27,7 @@ public:
 
 	SPtr_ServerNetwork GetServerNetwork() { return mServer; }
 	SPtr_SendBufFactory GetSendFactory()  { return mSendFactory; }
-
+	long long GetCurrentTimeMilliseconds();
+	
 };
 
