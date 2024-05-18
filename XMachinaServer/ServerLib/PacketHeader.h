@@ -59,6 +59,9 @@ namespace FBsProtocolID
 	constexpr UINT16 CPkt_PlayerState		= 1016;
 	constexpr UINT16 SPkt_PlayerState       = 1017;
 
+	constexpr UINT16 CPkt_PlayerAnimation	= 1018;
+	constexpr UINT16 SPkt_PlayerAnimation	= 1019;
+
 
 
 };

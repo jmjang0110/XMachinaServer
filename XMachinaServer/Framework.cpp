@@ -130,6 +130,22 @@ bool Framework::Init(HINSTANCE& hInst)
 
 	LOG_MGR->Cout("[SUCCESS] GAME_MGR INIT\n");
 
+	std::string ipAddresses = GetLocalIPv4Address();
+	if (!ipAddresses.empty()) {
+		mServerIP = string_to_wstring(ipAddresses);
+		LOG_MGR->WCout(L"IPv4 Address : ", mServerIP, '\n');
+	}
+	else {
+		mServerIP = L"127.0.0.1";
+		LOG_MGR->SetColor(TextColor::BrightRed);
+		LOG_MGR->Cout("No Wi-Fi IPv4 Address found.");
+		LOG_MGR->SetColor(TextColor::Default);
+
+		LOG_MGR->Cout("Server IP 입력 : ");
+		std::wcin >> mServerIP;
+		LOG_MGR->WCout(L"IPv4 Address : ", mServerIP, '\n');
+	}
+
 	/// +-----------------------------------------
 	///	SERVER NETWORK : IOCP Server Network 관리 
 	/// -----------------------------------------+
@@ -139,7 +155,8 @@ bool Framework::Init(HINSTANCE& hInst)
 		mServer->SetMaxSessionCnt(5000); /* 최대 접속 세션 */
 		mServer->SetSessionConstructorFunc(std::make_shared<GameSession>); /* GameSession으로 관리 */
 
-		mServer->Start(L"127.0.0.1", 7777); /* Bind-Listen-AcceptEx.. */
+		mServerIP = L"127.0.0.1";
+		mServer->Start(mServerIP, 7777); /* Bind-Listen-AcceptEx.. */
 	}	
 	LOG_MGR->Cout("[SUCCESS] ServerNetwork INIT\n");
 
@@ -157,18 +174,24 @@ bool Framework::Init(HINSTANCE& hInst)
 	return true;
 }
 
+
+
 void Framework::Launch()
 {
+
+
+
 #ifdef  CONNECT_WITH_TEST_CLIENT
 	LOG_MGR->SetColor(TextColor::BrightMagenta);
 	LOG_MGR->Cout("--------------------------------\n");
 	LOG_MGR->Cout("▶ CONNECT WITH TEST CLIENT     \n");
 	LOG_MGR->Cout("--------------------------------\n");
 #else 
-	LOG_MGR->SetColor(TextColor::BrightMagenta);
-	LOG_MGR->Cout("--------------------------------\n");
-	LOG_MGR->Cout("▶ CONNECT WITH X-MACHINA CLIENT\n");
-	LOG_MGR->Cout("--------------------------------\n");
+	LOG_MGR->SetColor(TextColor::BrightCyan);
+	LOG_MGR->Cout("---------------------------------------------------------------\n");
+	LOG_MGR->Cout("▶ CONNECT WITH X-MACHINA CLIENT");
+	LOG_MGR->WCout(" - SERVER IP : ", mServerIP, '\n');
+	LOG_MGR->Cout("---------------------------------------------------------------\n");
 #endif //  CONNECT_WITH_TEST_CLIENT
 
 	LOG_MGR->SetColor(TextColor::BrightYellow);
@@ -226,4 +249,45 @@ long long Framework::GetCurrentTimeMilliseconds()
 	auto now = std::chrono::system_clock::now();
 	auto duration = now.time_since_epoch();
 	return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+}
+
+std::string Framework::GetLocalIPv4Address()
+
+{
+	std::string ipAddress;
+
+	// 초기화
+	WSADATA wsaData;
+	WSAStartup(MAKEWORD(2, 2), &wsaData);
+
+	// 네트워크 인터페이스 정보 가져오기
+	ULONG bufferSize = 0;
+	if (GetAdaptersAddresses(AF_INET, 0, nullptr, nullptr, &bufferSize) == ERROR_BUFFER_OVERFLOW) {
+		std::vector<char> buffer(bufferSize);
+		PIP_ADAPTER_ADDRESSES addressesBuffer = reinterpret_cast<PIP_ADAPTER_ADDRESSES>(&buffer[0]);
+
+		if (GetAdaptersAddresses(AF_INET, 0, nullptr, addressesBuffer, &bufferSize) == NO_ERROR) {
+			for (PIP_ADAPTER_ADDRESSES adapter = addressesBuffer; adapter != nullptr; adapter = adapter->Next) {
+				if (adapter->IfType == IF_TYPE_IEEE80211 && adapter->OperStatus == IfOperStatusUp) {
+					IP_ADAPTER_UNICAST_ADDRESS* unicast = adapter->FirstUnicastAddress;
+					if (unicast != nullptr) {
+						sockaddr_in* addr = reinterpret_cast<sockaddr_in*>(unicast->Address.lpSockaddr);
+						char ipBuffer[INET_ADDRSTRLEN];
+						inet_ntop(AF_INET, &(addr->sin_addr), ipBuffer, INET_ADDRSTRLEN);
+						ipAddress = ipBuffer;
+						break; // 첫 번째 IP만 필요하므로 루프 종료
+					}
+				}
+			}
+		}
+	}
+
+	WSACleanup();
+	return ipAddress;
+}
+
+std::wstring Framework::string_to_wstring(const std::string& str)
+{
+	std::wstring wstr(str.begin(), str.end());
+	return wstr;
 }

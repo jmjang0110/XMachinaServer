@@ -40,15 +40,20 @@ void GameSession::OnSend(UINT32 len)
 UINT32 GameSession::OnRecv(BYTE* buffer, UINT32 len)
 {
 	// 패킷 해석 
-	//std::cout << len << std::endl;
-	
-	UINT32 ProcessDataSize = 0;
 	/* 뭉쳐서 들어온 패킷들을 처리한다. */
-	while (ProcessDataSize < len) {
+	/// +---------------------------------------
+	///	[ Packet 1 ][ Packet 2 ]...[ Packet N ]
+	///	↑			↑
+	/// buffer     (buffer + PRocessDataSize)
+	/// ---------------------------------------+
 
+	UINT32 ProcessDataSize = mRemainDataSize;
+	while (ProcessDataSize < len) {
 		UINT32 RemainSize = len - ProcessDataSize;
-		if (RemainSize < sizeof(PacketHeader))
+		if (RemainSize < sizeof(PacketHeader)) {
+			mRemainDataSize = RemainSize;
 			break;
+		}
 		PacketHeader* packet = reinterpret_cast<PacketHeader*>(buffer + ProcessDataSize);
 		if (RemainSize < packet->PacketSize) {
 			mRemainDataSize = RemainSize;
@@ -56,8 +61,7 @@ UINT32 GameSession::OnRecv(BYTE* buffer, UINT32 len)
 		}
 
 		/* 패킷 해석 */
-		FBsPacketFactory::ProcessFBsPacket(static_pointer_cast<Session>(shared_from_this()), buffer, len);
-		//std::cout << "GAMESESSION ON RECV : " << static_cast<void*>(buffer) << " " << packet->PacketSize << std::endl;
+		FBsPacketFactory::ProcessFBsPacket(static_pointer_cast<Session>(shared_from_this()), buffer + ProcessDataSize, packet->PacketSize);
 		ProcessDataSize += packet->PacketSize; 
 	}
 

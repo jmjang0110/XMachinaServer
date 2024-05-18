@@ -73,6 +73,12 @@ struct CPkt_PlayerStateBuilder;
 struct SPkt_PlayerState;
 struct SPkt_PlayerStateBuilder;
 
+struct CPkt_PlayerAnimation;
+struct CPkt_PlayerAnimationBuilder;
+
+struct SPkt_PlayerAnimation;
+struct SPkt_PlayerAnimationBuilder;
+
 struct CPkt_LogIn FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef CPkt_LogInBuilder Builder;
   bool Verify(::flatbuffers::Verifier &verifier) const {
@@ -532,11 +538,25 @@ struct CPkt_Transform FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef CPkt_TransformBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_LATENCY = 4,
-    VT_TRANS = 6,
-    VT_SPINE_LOOK = 8
+    VT_MOVE_STATE = 6,
+    VT_VELOCITY = 8,
+    VT_MOVEDIR = 10,
+    VT_TRANS = 12,
+    VT_SPINE_LOOK = 14,
+    VT_ANIMPARAM_H = 16,
+    VT_ANIMPARAM_V = 18
   };
   int64_t latency() const {
     return GetField<int64_t>(VT_LATENCY, 0);
+  }
+  int32_t move_state() const {
+    return GetField<int32_t>(VT_MOVE_STATE, 0);
+  }
+  float velocity() const {
+    return GetField<float>(VT_VELOCITY, 0.0f);
+  }
+  const FBProtocol::Vector3 *movedir() const {
+    return GetPointer<const FBProtocol::Vector3 *>(VT_MOVEDIR);
   }
   const FBProtocol::Transform *trans() const {
     return GetPointer<const FBProtocol::Transform *>(VT_TRANS);
@@ -544,13 +564,25 @@ struct CPkt_Transform FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   const FBProtocol::Vector3 *spine_look() const {
     return GetPointer<const FBProtocol::Vector3 *>(VT_SPINE_LOOK);
   }
+  float animparam_h() const {
+    return GetField<float>(VT_ANIMPARAM_H, 0.0f);
+  }
+  float animparam_v() const {
+    return GetField<float>(VT_ANIMPARAM_V, 0.0f);
+  }
   bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<int64_t>(verifier, VT_LATENCY, 8) &&
+           VerifyField<int32_t>(verifier, VT_MOVE_STATE, 4) &&
+           VerifyField<float>(verifier, VT_VELOCITY, 4) &&
+           VerifyOffset(verifier, VT_MOVEDIR) &&
+           verifier.VerifyTable(movedir()) &&
            VerifyOffset(verifier, VT_TRANS) &&
            verifier.VerifyTable(trans()) &&
            VerifyOffset(verifier, VT_SPINE_LOOK) &&
            verifier.VerifyTable(spine_look()) &&
+           VerifyField<float>(verifier, VT_ANIMPARAM_H, 4) &&
+           VerifyField<float>(verifier, VT_ANIMPARAM_V, 4) &&
            verifier.EndTable();
   }
 };
@@ -562,11 +594,26 @@ struct CPkt_TransformBuilder {
   void add_latency(int64_t latency) {
     fbb_.AddElement<int64_t>(CPkt_Transform::VT_LATENCY, latency, 0);
   }
+  void add_move_state(int32_t move_state) {
+    fbb_.AddElement<int32_t>(CPkt_Transform::VT_MOVE_STATE, move_state, 0);
+  }
+  void add_velocity(float velocity) {
+    fbb_.AddElement<float>(CPkt_Transform::VT_VELOCITY, velocity, 0.0f);
+  }
+  void add_movedir(::flatbuffers::Offset<FBProtocol::Vector3> movedir) {
+    fbb_.AddOffset(CPkt_Transform::VT_MOVEDIR, movedir);
+  }
   void add_trans(::flatbuffers::Offset<FBProtocol::Transform> trans) {
     fbb_.AddOffset(CPkt_Transform::VT_TRANS, trans);
   }
   void add_spine_look(::flatbuffers::Offset<FBProtocol::Vector3> spine_look) {
     fbb_.AddOffset(CPkt_Transform::VT_SPINE_LOOK, spine_look);
+  }
+  void add_animparam_h(float animparam_h) {
+    fbb_.AddElement<float>(CPkt_Transform::VT_ANIMPARAM_H, animparam_h, 0.0f);
+  }
+  void add_animparam_v(float animparam_v) {
+    fbb_.AddElement<float>(CPkt_Transform::VT_ANIMPARAM_V, animparam_v, 0.0f);
   }
   explicit CPkt_TransformBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
@@ -582,12 +629,22 @@ struct CPkt_TransformBuilder {
 inline ::flatbuffers::Offset<CPkt_Transform> CreateCPkt_Transform(
     ::flatbuffers::FlatBufferBuilder &_fbb,
     int64_t latency = 0,
+    int32_t move_state = 0,
+    float velocity = 0.0f,
+    ::flatbuffers::Offset<FBProtocol::Vector3> movedir = 0,
     ::flatbuffers::Offset<FBProtocol::Transform> trans = 0,
-    ::flatbuffers::Offset<FBProtocol::Vector3> spine_look = 0) {
+    ::flatbuffers::Offset<FBProtocol::Vector3> spine_look = 0,
+    float animparam_h = 0.0f,
+    float animparam_v = 0.0f) {
   CPkt_TransformBuilder builder_(_fbb);
   builder_.add_latency(latency);
+  builder_.add_animparam_v(animparam_v);
+  builder_.add_animparam_h(animparam_h);
   builder_.add_spine_look(spine_look);
   builder_.add_trans(trans);
+  builder_.add_movedir(movedir);
+  builder_.add_velocity(velocity);
+  builder_.add_move_state(move_state);
   return builder_.Finish();
 }
 
@@ -596,8 +653,13 @@ struct SPkt_Transform FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_OBJECT_ID = 4,
     VT_LATENCY = 6,
-    VT_TRANS = 8,
-    VT_SPINE_LOOK = 10
+    VT_MOVE_STATE = 8,
+    VT_VELOCITY = 10,
+    VT_MOVEDIR = 12,
+    VT_TRANS = 14,
+    VT_SPINE_LOOK = 16,
+    VT_ANIMPARAM_H = 18,
+    VT_ANIMPARAM_V = 20
   };
   uint64_t object_id() const {
     return GetField<uint64_t>(VT_OBJECT_ID, 0);
@@ -605,20 +667,41 @@ struct SPkt_Transform FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   int64_t latency() const {
     return GetField<int64_t>(VT_LATENCY, 0);
   }
+  int32_t move_state() const {
+    return GetField<int32_t>(VT_MOVE_STATE, 0);
+  }
+  float velocity() const {
+    return GetField<float>(VT_VELOCITY, 0.0f);
+  }
+  const FBProtocol::Vector3 *movedir() const {
+    return GetPointer<const FBProtocol::Vector3 *>(VT_MOVEDIR);
+  }
   const FBProtocol::Transform *trans() const {
     return GetPointer<const FBProtocol::Transform *>(VT_TRANS);
   }
   const FBProtocol::Vector3 *spine_look() const {
     return GetPointer<const FBProtocol::Vector3 *>(VT_SPINE_LOOK);
   }
+  float animparam_h() const {
+    return GetField<float>(VT_ANIMPARAM_H, 0.0f);
+  }
+  float animparam_v() const {
+    return GetField<float>(VT_ANIMPARAM_V, 0.0f);
+  }
   bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<uint64_t>(verifier, VT_OBJECT_ID, 8) &&
            VerifyField<int64_t>(verifier, VT_LATENCY, 8) &&
+           VerifyField<int32_t>(verifier, VT_MOVE_STATE, 4) &&
+           VerifyField<float>(verifier, VT_VELOCITY, 4) &&
+           VerifyOffset(verifier, VT_MOVEDIR) &&
+           verifier.VerifyTable(movedir()) &&
            VerifyOffset(verifier, VT_TRANS) &&
            verifier.VerifyTable(trans()) &&
            VerifyOffset(verifier, VT_SPINE_LOOK) &&
            verifier.VerifyTable(spine_look()) &&
+           VerifyField<float>(verifier, VT_ANIMPARAM_H, 4) &&
+           VerifyField<float>(verifier, VT_ANIMPARAM_V, 4) &&
            verifier.EndTable();
   }
 };
@@ -633,11 +716,26 @@ struct SPkt_TransformBuilder {
   void add_latency(int64_t latency) {
     fbb_.AddElement<int64_t>(SPkt_Transform::VT_LATENCY, latency, 0);
   }
+  void add_move_state(int32_t move_state) {
+    fbb_.AddElement<int32_t>(SPkt_Transform::VT_MOVE_STATE, move_state, 0);
+  }
+  void add_velocity(float velocity) {
+    fbb_.AddElement<float>(SPkt_Transform::VT_VELOCITY, velocity, 0.0f);
+  }
+  void add_movedir(::flatbuffers::Offset<FBProtocol::Vector3> movedir) {
+    fbb_.AddOffset(SPkt_Transform::VT_MOVEDIR, movedir);
+  }
   void add_trans(::flatbuffers::Offset<FBProtocol::Transform> trans) {
     fbb_.AddOffset(SPkt_Transform::VT_TRANS, trans);
   }
   void add_spine_look(::flatbuffers::Offset<FBProtocol::Vector3> spine_look) {
     fbb_.AddOffset(SPkt_Transform::VT_SPINE_LOOK, spine_look);
+  }
+  void add_animparam_h(float animparam_h) {
+    fbb_.AddElement<float>(SPkt_Transform::VT_ANIMPARAM_H, animparam_h, 0.0f);
+  }
+  void add_animparam_v(float animparam_v) {
+    fbb_.AddElement<float>(SPkt_Transform::VT_ANIMPARAM_V, animparam_v, 0.0f);
   }
   explicit SPkt_TransformBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
@@ -654,13 +752,23 @@ inline ::flatbuffers::Offset<SPkt_Transform> CreateSPkt_Transform(
     ::flatbuffers::FlatBufferBuilder &_fbb,
     uint64_t object_id = 0,
     int64_t latency = 0,
+    int32_t move_state = 0,
+    float velocity = 0.0f,
+    ::flatbuffers::Offset<FBProtocol::Vector3> movedir = 0,
     ::flatbuffers::Offset<FBProtocol::Transform> trans = 0,
-    ::flatbuffers::Offset<FBProtocol::Vector3> spine_look = 0) {
+    ::flatbuffers::Offset<FBProtocol::Vector3> spine_look = 0,
+    float animparam_h = 0.0f,
+    float animparam_v = 0.0f) {
   SPkt_TransformBuilder builder_(_fbb);
   builder_.add_latency(latency);
   builder_.add_object_id(object_id);
+  builder_.add_animparam_v(animparam_v);
+  builder_.add_animparam_h(animparam_h);
   builder_.add_spine_look(spine_look);
   builder_.add_trans(trans);
+  builder_.add_movedir(movedir);
+  builder_.add_velocity(velocity);
+  builder_.add_move_state(move_state);
   return builder_.Finish();
 }
 
@@ -1009,6 +1117,158 @@ inline ::flatbuffers::Offset<SPkt_PlayerState> CreateSPkt_PlayerState(
   builder_.add_object_id(object_id);
   builder_.add_player_motion_state(player_motion_state);
   builder_.add_weapon_type(weapon_type);
+  return builder_.Finish();
+}
+
+struct CPkt_PlayerAnimation FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
+  typedef CPkt_PlayerAnimationBuilder Builder;
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
+    VT_ANIMATION_UPPER_INDEX = 4,
+    VT_ANIMATION_LOWER_INDEX = 6,
+    VT_ANIMATION_PARAM_H = 8,
+    VT_ANIMATION_PARAM_V = 10
+  };
+  int32_t animation_upper_index() const {
+    return GetField<int32_t>(VT_ANIMATION_UPPER_INDEX, 0);
+  }
+  int32_t animation_lower_index() const {
+    return GetField<int32_t>(VT_ANIMATION_LOWER_INDEX, 0);
+  }
+  float animation_param_h() const {
+    return GetField<float>(VT_ANIMATION_PARAM_H, 0.0f);
+  }
+  float animation_param_v() const {
+    return GetField<float>(VT_ANIMATION_PARAM_V, 0.0f);
+  }
+  bool Verify(::flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<int32_t>(verifier, VT_ANIMATION_UPPER_INDEX, 4) &&
+           VerifyField<int32_t>(verifier, VT_ANIMATION_LOWER_INDEX, 4) &&
+           VerifyField<float>(verifier, VT_ANIMATION_PARAM_H, 4) &&
+           VerifyField<float>(verifier, VT_ANIMATION_PARAM_V, 4) &&
+           verifier.EndTable();
+  }
+};
+
+struct CPkt_PlayerAnimationBuilder {
+  typedef CPkt_PlayerAnimation Table;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_animation_upper_index(int32_t animation_upper_index) {
+    fbb_.AddElement<int32_t>(CPkt_PlayerAnimation::VT_ANIMATION_UPPER_INDEX, animation_upper_index, 0);
+  }
+  void add_animation_lower_index(int32_t animation_lower_index) {
+    fbb_.AddElement<int32_t>(CPkt_PlayerAnimation::VT_ANIMATION_LOWER_INDEX, animation_lower_index, 0);
+  }
+  void add_animation_param_h(float animation_param_h) {
+    fbb_.AddElement<float>(CPkt_PlayerAnimation::VT_ANIMATION_PARAM_H, animation_param_h, 0.0f);
+  }
+  void add_animation_param_v(float animation_param_v) {
+    fbb_.AddElement<float>(CPkt_PlayerAnimation::VT_ANIMATION_PARAM_V, animation_param_v, 0.0f);
+  }
+  explicit CPkt_PlayerAnimationBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  ::flatbuffers::Offset<CPkt_PlayerAnimation> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = ::flatbuffers::Offset<CPkt_PlayerAnimation>(end);
+    return o;
+  }
+};
+
+inline ::flatbuffers::Offset<CPkt_PlayerAnimation> CreateCPkt_PlayerAnimation(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    int32_t animation_upper_index = 0,
+    int32_t animation_lower_index = 0,
+    float animation_param_h = 0.0f,
+    float animation_param_v = 0.0f) {
+  CPkt_PlayerAnimationBuilder builder_(_fbb);
+  builder_.add_animation_param_v(animation_param_v);
+  builder_.add_animation_param_h(animation_param_h);
+  builder_.add_animation_lower_index(animation_lower_index);
+  builder_.add_animation_upper_index(animation_upper_index);
+  return builder_.Finish();
+}
+
+struct SPkt_PlayerAnimation FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
+  typedef SPkt_PlayerAnimationBuilder Builder;
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
+    VT_OBJECT_ID = 4,
+    VT_ANIMATION_UPPER_INDEX = 6,
+    VT_ANIMATION_LOWER_INDEX = 8,
+    VT_ANIMATION_PARAM_H = 10,
+    VT_ANIMATION_PARAM_V = 12
+  };
+  uint64_t object_id() const {
+    return GetField<uint64_t>(VT_OBJECT_ID, 0);
+  }
+  int32_t animation_upper_index() const {
+    return GetField<int32_t>(VT_ANIMATION_UPPER_INDEX, 0);
+  }
+  int32_t animation_lower_index() const {
+    return GetField<int32_t>(VT_ANIMATION_LOWER_INDEX, 0);
+  }
+  float animation_param_h() const {
+    return GetField<float>(VT_ANIMATION_PARAM_H, 0.0f);
+  }
+  float animation_param_v() const {
+    return GetField<float>(VT_ANIMATION_PARAM_V, 0.0f);
+  }
+  bool Verify(::flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<uint64_t>(verifier, VT_OBJECT_ID, 8) &&
+           VerifyField<int32_t>(verifier, VT_ANIMATION_UPPER_INDEX, 4) &&
+           VerifyField<int32_t>(verifier, VT_ANIMATION_LOWER_INDEX, 4) &&
+           VerifyField<float>(verifier, VT_ANIMATION_PARAM_H, 4) &&
+           VerifyField<float>(verifier, VT_ANIMATION_PARAM_V, 4) &&
+           verifier.EndTable();
+  }
+};
+
+struct SPkt_PlayerAnimationBuilder {
+  typedef SPkt_PlayerAnimation Table;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_object_id(uint64_t object_id) {
+    fbb_.AddElement<uint64_t>(SPkt_PlayerAnimation::VT_OBJECT_ID, object_id, 0);
+  }
+  void add_animation_upper_index(int32_t animation_upper_index) {
+    fbb_.AddElement<int32_t>(SPkt_PlayerAnimation::VT_ANIMATION_UPPER_INDEX, animation_upper_index, 0);
+  }
+  void add_animation_lower_index(int32_t animation_lower_index) {
+    fbb_.AddElement<int32_t>(SPkt_PlayerAnimation::VT_ANIMATION_LOWER_INDEX, animation_lower_index, 0);
+  }
+  void add_animation_param_h(float animation_param_h) {
+    fbb_.AddElement<float>(SPkt_PlayerAnimation::VT_ANIMATION_PARAM_H, animation_param_h, 0.0f);
+  }
+  void add_animation_param_v(float animation_param_v) {
+    fbb_.AddElement<float>(SPkt_PlayerAnimation::VT_ANIMATION_PARAM_V, animation_param_v, 0.0f);
+  }
+  explicit SPkt_PlayerAnimationBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  ::flatbuffers::Offset<SPkt_PlayerAnimation> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = ::flatbuffers::Offset<SPkt_PlayerAnimation>(end);
+    return o;
+  }
+};
+
+inline ::flatbuffers::Offset<SPkt_PlayerAnimation> CreateSPkt_PlayerAnimation(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    uint64_t object_id = 0,
+    int32_t animation_upper_index = 0,
+    int32_t animation_lower_index = 0,
+    float animation_param_h = 0.0f,
+    float animation_param_v = 0.0f) {
+  SPkt_PlayerAnimationBuilder builder_(_fbb);
+  builder_.add_object_id(object_id);
+  builder_.add_animation_param_v(animation_param_v);
+  builder_.add_animation_param_h(animation_param_h);
+  builder_.add_animation_lower_index(animation_lower_index);
+  builder_.add_animation_upper_index(animation_upper_index);
   return builder_.Finish();
 }
 

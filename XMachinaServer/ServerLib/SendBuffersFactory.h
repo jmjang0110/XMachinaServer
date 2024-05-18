@@ -37,6 +37,8 @@ namespace SendPktInfo {
 		BYTES_128,
 		BYTES_256,
 		BYTES_512,
+		BYTES_1024,
+		BYTES_2048,
 	};
 	/* Fixed */
 	enum class Fix : UINT8 {
@@ -46,7 +48,7 @@ namespace SendPktInfo {
 		// ... 
 	};
 
-	constexpr UINT16 MemoryNum = 1000;
+	constexpr UINT16 MemoryNum = 200;
 }
 
 

@@ -34,9 +34,6 @@ void Session::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 	/* What is the Type of Task? */
 	OverlappedIO::Type IoType = overlapped->GetIoType();
 
-	/* Print.. Info */
-	int ThreadID = TLS_MGR->Get_TlsInfoData()->id;
-	
 	/* Process Task! */
 	ProcessIO(IoType, bytes);
 }

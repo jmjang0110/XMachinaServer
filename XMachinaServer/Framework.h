@@ -14,6 +14,7 @@ class Framework
 	DECLARE_SINGLETON(Framework);
 
 private:
+	std::wstring mServerIP = L"127.0.0.1";
 	SPtr_ServerNetwork  mServer = {};
 	SPtr_SendBufFactory mSendFactory = {};
 
@@ -28,6 +29,9 @@ public:
 	SPtr_ServerNetwork GetServerNetwork() { return mServer; }
 	SPtr_SendBufFactory GetSendFactory()  { return mSendFactory; }
 	long long GetCurrentTimeMilliseconds();
+	std::string GetLocalIPv4Address();
+	
+	std::wstring string_to_wstring(const std::string& str);
 	
 };
 

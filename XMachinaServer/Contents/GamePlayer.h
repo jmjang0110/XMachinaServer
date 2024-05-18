@@ -42,6 +42,8 @@ struct PlayerInfo
 	FBProtocol::OBJECTTYPE	Type      = FBProtocol::OBJECTTYPE::OBJECTTYPE_PLAYER;
 
 
+	float					Velocity  = {};
+
 	Vec3					Position  = {};
 	Vec3					Scale	  = Vec3(1.f, 1.f, 1.f);
 	Vec3					Rotation  = {};
@@ -75,6 +77,7 @@ public:
 	void SetType(FBProtocol::OBJECTTYPE type)	{ mInfo.Type     = type; };
 
 	/* UPDATE FREQUENTLY --- DATA RACE ( Read / Write ) In MultiThreads */
+	void SetVelocity(float vel)					{ mSRWLock.LockWrite(); mInfo.Velocity = vel;  mSRWLock.UnlockWrite(); };
 	void SetPosition(Vec3 pos)					{ mSRWLock.LockWrite(); mInfo.Position = pos;  mSRWLock.UnlockWrite(); };
 	void SetRotation(Vec3 Rot)					{ mSRWLock.LockWrite(); mInfo.Rotation = Rot;  mSRWLock.UnlockWrite(); };
 	void SetFrontDir(Vec3 FDir)					{ mSRWLock.LockWrite(); mInfo.FrontDir = FDir; mSRWLock.UnlockWrite(); };

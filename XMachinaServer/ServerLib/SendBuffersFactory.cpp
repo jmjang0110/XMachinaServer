@@ -99,6 +99,38 @@ void SendBuffersFactory::InitPacketMemoryPools()
 		}
 	}
 
+	/* BYTES_1024 */
+	{
+		const size_t MemoryBlockSize = 1024;
+		SPtr_SListMemoryPool Pool = MEMORY->Make_Shared<SListMemoryPool>(MemoryBlockSize);
+		mMemPools_VarPkt[SendPktInfo::Var::BYTES_1024] = Pool;
+		for (UINT16 i = 1; i < SendPktInfo::MemoryNum; ++i) {
+			mMemPools_VarPkt[SendPktInfo::Var::BYTES_1024]->AddMemory();
+		}
+	}
+
+	/* BYTES_2048 */
+	{
+		const size_t MemoryBlockSize = 2048;
+		SPtr_SListMemoryPool Pool = MEMORY->Make_Shared<SListMemoryPool>(MemoryBlockSize);
+		mMemPools_VarPkt[SendPktInfo::Var::BYTES_2048] = Pool;
+		for (UINT16 i = 1; i < SendPktInfo::MemoryNum; ++i) {
+			mMemPools_VarPkt[SendPktInfo::Var::BYTES_2048]->AddMemory();
+		}
+	}
+
+	/* BYTES_4096 */
+	//{
+	//	const size_t MemoryBlockSize = 4096;
+	//	SPtr_SListMemoryPool Pool = MEMORY->Make_Shared<SListMemoryPool>(MemoryBlockSize);
+	//	mMemPools_VarPkt[SendPktInfo::Var::BYTES_4096] = Pool;
+	//	for (UINT16 i = 1; i < SendPktInfo::MemoryNum; ++i) {
+	//		mMemPools_VarPkt[SendPktInfo::Var::BYTES_4096]->AddMemory();
+	//	}
+	//}
+
+
+
 	/// +-------------------------
 	///	  Variable Length Buffer
 	/// -------------------------+
@@ -139,7 +171,12 @@ void* SendBuffersFactory::Pull_VarPkt(size_t memorySize)
 	else if (256 < memorySize && memorySize <= 512){
 		return mMemPools_VarPkt[SendPktInfo::Var::BYTES_512]->Pull();
 	}
-
+	else if (512 < memorySize && memorySize <= 1024) {
+		return mMemPools_VarPkt[SendPktInfo::Var::BYTES_1024]->Pull();
+	}
+	else if (1024 < memorySize && memorySize <= 2048) {
+		return mMemPools_VarPkt[SendPktInfo::Var::BYTES_2048]->Pull();
+	}
 	return nullptr;
 }
 
@@ -166,6 +203,12 @@ void SendBuffersFactory::Push_VarPkt(size_t memorySize, void* ptr)
 	}
 	else if (256 < memorySize && memorySize <= 512) {
 		mMemPools_VarPkt[SendPktInfo::Var::BYTES_512]->Push(ptr);
+	}
+	else if (512 < memorySize && memorySize <= 1024) {
+		mMemPools_VarPkt[SendPktInfo::Var::BYTES_1024]->Push(ptr);
+	}
+	else if (1024 < memorySize && memorySize <= 2048) {
+		mMemPools_VarPkt[SendPktInfo::Var::BYTES_2048]->Push(ptr);
 	}
 }
 
@@ -200,6 +243,13 @@ SPtr_PacketSendBuf SendBuffersFactory::CreateVarSendPacketBuf(const uint8_t* buf
 	else if (memorySize <= 512) {
 		offsetMemSize = 512 - memorySize;
 	}
+	else if (memorySize <= 1024) {
+		offsetMemSize = 1024 - memorySize;
+	}
+	else if (memorySize <= 2048) {
+		offsetMemSize = 2048 - memorySize;
+	}
+
 	if (offsetMemSize < 0)
 		return nullptr;
 

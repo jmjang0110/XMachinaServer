@@ -16,6 +16,13 @@ using FBSPKT_FACTORY = class FBsPacketFactory;
 
 #define FBS_FACTORY FBsPacketFactory::GetInst()
 
+namespace PLAYER_MOVE_STATE {
+	constexpr int32_t Start    = 0;
+	constexpr int32_t Progress = 1;
+	constexpr int32_t End      = 2;
+
+}
+
 class FBsPacketFactory
 {
 	DECLARE_SINGLETON(FBsPacketFactory);
@@ -44,18 +51,21 @@ private:
 	static bool Process_CPkt_NetworkLatency(SPtr_Session session, const FBProtocol::CPkt_NetworkLatency& pkt);
 	/* CHAT */
 	static bool Process_CPkt_Chat(SPtr_Session session, const FBProtocol::CPkt_Chat& pkt);
+	static bool Process_CPkt_PlayerAnimation(SPtr_Session session, const FBProtocol::CPkt_PlayerAnimation& pkt);
 
 public:
 	SPtr_SendPktBuf SPkt_Chat(UINT32 sessionID, std::string msg);
-	SPtr_SendPktBuf SPkt_Transform(uint64_t ID, Vec3 Pos, Vec3 Rot, Vec3 Scale, Vec3 SpineLookDir, long long latency);
+	SPtr_SendPktBuf SPkt_Transform(uint64_t ID, Vec3 Pos, Vec3 Rot, int32_t movestate, Vec3 MoveDir, float velocity, Vec3 SpineLookDir, long long latency, float animparam_h, float animparam_v);
 	SPtr_SendPktBuf SPkt_NewtorkLatency(long long timestamp);
 	SPtr_SendPktBuf SPkt_LogIn(PlayerInfo& plinfo, std::vector<PlayerInfo>& remotePlayers, bool& IsSuccess);
 	SPtr_SendPktBuf SPkt_NewPlayer(PlayerInfo& newPlayerInfo);
 	SPtr_SendPktBuf SPkt_RemovePlayer(int removeSessionID);
+	SPtr_SendPktBuf SPkt_PlayerAnimation(int ObjectID, int anim_upper_idx, int anim_lower_idx, float anim_param_h, float anim_param_v);
 
 
 private:
 	static Vec3 GetVector3(const FBProtocol::Vector3* vec3);
+	static Vec4 GetVector4(const FBProtocol::Vector4* vec4);
 
 
 };
