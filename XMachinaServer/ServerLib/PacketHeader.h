@@ -1,6 +1,6 @@
 #pragma once
 
-//#define CONNECT_WITH_TEST_CLIENT
+#define CONNECT_WITH_TEST_CLIENT
 #ifdef CONNECT_WITH_TEST_CLIENT
 
 namespace FBsProtocolID
@@ -27,6 +27,8 @@ namespace FBsProtocolID
 	constexpr UINT16 CPkt_RemovePlayer = 0;
 	constexpr UINT16 SPkt_RemovePlayer = 0;
 
+	constexpr UINT16 CPkt_PlayerAnimation = 0;
+	constexpr UINT16 SPkt_PlayerAnimation = 0;
 };
 #else 
 /* CONNECT WITH X-MACHINA */

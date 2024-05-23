@@ -67,9 +67,11 @@ bool Framework::Init(HINSTANCE& hInst)
 
 	LOG_MGR->Cout("[SUCCESS] LOG_MGR INIT\n");
 
-	/// +---------------------------------------
-	///	XMachina Window Server UI : Dx12, Imgui  
-	/// ---------------------------------------+
+	/// +------------------------------------------------------------------------------
+	///						( X - 서버 성능 저하로 인해 폐지함. )
+	/// _______________________________________________________________________________
+	///	 XMachina Window Server UI : Dx12, Imgui - 서버 상태를 Imgui를 이용해 렌더링한다. 
+	/// ------------------------------------------------------------------------------+
 	if (FALSE == WINDOW_UI->Init(hInst, { 1366,768 })) {
 		LOG_MGR->SetColor(TextColor::Red);
 		LOG_MGR->Cout("[FAIL] WINDOW_UI INIT\n");
@@ -237,9 +239,6 @@ void Framework::Launch()
 	if (key == 'q') {
 		stop = true;
 	}
-
-
-
 
 	THREAD_MGR->JoinAllThreads();
 }

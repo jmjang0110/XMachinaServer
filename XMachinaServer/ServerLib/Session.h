@@ -39,6 +39,7 @@ class Session : public NetworkObject
 {
 private:
 	USE_LOCK;
+	Lock::SRWLock mSRWLock_AccessToSendPktQ;
 
 	std::atomic_int LockWrite_ThreadID = -1;
 	std::atomic_bool LockWrite_bool = false;

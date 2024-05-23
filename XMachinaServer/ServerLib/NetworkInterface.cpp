@@ -61,7 +61,7 @@ bool NetworkInterface::Dispatch_CompletedTasks_FromIOCP(UINT32 msTimeOut)
 		/// +------------
 		///    SUCCESS 
 		/// ------------+
-		overObj = reinterpret_cast<OverlappedObject*>(lpOverlapped);
+		overObj            = reinterpret_cast<OverlappedObject*>(lpOverlapped);
 		SPtr_NetObj netObj = overObj->GetOwner();
 		netObj->Dispatch(overObj, BytesTransferred);
 

@@ -63,8 +63,22 @@ void* SListMemoryPool::Pull()
     }
     else {
         /* 없으면 만들어서.. */
-        AddMemory();
-        ptr = ::InterlockedPopEntrySList(&mSListHeader);
+        const size_t AllocSizse = sizeof(SLIST_ENTRY) + mMemorySize;
+        SListMemoryBlock* AddPtr = reinterpret_cast<SListMemoryBlock*>(::_aligned_malloc(AllocSizse, MEMORY_ALLOCATION_ALIGNMENT));
+        if (AddPtr != nullptr) {
+
+            /*mNumBlocks.fetch_add(1);
+            ::InterlockedPushEntrySList(&mSListHeader, reinterpret_cast<PSLIST_ENTRY>(AddPtr));
+            ptr = ::InterlockedPopEntrySList(&mSListHeader);
+            if (ptr == nullptr) {
+
+            }
+            */  
+            return reinterpret_cast<void*>(reinterpret_cast<char*>(AddPtr) + sizeof(SLIST_ENTRY));
+        }
+        else {
+            return nullptr;
+        }
 
         //if (TLS_MGR->Get_TlsInfoData()) {
 
@@ -78,7 +92,6 @@ void* SListMemoryPool::Pull()
         //    }
         //}
 
-        return reinterpret_cast<void*>(reinterpret_cast<char*>(ptr) + sizeof(SLIST_ENTRY));
     }
 
     return nullptr; // 사용 가능한 블록이 없는 경우

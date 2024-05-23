@@ -23,11 +23,6 @@ SPtr_Session SessionController::CreateSession(SPtr_NI netInterfaceOwner)
 
 void SessionController::AddSession(UINT32 sessionID, SPtr_Session session)
 {
-
-	//mSessionsMutex.lock();
-	//mSessionRWLock.lockWrite();
-
-	//WRITE_LOCK;
 	mSRWLock.LockWrite();
 
 	if (mCurrSessionCnt < mMaxSessionCnt) {
@@ -37,15 +32,10 @@ void SessionController::AddSession(UINT32 sessionID, SPtr_Session session)
 
 
 	mSRWLock.UnlockWrite();
-	//mSessionRWLock.unlockWrite();
-	//mSessionsMutex.unlock();
-
 }
 
 void SessionController::ReleaseSession(UINT32 sessionID)
 {
-	//mSessionRWLock.lockWrite();
-	//WRITE_LOCK;
 	mSRWLock.LockWrite();
 
 	auto iter = mSessionsMap.find(sessionID);
@@ -64,19 +54,10 @@ void SessionController::ReleaseSession(UINT32 sessionID)
 	}
 
 	mSRWLock.UnlockWrite();
-
-	//mSessionRWLock.unlockWrite();
 }
 
 void SessionController::Broadcast(SPtr_SendPktBuf sendBuf)
 {
-	//Lock::RWLock::GetInst()->lockWrite();		
-	//mSessionRWLock.lockWrite();
-
-	//mSessionsMutex.lock();
-
-	//WRITE_LOCK;
-	
 	mSRWLock.LockRead();
 
 	for (const auto& iter : mSessionsMap) {
@@ -84,11 +65,6 @@ void SessionController::Broadcast(SPtr_SendPktBuf sendBuf)
 		iter.second->Send(sendBuf);
 	}
 	mSRWLock.UnlockRead();
-
-	//mSessionRWLock.unlockWrite();
-	//Lock::RWLock::GetInst()->unlockWrite();
-
-	//mSessionsMutex.unlock();
 }
 
 void SessionController::Send(UINT32 sessionID, SPtr_SendPktBuf sendBuf)

@@ -71,6 +71,18 @@
     <Filter Include="Framework\Contents\Component">
       <UniqueIdentifier>{668a7e04-28dc-40d3-bf72-ffd6cfee81f0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\Contents\DataBase">
+      <UniqueIdentifier>{50b7bc6c-299f-4f96-bdac-e540524dc812}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\DataBase\Controller">
+      <UniqueIdentifier>{390a26b6-da89-43b8-bb91-50864395f60d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\DataBase\Item">
+      <UniqueIdentifier>{ce7b2706-c1bd-4f30-88ab-c91c584e80df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\DataBase\Item\Weapon">
+      <UniqueIdentifier>{b2f8e64c-49b9-419a-bb1e-38eb93ec0a77}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework.h">
@@ -194,6 +206,27 @@
     <ClInclude Include="Contents\Key.h">
       <Filter>Framework\Contents\Util</Filter>
     </ClInclude>
+    <ClInclude Include="Contents\DB_Monster.h">
+      <Filter>Framework\Contents\DataBase</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\DB_NPC.h">
+      <Filter>Framework\Contents\DataBase</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\DBController.h">
+      <Filter>Framework\Contents\DataBase\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\DB_Player.h">
+      <Filter>Framework\Contents\DataBase</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\DB_Item.h">
+      <Filter>Framework\Contents\DataBase\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\DB_Weapon.h">
+      <Filter>Framework\Contents\DataBase\Item\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\DB_Inventory.h">
+      <Filter>Framework\Contents\DataBase\Item</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp">
@@ -289,6 +322,27 @@
     </ClCompile>
     <ClCompile Include="Contents\Key.cpp">
       <Filter>Framework\Contents\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\DB_Monster.cpp">
+      <Filter>Framework\Contents\DataBase</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\DB_NPC.cpp">
+      <Filter>Framework\Contents\DataBase</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\DBController.cpp">
+      <Filter>Framework\Contents\DataBase\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\DB_Player.cpp">
+      <Filter>Framework\Contents\DataBase</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\DB_Item.cpp">
+      <Filter>Framework\Contents\DataBase\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\DB_Weapon.cpp">
+      <Filter>Framework\Contents\DataBase\Item\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\DB_Inventory.cpp">
+      <Filter>Framework\Contents\DataBase\Item</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

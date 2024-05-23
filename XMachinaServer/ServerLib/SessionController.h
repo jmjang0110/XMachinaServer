@@ -15,7 +15,6 @@
 class NetworkInterface;
 class SessionController
 {
-	//USE_LOCK;
 	Lock::SRWLock mSRWLock{};
 
 public:

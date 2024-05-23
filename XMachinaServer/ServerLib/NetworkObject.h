@@ -37,6 +37,5 @@ public:
 
 	UINT32 GetID() { return ID; }
 
-
 };
 

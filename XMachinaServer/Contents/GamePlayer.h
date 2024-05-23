@@ -36,7 +36,7 @@ struct PlayerInfo
 
 	long long				Timestamp = {};
 
-	UINT32					PlayerID  = -1; /* PLAYER ID */
+	UINT32					PlayerID  = -1; /* PLAYER ID */ /// - 여기서 ID는 현재 접속 후의 일시적인 아이디이다. DB에서 정보를 받을려면 stirngID를 이용해야한다.
 	UINT32					RoomID	  = -1; /* ROOM NUMBER */
 	std::string				Name      = {};
 	FBProtocol::OBJECTTYPE	Type      = FBProtocol::OBJECTTYPE::OBJECTTYPE_PLAYER;
@@ -45,7 +45,6 @@ struct PlayerInfo
 	float					Velocity  = {};
 
 	Vec3					Position  = {};
-	Vec3					Scale	  = Vec3(1.f, 1.f, 1.f);
 	Vec3					Rotation  = {};
 
 	Vec3					FrontDir  = {};
@@ -83,7 +82,8 @@ public:
 	void SetFrontDir(Vec3 FDir)					{ mSRWLock.LockWrite(); mInfo.FrontDir = FDir; mSRWLock.UnlockWrite(); };
 	void SetSpineDir(Vec3 SDir)					{ mSRWLock.LockWrite(); mInfo.SpineDir = SDir; mSRWLock.UnlockWrite(); };
 
-	PlayerInfo GetInfo() { mSRWLock.LockRead(); PlayerInfo currInfo = mInfo; mSRWLock.UnlockRead(); return currInfo; };
+	void SetInfo(PlayerInfo& info)	{ mSRWLock.LockWrite(); mInfo = info; mSRWLock.UnlockWrite(); }
+	PlayerInfo GetInfo()			{ mSRWLock.LockRead(); PlayerInfo currInfo = mInfo; mSRWLock.UnlockRead(); return currInfo; };
 
 public:
 	void DecRef_OwnerGameSession() { mInfo.Owner = nullptr; }

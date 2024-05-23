@@ -8,7 +8,6 @@ namespace RoomInfo
 };
 class GameRoom : public GameEntity
 {
-	//USE_LOCK;
 	Lock::SRWLock mSRWLock;
 
 private:
