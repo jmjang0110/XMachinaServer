@@ -13,6 +13,8 @@ NetworkManager::NetworkManager()
 NetworkManager::~NetworkManager()
 {
 	::WSACleanup();
+
+	LOG_MGR->Cout("~NetworkManager\n");
 }
 
 bool NetworkManager::Init()

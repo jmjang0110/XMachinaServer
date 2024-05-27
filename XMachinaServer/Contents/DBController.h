@@ -34,5 +34,7 @@ public:
 	DBController();
 	~DBController();
 
+public:
+
 };
 

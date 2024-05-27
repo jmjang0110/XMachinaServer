@@ -38,7 +38,7 @@ bool NetworkInterface::RegisterIocp(SPtr_NetObj netObj)
 bool NetworkInterface::Dispatch_CompletedTasks_FromIOCP(UINT32 msTimeOut)
 {
 	/// +=========================== IOCP Queue ============================
-	///  (완료된 일감들...)
+	///  (완료된 I/O들...)
 	/// ____________________________________________________________________
 	/// (+_+) 감시한다...
 	/// (timeoutMs : INFINITE -> 무한대기 (블로킹) / 0 -> (논블로킹)

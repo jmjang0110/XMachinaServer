@@ -15,6 +15,8 @@ WindowUI::WindowUI()
 
 WindowUI::~WindowUI()
 {
+    LOG_MGR->Cout("~WindowUI\n");
+
 }
 
 bool WindowUI::Init(HINSTANCE& hInstance, WindowResolution Res)

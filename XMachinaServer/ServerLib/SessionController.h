@@ -28,8 +28,6 @@ private:
 
 	std::atomic_int		mCurrSessionCnt = 0;  /* 泅犁 立加 技记 荐 */
 	UINT32				mMaxSessionCnt  = 0;  /* 弥措 立加 技记 荐 */
-	std::mutex		    mSessionsMutex  = {}; /* 技记 立加 孤咆胶	 */
-	Lock::RWLock	    mSessionRWLock  = {}; /* 技记 立加 孤咆胶 (RWLock) */
 
 	std::function<SPtr_Session(void)>	mSessionConstructorFunc = {}; // Session 积己磊 窃荐 器牢磐 ( session惑加努贰胶 积己磊 )
 

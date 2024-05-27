@@ -21,14 +21,14 @@ namespace FBsProtocolID
 	constexpr UINT16 SPkt_NetworkLatency = 1009;
 
 	/* JUST FOR DEBUGGING NOT USE WITH TEST CLIENT PROTOCOL */
-	constexpr UINT16 CPkt_NewPlayer = 0;
-	constexpr UINT16 SPkt_NewPlayer = 0;
+	constexpr UINT16 CPkt_NewPlayer = -1;
+	constexpr UINT16 SPkt_NewPlayer = -1;
 
-	constexpr UINT16 CPkt_RemovePlayer = 0;
-	constexpr UINT16 SPkt_RemovePlayer = 0;
+	constexpr UINT16 CPkt_RemovePlayer = -1;
+	constexpr UINT16 SPkt_RemovePlayer = -1;
 
-	constexpr UINT16 CPkt_PlayerAnimation = 0;
-	constexpr UINT16 SPkt_PlayerAnimation = 0;
+	constexpr UINT16 CPkt_PlayerAnimation = -1;
+	constexpr UINT16 SPkt_PlayerAnimation = -1;
 };
 #else 
 /* CONNECT WITH X-MACHINA */
@@ -63,8 +63,6 @@ namespace FBsProtocolID
 
 	constexpr UINT16 CPkt_PlayerAnimation	= 1018;
 	constexpr UINT16 SPkt_PlayerAnimation	= 1019;
-
-
 
 };
 #endif

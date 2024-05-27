@@ -24,6 +24,7 @@ MemoryManager::~MemoryManager()
     }
     mSLMemPoolsDict_Size.clear();
 
+    LOG_MGR->Cout("~MemoryManager\n");
 
 }
 

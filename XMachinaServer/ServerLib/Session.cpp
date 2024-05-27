@@ -254,8 +254,6 @@ void Session::ProcessIO(OverlappedIO::Type IoType, INT32 BytesTransferred)
 		/* TODO : Lock °ÉÀÚ!*/
 		/* ´Ù º¸³¿ */
 		{
-			WRITE_LOCK_SCOPE
-
 			mSRWLock_AccessToSendPktQ.LockWrite();
 
 			if (mPacketBuffer.SendPkt_Queue.empty() == true) {
@@ -263,20 +261,13 @@ void Session::ProcessIO(OverlappedIO::Type IoType, INT32 BytesTransferred)
 
 			}
 
-			mSRWLock_AccessToSendPktQ.UnlockWrite();
 			/* ´Ù ¾Èº¸³¿ */
-			mSRWLock_AccessToSendPktQ.LockWrite();
 			bool PktQ_IsEmpty = mPacketBuffer.SendPkt_Queue.empty();
 			mSRWLock_AccessToSendPktQ.UnlockWrite();
 
 			if (PktQ_IsEmpty == false) {
 				RegisterIO(OverlappedIO::Type::Send); // Lock Write 
 			}
-
-			//if(mPacketBuffer.SendPkt_Queue.empty() == false){
-			//	RegisterIO(OverlappedIO::Type::Send); // Lock Write 
-			//}
-
 		}
 
 
@@ -341,8 +332,6 @@ void Session::Send(SPtr_SendPktBuf buf)
 		//WRITE_LOCK_SCOPE;
 
 		mSRWLock_AccessToSendPktQ.LockWrite();
-
-		LockWrite_ThreadID.store(TLS_MGR->Get_TlsInfoData()->id);
 
 		mPacketBuffer.SendPkt_Queue.push(buf);
 

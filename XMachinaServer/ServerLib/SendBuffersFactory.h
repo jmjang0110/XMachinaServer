@@ -56,7 +56,7 @@ namespace SendPktInfo {
 class SendBuffersFactory : public std::enable_shared_from_this<SendBuffersFactory>
 {
 private:
-	SPtr_SListMemoryPool									     mMemPools_SptrSendPkt = {}; // SendPkt 메모리 풀 
+	SPtr_SListMemoryPool									   mMemPools_SptrSendPkt = {}; // SendPkt 메모리 풀 
 	std::unordered_map<SendPktInfo::Var, SPtr_SListMemoryPool> mMemPools_VarPkt      = {}; // 가변길이 패킷 전용 메모리 풀 
 	std::unordered_map<SendPktInfo::Fix, SPtr_SListMemoryPool> mMemPools_FixPkt      = {}; // 고정길이 패킷 전용 메모리 풀 
 

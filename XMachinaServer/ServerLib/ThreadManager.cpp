@@ -16,6 +16,9 @@ ThreadManager::ThreadManager()
 ThreadManager::~ThreadManager()
 {
 	TLS_MGR->Destroy();
+
+	LOG_MGR->Cout("~ThreadManager\n");
+
 }
 void ThreadManager::RunThread(std::string threadName, std::function<void(void)> func)
 {
@@ -72,6 +75,9 @@ ThreadLocalStorageManager::~ThreadLocalStorageManager()
 	for (UINT8 i = 0; i < static_cast<UINT8>(TLS::TlsIndex::end); ++i) {
 		::TlsFree(mTlsIndex[i]);
 	}
+
+	LOG_MGR->Cout("~ThreadLocalStorageManager\n");
+
 }
 
 bool ThreadLocalStorageManager::Init()
@@ -79,7 +85,6 @@ bool ThreadLocalStorageManager::Init()
 	return true;
 
 }
-
 
 
 /* TLS::TlsInfoData */

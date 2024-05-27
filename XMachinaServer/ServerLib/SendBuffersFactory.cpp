@@ -256,8 +256,6 @@ SPtr_PacketSendBuf SendBuffersFactory::CreateVarSendPacketBuf(const uint8_t* buf
  	BYTE* ptr                  = reinterpret_cast<BYTE*>(Pull_VarPkt(memorySize));
 	BYTE* StartPtr             = ptr + offsetMemSize;
 
-	int ttt = sizeof(SLIST_ENTRY);
-
 
 	void* dstPtr = Pull_SendPkt();
 	SPtr_PacketSendBuf sendBuf = Make_Shared(dstPtr, ptr, static_cast<UINT16>(memorySize + offsetMemSize), StartPtr, static_cast<UINT32>(memorySize));

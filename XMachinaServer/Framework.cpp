@@ -36,18 +36,19 @@ Framework::~Framework()
 	/* Window UI Destroy */
 	WINDOW_UI->Destroy();
 
-	/* Log Manager Destroy */
-	LOG_MGR->Destroy();
-
-	/* Thread Manager Destroy --> (TLS) threadLocalStorageManager Destroy */
-	THREAD_MGR->Destroy();
-
 	/* Network Manager Destroy */
 	NETWORK_MGR->Destroy();
 
 	/* Memory Manager Destroy */
 	MEMORY->Destroy();
 
+	/* Thread Manager Destroy --> (TLS) threadLocalStorageManager Destroy */
+	THREAD_MGR->Destroy();
+
+	/* Log Manager Destroy */
+	LOG_MGR->Destroy();
+
+	int i = 0;
 
 }
 
@@ -237,7 +238,8 @@ void Framework::Launch()
 
 	// If 'q' is pressed, stop the threads
 	if (key == 'q') {
-		stop = true;
+		stop.store(true);
+		std::cout << "STOP!!\n";
 	}
 
 	THREAD_MGR->JoinAllThreads();
