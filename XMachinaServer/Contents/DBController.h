@@ -13,6 +13,7 @@
 #include "DB_Player.h"
 #include "DB_Monster.h"
 #include "DB_NPC.h"
+#include <sqlext.h>
 
 /* X-Machina Game Data Base */
 struct X_Machina_DB
@@ -28,6 +29,15 @@ class DBController
 	DECLARE_SINGLETON(DBController);
 
 private:
+	SQLHENV hEnv;
+	SQLHDBC hDbc;
+
+private:
+	std::string mUserDSN_Name = "X_Machina_DB";
+	std::string mUser;
+	std::string mPassword;
+
+private:
 	X_Machina_DB mX_Machina_DB;
 
 public:
@@ -35,6 +45,13 @@ public:
 	~DBController();
 
 public:
+	bool ConnectToDatabase(const char* dsn, const char* user, const char* password);
+	void DisconnectFromDatabase();
+	bool ExecuteQuery(const char* query);
+	bool FetchData(const char* query);
+
+	bool ReadDataFromDatabase(const char* query);
+	bool WriteDataToDatabase(const char* query);
 
 };
 

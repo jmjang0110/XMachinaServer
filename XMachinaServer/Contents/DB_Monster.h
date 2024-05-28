@@ -6,7 +6,7 @@
 /// Manage Monster Data In Game World 
 /// -------------------------------+
 
-enum class MonsterType
+enum class MonsterType : UINT8
 {
 	Ursacetus,
 	Onyscidus,
@@ -15,7 +15,7 @@ enum class MonsterType
 };
 
 /* Monster Prototype Information */
-struct MonsterPrototypeDataBase
+struct MonsterPrototypeDataBase 
 {
 	std::string name;
 

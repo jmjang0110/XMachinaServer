@@ -200,3 +200,32 @@ table SPkt_PlayerAnimation
 	animation_param_h		: float;
 	animation_param_v       : float;
 }
+
+
+// +------------------------
+//	   PALYER WEAPON 
+// ------------------------+
+
+table CPkt_PlayerWeapon
+{
+
+}
+
+table SPkt_PlayerWeapon
+{
+
+}
+
+// +------------------------
+//	       MONSTER 
+// ------------------------+
+
+table CPkt_Monster
+{
+
+}
+
+table SPkt_Monster
+{
+	monsters : [Monster]; // Updated Monster Infos 
+}

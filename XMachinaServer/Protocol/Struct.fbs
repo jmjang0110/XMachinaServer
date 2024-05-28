@@ -8,6 +8,9 @@ include "Transform.fbs";
 
 namespace FBProtocol;
 
+// +------------------------
+//	    PLAYER STRUCT  
+// ------------------------+
 table Player {
   id			: ulong;
   name			: string;
@@ -15,4 +18,13 @@ table Player {
 
   trans			: Transform;
   spine_look	: Vector3;
+}
+
+// +------------------------
+//	    MONSTER STRUCT 
+// ------------------------+
+table Monster{
+	type	:  ubyte; // UINT8
+	id      :  ulong; 
+	trans	:  Transform;
 }
