@@ -3,7 +3,7 @@
 
 
 GamePlayer::GamePlayer()
-	: GameObject()
+	: GameObject(-1)
 {
 }
 

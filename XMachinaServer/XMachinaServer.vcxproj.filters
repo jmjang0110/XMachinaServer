@@ -83,6 +83,18 @@
     <Filter Include="Framework\Contents\DataBase\Item\Weapon">
       <UniqueIdentifier>{b2f8e64c-49b9-419a-bb1e-38eb93ec0a77}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\Contents\Object\Monster">
+      <UniqueIdentifier>{b51a25f6-c8db-4978-bbc5-0f90db76d644}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\Object\Player">
+      <UniqueIdentifier>{4811be1a-dfad-4756-8c37-550bb6485a6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\Object\AI">
+      <UniqueIdentifier>{17f18d8d-748f-4c4b-af77-53b57c852145}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\DataBase\Object">
+      <UniqueIdentifier>{d3338ba7-db3e-4241-8ca9-5edc37d6fb33}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework.h">
@@ -188,9 +200,6 @@
     <ClInclude Include="Contents\GameObject.h">
       <Filter>Framework\Contents\Object</Filter>
     </ClInclude>
-    <ClInclude Include="Contents\GamePlayer.h">
-      <Filter>Framework\Contents\Object</Filter>
-    </ClInclude>
     <ClInclude Include="Contents\GameRoom.h">
       <Filter>Framework\Contents\RoomSession</Filter>
     </ClInclude>
@@ -206,17 +215,8 @@
     <ClInclude Include="Contents\Key.h">
       <Filter>Framework\Contents\Util</Filter>
     </ClInclude>
-    <ClInclude Include="Contents\DB_Monster.h">
-      <Filter>Framework\Contents\DataBase</Filter>
-    </ClInclude>
-    <ClInclude Include="Contents\DB_NPC.h">
-      <Filter>Framework\Contents\DataBase</Filter>
-    </ClInclude>
     <ClInclude Include="Contents\DBController.h">
       <Filter>Framework\Contents\DataBase\Controller</Filter>
-    </ClInclude>
-    <ClInclude Include="Contents\DB_Player.h">
-      <Filter>Framework\Contents\DataBase</Filter>
     </ClInclude>
     <ClInclude Include="Contents\DB_Item.h">
       <Filter>Framework\Contents\DataBase\Item</Filter>
@@ -226,6 +226,24 @@
     </ClInclude>
     <ClInclude Include="Contents\DB_Inventory.h">
       <Filter>Framework\Contents\DataBase\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\GameMonster.h">
+      <Filter>Framework\Contents\Object\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\GamePlayer.h">
+      <Filter>Framework\Contents\Object\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\AStarPath.h">
+      <Filter>Framework\Contents\Object\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\DB_Monster.h">
+      <Filter>Framework\Contents\DataBase\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\DB_NPC.h">
+      <Filter>Framework\Contents\DataBase\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\DB_Player.h">
+      <Filter>Framework\Contents\DataBase\Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -305,9 +323,6 @@
     <ClCompile Include="Contents\GameObject.cpp">
       <Filter>Framework\Contents\Object</Filter>
     </ClCompile>
-    <ClCompile Include="Contents\GamePlayer.cpp">
-      <Filter>Framework\Contents\Object</Filter>
-    </ClCompile>
     <ClCompile Include="Contents\GameRoom.cpp">
       <Filter>Framework\Contents\RoomSession</Filter>
     </ClCompile>
@@ -323,17 +338,8 @@
     <ClCompile Include="Contents\Key.cpp">
       <Filter>Framework\Contents\Util</Filter>
     </ClCompile>
-    <ClCompile Include="Contents\DB_Monster.cpp">
-      <Filter>Framework\Contents\DataBase</Filter>
-    </ClCompile>
-    <ClCompile Include="Contents\DB_NPC.cpp">
-      <Filter>Framework\Contents\DataBase</Filter>
-    </ClCompile>
     <ClCompile Include="Contents\DBController.cpp">
       <Filter>Framework\Contents\DataBase\Controller</Filter>
-    </ClCompile>
-    <ClCompile Include="Contents\DB_Player.cpp">
-      <Filter>Framework\Contents\DataBase</Filter>
     </ClCompile>
     <ClCompile Include="Contents\DB_Item.cpp">
       <Filter>Framework\Contents\DataBase\Item</Filter>
@@ -343,6 +349,24 @@
     </ClCompile>
     <ClCompile Include="Contents\DB_Inventory.cpp">
       <Filter>Framework\Contents\DataBase\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\GameMonster.cpp">
+      <Filter>Framework\Contents\Object\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\GamePlayer.cpp">
+      <Filter>Framework\Contents\Object\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\AStarPath.cpp">
+      <Filter>Framework\Contents\Object\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\DB_Monster.cpp">
+      <Filter>Framework\Contents\DataBase\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\DB_NPC.cpp">
+      <Filter>Framework\Contents\DataBase\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\DB_Player.cpp">
+      <Filter>Framework\Contents\DataBase\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

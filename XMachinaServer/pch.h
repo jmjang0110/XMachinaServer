@@ -26,6 +26,7 @@
 /* STL */
 #include <vector>
 #include <array>
+#include <stack>
 
 /* Concurrent */
 #include <concurrent_queue.h>
@@ -34,6 +35,7 @@
 /* My Utility Hedaers */
 #include "ServerLib/UtilityMacro.h"
 #include "Contents/LogManager.h"
+
 
 using SPtr_GameSession = std::shared_ptr<class GameSession>;
 using SPtr_GameRoom    = std::shared_ptr<class GameRoom>;

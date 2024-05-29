@@ -32,3 +32,4 @@ if(ptr != nullptr){		 \
 	ptr = nullptr;		 \
 }	
 #pragma endregion
+

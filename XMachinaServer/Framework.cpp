@@ -136,12 +136,12 @@ bool Framework::Init(HINSTANCE& hInst)
 	std::string ipAddresses = GetLocalIPv4Address();
 	if (!ipAddresses.empty()) {
 		mServerIP = string_to_wstring(ipAddresses);
-		LOG_MGR->WCout(L"IPv4 Address : ", mServerIP, '\n');
+		LOG_MGR->WCout(L"wifi IPv4 Address : ", mServerIP, '\n');
 	}
 	else {
 		mServerIP = L"127.0.0.1";
 		LOG_MGR->SetColor(TextColor::BrightRed);
-		LOG_MGR->Cout("No Wi-Fi IPv4 Address found.");
+		LOG_MGR->Cout("No Wi-Fi IPv4 Address found. \n ServerIP LoopBack Setting : 127.0.0.1 \n");
 		LOG_MGR->SetColor(TextColor::Default);
 
 		LOG_MGR->Cout("Server IP ют╥б : ");

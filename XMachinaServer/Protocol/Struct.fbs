@@ -28,3 +28,16 @@ table Monster{
 	id      :  ulong; 
 	trans	:  Transform;
 }
+
+
+// +---------------------------
+//	    MONSTER STATE STRUCT 
+// ----------------------------+
+
+table MonsterState{
+	id      :  ulong;
+
+	HP		:  float;
+	trans	:  Transform;
+
+}

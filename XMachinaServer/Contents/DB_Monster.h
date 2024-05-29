@@ -15,7 +15,7 @@ enum class MonsterType : UINT8
 };
 
 /* Monster Prototype Information */
-struct MonsterPrototypeDataBase 
+struct MonsterDataBase 
 {
 	std::string name;
 
@@ -25,15 +25,16 @@ struct MonsterPrototypeDataBase
 
 };
 
+/* Prototype Information */
 class DB_Monster
 {
 private:
+	MonsterType		mType;
+	MonsterDataBase mProtoDB;
 
 public:
 	DB_Monster();
 	~DB_Monster();
-
-
 
 };
 

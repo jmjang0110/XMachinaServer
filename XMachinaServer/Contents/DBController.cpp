@@ -1,14 +1,24 @@
 #include "pch.h"
 #include "DBController.h"
+#include "ServerLib/MemoryManager.h"
 
 DEFINE_SINGLETON(DBController);
 
 DBController::DBController()
 {
+
 }
 
 DBController::~DBController()
 {
+}
+
+void DBController::Init()
+{
+	mX_Machina_DB.MonsterDB = MEMORY->New<DB_Monster>();
+	mX_Machina_DB.NPCDB     = MEMORY->New<DB_NPC>();
+	mX_Machina_DB.PlayerDB  = MEMORY->New<DB_Player>();
+
 }
 
 bool DBController::ConnectToDatabase(const char* dsn, const char* user, const char* password) {

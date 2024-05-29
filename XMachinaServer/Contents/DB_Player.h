@@ -10,18 +10,14 @@
 struct PlayerDataBase
 {
 	std::string stringID;
+	std::string Name;
 
-	std::string name;
-
-	Vec3 Position;
-
+	Vec3  Position;
 	float HP;
 	float MP;
 
+	PlayerEnum::WeaponType mWeaponType;
 };
-
-
-
 
 class DB_Player
 {
