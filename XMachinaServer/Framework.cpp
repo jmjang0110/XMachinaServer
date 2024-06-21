@@ -15,6 +15,8 @@
 #include "Contents/GameSession.h"
 #include "ServerLib/SendBuffersFactory.h"
 #include "Protocol/FBsPacketFactory.h"
+#include "Contents/DBController.h"
+
 
 #undef max 
 #include <flatbuffers/flatbuffers.h>
@@ -33,22 +35,14 @@ Framework::~Framework()
 
 	mServer      = nullptr;
 	mSendFactory = nullptr;
-	/* Window UI Destroy */
+
 	WINDOW_UI->Destroy();
-
-	/* Network Manager Destroy */
 	NETWORK_MGR->Destroy();
-
-	/* Memory Manager Destroy */
 	MEMORY->Destroy();
-
-	/* Thread Manager Destroy --> (TLS) threadLocalStorageManager Destroy */
 	THREAD_MGR->Destroy();
-
-	/* Log Manager Destroy */
 	LOG_MGR->Destroy();
+	DB_CONTROLLER->Destroy();
 
-	int i = 0;
 
 }
 
@@ -163,6 +157,10 @@ bool Framework::Init(HINSTANCE& hInst)
 	}	
 	LOG_MGR->Cout("[SUCCESS] ServerNetwork INIT\n");
 
+
+	DB_CONTROLLER->Init();
+	DB_CONTROLLER->ConnectToDatabase(L"X_Machina_DB", L"jmjang016", L"1234");
+
 	/// +-------------------------------------------------------------------
 	///	SEND BUFFERS FACTORY : SendBuffer전용 메모리 풀 및 SendPktBuffer 생산
 	/// -------------------------------------------------------------------+
@@ -172,6 +170,8 @@ bool Framework::Init(HINSTANCE& hInst)
 		mSendFactory->InitPacketMemoryPools();
 	}
 	LOG_MGR->Cout("[SUCCESS] SendBuffersFactory INIT\n");
+
+
 
 
 	return true;

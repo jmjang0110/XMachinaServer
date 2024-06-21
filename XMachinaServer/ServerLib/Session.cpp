@@ -131,7 +131,6 @@ void Session::RegisterIO(OverlappedIO::Type IoType)
 		
 			WSABUF wsaBuf = {};
 			wsaBuf.buf    = reinterpret_cast<char*>(sendBuf->GetBuffer());
-			PacketHeader* test = reinterpret_cast<PacketHeader*>(wsaBuf.buf);
 			wsaBuf.len    = static_cast<LONG>(sendBuf->GetTotalSize());
 			wsaBufs.push_back(wsaBuf);
 		}

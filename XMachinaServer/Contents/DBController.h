@@ -6,6 +6,7 @@
 /// GAME DATA BASE 를 관리합니다.
 /// --> [1] Game Data, [2] Connect With DataBase System 
 /// 
+/// ODBC : Open Database Connectivity 
 /// ________________________________________________
 ///		 SQL Server Management Studio Express
 /// -----------------------------------------------+
@@ -13,6 +14,8 @@
 #include "DB_Player.h"
 #include "DB_Monster.h"
 #include "DB_NPC.h"
+
+#include <sql.h>
 #include <sqlext.h>
 
 /* X-Machina Game Data Base */
@@ -29,8 +32,10 @@ class DBController
 	DECLARE_SINGLETON(DBController);
 
 private:
-	SQLHENV hEnv;
-	SQLHDBC hDbc;
+	SQLHENV  hEnv  = SQL_NULL_HANDLE;
+	SQLHDBC  hDbc  = SQL_NULL_HANDLE; /* Connection DB */
+	SQLHSTMT hStm  = SQL_NULL_HANDLE;
+
 
 private:
 	std::string mUserDSN_Name = "X_Machina_DB";
@@ -44,14 +49,21 @@ public:
 	DBController();
 	~DBController();
 
-public:
-	bool ConnectToDatabase(const char* dsn, const char* user, const char* password);
-	void DisconnectFromDatabase();
-	bool ExecuteQuery(const char* query);
-	bool FetchData(const char* query);
+	void Init();
 
-	bool ReadDataFromDatabase(const char* query);
-	bool WriteDataToDatabase(const char* query);
+public:
+	bool ConnectToDatabase(const wchar_t* dsn, const wchar_t* user, const wchar_t* password);
+	void DisconnectFromDatabase();
+
+	bool ExecuteQuery(const wchar_t* query);
+	bool FetchData(const wchar_t* query);
+
+	bool ReadDataFromDatabase(const wchar_t* query);
+	bool WriteDataToDatabase(const wchar_t* query);
+
+
+	void PrintSQLError(SQLSMALLINT handleType, SQLHANDLE handle);
+	void CheckSQLReturn(SQLRETURN ret, SQLSMALLINT handleType, SQLHANDLE handle);
 
 };
 

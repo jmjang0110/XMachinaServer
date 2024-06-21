@@ -14,7 +14,7 @@
 /// XMachina - Server 
 /// ------------------------------------
 /// Server	 : IOCP  
-/// DataBase : MySQL 
+/// DataBase : MSSQL 
 /// Client   : DirectX12
 /// _____________________________________
 /// 참고자료 모음 
