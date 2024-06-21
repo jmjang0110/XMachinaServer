@@ -18,10 +18,18 @@ bool GameRoom::EnterPlayer(SPtr_GamePlayer player)
 	mCurrPlayerCnt.fetch_add(1);
 
 	{
+		LOG_MGR->Cout(TLS_MGR->Get_TlsInfoData()->id, " TH - PLAYER : ", player->GetID(), "SRWLOCK Write Lock 시도\n");
+
 		mSRWLock.LockWrite();
 		mGamePlayers[player->GetID()] = player;
 		player->setRoomID(mID);
+
+		LOG_MGR->Cout(TLS_MGR->Get_TlsInfoData()->id, " TH - PLAYER : ", player->GetID(), "SRWLOCK  Write UnLock 시도\n");
+
 		mSRWLock.UnlockWrite();
+
+		LOG_MGR->Cout(TLS_MGR->Get_TlsInfoData()->id, " TH - PLAYER : ", player->GetID(), "SRWLOCK  Write UnLock 성공\n");
+
 	}
 
 
@@ -61,7 +69,7 @@ SPtr_GamePlayer GameRoom::FindPlayer(UINT32 sessionID)
 	auto obj = mGamePlayers.find(sessionID);
 	if (obj == mGamePlayers.end())
 	{
-		mSRWLock.UnlockRead();
+		//mSRWLock.UnlockRead();
 		return nullptr;
 	}
 
@@ -72,7 +80,7 @@ SPtr_GamePlayer GameRoom::FindPlayer(UINT32 sessionID)
 
 void GameRoom::Broadcast(SPtr_SendPktBuf spkt, UINT32 exceptSessionID)
 {
-	//mSRWLock.LockWrite();
+	mSRWLock.LockWrite();
 
 	for (auto& player : mGamePlayers) {
 		if (player.first == exceptSessionID) continue;
@@ -81,12 +89,21 @@ void GameRoom::Broadcast(SPtr_SendPktBuf spkt, UINT32 exceptSessionID)
 
 	}
 
-	//mSRWLock.UnlockWrite();
+	mSRWLock.UnlockWrite();
 
 }
 
 void GameRoom::SendPacket(UINT32 sessionID, SPtr_SendPktBuf sendPkt)
 {
+	mSRWLock.LockWrite();
+
+	const auto& iter = mGamePlayers.find(sessionID);
+	if (iter != mGamePlayers.end()) {
+		SPtr_GameSession session = iter->second->GetInfo().Owner;
+		session->Send(sendPkt);
+	}
+
+	mSRWLock.UnlockWrite();
 
 }
 

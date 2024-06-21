@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "SessionController.h"
+#include "ThreadManager.h"
 
 SessionController::SessionController()
 {
@@ -58,24 +59,34 @@ void SessionController::ReleaseSession(UINT32 sessionID)
 
 void SessionController::Broadcast(SPtr_SendPktBuf sendBuf)
 {
-	mSRWLock.LockRead();
+	//LOG_MGR->Cout("[", TLS_MGR->Get_TlsInfoData()->id, "] - ", "LOCKREAD 시도\n");
+	mSRWLock.LockWrite();
+	//LOG_MGR->Cout("[", TLS_MGR->Get_TlsInfoData()->id, "] - ", "LOCKREAD 성공");
 
 	for (const auto& iter : mSessionsMap) {
 		SPtr_Session session = iter.second;
 		iter.second->Send(sendBuf);
 	}
-	mSRWLock.UnlockRead();
+
+	//LOG_MGR->Cout("[", TLS_MGR->Get_TlsInfoData()->id, "] - ", "UNLOCK READ 시도\n");
+	mSRWLock.UnlockWrite();
+	//LOG_MGR->Cout("[", TLS_MGR->Get_TlsInfoData()->id, "] - ", "UNLOCK READ 성공\n");
 }
 
 void SessionController::Send(UINT32 sessionID, SPtr_SendPktBuf sendBuf)
 {
+	LOG_MGR->Cout("[", TLS_MGR->Get_TlsInfoData()->id, "] - ", "LOCKREAD 시도");
 	mSRWLock.LockRead();
+	LOG_MGR->Cout("[", TLS_MGR->Get_TlsInfoData()->id, "] - ", "LOCKREAD 성공");
 
 	auto se = mSessionsMap.find(sessionID);
 	if (se != mSessionsMap.end()) {
 		se->second->Send(sendBuf);
 	}
 
+	LOG_MGR->Cout("[", TLS_MGR->Get_TlsInfoData()->id, "] - ", "UNLOCK READ 시도");
 	mSRWLock.UnlockRead();
+	LOG_MGR->Cout("[", TLS_MGR->Get_TlsInfoData()->id, "] - ", "UNLOCK READ 성공");
+
 
 }

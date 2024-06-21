@@ -1,0 +1,11 @@
+﻿  Framework.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\array(572,9): error C2079: 'std::array<Client,200000>::_Elems'은(는) 정의되지 않은 class 'Client'을(를) 사용합니다.
+  (소스 파일 '/Framework.cpp'을(를) 컴파일하는 중)
+  C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\array(572,9):
+  템플릿 인스턴스화 컨텍스트(가장 오래된 인스턴스화 컨텍스트)가
+  	C:\MyGithub\Xmachina\XMachinaServer\ServerStressTest\ServerStressTest\Framework.h(25,34):
+  	컴파일되는 클래스 템플릿 인스턴스화 'std::array<Client,200000>'에 대한 참조를 확인하세요.
+  
+  main.cpp
+C:\MyGithub\Xmachina\XMachinaServer\ServerStressTest\ServerStressTest\main.cpp(1,1): error C1010: 미리 컴파일된 헤더를 찾는 동안 예기치 않은 파일의 끝이 나타났습니다. '#include "pch.h"'을(를) 소스에 추가하시겠습니까?
+  코드를 생성하고 있습니다...

@@ -212,6 +212,7 @@ void Framework::Launch()
 
 			while (!stop.load())
 			{
+				LOG_MGR->Cout(TLS_MGR->Get_TlsInfoData()->id, " \n");
 				mServer->Dispatch_CompletedTasks_FromIOCP(0);
 			}
 
@@ -220,7 +221,7 @@ void Framework::Launch()
 
 #ifdef  CONNECT_WITH_TEST_CLIENT
 	THREAD_MGR->RunThread("Send Test", [&]() {
-		while (true) {
+		while (false) {
 			SPtr_SendPktBuf SPkt = FBS_FACTORY->SPkt_Chat(0, "test Chat");
 			if (SPkt) {
 				mServer->Broadcast(SPkt);
