@@ -80,7 +80,7 @@ SPtr_GamePlayer GameRoom::FindPlayer(UINT32 sessionID)
 
 void GameRoom::Broadcast(SPtr_SendPktBuf spkt, UINT32 exceptSessionID)
 {
-	mSRWLock.LockWrite();
+	mSRWLock.LockRead();
 
 	for (auto& player : mGamePlayers) {
 		if (player.first == exceptSessionID) continue;
@@ -89,13 +89,13 @@ void GameRoom::Broadcast(SPtr_SendPktBuf spkt, UINT32 exceptSessionID)
 
 	}
 
-	mSRWLock.UnlockWrite();
+	mSRWLock.UnlockRead();
 
 }
 
 void GameRoom::SendPacket(UINT32 sessionID, SPtr_SendPktBuf sendPkt)
 {
-	mSRWLock.LockWrite();
+	mSRWLock.LockRead();
 
 	const auto& iter = mGamePlayers.find(sessionID);
 	if (iter != mGamePlayers.end()) {
@@ -103,20 +103,20 @@ void GameRoom::SendPacket(UINT32 sessionID, SPtr_SendPktBuf sendPkt)
 		session->Send(sendPkt);
 	}
 
-	mSRWLock.UnlockWrite();
+	mSRWLock.UnlockRead();
 
 }
 
 std::vector<PlayerInfo> GameRoom::GetInsertedPlayersInfo()
 {
-	mSRWLock.LockWrite();
+	mSRWLock.LockRead();
 
 	std::vector<PlayerInfo> playerInfos = {};
 	for (auto& player : mGamePlayers) {
 		playerInfos.push_back(player.second->GetInfo());
 	}
 
-	mSRWLock.UnlockWrite();
+	mSRWLock.UnlockRead();
 
 	return playerInfos;
 }

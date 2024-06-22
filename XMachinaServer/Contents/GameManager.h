@@ -35,7 +35,7 @@ public:
 	void BroadcastRoom(int roomid, SPtr_SendPktBuf& pkt, int exceptsessionid = -1 /* 제외할 세션 대상 */);
 	void BroadcastAllRoom(SPtr_SendPktBuf& pkt);
 
-	void Send(SPtr_SendPktBuf& pkt, int roomID, int sessionID);
+	void Send(SPtr_SendPktBuf& pkt, int roomID, int sessionID); // Room 안에 해당 Session에 접근해 Send 
 
 
 	std::vector<PlayerInfo> GetPlayerInfos_Room(int roomid);

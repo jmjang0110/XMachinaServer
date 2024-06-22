@@ -38,6 +38,18 @@
     <ClInclude Include="OverlappedEx.h">
       <Filter>Framework</Filter>
     </ClInclude>
+    <ClInclude Include="Network.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Types.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>Render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -57,6 +69,15 @@
     </ClCompile>
     <ClCompile Include="OverlappedEx.cpp">
       <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Network.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity.cpp">
+      <Filter>Render</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

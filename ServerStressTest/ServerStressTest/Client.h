@@ -3,7 +3,11 @@
 
 
 
-class Client
+struct Client
 {
+	int ID;
+	int X, Y;
+
+
 };
 

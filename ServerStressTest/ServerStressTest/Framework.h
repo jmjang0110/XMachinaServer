@@ -1,73 +1,69 @@
 ﻿#pragma once
-
-/// +-------------------------------
-///		  Server Framework
-/// ________________________________
-///		 서버 프레임워크 관리  
-/// -------------------------------+
-
-class Client;
+#include "NetworkService.h"
 
 #define FRAMEWORK Framework::GetInst()
+
+class Object;
+
+enum class ThreadName
+{
+	main,
+	network,
+};
+
 class Framework
 {
 	DECLARE_SINGLETON(Framework);
 
-public:
-	static int Global_Delay; // ms단위로 1000ms 가 넘으면 클라이언트 증가를 종료한다. 
-
+private:
+	static BYTE	mIsRun;
 
 private:
-	HANDLE m_IOCP;
-	high_resolution_clock::time_point m_Last_Connect_Time;
+	RESOLUTION	mResolution;				// 해상도	
 
-	std::array<int, MAX_CLIENTS> client_map;
-	std::array<Client, MAX_CLIENTS> g_clients;
+	HINSTANCE	mhInst;
+	HWND		mhWnd;
 
-	std::atomic_int m_Num_connections;
-	std::atomic_int m_Client_to_close;
-	std::atomic_int m_Active_clients;
+	class Scene* mGameScene{};
 
-	std::vector<std::thread*> m_WorkerThreads;
-	std::thread m_Test_Thread;
+	/* Network Service */
+	NetworkService* mNetService;
+
+	std::mutex  mNewObjEventLock;
+	std::queue<Object*> mNewObjectEvents;
 
 public:
 	Framework();
 	~Framework();
 
 public:
-
-	/// +--------------------------------------
-	///		Network 
-	/// --------------------------------------+
-	void Error_Display(const char* msg, int errNO);
-	void Disconnect_Client(int clientIdx);
-
-	void Init_Netowkr();
-	void ShutDown_Network();
-	void Do_Network();
+	void ProcessEvent();
+	void PushNewObjEvent(Object* obj);
 
 
+	bool	Init(HINSTANCE& hInstance, RESOLUTION Res);
+	bool	Create();
 
-	/// +--------------------------------------
-	///		Packet 
-	/// --------------------------------------+
-	void SendPacket(int clientIdx, void* packet);
-	void ProcessPacket(int clientIdx, unsigned char packet[]);
+	int		Loop();
+	void	Logic();
+
+	const HINSTANCE& GetHINSTANCE();
+	const HWND& GetHWND();
+	const RESOLUTION& GetResolution();
+	Scene* GetGameScene() { return mGameScene; }
+	NetworkService* GetNerworkService() { return mNetService; }
+
+public:
+	void Launch(ThreadName thname);
+	int  Launch_main();
+	void Launch_Network();
+
+	void SendServerPacket();
 
 
-	/// +--------------------------------------
-	///	 Thread
-	/// --------------------------------------+
-	void Worker_Thread();
-	void Test_Thread();
-
-
-	/// +--------------------------------------
-	///	  Server Stress Test 
-	/// --------------------------------------+
-	void Adjust_Number_Of_Client();
-
-
+public:
+	void ChangeWindowSize(HWND _hwnd, const RESOLUTION& res);
+	static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+	static INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);		// 정보 대화 상자의 메시지 처리기입니다.
 };
 
