@@ -62,9 +62,6 @@
     <Filter Include="Framework\Contents\Util">
       <UniqueIdentifier>{64e9dee7-38e7-493f-b473-5d76e5782034}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Framework\Contents\Object">
-      <UniqueIdentifier>{e2f4aa8c-b36e-4d71-98c5-36ff23a10050}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Framework\Contents\RoomSession">
       <UniqueIdentifier>{2fc588fa-255d-4f5e-8eb7-e3bb924c381a}</UniqueIdentifier>
     </Filter>
@@ -83,17 +80,29 @@
     <Filter Include="Framework\Contents\DataBase\Item\Weapon">
       <UniqueIdentifier>{b2f8e64c-49b9-419a-bb1e-38eb93ec0a77}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Framework\Contents\Object\Monster">
-      <UniqueIdentifier>{b51a25f6-c8db-4978-bbc5-0f90db76d644}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Framework\Contents\Object\Player">
-      <UniqueIdentifier>{4811be1a-dfad-4756-8c37-550bb6485a6e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Framework\Contents\Object\AI">
-      <UniqueIdentifier>{17f18d8d-748f-4c4b-af77-53b57c852145}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Framework\Contents\DataBase\Object">
       <UniqueIdentifier>{d3338ba7-db3e-4241-8ca9-5edc37d6fb33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\GameWorld">
+      <UniqueIdentifier>{e2f4aa8c-b36e-4d71-98c5-36ff23a10050}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Monster">
+      <UniqueIdentifier>{b51a25f6-c8db-4978-bbc5-0f90db76d644}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Player">
+      <UniqueIdentifier>{4811be1a-dfad-4756-8c37-550bb6485a6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\GameWorld\AI">
+      <UniqueIdentifier>{17f18d8d-748f-4c4b-af77-53b57c852145}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Entity">
+      <UniqueIdentifier>{1fcbed1a-5161-404c-995c-9b7c49530933}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Sector">
+      <UniqueIdentifier>{78fdcfc7-5a69-46f6-8980-01f4a8b25a01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\Timer">
+      <UniqueIdentifier>{95021a95-cafd-4b34-ae31-272139c4d660}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -194,12 +203,6 @@
     <ClInclude Include="Contents\Util\Common.h">
       <Filter>Framework\Contents\Util</Filter>
     </ClInclude>
-    <ClInclude Include="Contents\GameEntity.h">
-      <Filter>Framework\Contents\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="Contents\GameObject.h">
-      <Filter>Framework\Contents\Object</Filter>
-    </ClInclude>
     <ClInclude Include="Contents\GameRoom.h">
       <Filter>Framework\Contents\RoomSession</Filter>
     </ClInclude>
@@ -228,13 +231,13 @@
       <Filter>Framework\Contents\DataBase\Item</Filter>
     </ClInclude>
     <ClInclude Include="Contents\GameMonster.h">
-      <Filter>Framework\Contents\Object\Monster</Filter>
+      <Filter>Framework\Contents\GameWorld\Monster</Filter>
     </ClInclude>
     <ClInclude Include="Contents\GamePlayer.h">
-      <Filter>Framework\Contents\Object\Player</Filter>
+      <Filter>Framework\Contents\GameWorld\Player</Filter>
     </ClInclude>
     <ClInclude Include="Contents\AStarPath.h">
-      <Filter>Framework\Contents\Object\AI</Filter>
+      <Filter>Framework\Contents\GameWorld\AI</Filter>
     </ClInclude>
     <ClInclude Include="Contents\DB_Monster.h">
       <Filter>Framework\Contents\DataBase\Object</Filter>
@@ -244,6 +247,27 @@
     </ClInclude>
     <ClInclude Include="Contents\DB_Player.h">
       <Filter>Framework\Contents\DataBase\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Monster_Ursacetus.h">
+      <Filter>Framework\Contents\GameWorld\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\GameEntity.h">
+      <Filter>Framework\Contents\GameWorld\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\GameObject.h">
+      <Filter>Framework\Contents\GameWorld\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\GameWorld.h">
+      <Filter>Framework\Contents\GameWorld</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Sector.h">
+      <Filter>Framework\Contents\GameWorld\Sector</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\SectorManager.h">
+      <Filter>Framework\Contents\GameWorld\Sector</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\TimeManager.h">
+      <Filter>Framework\Contents\Timer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -317,12 +341,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Framework</Filter>
     </ClCompile>
-    <ClCompile Include="Contents\GameEntity.cpp">
-      <Filter>Framework\Contents\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="Contents\GameObject.cpp">
-      <Filter>Framework\Contents\Object</Filter>
-    </ClCompile>
     <ClCompile Include="Contents\GameRoom.cpp">
       <Filter>Framework\Contents\RoomSession</Filter>
     </ClCompile>
@@ -351,13 +369,13 @@
       <Filter>Framework\Contents\DataBase\Item</Filter>
     </ClCompile>
     <ClCompile Include="Contents\GameMonster.cpp">
-      <Filter>Framework\Contents\Object\Monster</Filter>
+      <Filter>Framework\Contents\GameWorld\Monster</Filter>
     </ClCompile>
     <ClCompile Include="Contents\GamePlayer.cpp">
-      <Filter>Framework\Contents\Object\Player</Filter>
+      <Filter>Framework\Contents\GameWorld\Player</Filter>
     </ClCompile>
     <ClCompile Include="Contents\AStarPath.cpp">
-      <Filter>Framework\Contents\Object\AI</Filter>
+      <Filter>Framework\Contents\GameWorld\AI</Filter>
     </ClCompile>
     <ClCompile Include="Contents\DB_Monster.cpp">
       <Filter>Framework\Contents\DataBase\Object</Filter>
@@ -367,6 +385,27 @@
     </ClCompile>
     <ClCompile Include="Contents\DB_Player.cpp">
       <Filter>Framework\Contents\DataBase\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Monster_Ursacetus.cpp">
+      <Filter>Framework\Contents\GameWorld\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\GameEntity.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\GameObject.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\GameWorld.cpp">
+      <Filter>Framework\Contents\GameWorld</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Sector.cpp">
+      <Filter>Framework\Contents\GameWorld\Sector</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\SectorManager.cpp">
+      <Filter>Framework\Contents\GameWorld\Sector</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\TimeManager.cpp">
+      <Filter>Framework\Contents\Timer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -30,6 +30,7 @@
 
 /* Concurrent */
 #include <concurrent_queue.h>
+#include <concurrent_priority_queue.h>
 #include <concurrent_unordered_map.h>
 
 /* My Utility Hedaers */

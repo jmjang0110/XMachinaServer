@@ -9,7 +9,7 @@ class GameSession : public Session
 private:
 	UINT32 mRemainDataSize = 0;
 	
-	SPtr_GamePlayer mPlayer = {};
+	SPtr_GamePlayer mPlayer = {}; // 해당 세션이 관리하는 GameWorld 에서의 Player 
 
 public:
 	GameSession();

@@ -26,11 +26,20 @@
 namespace OverlappedIO {
 	enum class Type : UINT8 {
 		None,
+		NETWORK_IO_ENUM_START,
+
+		/* Network IO */
 		Accept,
 		Connect,
 		DisConnect,
 		Send,
 		Recv,
+
+		GAMEWORLD_UPDATE_IO_ENUM_START,
+		
+		/* Game World Update IO */
+		Monster_Update
+
 	};
 };
 

@@ -35,7 +35,7 @@ bool NetworkInterface::RegisterIocp(SPtr_NetObj netObj)
 	return false;
 }
 
-bool NetworkInterface::Dispatch_CompletedTasks_FromIOCP(UINT32 msTimeOut)
+bool NetworkInterface::WorkerThread(UINT32 msTimeOut)
 {
 	/// +=========================== IOCP Queue ============================
 	///  (완료된 I/O들...)

@@ -28,7 +28,7 @@ public:
 
 	/* Register/Process - (Iocp Object/Overlapped I/O) */
 	bool RegisterIocp(SPtr_NetObj netObj);
-	bool Dispatch_CompletedTasks_FromIOCP(UINT32 msTimeOut);
+	bool WorkerThread(UINT32 msTimeOut);
 
 	/* Get Variable */
 	HANDLE			GetIocpHandle()		{ return mIocpHandle; }

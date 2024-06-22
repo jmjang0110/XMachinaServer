@@ -23,9 +23,12 @@ private:
 	float				mAttack;	/* 공격력 */
 
 public:
+	virtual void Update() override;
+
+public:
 	GameMonster();
 	GameMonster(UINT32 id); /* Monster 생성 아이디 - (생성되고 소멸될 때 까지 임시 아이디)*/
-	~GameMonster();
+	virtual ~GameMonster();
 
 };
 

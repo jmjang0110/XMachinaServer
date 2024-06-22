@@ -26,7 +26,7 @@ void SessionController::AddSession(UINT32 sessionID, SPtr_Session session)
 {
 	mSRWLock.LockWrite();
 
-	if (mCurrSessionCnt < mMaxSessionCnt) {
+	if (mCurrSessionCnt < static_cast<int>(mMaxSessionCnt)) {
 		mCurrSessionCnt.fetch_add(1);
 		mSessionsMap[sessionID] = session;
 	}

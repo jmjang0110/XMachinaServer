@@ -5,6 +5,8 @@
 #include "ServerLib/NetworkManager.h"
 #include "ServerLib/MemoryManager.h"
 #include "Contents/GameManager.h"
+#include "Contents/TimeManager.h"
+
 
 
 #include "ServerLib/ServerNetwork.h"
@@ -207,17 +209,27 @@ void Framework::Launch()
 	std::cout << "Core : " << CoreNum << std::endl;
 	std::atomic<bool> stop(false);
 
-	for (INT32 i = 0; i < CoreNum; ++i) {
-		THREAD_MGR->RunThread("Network Dispatch " + std::to_string(i), [&]() {
+	/// +---------------------- IOCP WORKER THREAD : 3 ---------------------------+
+	/* 3 : IOCP Thread  1 : Timer Thread*/
+	for (INT32 i = 1; i <= CoreNum - 1; ++i) { 
+		THREAD_MGR->RunThread("Worker Threads : 3 (CoreNum - 1(Timer))" + std::to_string(i), [&]() {
 
+			UINT32 msTimeOut = 0;
 			while (!stop.load())
 			{
-				LOG_MGR->Cout(TLS_MGR->Get_TlsInfoData()->id, " \n");
-				mServer->Dispatch_CompletedTasks_FromIOCP(0);
+				//LOG_MGR->Cout(TLS_MGR->Get_TlsInfoData()->id, " \n");
+				mServer->WorkerThread(msTimeOut);
 			}
 
 			});
 	}
+
+	/// +-------------------------	TIMER THREAD : 1 ------------------------------+
+	THREAD_MGR->RunThread("Timer Thread : 1", [&]() {
+			TIME_MGR->Launch();
+		});
+
+
 
 #ifdef  CONNECT_WITH_TEST_CLIENT
 	THREAD_MGR->RunThread("Send Test", [&]() {

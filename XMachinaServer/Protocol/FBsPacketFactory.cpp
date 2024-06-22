@@ -108,8 +108,8 @@ bool FBsPacketFactory::Process_CPkt_PlayerAnimation(SPtr_Session session, const 
 	int ObjectID                = session->GetID();
 	int32_t animation_upper_idx = pkt.animation_upper_index();
 	int32_t animation_lower_idx = pkt.animation_lower_index();
-	int32_t animation_param_h   = pkt.animation_param_h();
-	int32_t animation_param_v   = pkt.animation_param_v();
+	float animation_param_h   = pkt.animation_param_h();
+	float animation_param_v   = pkt.animation_param_v();
 	
 
 	/* 클라이언트의 패킷을 그대로 다시 보낸다. */

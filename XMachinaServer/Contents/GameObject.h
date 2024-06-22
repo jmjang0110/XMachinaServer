@@ -14,6 +14,9 @@ public:
 	virtual ~GameObject() override;
 
 public:
+	virtual void Update() {};
+
+public:
 	Transform* GetTransform() { return mTransform; }
 };
 

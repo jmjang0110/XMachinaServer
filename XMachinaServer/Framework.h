@@ -14,8 +14,8 @@ class Framework
 	DECLARE_SINGLETON(Framework);
 
 private:
-	std::wstring mServerIP = L"127.0.0.1";
-	SPtr_ServerNetwork  mServer = {};
+	std::wstring		mServerIP    = L"127.0.0.1";
+	SPtr_ServerNetwork  mServer      = {};
 	SPtr_SendBufFactory mSendFactory = {};
 
 public:

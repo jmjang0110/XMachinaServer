@@ -2,6 +2,10 @@
 #include "GameMonster.h"
 
 
+void GameMonster::Update()
+{
+}
+
 GameMonster::GameMonster()
 	: GameObject(-1)
 {

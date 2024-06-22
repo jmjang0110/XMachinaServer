@@ -170,8 +170,13 @@
     <ClInclude Include="Contents\GamePlayer.h" />
     <ClInclude Include="Contents\GameRoom.h" />
     <ClInclude Include="Contents\GameSession.h" />
+    <ClInclude Include="Contents\GameWorld.h" />
     <ClInclude Include="Contents\Key.h" />
     <ClInclude Include="Contents\LogManager.h" />
+    <ClInclude Include="Contents\Monster_Ursacetus.h" />
+    <ClInclude Include="Contents\Sector.h" />
+    <ClInclude Include="Contents\SectorManager.h" />
+    <ClInclude Include="Contents\TimeManager.h" />
     <ClInclude Include="Contents\Transform.h" />
     <ClInclude Include="Contents\Util\Common.h" />
     <ClInclude Include="Contents\Util\DwordOverloader.h" />
@@ -222,8 +227,13 @@
     <ClCompile Include="Contents\GamePlayer.cpp" />
     <ClCompile Include="Contents\GameRoom.cpp" />
     <ClCompile Include="Contents\GameSession.cpp" />
+    <ClCompile Include="Contents\GameWorld.cpp" />
     <ClCompile Include="Contents\Key.cpp" />
     <ClCompile Include="Contents\LogManager.cpp" />
+    <ClCompile Include="Contents\Monster_Ursacetus.cpp" />
+    <ClCompile Include="Contents\Sector.cpp" />
+    <ClCompile Include="Contents\SectorManager.cpp" />
+    <ClCompile Include="Contents\TimeManager.cpp" />
     <ClCompile Include="Contents\Transform.cpp" />
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="main.cpp" />
