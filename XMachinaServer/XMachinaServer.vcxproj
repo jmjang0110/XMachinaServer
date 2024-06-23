@@ -167,6 +167,7 @@
     <ClInclude Include="Contents\GameManager.h" />
     <ClInclude Include="Contents\GameMonster.h" />
     <ClInclude Include="Contents\GameObject.h" />
+    <ClInclude Include="Contents\GameOverlapped.h" />
     <ClInclude Include="Contents\GamePlayer.h" />
     <ClInclude Include="Contents\GameRoom.h" />
     <ClInclude Include="Contents\GameSession.h" />
@@ -182,6 +183,7 @@
     <ClInclude Include="Contents\Util\DwordOverloader.h" />
     <ClInclude Include="Contents\Util\SimpleMath.h" />
     <ClInclude Include="Framework.h" />
+    <ClInclude Include="MonsterSession.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Protocol\Enum_generated.h" />
     <ClInclude Include="Protocol\FBProtocol_generated.h" />
@@ -237,6 +239,7 @@
     <ClCompile Include="Contents\Transform.cpp" />
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MonsterSession.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch.h</PrecompiledHeaderFile>

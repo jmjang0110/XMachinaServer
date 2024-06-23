@@ -29,6 +29,7 @@
 #include <vector>
 #include <queue>
 #include <unordered_map>
+#include <concurrent_queue.h>
 
 /* Lock */
 #include <mutex>

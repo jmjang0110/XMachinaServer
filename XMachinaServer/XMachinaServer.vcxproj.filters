@@ -104,6 +104,9 @@
     <Filter Include="Framework\Contents\Timer">
       <UniqueIdentifier>{95021a95-cafd-4b34-ae31-272139c4d660}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\Contents\Overlapped">
+      <UniqueIdentifier>{3a86838a-bbaf-447c-9939-fba4efcb018c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework.h">
@@ -269,6 +272,10 @@
     <ClInclude Include="Contents\TimeManager.h">
       <Filter>Framework\Contents\Timer</Filter>
     </ClInclude>
+    <ClInclude Include="MonsterSession.h" />
+    <ClInclude Include="Contents\GameOverlapped.h">
+      <Filter>Framework\Contents\Overlapped</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp">
@@ -407,6 +414,7 @@
     <ClCompile Include="Contents\TimeManager.cpp">
       <Filter>Framework\Contents\Timer</Filter>
     </ClCompile>
+    <ClCompile Include="MonsterSession.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="XMachinaServer.rc">

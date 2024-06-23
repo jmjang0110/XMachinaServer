@@ -18,6 +18,7 @@
 #include "ServerLib/SendBuffersFactory.h"
 #include "Protocol/FBsPacketFactory.h"
 #include "Contents/DBController.h"
+#include "Contents/GameWorld.h"
 
 
 #undef max 
@@ -174,6 +175,7 @@ bool Framework::Init(HINSTANCE& hInst)
 	LOG_MGR->Cout("[SUCCESS] SendBuffersFactory INIT\n");
 
 
+	GAME_WORLD->Init();
 
 
 	return true;
@@ -211,18 +213,30 @@ void Framework::Launch()
 
 	/// +---------------------- IOCP WORKER THREAD : 3 ---------------------------+
 	/* 3 : IOCP Thread  1 : Timer Thread*/
-	for (INT32 i = 1; i <= CoreNum - 1; ++i) { 
+	for (INT32 i = 1; i <= CoreNum ; ++i) { 
 		THREAD_MGR->RunThread("Worker Threads : 3 (CoreNum - 1(Timer))" + std::to_string(i), [&]() {
 
 			UINT32 msTimeOut = 0;
 			while (!stop.load())
 			{
-				//LOG_MGR->Cout(TLS_MGR->Get_TlsInfoData()->id, " \n");
+				LOG_MGR->Cout(TLS_MGR->Get_TlsInfoData()->id, " \n");
 				mServer->WorkerThread(msTimeOut);
 			}
 
 			});
 	}
+
+	/* GameWorld Update Test */
+	for (int i = 0; i < 100; ++i) {
+		TimerEvent t;
+		t.Type = TimerEventType::Update_Ursacetus;
+		t.WakeUp_Time = std::chrono::system_clock::now(); // 지금 당장 시작 
+		t.Owner = GAME_WORLD->GetUrsacetusSPtr(i);
+		TIME_MGR->PushTimerEvent(t);
+	}
+
+
+
 
 	/// +-------------------------	TIMER THREAD : 1 ------------------------------+
 	THREAD_MGR->RunThread("Timer Thread : 1", [&]() {
@@ -236,8 +250,8 @@ void Framework::Launch()
 		while (false) {
 			SPtr_SendPktBuf SPkt = FBS_FACTORY->SPkt_Chat(0, "test Chat");
 			if (SPkt) {
-				mServer->Broadcast(SPkt);
-				std::this_thread::sleep_for(std::chrono::milliseconds(100));
+				//mServer->Broadcast(SPkt);
+				//std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
 			}
 		}

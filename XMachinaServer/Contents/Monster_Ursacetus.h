@@ -24,13 +24,14 @@
 class Monster_Ursacetus : public GameMonster
 {
 private:
-	float speed; /* TEST */
+	float speed{}; /* TEST */
 
 public:
 	virtual void Update() override;
+	virtual void WakeUp() override;
 
-
-
+public:
+	virtual void Dispatch(class OverlappedObject* overlapped, UINT32 bytes = 0) override;
 
 public:
 	Monster_Ursacetus();

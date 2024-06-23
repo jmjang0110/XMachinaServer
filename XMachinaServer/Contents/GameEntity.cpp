@@ -13,3 +13,7 @@ GameEntity::GameEntity(int id)
 GameEntity::~GameEntity()
 {
 }
+
+void GameEntity::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
+{
+}

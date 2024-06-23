@@ -6,7 +6,7 @@
 ///		 서버 프레임워크 관리  
 /// -------------------------------+
 
-
+#define SERVER_NETWORK Framework::GetInst()->GetServerNetwork()
 #define FRAMEWORK Framework::GetInst()
 #define SEND_FACTORY Framework::GetInst()->GetSendFactory()
 class Framework

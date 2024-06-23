@@ -95,15 +95,16 @@ void GameRoom::Broadcast(SPtr_SendPktBuf spkt, UINT32 exceptSessionID)
 
 void GameRoom::SendPacket(UINT32 sessionID, SPtr_SendPktBuf sendPkt)
 {
-	mSRWLock.LockRead();
+	mSRWLock.LockWrite();
 
 	const auto& iter = mGamePlayers.find(sessionID);
 	if (iter != mGamePlayers.end()) {
 		SPtr_GameSession session = iter->second->GetInfo().Owner;
-		session->Send(sendPkt);
+		if(sendPkt != nullptr)
+			session->Send(sendPkt);
 	}
 
-	mSRWLock.UnlockRead();
+	mSRWLock.UnlockWrite();
 
 }
 

@@ -35,10 +35,7 @@ namespace OverlappedIO {
 		Send,
 		Recv,
 
-		GAMEWORLD_UPDATE_IO_ENUM_START,
-		
-		/* Game World Update IO */
-		Monster_Update
+		NETWORK_IO_ENUM_END,
 
 	};
 };

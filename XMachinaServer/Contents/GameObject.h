@@ -15,6 +15,8 @@ public:
 
 public:
 	virtual void Update() {};
+	virtual void WakeUp() {};
+
 
 public:
 	Transform* GetTransform() { return mTransform; }

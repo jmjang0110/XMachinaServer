@@ -1,11 +1,6 @@
 #include "pch.h"
 #include "GameMonster.h"
 
-
-void GameMonster::Update()
-{
-}
-
 GameMonster::GameMonster()
 	: GameObject(-1)
 {
@@ -20,3 +15,19 @@ GameMonster::GameMonster(UINT32 id)
 GameMonster::~GameMonster()
 {
 }
+
+void GameMonster::Update()
+{
+}
+
+void GameMonster::WakeUp()
+{
+}
+
+void GameMonster::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
+{
+	int i = 0;
+
+}
+
+

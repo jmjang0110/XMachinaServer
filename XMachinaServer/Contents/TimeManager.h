@@ -4,6 +4,7 @@
 
 enum class TimerEventType {
 	None,
+	Update_Ursacetus,
 
 };
 
@@ -11,6 +12,7 @@ struct TimerEvent {
 #pragma region Variable
 	std::chrono::system_clock::time_point WakeUp_Time = {};
 	TimerEventType Type{};
+	SPtr_NetObj Owner{};
 #pragma endregion
 
 	constexpr bool operator<(const TimerEvent& L) const{ return (WakeUp_Time > L.WakeUp_Time);}
@@ -26,7 +28,8 @@ private:
 
 public:
 	void Launch();
-
+	void Process_TimerEvent(TimerEvent ev);
+	void PushTimerEvent(TimerEvent& ev);
 
 public:
 	TimeManager();

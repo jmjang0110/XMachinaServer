@@ -130,8 +130,8 @@ bool FBsPacketFactory::Process_CPkt_NetworkLatency(SPtr_Session session, const F
 	/* 클라이언트의 패킷을 그대로 다시 보낸다. */
 	auto spkt = FBS_FACTORY->SPkt_NewtorkLatency(timestamp);
 
-	//session->Send(spkt);
-	GAME_MGR->Send(spkt, gameSession->GetPlayerInfo().RoomID, session->GetID());
+	session->Send(spkt);
+	//GAME_MGR->Send(spkt, gameSession->GetPlayerInfo().RoomID, session->GetID());
 
 	return true;
 }
