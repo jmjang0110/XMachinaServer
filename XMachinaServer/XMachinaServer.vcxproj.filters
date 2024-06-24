@@ -215,9 +215,6 @@
     <ClInclude Include="Contents\GameManager.h">
       <Filter>Framework\Contents\RoomSession</Filter>
     </ClInclude>
-    <ClInclude Include="Contents\Transform.h">
-      <Filter>Framework\Contents\Component</Filter>
-    </ClInclude>
     <ClInclude Include="Contents\Key.h">
       <Filter>Framework\Contents\Util</Filter>
     </ClInclude>
@@ -275,6 +272,9 @@
     <ClInclude Include="MonsterSession.h" />
     <ClInclude Include="Contents\GameOverlapped.h">
       <Filter>Framework\Contents\Overlapped</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Transform.h">
+      <Filter>Framework\Contents\Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -357,9 +357,6 @@
     <ClCompile Include="Contents\GameManager.cpp">
       <Filter>Framework\Contents\RoomSession</Filter>
     </ClCompile>
-    <ClCompile Include="Contents\Transform.cpp">
-      <Filter>Framework\Contents\Component</Filter>
-    </ClCompile>
     <ClCompile Include="Contents\Key.cpp">
       <Filter>Framework\Contents\Util</Filter>
     </ClCompile>
@@ -415,6 +412,9 @@
       <Filter>Framework\Contents\Timer</Filter>
     </ClCompile>
     <ClCompile Include="MonsterSession.cpp" />
+    <ClCompile Include="Contents\Transform.cpp">
+      <Filter>Framework\Contents\Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="XMachinaServer.rc">

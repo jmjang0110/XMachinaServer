@@ -32,6 +32,7 @@ namespace PlayerEnum
 /* 플레이어 상태 */
 struct PlayerInfo
 {
+	FBProtocol::OBJECT_TYPE	Type      = FBProtocol::OBJECT_TYPE::OBJECT_TYPE_PLAYER;
 	SPtr_GameSession		Owner     = {}; /* OWNER SESSION */
 
 	long long				Timestamp = {};
@@ -39,8 +40,6 @@ struct PlayerInfo
 	UINT32					PlayerID  = -1; /* PLAYER ID */ /// - 여기서 ID는 현재 접속 후의 일시적인 아이디이다. DB에서 정보를 받을려면 stirngID를 이용해야한다.
 	UINT32					RoomID	  = -1; /* ROOM NUMBER */
 	std::string				Name      = {};
-	FBProtocol::OBJECTTYPE	Type      = FBProtocol::OBJECTTYPE::OBJECTTYPE_PLAYER;
-
 
 	float					Velocity  = {};
 
@@ -51,7 +50,7 @@ struct PlayerInfo
 	Vec3					SpineDir  = {};
 
 	PlayerInfo(){}
-	PlayerInfo(UINT32 id, std::string name, FBProtocol::OBJECTTYPE type) { PlayerID = id, Name = name, Type = type; }
+	PlayerInfo(UINT32 id, std::string name, FBProtocol::OBJECT_TYPE type) { PlayerID = id, Name = name, Type = type; }
 	~PlayerInfo() { Owner = nullptr; /* Decrease Ref */ };
 };
 
@@ -73,7 +72,7 @@ public:
 	void SetPlayerID(UINT32 playerid)			{ mInfo.PlayerID = playerid; };
 	void setRoomID(UINT32 roomid)				{ mInfo.RoomID   = roomid; };
 	void SetName(std::string name)				{ mInfo.Name     = name; };
-	void SetType(FBProtocol::OBJECTTYPE type)	{ mInfo.Type     = type; };
+	void SetType(FBProtocol::OBJECT_TYPE type)	{ mInfo.Type     = type; };
 
 	/* UPDATE FREQUENTLY --- DATA RACE ( Read / Write ) In MultiThreads */
 	void SetVelocity(float vel)					{ mSRWLock.LockWrite(); mInfo.Velocity = vel;  mSRWLock.UnlockWrite(); };

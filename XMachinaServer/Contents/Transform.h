@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "Key.h"
 
 namespace TransformInfo {
@@ -26,6 +25,7 @@ namespace TransformInfo {
 	const float SprintSpeed = 8.f;
 }
 
+
 class Transform
 {
 private:
@@ -38,12 +38,12 @@ private:
 	/* VEC3 : POS / ROT / SCALE */
 	Vec3				mPosition = Vec3(100, 0, 100);//Vector3::Zero();
 	Vec3				mRotation = Vector3::Zero;
-	Vec3				mScale    = Vector3::Zero;
+	Vec3				mScale = Vector3::Zero;
 
 	/* VEC3 : LOOK / UP / RIGHT */
 	Vec3				mRight = Vector3::Right;		// right(x) axis in local space
-	Vec3				mUp    = Vector3::Up;			// up(y)    axis in local space
-	Vec3				mLook  = Vector3::Forward;		// look(z)  axis in local space
+	Vec3				mUp = Vector3::Up;			// up(y)    axis in local space
+	Vec3				mLook = Vector3::Forward;		// look(z)  axis in local space
 
 	Matrix mLocalTransform = Matrix();
 
@@ -67,6 +67,5 @@ public:
 
 	void Translate(const Vec3& translation);
 	void Rotate(float pitch = 0.f, float yaw = 0.f, float roll = 0.f);
-
 };
 

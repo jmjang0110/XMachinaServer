@@ -14,8 +14,7 @@ namespace FBProtocol;
 table Player {
   id			: ulong;
   name			: string;
-  player_type	: OBJECTTYPE;
-
+  hp			: float;
   trans			: Transform;
   spine_look	: Vector3;
 }
@@ -27,17 +26,4 @@ table Monster{
 	type	:  ubyte; // UINT8
 	id      :  ulong; 
 	trans	:  Transform;
-}
-
-
-// +---------------------------
-//	    MONSTER STATE STRUCT 
-// ----------------------------+
-
-table MonsterState{
-	id      :  ulong;
-
-	HP		:  float;
-	trans	:  Transform;
-
 }

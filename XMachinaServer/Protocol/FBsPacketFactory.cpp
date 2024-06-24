@@ -2,12 +2,6 @@
 #include "FBsPacketFactory.h"
 #include "ServerLib/PacketHeader.h"
 
-/* RELATED FLAT BUFFERS HEADER */
-#include "Enum_generated.h"
-#include "FBProtocol_generated.h"
-#include "Struct_generated.h"
-#include "Transform_generated.h"
-
 #include "../Framework.h"
 #include "../ServerLib/SendBuffersFactory.h"
 #include "../Contents/GameSession.h"
@@ -67,23 +61,7 @@ bool FBsPacketFactory::ProcessFBsPacket(SPtr_Session session, BYTE* packetBuf, U
 		Process_CPkt_NetworkLatency(session, *packet);
 	}
 	break;
-	case FBsProtocolID::CPkt_Transform:
-	{
-		//LOG_MGR->Cout(session->GetID(), " - RECV - ", "[ CPkt_Transform ]\n");
-		
-		const FBProtocol::CPkt_Transform* packet = flatbuffers::GetRoot<FBProtocol::CPkt_Transform>(DataPtr);
-		if (!packet) return false;
-		Process_CPkt_Transform(session, *packet);
-	}
-	break;
-	case FBsProtocolID::CPkt_PlayerAnimation:
-	{
-
-		const FBProtocol::CPkt_PlayerAnimation* packet = flatbuffers::GetRoot<FBProtocol::CPkt_PlayerAnimation>(DataPtr);
-		if (!packet) return false;
-		Process_CPkt_PlayerAnimation(session, *packet);
-	}
-	break;
+	
 	}
 
 	return true;
@@ -101,7 +79,43 @@ bool FBsPacketFactory::Process_CPkt_Chat(SPtr_Session session, const FBProtocol:
 	return true;
 }
 
-bool FBsPacketFactory::Process_CPkt_PlayerAnimation(SPtr_Session session, const FBProtocol::CPkt_PlayerAnimation& pkt)
+bool FBsPacketFactory::Process_CPkt_NewMonster(SPtr_Session session, const FBProtocol::CPkt_NewMonster& pkt)
+{
+	return false;
+}
+
+bool FBsPacketFactory::Process_CPkt_RemoveMonster(SPtr_Session session, const FBProtocol::CPkt_RemoveMonster& pkt)
+{
+	return false;
+}
+
+bool FBsPacketFactory::Process_CPkt_Monster_Transform(SPtr_Session session, const FBProtocol::CPkt_Monster_Transform& pkt)
+{
+	return false;
+}
+
+bool FBsPacketFactory::Process_CPkt_Monster_HP(SPtr_Session session, const FBProtocol::CPkt_Monster_HP& pkt)
+{
+	return false;
+}
+
+bool FBsPacketFactory::Process_CPkt_Monster_State(SPtr_Session session, const FBProtocol::CPkt_Monster_State& pkt)
+{
+	return false;
+}
+
+bool FBsPacketFactory::Process_CPkt_Bullet_OnShoot(SPtr_Session session, const FBProtocol::CPkt_Bullet_OnShoot& pkt)
+{
+	return false;
+}
+
+bool FBsPacketFactory::Process_CPkt_Bullet_OnCollision(SPtr_Session session, const FBProtocol::CPkt_Bullet_OnCollision& pkt)
+{
+	return false;
+}
+
+
+bool FBsPacketFactory::Process_CPkt_Player_Animation(SPtr_Session session, const FBProtocol::CPkt_Player_Animation& pkt)
 {
 	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
 
@@ -113,7 +127,7 @@ bool FBsPacketFactory::Process_CPkt_PlayerAnimation(SPtr_Session session, const 
 	
 
 	/* 클라이언트의 패킷을 그대로 다시 보낸다. */
-	auto spkt = FBS_FACTORY->SPkt_PlayerAnimation(ObjectID, animation_upper_idx, animation_lower_idx, animation_param_h, animation_param_v);
+	auto spkt = FBS_FACTORY->SPkt_Player_Animation(ObjectID, animation_upper_idx, animation_lower_idx, animation_param_h, animation_param_v);
 	GAME_MGR->BroadcastRoom(gameSession->GetPlayerInfo().RoomID, spkt, gameSession->GetID());
 
 	return true;
@@ -128,7 +142,7 @@ bool FBsPacketFactory::Process_CPkt_NetworkLatency(SPtr_Session session, const F
 	long long timestamp = pkt.timestamp();
 	
 	/* 클라이언트의 패킷을 그대로 다시 보낸다. */
-	auto spkt = FBS_FACTORY->SPkt_NewtorkLatency(timestamp);
+	auto spkt = FBS_FACTORY->SPkt_NetworkLatency(timestamp);
 
 	session->Send(spkt);
 	//GAME_MGR->Send(spkt, gameSession->GetPlayerInfo().RoomID, session->GetID());
@@ -160,7 +174,7 @@ bool FBsPacketFactory::Process_CPkt_LogIn(SPtr_Session session, const FBProtocol
 	/// +-----------------------------------
 	/// GET SEND PKT ( LOG IN / NEW PLAYER )
 	/// -----------------------------------+
-	auto SendPkt_LogIn     = FBS_FACTORY->SPkt_LogIn(MyInfo, RemotePlayersInfo, LogInSuccess);
+	auto SendPkt_LogIn     = FBS_FACTORY->SPkt_LogIn(LogInSuccess, MyInfo, RemotePlayersInfo);
 	auto SendPkt_NewPlayer = FBS_FACTORY->SPkt_NewPlayer(MyInfo);
 
 	/// +--------------------------------
@@ -190,48 +204,52 @@ bool FBsPacketFactory::Process_CPkt_NewPlayer(SPtr_Session session, const FBProt
 	return true;
 }
 
-bool FBsPacketFactory::Process_CPkt_Transform(SPtr_Session session, const FBProtocol::CPkt_Transform& pkt)
+bool FBsPacketFactory::Process_CPkt_RemovePlayer(SPtr_Session session, const FBProtocol::CPkt_RemovePlayer& pkt)
 {
-	SPtr_GameSession gameSession		= std::static_pointer_cast<GameSession>(session);
-	UINT32 id							= session->GetID();
+	return false;
+}
 
-	long long				latency     = pkt.latency(); /* 해당 클라이언트의 평균 Latency (ms)  */
-	float					Vel         = pkt.velocity();
-	Vec3					MoveDir		= GetVector3(pkt.movedir());
-	Vec3					pos         = GetVector3(pkt.trans()->position());
-	Vec3					rot         = GetVector3(pkt.trans()->rotation());
-	int32_t					movestate   = pkt.move_state();
-	Vec3					SDir        = GetVector3(pkt.spine_look());
+bool FBsPacketFactory::Process_CPkt_Player_Transform(SPtr_Session session, const FBProtocol::CPkt_Player_Transform& pkt)
+{
+	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
+	UINT32 id = session->GetID();
+
+	long long				latency   = pkt.latency(); /* 해당 클라이언트의 평균 Latency (ms)  */
+	float					Vel       = pkt.velocity();
+	Vec3					MoveDir   = GetVector3(pkt.movedir());
+	Vec3					pos       = GetVector3(pkt.trans()->position());
+	Vec3					rot       = GetVector3(pkt.trans()->rotation());
+	int32_t					movestate = pkt.move_state();
+	Vec3					SDir      = GetVector3(pkt.spine_look());
 
 	float					animparam_h = pkt.animparam_h();
 	float					animparam_v = pkt.animparam_v();
 
 	gameSession->GetPlayer()->SetPosition(pos);
-	SPtr_SendPktBuf SendPkt = FBS_FACTORY->SPkt_Transform(id, pos, rot, movestate, MoveDir, Vel, SDir, latency, animparam_h, animparam_v);
+	SPtr_SendPktBuf SendPkt = FBS_FACTORY->SPkt_Player_Transform(id, movestate, latency, Vel, MoveDir, pos, rot, SDir, animparam_h, animparam_v);
 	GAME_MGR->BroadcastRoom(gameSession->GetPlayerInfo().RoomID, SendPkt, id);
 
 	return true;
 }
 
-bool FBsPacketFactory::Process_CPkt_KeyInput(SPtr_Session session, const FBProtocol::CPkt_KeyInput& pkt)
+
+bool FBsPacketFactory::Process_CPkt_Player_Weapon(SPtr_Session session, const FBProtocol::CPkt_Player_Weapon& pkt)
 {
-	return true;
+	return false;
 }
 
-bool FBsPacketFactory::Process_CPkt_PlayerState(SPtr_Session session, const FBProtocol::CPkt_PlayerState& pkt)
-{
-	return true;
-}
 
 /// ★---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ///	◈ SEND SERVER PACKET ◈
 /// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------★
-SPtr_SendPktBuf FBsPacketFactory::SPkt_Chat(UINT32 sessionID, std::string msg)
+
+
+SPtr_SendPktBuf FBsPacketFactory::SPkt_Chat(uint64_t player_id, std::string msg)
 {
 	flatbuffers::FlatBufferBuilder builder;
 
 	auto msgOffset = builder.CreateString(msg);
-	auto ServerPacket = FBProtocol::CreateSPkt_Chat(builder, sessionID, msgOffset);
+	auto ServerPacket = FBProtocol::CreateSPkt_Chat(builder, player_id, msgOffset);
 
 	builder.Finish(ServerPacket);
 
@@ -241,28 +259,30 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_Chat(UINT32 sessionID, std::string msg)
 	return SEND_FACTORY->CreatePacket(bufferPtr, serializedDataSize, FBsProtocolID::SPkt_Chat);
 }
 
-SPtr_SendPktBuf FBsPacketFactory::SPkt_Transform(uint64_t ID, Vec3 Pos, Vec3 Rot, int32_t movestate, Vec3 MoveDir, float velocity, Vec3 SpineLookDir, long long latency
-, float animparam_h, float animparam_v)
+SPtr_SendPktBuf FBsPacketFactory::SPkt_Player_Transform(uint64_t player_id, int32_t move_state, long latency
+	, float velocity, Vec3 movedir, Vec3 pos, Vec3 rot , Vec3 spine_look, float animparam_h, float animparam_v)
 {
 	flatbuffers::FlatBufferBuilder builder{};
 
-	auto MoveDirection = FBProtocol::CreateVector3(builder, MoveDir.x, MoveDir.y, MoveDir.z);
-	auto position      = FBProtocol::CreateVector3(builder, Pos.x, Pos.y, Pos.z);
-	auto rotation      = FBProtocol::CreateVector3(builder, Rot.x, Rot.y, Rot.z);
+	auto MoveDirection = FBProtocol::CreateVector3(builder, movedir.x, movedir.y, movedir.z);
+	auto position      = FBProtocol::CreateVector3(builder, pos.x, pos.y, pos.z);
+	auto rotation      = FBProtocol::CreateVector3(builder, rot.x, rot.y, rot.z);
 	auto transform     = FBProtocol::CreateTransform(builder, position, rotation);
-	auto Spine_LookDir = FBProtocol::CreateVector3(builder, SpineLookDir.x, SpineLookDir.y, SpineLookDir.z);
+	auto Spine_LookDir = FBProtocol::CreateVector3(builder, spine_look.x, spine_look.y, spine_look.z);
 
-	auto ServerPacket = FBProtocol::CreateSPkt_Transform(builder, ID, latency, movestate, velocity, MoveDirection, transform, Spine_LookDir, animparam_h, animparam_v);
+	auto ServerPacket = FBProtocol::CreateSPkt_Player_Transform(builder, player_id,
+		static_cast<FBProtocol::PLAYER_MOTION_STATE_TYPE>(move_state), latency, velocity, MoveDirection, transform, Spine_LookDir, animparam_h, animparam_v);
+
 	builder.Finish(ServerPacket);
 
 
-	const uint8_t* bufferPointer = builder.GetBufferPointer();
+	const uint8_t* bufferPointer      = builder.GetBufferPointer();
 	const uint16_t SerializeddataSize = static_cast<uint16_t>(builder.GetSize());;
-	SPtr_SendPktBuf sendBuffer = SEND_FACTORY->CreatePacket(bufferPointer, SerializeddataSize, FBsProtocolID::SPkt_Transform);
+	SPtr_SendPktBuf sendBuffer        = SEND_FACTORY->CreatePacket(bufferPointer, SerializeddataSize, FBsProtocolID::SPkt_Player_Transform);
 	return sendBuffer;
 }
 
-SPtr_SendPktBuf FBsPacketFactory::SPkt_NewtorkLatency(long long timestamp)
+SPtr_SendPktBuf FBsPacketFactory::SPkt_NetworkLatency(long timestamp)
 {
 	flatbuffers::FlatBufferBuilder builder;
 
@@ -276,7 +296,8 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_NewtorkLatency(long long timestamp)
 	return SEND_FACTORY->CreatePacket(bufferPtr, serializedDataSize, FBsProtocolID::SPkt_NetworkLatency);
 }
 
-SPtr_SendPktBuf FBsPacketFactory::SPkt_LogIn(PlayerInfo& plinfo, std::vector<PlayerInfo>& remotePlayers, bool& IsSuccess)
+
+SPtr_SendPktBuf FBsPacketFactory::SPkt_LogIn(bool success, PlayerInfo& myinfo, std::vector<PlayerInfo>& players)
 {
 	flatbuffers::FlatBufferBuilder builder;
 
@@ -285,15 +306,15 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_LogIn(PlayerInfo& plinfo, std::vector<Pla
 	std::vector<flatbuffers::Offset<FBProtocol::Player>> PlayerInfos_vector;
 
 	/* My Player Info */
-	auto position  = FBProtocol::CreateVector3(builder, plinfo.Position.x, plinfo.Position.y, plinfo.Position.z);
-	auto rotation  = FBProtocol::CreateVector3(builder, plinfo.Rotation.x, plinfo.Rotation.y, plinfo.Rotation.z);
+	auto position  = FBProtocol::CreateVector3(builder, myinfo.Position.x, myinfo.Position.y, myinfo.Position.z);
+	auto rotation  = FBProtocol::CreateVector3(builder, myinfo.Rotation.x, myinfo.Rotation.y, myinfo.Rotation.z);
 	auto transform = FBProtocol::CreateTransform(builder, position, rotation);
 
-	auto Spine_LookDir = FBProtocol::CreateVector3(builder, plinfo.SpineDir.x, plinfo.SpineDir.y, plinfo.SpineDir.z);
-	auto Myinfo = CreatePlayer(builder, plinfo.PlayerID, builder.CreateString(plinfo.Name), plinfo.Type, transform, Spine_LookDir);
+	auto Spine_LookDir = FBProtocol::CreateVector3(builder, myinfo.SpineDir.x, myinfo.SpineDir.y, myinfo.SpineDir.z);
+	auto Myinfo = CreatePlayer(builder, myinfo.PlayerID, builder.CreateString(myinfo.Name), myinfo.Type, transform, Spine_LookDir);
 
 	/* Remote Players */
-	for (PlayerInfo& p : remotePlayers) {
+	for (PlayerInfo& p : players) {
 		auto ID = p.PlayerID;
 		auto name = builder.CreateString(p.Name);
 		auto PlayerInfoType = p.Type;
@@ -363,26 +384,67 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_RemovePlayer(int removeSessionID)
 	return sendBuffer;
 }
 
-SPtr_SendPktBuf FBsPacketFactory::SPkt_PlayerAnimation(int ObjectID, int anim_upper_idx, int anim_lower_idx, float anim_param_h, float anim_param_v)
+SPtr_SendPktBuf FBsPacketFactory::SPkt_Player_Animation(uint64_t player_id, int anim_upper_idx, int anim_lower_idx, float anim_param_h, float anim_param_v)
 {
 	flatbuffers::FlatBufferBuilder builder{};
 
-	int32_t id                    = static_cast<int32_t>(ObjectID);
+	int32_t id                    = static_cast<int32_t>(player_id);
 	int32_t animation_upper_index = static_cast<int32_t>(anim_upper_idx);
 	int32_t animation_lower_index = static_cast<int32_t>(anim_lower_idx);
 	float	animation_param_h     = static_cast<float>(anim_param_h);
 	float	animation_param_v     = static_cast<float>(anim_param_v);
 
 
-	auto ServerPacket = FBProtocol::CreateSPkt_PlayerAnimation(builder, id, animation_upper_index, animation_lower_index, animation_param_h, animation_param_v);
+	auto ServerPacket = FBProtocol::CreateSPkt_Player_Animation(builder, id, animation_upper_index, animation_lower_index, animation_param_h, animation_param_v);
 	builder.Finish(ServerPacket);
 
-	const uint8_t* bufferPointer      = builder.GetBufferPointer();
+	const uint8_t* bufferPointer = builder.GetBufferPointer();
 	const uint16_t SerializeddataSize = static_cast<uint16_t>(builder.GetSize());;
-	SPtr_SendPktBuf sendBuffer        = SEND_FACTORY->CreatePacket(bufferPointer, SerializeddataSize, FBsProtocolID::SPkt_PlayerAnimation);
+	SPtr_SendPktBuf sendBuffer = SEND_FACTORY->CreatePacket(bufferPointer, SerializeddataSize, FBsProtocolID::SPkt_Player_Animation);
 
 	return sendBuffer;
 }
+
+SPtr_SendPktBuf FBsPacketFactory::SPkt_Player_Weapon(uint64_t player_id, FBProtocol::WEAPON_TYPE weapon_type)
+{
+	return SPtr_SendPktBuf();
+}
+
+SPtr_SendPktBuf FBsPacketFactory::SPkt_NewMonster(std::vector<FBProtocol::Monster>& new_monsters)
+{
+	return SPtr_SendPktBuf();
+}
+
+SPtr_SendPktBuf FBsPacketFactory::SPkt_RemoveMonster(int monster_id)
+{
+	return SPtr_SendPktBuf();
+}
+
+SPtr_SendPktBuf FBsPacketFactory::SPkt_Monster_Transform(int monster_id, FBProtocol::Transform trans)
+{
+	return SPtr_SendPktBuf();
+}
+
+SPtr_SendPktBuf FBsPacketFactory::SPkt_Monster_HP(int monster_id, float hp)
+{
+	return SPtr_SendPktBuf();
+}
+
+SPtr_SendPktBuf FBsPacketFactory::SPkt_Monster_State(int monster_id, FBProtocol::MONSTER_STATE_TYPE state)
+{
+	return SPtr_SendPktBuf();
+}
+
+SPtr_SendPktBuf FBsPacketFactory::SPkt_Bullet_OnShoot(int player_id, int gun_id, int bullet_id, Vec3 ray)
+{
+	return SPtr_SendPktBuf();
+}
+
+SPtr_SendPktBuf FBsPacketFactory::SPkt_Bullet_OnCollision(int player_id, int gun_id, int bullet_id)
+{
+	return SPtr_SendPktBuf();
+}
+
 
 /// ★---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ///	▶ UTILITY  
