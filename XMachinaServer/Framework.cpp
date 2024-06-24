@@ -219,7 +219,7 @@ void Framework::Launch()
 			UINT32 msTimeOut = 0;
 			while (!stop.load())
 			{
-				LOG_MGR->Cout(TLS_MGR->Get_TlsInfoData()->id, " \n");
+				//LOG_MGR->Cout(TLS_MGR->Get_TlsInfoData()->id, " \n");
 				mServer->WorkerThread(msTimeOut);
 			}
 

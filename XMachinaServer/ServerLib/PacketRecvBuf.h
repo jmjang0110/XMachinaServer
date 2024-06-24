@@ -12,7 +12,7 @@ class PacketRecvBuf
 public:
 	enum class Info {
 		bufferCount = 10,
-		Size        = 0x15'000 // 64kb
+		Size        = 0x10'000 // 64kb
 	};
 
 private:

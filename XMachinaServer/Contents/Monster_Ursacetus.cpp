@@ -38,7 +38,6 @@ void Monster_Ursacetus::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 
 	speed += 1.f;
 
-	std::cout << shared_from_this().get() << " : SPEED : " << speed << std::endl;
 
 }
 
