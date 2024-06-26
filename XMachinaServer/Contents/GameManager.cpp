@@ -22,7 +22,7 @@ GameManager::~GameManager()
 
 void GameManager::Init()
 {
-	mRoomMaxCnt = 5000 / static_cast<UINT32>(RoomInfo::MaxSessionSize);
+	mRoomMaxCnt = MAX_SESSION_NUM / static_cast<UINT32>(RoomInfo::MaxSessionSize);
 
 	for (UINT32 i = 0; i < mRoomMaxCnt; ++i) {
 		SPtr_GameRoom room = std::make_shared<GameRoom>();

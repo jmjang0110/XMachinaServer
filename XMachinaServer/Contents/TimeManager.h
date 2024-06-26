@@ -22,9 +22,9 @@ struct TimerEvent {
 struct Timer {
 	constexpr static ULONG kMaxSampleCnt = 50;		// Maximum frame time sample count
 
-	double			DefaultTimeScale{};	// 기본 시간 속도
-	double			TimeScale{};			// 현재 시간 속도
-	float			TimeElapsed{};			// 이전 프레임에서 현재 프레임까지 경과 시간 (프레임 전환 시간)
+	double			DefaultTimeScale{};				// 기본 시간 속도
+	double			TimeScale{};					// 현재 시간 속도
+	float			TimeElapsed{};					// 이전 프레임에서 현재 프레임까지 경과 시간 (프레임 전환 시간)
 
 	/* performance count */
 	__int64			BasePerfCnt{};
@@ -33,7 +33,7 @@ struct Timer {
 	__int64			CurrPerfCnt{};
 	__int64			LastPerfCnt{};
 
-	float			FrameTime[kMaxSampleCnt]{};	// frame time을 최대 kMaxSampleCnt개 까지 기록한다.
+	float			FrameTime[kMaxSampleCnt]{};		// frame time을 최대 kMaxSampleCnt개 까지 기록한다.
 	ULONG			SampleCnt{};					// 현재 sampling된 frame cnt (최대 kMaxSampleCnt개)
 
 	unsigned long	CurrFrameRate{};				// 현재 frame rate
@@ -69,6 +69,7 @@ public:
 
 public:
 	float GetTotalTime() const;
+
 	// 프레임 전환 시간를 반환한다.
 	float GetTimeElapsed() const { return m_Timer.TimeElapsed; }
 	// 현재 frame rate를 문자열로 반환한다.

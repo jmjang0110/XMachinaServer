@@ -43,3 +43,4 @@ using SPtr_GameRoom    = std::shared_ptr<class GameRoom>;
 using SPtr_GamePlayer  = std::shared_ptr<class GamePlayer>;
 
 
+constexpr UINT32 MAX_SESSION_NUM = 500;

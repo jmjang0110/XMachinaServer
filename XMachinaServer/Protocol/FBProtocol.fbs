@@ -22,6 +22,14 @@ table CPkt_LogIn
 
 }
 
+table SPkt_LogIn
+{
+	success : bool;			// 1 byte
+	myinfo  : Player;		// 나의 정보 
+	players : [Player];		// 나를 포함한 Room안의 모든 player 정보 
+}
+
+
 // +------------------------
 //		     CHAT 
 // ------------------------+
@@ -32,7 +40,7 @@ table CPkt_Chat
 
 table SPkt_Chat
 {
-	player_id  : ulong;		// uint64
+	player_id  : uint;		// uint64
 	message    : string;	// 가변 크기
 }
 
@@ -49,12 +57,6 @@ table SPkt_NetworkLatency
 	timestamp : long;	// 8 bytes
 }
 
-table SPkt_LogIn
-{
-	success : bool;			// 1 byte
-	myinfo  : Player;		// 나의 정보 
-	players : [Player];		// 나를 포함한 Room안의 모든 player 정보 
-}
 
 
 /// +-------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -67,7 +69,7 @@ table SPkt_LogIn
 // ------------------------+
 table CPkt_EnterGame
 {
-	player_index: ulong;	// 8 bytes
+	player_id: uint;	// 8 bytes
 }
 
 table SPkt_EnterGame
@@ -105,7 +107,7 @@ table CPkt_RemovePlayer
 
 table SPkt_RemovePlayer
 {
-	player_id : int; // 4 bytes // 삭제할 플레이어의 아이디 
+	player_id : uint; // 4 bytes // 삭제할 플레이어의 아이디 
 }
 
 
@@ -128,7 +130,7 @@ table CPkt_Player_Transform
 
 table SPkt_Player_Transform
 {
-	player_id	: ulong;					// 8 bytes				// uint64
+	player_id	: uint;					// 8 bytes				// uint64
 
 	move_state  : PLAYER_MOTION_STATE_TYPE; // 1 byte
 
@@ -159,7 +161,7 @@ table CPkt_Player_Animation
 
 table SPkt_Player_Animation
 {
-	player_id				: ulong;	// 8 bytes
+	player_id				: uint;	// 8 bytes
 
 	animation_upper_index   : int;		// 4 bytes
 	animation_lower_index   : int;		// 4 bytes
@@ -179,7 +181,7 @@ table CPkt_Player_Weapon
 
 table SPkt_Player_Weapon
 {
-	player_id	: ulong;			// 8 bytes
+	player_id	: uint;			// 8 bytes
 	weapon_type : WEAPON_TYPE;	// 1 byte
 }
 
@@ -211,7 +213,7 @@ table CPkt_RemoveMonster
 
 table SPkt_RemoveMonster
 {
-	monster_id : int;	// 4 bytes
+	monster_id : uint;	// 4 bytes
 }
 
 
@@ -225,7 +227,7 @@ table CPkt_Monster_Transform
 
 table SPkt_Monster_Transform
 {
-	monster_id	: int;	// 4 bytes
+	monster_id	: uint;	// 4 bytes
 	trans	    : Transform;				// 24 bytes (Vector3 * 2)
 }
 
@@ -240,7 +242,7 @@ table CPkt_Monster_HP
 
 table SPkt_Monster_HP
 {
-	monster_id : int;		// 4 bytes
+	monster_id : uint;		// 4 bytes
 	hp		   : float;		// 4 bytes
 }
 
@@ -254,7 +256,7 @@ table CPkt_Monster_State
 
 table SPkt_Monster_State
 {
-	monster_id	: int;					// 4 bytes
+	monster_id	: uint;					// 4 bytes
 	state		: MONSTER_STATE_TYPE;	// 1 byte
 	
 }
@@ -276,9 +278,9 @@ table CPkt_Bullet_OnShoot
 
 table SPkt_Bullet_OnShoot
 {
-	player_id : int; // 4 bytes - 어떤 플레이어가 
-	gun_id    : int; // 4 bytes - 어떤 총이고 
-	bullet_id : int; // 4 bytes - 어떤 총알을 쐈는가
+	player_id : uint; // 4 bytes - 어떤 플레이어가 
+	gun_id    : uint; // 4 bytes - 어떤 총이고 
+	bullet_id : uint; // 4 bytes - 어떤 총알을 쐈는가
 
 	ray       : Vector3; // 12 bytes (4bytes * 3) - 총구 방향은 어떠한가? 
 }
@@ -296,9 +298,9 @@ table CPkt_Bullet_OnCollision
 
 table SPkt_Bullet_OnCollision
 {
-	player_id : int; // 4 bytes - 어떤 플레이어가 
-	gun_id    : int; // 4 bytes - 어떤 총이고 
-	bullet_id : int; // 4 bytes - 어떤 총알이 충돌했는가?
+	player_id : uint; // 4 bytes - 어떤 플레이어가 
+	gun_id    : uint; // 4 bytes - 어떤 총이고 
+	bullet_id : uint; // 4 bytes - 어떤 총알이 충돌했는가?
 }
 
 

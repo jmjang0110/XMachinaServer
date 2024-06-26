@@ -12,8 +12,8 @@ class GameRoom : public GameEntity
 
 private:
 	int		mID = -1; /* ROOM ID */
-	std::atomic_int32_t mCurrPlayerCnt = {}; /* CURRENT PLAYER COUNT IN THIS ROOM */
-	concurrency::concurrent_unordered_map<UINT32, SPtr_GamePlayer> mGamePlayers;// Key : ID / Value : Player ( Shared Ptr )
+	concurrency::concurrent_unordered_map<UINT32, SPtr_GamePlayer>	mGamePlayers;			// Key : ID / Value : Player ( Shared Ptr )
+	std::atomic_int32_t												mCurrPlayerCnt = {};	/* CURRENT PLAYER COUNT IN THIS ROOM */
 
 public:
 	GameRoom();

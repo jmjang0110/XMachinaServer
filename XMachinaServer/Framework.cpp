@@ -122,6 +122,11 @@ bool Framework::Init(HINSTANCE& hInst)
 
 	LOG_MGR->Cout("[SUCCESS] MEMORY INIT\n");
 
+	int* a = MEMORY->New<int>();
+	MEMORY->Delete<int>(a);
+
+
+
 	/// +-----------------------------------------
 	///	GAME MANAGER : Game Room, Player ... 관리
 	/// -----------------------------------------+
@@ -152,7 +157,7 @@ bool Framework::Init(HINSTANCE& hInst)
 	LOG_MGR->Cout("[ING...] ( PLEASE WAIT ) ServerNetwork INIT \n");
 	{
 		mServer = Memory::Make_Shared<ServerNetwork>();
-		mServer->SetMaxSessionCnt(5000); /* 최대 접속 세션 */
+		mServer->SetMaxSessionCnt(MAX_SESSION_NUM); /* 최대 접속 세션 */
 		mServer->SetSessionConstructorFunc(std::make_shared<GameSession>); /* GameSession으로 관리 */
 
 		mServerIP = L"127.0.0.1";
@@ -227,13 +232,13 @@ void Framework::Launch()
 	}
 
 	/* GameWorld Update Test */
-	//for (int i = 0; i < 100; ++i) {
-	//	TimerEvent t;
-	//	t.Type = TimerEventType::Update_Ursacetus;
-	//	t.WakeUp_Time = std::chrono::system_clock::now(); // 지금 당장 시작 
-	//	t.Owner = GAME_WORLD->GetUrsacetusSPtr(i);
-	//	TIME_MGR->PushTimerEvent(t);
-	//}
+	for (int i = 0; i < 1; ++i) {
+		TimerEvent t;
+		t.Type = TimerEventType::Update_Ursacetus;
+		t.WakeUp_Time = std::chrono::system_clock::now(); // 지금 당장 시작 
+		t.Owner = GAME_WORLD->GetUrsacetusSPtr(i);
+		TIME_MGR->PushTimerEvent(t);
+	}
 
 
 

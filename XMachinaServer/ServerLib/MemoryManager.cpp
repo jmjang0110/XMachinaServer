@@ -33,7 +33,7 @@ bool MemoryManager::InitMemories()
     /* Memory를 미리 할당해놓자! */
 
     /* 1. 메모리 사이즈로 관리하는 메모리 풀  */
-    int blockNum = 50;
+    int blockNum = 25;
     AddSListMemoryPool(MemorySize::BYTES_32);
     for (int i = 0; i < blockNum; ++i) {
         mSLMemPoolsDict_Size[MemorySize::BYTES_32]->AddMemory();
@@ -62,6 +62,10 @@ bool MemoryManager::InitMemories()
         mSLMemPoolsDict_Size[MemorySize::BYTES_512]->AddMemory();
     }
 
+    AddSListMemoryPool(MemorySize::BYTES_1024);
+    for (int i = 0; i < blockNum; ++i) {
+        mSLMemPoolsDict_Size[MemorySize::BYTES_1024]->AddMemory();
+    }
 
     /* 2. 메모리 이름으로 관리하는 메모리 풀 */
 
@@ -123,12 +127,37 @@ void* MemoryManager::Allocate(size_t size)
     void* ptr = nullptr;
 
     // Find a suitable memory pool
-    for (auto PoolIter : mSLMemPoolsDict_Size) {
-        if (size <= PoolIter.second->GetMemorySize()) {
-            ptr = PoolIter.second->Pull(); /* Pull Memory Pointer From SListMemoryPool */
-            break;
-        }
+    //for (auto PoolIter : mSLMemPoolsDict_Size) {
+    //    if (size <= PoolIter.second->GetMemorySize()) {
+    //        ptr = PoolIter.second->Pull(); /* Pull Memory Pointer From SListMemoryPool */
+    //        break;
+    //    }
+    //}
+
+    if (size <= static_cast<size_t>(MemorySize::BYTES_32)) {
+        ptr = mSLMemPoolsDict_Size[MemorySize::BYTES_32]->Pull();
     }
+    else if (size <= static_cast<size_t>(MemorySize::BYTES_64)) {
+        ptr = mSLMemPoolsDict_Size[MemorySize::BYTES_64]->Pull();
+
+    }
+    else if (size <= static_cast<size_t>(MemorySize::BYTES_128)) {
+        ptr = mSLMemPoolsDict_Size[MemorySize::BYTES_128]->Pull();
+
+    }
+    else if (size <= static_cast<size_t>(MemorySize::BYTES_256)) {
+        ptr = mSLMemPoolsDict_Size[MemorySize::BYTES_256]->Pull();
+
+    }
+    else if (size <= static_cast<size_t>(MemorySize::BYTES_512)) {
+        ptr = mSLMemPoolsDict_Size[MemorySize::BYTES_512]->Pull();
+
+    }
+    else if (size <= static_cast<size_t>(MemorySize::BYTES_1024)) {
+        ptr = mSLMemPoolsDict_Size[MemorySize::BYTES_1024]->Pull();
+
+    }
+
     /* 메모리풀에 없다면 할당 */ 
     if (ptr == nullptr) {
         ptr = ::_aligned_malloc(sizeof(SLIST_ENTRY) + size, MEMORY_ALLOCATION_ALIGNMENT);

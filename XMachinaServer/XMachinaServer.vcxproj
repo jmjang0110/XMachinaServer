@@ -163,6 +163,7 @@
     <ClInclude Include="Contents\DB_NPC.h" />
     <ClInclude Include="Contents\DB_Player.h" />
     <ClInclude Include="Contents\DB_Weapon.h" />
+    <ClInclude Include="Contents\GameBullet.h" />
     <ClInclude Include="Contents\GameEntity.h" />
     <ClInclude Include="Contents\GameManager.h" />
     <ClInclude Include="Contents\GameMonster.h" />
@@ -175,15 +176,16 @@
     <ClInclude Include="Contents\Key.h" />
     <ClInclude Include="Contents\LogManager.h" />
     <ClInclude Include="Contents\Monster_Ursacetus.h" />
+    <ClInclude Include="Contents\NPCController.h" />
+    <ClInclude Include="Contents\PlayerController.h" />
+    <ClInclude Include="Contents\ResourceManager.h" />
     <ClInclude Include="Contents\Sector.h" />
-    <ClInclude Include="Contents\SectorManager.h" />
     <ClInclude Include="Contents\TimeManager.h" />
     <ClInclude Include="Contents\Transform.h" />
     <ClInclude Include="Contents\Util\Common.h" />
     <ClInclude Include="Contents\Util\DwordOverloader.h" />
     <ClInclude Include="Contents\Util\SimpleMath.h" />
     <ClInclude Include="Framework.h" />
-    <ClInclude Include="MonsterSession.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Protocol\Enum_generated.h" />
     <ClInclude Include="Protocol\FBProtocol_generated.h" />
@@ -191,6 +193,7 @@
     <ClInclude Include="Protocol\Struct_generated.h" />
     <ClInclude Include="Protocol\Transform_generated.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="SectorController.h" />
     <ClInclude Include="ServerLib\ClientNetwork.h" />
     <ClInclude Include="ServerLib\Listener.h" />
     <ClInclude Include="ServerLib\Lock.h" />
@@ -222,6 +225,7 @@
     <ClCompile Include="Contents\DB_NPC.cpp" />
     <ClCompile Include="Contents\DB_Player.cpp" />
     <ClCompile Include="Contents\DB_Weapon.cpp" />
+    <ClCompile Include="Contents\GameBullet.cpp" />
     <ClCompile Include="Contents\GameEntity.cpp" />
     <ClCompile Include="Contents\GameManager.cpp" />
     <ClCompile Include="Contents\GameMonster.cpp" />
@@ -233,13 +237,14 @@
     <ClCompile Include="Contents\Key.cpp" />
     <ClCompile Include="Contents\LogManager.cpp" />
     <ClCompile Include="Contents\Monster_Ursacetus.cpp" />
+    <ClCompile Include="Contents\NPCController.cpp" />
+    <ClCompile Include="Contents\PlayerController.cpp" />
+    <ClCompile Include="Contents\ResourceManager.cpp" />
     <ClCompile Include="Contents\Sector.cpp" />
-    <ClCompile Include="Contents\SectorManager.cpp" />
     <ClCompile Include="Contents\TimeManager.cpp" />
     <ClCompile Include="Contents\Transform.cpp" />
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="MonsterSession.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch.h</PrecompiledHeaderFile>
@@ -251,6 +256,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Protocol\FBsPacketFactory.cpp" />
+    <ClCompile Include="SectorController.cpp" />
     <ClCompile Include="ServerLib\ClientNetwork.cpp" />
     <ClCompile Include="ServerLib\Listener.cpp" />
     <ClCompile Include="ServerLib\Lock.cpp" />

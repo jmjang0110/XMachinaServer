@@ -107,6 +107,15 @@
     <Filter Include="Framework\Contents\Overlapped">
       <UniqueIdentifier>{3a86838a-bbaf-447c-9939-fba4efcb018c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Bullet">
+      <UniqueIdentifier>{ba52d05e-4e9f-4704-bebd-c0eff70ab658}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Controller">
+      <UniqueIdentifier>{f6d1a6c5-9583-462a-b2d2-76cefbb205d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Resource">
+      <UniqueIdentifier>{16f275fe-ca93-4106-a56c-4e35b19fa46a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework.h">
@@ -260,21 +269,32 @@
     <ClInclude Include="Contents\GameWorld.h">
       <Filter>Framework\Contents\GameWorld</Filter>
     </ClInclude>
-    <ClInclude Include="Contents\Sector.h">
-      <Filter>Framework\Contents\GameWorld\Sector</Filter>
-    </ClInclude>
-    <ClInclude Include="Contents\SectorManager.h">
-      <Filter>Framework\Contents\GameWorld\Sector</Filter>
-    </ClInclude>
     <ClInclude Include="Contents\TimeManager.h">
       <Filter>Framework\Contents\Timer</Filter>
     </ClInclude>
-    <ClInclude Include="MonsterSession.h" />
     <ClInclude Include="Contents\GameOverlapped.h">
       <Filter>Framework\Contents\Overlapped</Filter>
     </ClInclude>
     <ClInclude Include="Contents\Transform.h">
       <Filter>Framework\Contents\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\NPCController.h">
+      <Filter>Framework\Contents\GameWorld\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\PlayerController.h">
+      <Filter>Framework\Contents\GameWorld\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="SectorController.h">
+      <Filter>Framework\Contents\GameWorld\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Sector.h">
+      <Filter>Framework\Contents\GameWorld\Sector</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\GameBullet.h">
+      <Filter>Framework\Contents\GameWorld\Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\ResourceManager.h">
+      <Filter>Framework\Contents\GameWorld\Resource</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -402,18 +422,29 @@
     <ClCompile Include="Contents\GameWorld.cpp">
       <Filter>Framework\Contents\GameWorld</Filter>
     </ClCompile>
-    <ClCompile Include="Contents\Sector.cpp">
-      <Filter>Framework\Contents\GameWorld\Sector</Filter>
-    </ClCompile>
-    <ClCompile Include="Contents\SectorManager.cpp">
-      <Filter>Framework\Contents\GameWorld\Sector</Filter>
-    </ClCompile>
     <ClCompile Include="Contents\TimeManager.cpp">
       <Filter>Framework\Contents\Timer</Filter>
     </ClCompile>
-    <ClCompile Include="MonsterSession.cpp" />
     <ClCompile Include="Contents\Transform.cpp">
       <Filter>Framework\Contents\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\NPCController.cpp">
+      <Filter>Framework\Contents\GameWorld\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\PlayerController.cpp">
+      <Filter>Framework\Contents\GameWorld\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="SectorController.cpp">
+      <Filter>Framework\Contents\GameWorld\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Sector.cpp">
+      <Filter>Framework\Contents\GameWorld\Sector</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\GameBullet.cpp">
+      <Filter>Framework\Contents\GameWorld\Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\ResourceManager.cpp">
+      <Filter>Framework\Contents\GameWorld\Resource</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

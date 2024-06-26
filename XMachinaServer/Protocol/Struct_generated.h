@@ -33,8 +33,8 @@ struct Player FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
     VT_TRANS = 10,
     VT_SPINE_LOOK = 12
   };
-  uint64_t id() const {
-    return GetField<uint64_t>(VT_ID, 0);
+  uint32_t id() const {
+    return GetField<uint32_t>(VT_ID, 0);
   }
   const ::flatbuffers::String *name() const {
     return GetPointer<const ::flatbuffers::String *>(VT_NAME);
@@ -50,7 +50,7 @@ struct Player FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   }
   bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<uint64_t>(verifier, VT_ID, 8) &&
+           VerifyField<uint32_t>(verifier, VT_ID, 4) &&
            VerifyOffset(verifier, VT_NAME) &&
            verifier.VerifyString(name()) &&
            VerifyField<float>(verifier, VT_HP, 4) &&
@@ -66,8 +66,8 @@ struct PlayerBuilder {
   typedef Player Table;
   ::flatbuffers::FlatBufferBuilder &fbb_;
   ::flatbuffers::uoffset_t start_;
-  void add_id(uint64_t id) {
-    fbb_.AddElement<uint64_t>(Player::VT_ID, id, 0);
+  void add_id(uint32_t id) {
+    fbb_.AddElement<uint32_t>(Player::VT_ID, id, 0);
   }
   void add_name(::flatbuffers::Offset<::flatbuffers::String> name) {
     fbb_.AddOffset(Player::VT_NAME, name);
@@ -94,23 +94,23 @@ struct PlayerBuilder {
 
 inline ::flatbuffers::Offset<Player> CreatePlayer(
     ::flatbuffers::FlatBufferBuilder &_fbb,
-    uint64_t id = 0,
+    uint32_t id = 0,
     ::flatbuffers::Offset<::flatbuffers::String> name = 0,
     float hp = 0.0f,
     ::flatbuffers::Offset<FBProtocol::Transform> trans = 0,
     ::flatbuffers::Offset<FBProtocol::Vector3> spine_look = 0) {
   PlayerBuilder builder_(_fbb);
-  builder_.add_id(id);
   builder_.add_spine_look(spine_look);
   builder_.add_trans(trans);
   builder_.add_hp(hp);
   builder_.add_name(name);
+  builder_.add_id(id);
   return builder_.Finish();
 }
 
 inline ::flatbuffers::Offset<Player> CreatePlayerDirect(
     ::flatbuffers::FlatBufferBuilder &_fbb,
-    uint64_t id = 0,
+    uint32_t id = 0,
     const char *name = nullptr,
     float hp = 0.0f,
     ::flatbuffers::Offset<FBProtocol::Transform> trans = 0,
@@ -128,23 +128,23 @@ inline ::flatbuffers::Offset<Player> CreatePlayerDirect(
 struct Monster FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef MonsterBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
-    VT_TYPE = 4,
-    VT_ID = 6,
+    VT_ID = 4,
+    VT_TYPE = 6,
     VT_TRANS = 8
   };
+  uint32_t id() const {
+    return GetField<uint32_t>(VT_ID, 0);
+  }
   uint8_t type() const {
     return GetField<uint8_t>(VT_TYPE, 0);
-  }
-  uint64_t id() const {
-    return GetField<uint64_t>(VT_ID, 0);
   }
   const FBProtocol::Transform *trans() const {
     return GetPointer<const FBProtocol::Transform *>(VT_TRANS);
   }
   bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
+           VerifyField<uint32_t>(verifier, VT_ID, 4) &&
            VerifyField<uint8_t>(verifier, VT_TYPE, 1) &&
-           VerifyField<uint64_t>(verifier, VT_ID, 8) &&
            VerifyOffset(verifier, VT_TRANS) &&
            verifier.VerifyTable(trans()) &&
            verifier.EndTable();
@@ -155,11 +155,11 @@ struct MonsterBuilder {
   typedef Monster Table;
   ::flatbuffers::FlatBufferBuilder &fbb_;
   ::flatbuffers::uoffset_t start_;
+  void add_id(uint32_t id) {
+    fbb_.AddElement<uint32_t>(Monster::VT_ID, id, 0);
+  }
   void add_type(uint8_t type) {
     fbb_.AddElement<uint8_t>(Monster::VT_TYPE, type, 0);
-  }
-  void add_id(uint64_t id) {
-    fbb_.AddElement<uint64_t>(Monster::VT_ID, id, 0);
   }
   void add_trans(::flatbuffers::Offset<FBProtocol::Transform> trans) {
     fbb_.AddOffset(Monster::VT_TRANS, trans);
@@ -177,12 +177,12 @@ struct MonsterBuilder {
 
 inline ::flatbuffers::Offset<Monster> CreateMonster(
     ::flatbuffers::FlatBufferBuilder &_fbb,
+    uint32_t id = 0,
     uint8_t type = 0,
-    uint64_t id = 0,
     ::flatbuffers::Offset<FBProtocol::Transform> trans = 0) {
   MonsterBuilder builder_(_fbb);
-  builder_.add_id(id);
   builder_.add_trans(trans);
+  builder_.add_id(id);
   builder_.add_type(type);
   return builder_.Finish();
 }

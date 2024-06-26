@@ -12,7 +12,7 @@ namespace FBProtocol;
 //	    PLAYER STRUCT  
 // ------------------------+
 table Player {
-  id			: ulong;
+  id			: uint;
   name			: string;
   hp			: float;
   trans			: Transform;
@@ -23,7 +23,7 @@ table Player {
 //	    MONSTER STRUCT 
 // ------------------------+
 table Monster{
+	id      :  uint; 
 	type	:  ubyte; // UINT8
-	id      :  ulong; 
 	trans	:  Transform;
 }

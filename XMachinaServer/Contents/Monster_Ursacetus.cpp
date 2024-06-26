@@ -27,7 +27,7 @@ void Monster_Ursacetus::WakeUp()
 {
 
 }
-
+     
 void Monster_Ursacetus::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 {
 	TimerEvent t;

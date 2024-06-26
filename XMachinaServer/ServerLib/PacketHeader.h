@@ -1,6 +1,6 @@
 #pragma once
 
-//#define CONNECT_WITH_TEST_CLIENT
+#define CONNECT_WITH_TEST_CLIENT
 #ifdef CONNECT_WITH_TEST_CLIENT
 
 namespace FBsProtocolID
@@ -21,14 +21,50 @@ namespace FBsProtocolID
 	constexpr UINT16 SPkt_NetworkLatency = 1009;
 
 	/* JUST FOR DEBUGGING NOT USE WITH TEST CLIENT PROTOCOL */
-	constexpr UINT16 CPkt_NewPlayer = -1;
-	constexpr UINT16 SPkt_NewPlayer = -1;
+    /// +-----------------------------------------------------------------------
+    ///  PLAYER PACKET HEADER PROTOCOL TYPE
+    /// -----------------------------------------------------------------------+
+    constexpr UINT16 CPkt_NewPlayer = 0;
+    constexpr UINT16 SPkt_NewPlayer = 1;
 
-	constexpr UINT16 CPkt_RemovePlayer = -1;
-	constexpr UINT16 SPkt_RemovePlayer = -1;
+    constexpr UINT16 CPkt_RemovePlayer = 2;
+    constexpr UINT16 SPkt_RemovePlayer = 3;
 
-	constexpr UINT16 CPkt_PlayerAnimation = -1;
-	constexpr UINT16 SPkt_PlayerAnimation = -1;
+    constexpr UINT16 CPkt_Player_Transform = 4;
+    constexpr UINT16 SPkt_Player_Transform = 5;
+
+    constexpr UINT16 CPkt_Player_Animation = 6;
+    constexpr UINT16 SPkt_Player_Animation = 7;
+
+    constexpr UINT16 CPkt_Player_Weapon = 8;
+    constexpr UINT16 SPkt_PlayerWeapon = 9;
+
+    /// +-----------------------------------------------------------------------
+    ///  MONSTER PACKET HEADER PROTOCOL TYPE
+    /// -----------------------------------------------------------------------+
+    constexpr UINT16 CPkt_NewMonster = 10;
+    constexpr UINT16 SPkt_NewMonster = 11;
+
+    constexpr UINT16 CPkt_RemoveMonster = 12;
+    constexpr UINT16 SPkt_RemoveMonster = 13;
+
+    constexpr UINT16 CPkt_Monster_Transform = 14;
+    constexpr UINT16 SPkt_Monster_Transform = 15;
+
+    constexpr UINT16 CPkt_Monster_HP = 16;
+    constexpr UINT16 SPkt_Monster_HP = 17;
+
+    constexpr UINT16 CPkt_Monster_State = 18;
+    constexpr UINT16 SPkt_Monster_State = 19;
+
+    /// +-----------------------------------------------------------------------
+    ///  BULLET PACKET HEADER PROTOCOL TYPE
+    /// -----------------------------------------------------------------------+
+    constexpr UINT16 CPkt_Bullet_OnShoot = 20;
+    constexpr UINT16 SPkt_Bullet_OnShoot = 21;
+
+    constexpr UINT16 CPkt_Bullet_OnCollision = 22;
+    constexpr UINT16 SPkt_Bullet_OnCollision = 23;
 };
 #else 
 /* CONNECT WITH X-MACHINA */
@@ -64,6 +100,9 @@ namespace FBsProtocolID
     constexpr UINT16 CPkt_Player_Weapon         = 1016;
     constexpr UINT16 SPkt_PlayerWeapon          = 1017;
 
+    /// +-----------------------------------------------------------------------
+    ///  MONSTER PACKET HEADER PROTOCOL TYPE
+    /// -----------------------------------------------------------------------+
     constexpr UINT16 CPkt_NewMonster            = 1018;
     constexpr UINT16 SPkt_NewMonster            = 1019;
 
@@ -79,6 +118,9 @@ namespace FBsProtocolID
     constexpr UINT16 CPkt_Monster_State         = 1026;
     constexpr UINT16 SPkt_Monster_State         = 1027;
 
+    /// +-----------------------------------------------------------------------
+    ///  BULLET PACKET HEADER PROTOCOL TYPE
+    /// -----------------------------------------------------------------------+
     constexpr UINT16 CPkt_Bullet_OnShoot        = 1028;
     constexpr UINT16 SPkt_Bullet_OnShoot        = 1029;
 

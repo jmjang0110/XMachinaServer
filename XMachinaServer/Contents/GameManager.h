@@ -16,10 +16,10 @@ class GameManager
 	DECLARE_SINGLETON(GameManager);
 
 private:
-	Lock::SRWLock mSRWLock       = {};
-	
-	UINT32	mRoomMaxCnt               = {};
-	std::vector<SPtr_GameRoom> mRooms = {};
+	std::vector<SPtr_GameRoom>  mRooms         = {};
+	UINT32						mRoomMaxCnt    = {};
+
+	Lock::SRWLock				mSRWLock       = {};
 
 public:
 	GameManager();

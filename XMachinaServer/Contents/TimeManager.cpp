@@ -9,7 +9,7 @@ DEFINE_SINGLETON(TimeManager);
 void TimeManager::Launch()
 {
 	while (m_LaunchThread) {
-		LOG_MGR->Cout(DELTA_TIME, "\n");
+		//LOG_MGR->Cout(DELTA_TIME, "\n");
 
 
 		TimerEvent TEvent;

@@ -17,11 +17,12 @@ private:
 
 
 public:
-
 	Sector();
 	Sector(int id);
 	virtual ~Sector() override;
 
-	
+public:
+
+
 };
 
