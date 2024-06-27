@@ -257,12 +257,12 @@ SPtr_PacketSendBuf SendBuffersFactory::CreateVarSendPacketBuf(const uint8_t* buf
 	BYTE* StartPtr             = ptr + offsetMemSize;
 
 
-	void* dstPtr = Pull_SendPkt();
-	SPtr_PacketSendBuf sendBuf = Make_Shared(dstPtr, ptr, static_cast<UINT16>(memorySize + offsetMemSize), StartPtr, static_cast<UINT32>(memorySize));
+	void*				dstPtr      = Pull_SendPkt();
+	SPtr_PacketSendBuf	sendBuf     = Make_Shared(dstPtr, ptr, static_cast<UINT16>(memorySize + offsetMemSize), StartPtr, static_cast<UINT32>(memorySize));
+	PacketHeader*		pktHeader   = reinterpret_cast<PacketHeader*>(StartPtr);
 
-	PacketHeader* pktHeader = reinterpret_cast<PacketHeader*>(StartPtr);
-	pktHeader->PacketSize = static_cast<UINT16>(memorySize);
-	pktHeader->ProtocolID = ProtocolId;
+	pktHeader->PacketSize           = static_cast<UINT16>(memorySize);
+	pktHeader->ProtocolID           = ProtocolId;
 	std::memcpy(&pktHeader[1], bufPtr, SerializedDataSize);
 
 	return sendBuf;

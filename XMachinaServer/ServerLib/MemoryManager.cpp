@@ -33,37 +33,36 @@ bool MemoryManager::InitMemories()
     /* Memory를 미리 할당해놓자! */
 
     /* 1. 메모리 사이즈로 관리하는 메모리 풀  */
-    int blockNum = 25;
     AddSListMemoryPool(MemorySize::BYTES_32);
-    for (int i = 0; i < blockNum; ++i) {
+    for (int i = 0; i < static_cast<int>(MemoryCnt::BYTES_32_CNT); ++i) {
         mSLMemPoolsDict_Size[MemorySize::BYTES_32]->AddMemory();
     }
 
     AddSListMemoryPool(MemorySize::BYTES_64);
-    for (int i = 0; i < blockNum; ++i) {
+    for (int i = 0; i < static_cast<int>(MemoryCnt::BYTES_64_CNT); ++i) {
         mSLMemPoolsDict_Size[MemorySize::BYTES_64]->AddMemory();
     }
 
 
     AddSListMemoryPool(MemorySize::BYTES_128);
-    for (int i = 0; i < blockNum; ++i) {
+    for (int i = 0; i < static_cast<int>(MemoryCnt::BYTES_128_CNT); ++i) {
         mSLMemPoolsDict_Size[MemorySize::BYTES_128]->AddMemory();
     }
 
 
     AddSListMemoryPool(MemorySize::BYTES_256);
-    for (int i = 0; i < blockNum; ++i) {
+    for (int i = 0; i < static_cast<int>(MemoryCnt::BYTES_256_CNT); ++i) {
         mSLMemPoolsDict_Size[MemorySize::BYTES_256]->AddMemory();
     }
 
 
     AddSListMemoryPool(MemorySize::BYTES_512);
-    for (int i = 0; i < blockNum; ++i) {
+    for (int i = 0; i < static_cast<int>(MemoryCnt::BYTES_512_CNT); ++i) {
         mSLMemPoolsDict_Size[MemorySize::BYTES_512]->AddMemory();
     }
 
     AddSListMemoryPool(MemorySize::BYTES_1024);
-    for (int i = 0; i < blockNum; ++i) {
+    for (int i = 0; i < static_cast<int>(MemoryCnt::BYTES_1024_CNT); ++i) {
         mSLMemPoolsDict_Size[MemorySize::BYTES_1024]->AddMemory();
     }
 

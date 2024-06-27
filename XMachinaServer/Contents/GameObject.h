@@ -8,6 +8,9 @@ class GameObject : public GameEntity
 private:
 	Transform* mTransform = {};
 
+protected:
+	bool IsActive = false;
+
 public:
 	GameObject();
 	GameObject(UINT32 sessionID);

@@ -26,7 +26,7 @@ void GameManager::Init()
 
 	for (UINT32 i = 0; i < mRoomMaxCnt; ++i) {
 		SPtr_GameRoom room = std::make_shared<GameRoom>();
-		room->SetRoomID(i);
+		room->Init(i);
 		mRooms.push_back(room);
 	}
 
@@ -41,7 +41,7 @@ bool GameManager::EnterInRoom(SPtr_GamePlayer player, int roomid)
 
 	if (roomid == -1) {
 		for (UINT32 i = 0; i < mRoomMaxCnt; ++i) {
-			bool checkin = mRooms[i].get()->CheckIn();
+			bool checkin = mRooms[i].get()->IsPossibleToEnter();
 			if (checkin) {
 				mRooms[i].get()->EnterPlayer(player);
 
@@ -53,7 +53,7 @@ bool GameManager::EnterInRoom(SPtr_GamePlayer player, int roomid)
 	}
 	// ENTER IN SPECIFIC ROOM 
 	else if (roomid >= 0 && roomid < static_cast<int>(mRoomMaxCnt)) {
-		bool checkin = mRooms[roomid].get()->CheckIn();
+		bool checkin = mRooms[roomid].get()->IsPossibleToEnter();
 		if (checkin) {
 			mRooms[roomid].get()->EnterPlayer(player);
 			//mSRWLock.UnlockWrite();

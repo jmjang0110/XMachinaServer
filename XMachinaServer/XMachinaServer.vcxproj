@@ -180,6 +180,7 @@
     <ClInclude Include="Contents\PlayerController.h" />
     <ClInclude Include="Contents\ResourceManager.h" />
     <ClInclude Include="Contents\Sector.h" />
+    <ClInclude Include="Contents\SectorController.h" />
     <ClInclude Include="Contents\TimeManager.h" />
     <ClInclude Include="Contents\Transform.h" />
     <ClInclude Include="Contents\Util\Common.h" />
@@ -193,7 +194,6 @@
     <ClInclude Include="Protocol\Struct_generated.h" />
     <ClInclude Include="Protocol\Transform_generated.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="SectorController.h" />
     <ClInclude Include="ServerLib\ClientNetwork.h" />
     <ClInclude Include="ServerLib\Listener.h" />
     <ClInclude Include="ServerLib\Lock.h" />
@@ -241,6 +241,7 @@
     <ClCompile Include="Contents\PlayerController.cpp" />
     <ClCompile Include="Contents\ResourceManager.cpp" />
     <ClCompile Include="Contents\Sector.cpp" />
+    <ClCompile Include="Contents\SectorController.cpp" />
     <ClCompile Include="Contents\TimeManager.cpp" />
     <ClCompile Include="Contents\Transform.cpp" />
     <ClCompile Include="Framework.cpp" />
@@ -256,7 +257,6 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Protocol\FBsPacketFactory.cpp" />
-    <ClCompile Include="SectorController.cpp" />
     <ClCompile Include="ServerLib\ClientNetwork.cpp" />
     <ClCompile Include="ServerLib\Listener.cpp" />
     <ClCompile Include="ServerLib\Lock.cpp" />

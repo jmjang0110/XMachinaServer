@@ -48,7 +48,7 @@ namespace SendPktInfo {
 		// ... 
 	};
 
-	constexpr UINT16 MemoryNum = 100;
+	constexpr UINT16 MemoryNum = 200;
 }
 
 

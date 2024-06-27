@@ -284,9 +284,6 @@
     <ClInclude Include="Contents\PlayerController.h">
       <Filter>Framework\Contents\GameWorld\Controller</Filter>
     </ClInclude>
-    <ClInclude Include="SectorController.h">
-      <Filter>Framework\Contents\GameWorld\Controller</Filter>
-    </ClInclude>
     <ClInclude Include="Contents\Sector.h">
       <Filter>Framework\Contents\GameWorld\Sector</Filter>
     </ClInclude>
@@ -295,6 +292,9 @@
     </ClInclude>
     <ClInclude Include="Contents\ResourceManager.h">
       <Filter>Framework\Contents\GameWorld\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\SectorController.h">
+      <Filter>Framework\Contents\GameWorld\Controller</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -434,9 +434,6 @@
     <ClCompile Include="Contents\PlayerController.cpp">
       <Filter>Framework\Contents\GameWorld\Controller</Filter>
     </ClCompile>
-    <ClCompile Include="SectorController.cpp">
-      <Filter>Framework\Contents\GameWorld\Controller</Filter>
-    </ClCompile>
     <ClCompile Include="Contents\Sector.cpp">
       <Filter>Framework\Contents\GameWorld\Sector</Filter>
     </ClCompile>
@@ -445,6 +442,9 @@
     </ClCompile>
     <ClCompile Include="Contents\ResourceManager.cpp">
       <Filter>Framework\Contents\GameWorld\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\SectorController.cpp">
+      <Filter>Framework\Contents\GameWorld\Controller</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

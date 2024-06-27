@@ -1,5 +1,8 @@
 #pragma once
 #include "GamePlayer.h"
+#include "PlayerController.h"
+#include "NPCController.h"
+#include "SectorController.h"
 
 class GameObject;
 namespace RoomInfo
@@ -8,33 +11,47 @@ namespace RoomInfo
 };
 class GameRoom : public GameEntity
 {
-	Lock::SRWLock mSRWLock;
 
 private:
-	int		mID = -1; /* ROOM ID */
-	concurrency::concurrent_unordered_map<UINT32, SPtr_GamePlayer>	mGamePlayers;			// Key : ID / Value : Player ( Shared Ptr )
-	std::atomic_int32_t												mCurrPlayerCnt = {};	/* CURRENT PLAYER COUNT IN THIS ROOM */
+	int					mID = -1; /* ROOM ID */
+	PlayerController*	mPC = {};
+	NPCController*		mNC = {};
+	SectorController*	mSC = {};
+
 
 public:
 	GameRoom();
 	~GameRoom();
 
 public:
-	/* GamePlayer */
-	bool			EnterPlayer(SPtr_GamePlayer player); // WRITE Lock
-	bool			ExitPlayer(UINT32 sessionID);		 // WRITE Lock
-	SPtr_GamePlayer FindPlayer(UINT32 sessionID);		 // READ  Lock 
-
-	UINT32			GetPlayersSize() { return mCurrPlayerCnt.load(); }
-
-	void Broadcast(SPtr_SendPktBuf spkt, UINT32 exceptSessionID = -1); /* Broadcast Server Packet To Sessions In This Room */
-	void SendPacket(UINT32 sessionID, SPtr_SendPktBuf sendPkt);
-
-	std::vector<PlayerInfo> GetInsertedPlayersInfo(); // READ Lock 
+	/// +-------------------------------------------------------------------
+	///	¢º¢º¢º Room
+	/// -------------------------------------------------------------------+
 	void SetRoomID(int id) { mID = id; }
+	void Init(int roomid);
+	bool IsPossibleToEnter(); 
+
+public:
+	/// +-------------------------------------------------------------------
+	///	¢º¢º¢º Player Controller 
+	/// -------------------------------------------------------------------+
+	bool EnterPlayer(SPtr_GamePlayer player);
+	bool ExitPlayer(UINT32 id);
+	void Broadcast(SPtr_SendPktBuf packet, UINT32 exceptsessionid = -1);
+	void SendPacket(UINT32 sessionid, SPtr_SendPktBuf packet);
+	std::vector<PlayerInfo> GetInsertedPlayersInfo();
+
+public:
+	/// +-------------------------------------------------------------------
+	///	¢º¢º¢º NPC Controller 
+	/// -------------------------------------------------------------------+
+
+public:
+	/// +-------------------------------------------------------------------
+	///	¢º¢º¢º Sector Controller 
+	/// -------------------------------------------------------------------+
 
 
-	bool CheckIn(); /* CHECK ( IS IT POSSIBLE TO ENTER IN THIS ROOM? ) */
-
+	
 };
 
