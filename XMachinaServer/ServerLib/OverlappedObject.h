@@ -119,10 +119,15 @@ private:
 public:
 	size_t BufSize()								{ return mSendBuffers.size(); }
 	void   BufPush(SPtr_SendPktBuf sendBuf)			{ mSendBuffers.emplace_back(sendBuf); }
-	void   BufClear()								{ mSendBuffers.clear(); }
+	void   BufClear()								{ for (int i = 0; i < mSendBuffers.size(); ++i) { mSendBuffers[i] = nullptr; }; mSendBuffers.clear(); }
 	std::vector<SPtr_SendPktBuf>& GetSendBuffers()	{ return mSendBuffers; }
 
-	void ReleaseSendBuffersReferenceCount() { mSendBuffers.clear(); }
+	void ReleaseSendBuffersReferenceCount() { 
+		for (int i = 0; i < mSendBuffers.size(); ++i) 
+		{ 
+			mSendBuffers[i] = nullptr; 
+		}; 
+		mSendBuffers.clear(); }
 
 public:
 	Overlapped_Send() 

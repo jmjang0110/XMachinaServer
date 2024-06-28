@@ -9,7 +9,7 @@ GameMonster::GameMonster()
 GameMonster::GameMonster(UINT32 id)
 	: GameObject(id)
 {
-
+	
 }
 
 GameMonster::~GameMonster()

@@ -5,6 +5,10 @@
 enum class TimerEventType {
 	None,
 	Update_Ursacetus,
+	Update_Onyscidus,
+	Update_AdvancedCombatDroid_5,
+	
+	END,
 
 };
 

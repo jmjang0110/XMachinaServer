@@ -27,7 +27,7 @@ void GameRoom::Init(int roomid)
 	mNC = new NPCController;
 	mSC = new SectorController;
 
-	mPC->Init(roomid);
+	mPC->Init(roomid, std::static_pointer_cast<GameRoom>(shared_from_this()));
 
 }
 

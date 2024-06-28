@@ -29,13 +29,11 @@ private:
 public:
 	virtual void Update() override;
 	virtual void WakeUp() override;
-
-public:
 	virtual void Dispatch(class OverlappedObject* overlapped, UINT32 bytes = 0) override;
 
 public:
 	Monster_Ursacetus();
-	Monster_Ursacetus(UINT32 id);
+	Monster_Ursacetus(UINT32 sessionID);
 	virtual ~Monster_Ursacetus();
 
 };

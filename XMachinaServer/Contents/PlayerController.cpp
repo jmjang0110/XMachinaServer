@@ -18,18 +18,11 @@ bool PlayerController::EnterPlayer(SPtr_GamePlayer player)
 	mCurrPlayerCnt.fetch_add(1);
 
 	{
-		LOG_MGR->Cout(TLS_MGR->Get_TlsInfoData()->id, " TH - PLAYER : ", player->GetID(), "SRWLOCK Write Lock 시도\n");
-
 		mSRWLock.LockWrite();
 		mGamePlayers[player->GetID()] = player;
 		player->setRoomID(mRoomID);
 
-		LOG_MGR->Cout(TLS_MGR->Get_TlsInfoData()->id, " TH - PLAYER : ", player->GetID(), "SRWLOCK  Write UnLock 시도\n");
-
 		mSRWLock.UnlockWrite();
-
-		LOG_MGR->Cout(TLS_MGR->Get_TlsInfoData()->id, " TH - PLAYER : ", player->GetID(), "SRWLOCK  Write UnLock 성공\n");
-
 	}
 
 
@@ -41,9 +34,11 @@ bool PlayerController::EnterPlayer(SPtr_GamePlayer player)
 	return true;
 }
 
-void PlayerController::Init(int roomID)
+void PlayerController::Init(int roomID, SPtr_GameRoom owner)
 {
-	mRoomID = roomID;
+	mRoomID    = roomID;
+	mOwnerRoom = owner;
+
 }
 
 bool PlayerController::ExitPlayer(UINT32 sessionID)
@@ -96,7 +91,7 @@ void PlayerController::Broadcast(SPtr_SendPktBuf spkt, UINT32 exceptSessionID)
 
 void PlayerController::SendPacket(UINT32 sessionID, SPtr_SendPktBuf sendPkt)
 {
-	mSRWLock.LockWrite();
+	mSRWLock.LockRead();
 
 	const auto& iter = mGamePlayers.find(sessionID);
 	if (iter != mGamePlayers.end()) {
@@ -105,7 +100,7 @@ void PlayerController::SendPacket(UINT32 sessionID, SPtr_SendPktBuf sendPkt)
 			session->Send(sendPkt);
 	}
 
-	mSRWLock.UnlockWrite();
+	mSRWLock.UnlockRead();
 }
 
 std::vector<PlayerInfo> PlayerController::GetInsertedPlayersInfo()

@@ -14,3 +14,8 @@ Sector::Sector(int id)
 Sector::~Sector()
 {
 }
+
+void Sector::Init()
+{
+
+}

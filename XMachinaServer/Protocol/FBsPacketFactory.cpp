@@ -227,7 +227,7 @@ bool FBsPacketFactory::Process_CPkt_NetworkLatency(SPtr_Session session, const F
 	auto spkt = FBS_FACTORY->SPkt_NetworkLatency(timestamp);
 
 	session->Send(spkt);
-	//GAME_MGR->Send(spkt, gameSession->GetPlayerInfo().RoomID, session->GetID());
+	GAME_MGR->Send(spkt, gameSession->GetPlayerInfo().RoomID, session->GetID());
 
 	return true;
 }

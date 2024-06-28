@@ -2,6 +2,7 @@
 #undef max
 #include "Enum_generated.h"
 #include "GameObject.h"
+#include "GameMonster.h"
 
 /// +-------------------------------
 ///		     GamePlayer
@@ -39,7 +40,9 @@ struct PlayerInfo
 
 	UINT32					PlayerID  = -1; /* PLAYER ID */ /// - 여기서 ID는 현재 접속 후의 일시적인 아이디이다. DB에서 정보를 받을려면 stirngID를 이용해야한다.
 	UINT32					RoomID	  = -1; /* ROOM NUMBER */
+	std::vector<Coordinate>	CurSectorID;	// 현재 속해있는 Sector index ( 여러개일 수 있음 ) 최대 4개..
 	std::string				Name      = {};
+
 
 	float					Velocity  = {};
 
@@ -53,6 +56,14 @@ struct PlayerInfo
 	PlayerInfo(UINT32 id, std::string name, FBProtocol::OBJECT_TYPE type) { PlayerID = id, Name = name, Type = type; }
 	~PlayerInfo() { Owner = nullptr; /* Decrease Ref */ };
 };
+
+struct ViewList
+{
+	std::unordered_map<int, GameObject*> VL_Players;
+	std::unordered_map<int, GameObject*> VL_Monsters;
+
+};
+
 
 /* GAME PLAYER */
 class GamePlayer : public GameObject

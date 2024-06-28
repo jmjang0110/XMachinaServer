@@ -156,6 +156,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Contents\AStarPath.h" />
+    <ClInclude Include="Contents\BehaviorTree.h" />
+    <ClInclude Include="Contents\BTNode.h" />
     <ClInclude Include="Contents\DBController.h" />
     <ClInclude Include="Contents\DB_Inventory.h" />
     <ClInclude Include="Contents\DB_Item.h" />
@@ -175,6 +177,8 @@
     <ClInclude Include="Contents\GameWorld.h" />
     <ClInclude Include="Contents\Key.h" />
     <ClInclude Include="Contents\LogManager.h" />
+    <ClInclude Include="Contents\Monster_AdvancedCombatDroid_5.h" />
+    <ClInclude Include="Contents\Monster_Onyscidus.h" />
     <ClInclude Include="Contents\Monster_Ursacetus.h" />
     <ClInclude Include="Contents\NPCController.h" />
     <ClInclude Include="Contents\PlayerController.h" />
@@ -218,6 +222,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Contents\AStarPath.cpp" />
+    <ClCompile Include="Contents\BehaviorTree.cpp" />
+    <ClCompile Include="Contents\BTNode.cpp" />
     <ClCompile Include="Contents\DBController.cpp" />
     <ClCompile Include="Contents\DB_Inventory.cpp" />
     <ClCompile Include="Contents\DB_Item.cpp" />
@@ -236,6 +242,8 @@
     <ClCompile Include="Contents\GameWorld.cpp" />
     <ClCompile Include="Contents\Key.cpp" />
     <ClCompile Include="Contents\LogManager.cpp" />
+    <ClCompile Include="Contents\Monster_AdvancedCombatDroid_5.cpp" />
+    <ClCompile Include="Contents\Monster_Onyscidus.cpp" />
     <ClCompile Include="Contents\Monster_Ursacetus.cpp" />
     <ClCompile Include="Contents\NPCController.cpp" />
     <ClCompile Include="Contents\PlayerController.cpp" />

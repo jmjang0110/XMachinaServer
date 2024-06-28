@@ -150,7 +150,13 @@ void SendBuffersFactory::InitPacketMemoryPools()
 
 void* SendBuffersFactory::Pull_SendPkt()
 {
-	return mMemPools_SptrSendPkt->Pull();
+	mPullCount.fetch_add(1);
+	void* ptr = mMemPools_SptrSendPkt->Pull();
+	//LOG_MGR->Cout("SENDPKT PULL :", ptr, "\n");
+//	LOG_MGR->Cout("PULL COUNT : ", mPullCount.load(), "\n");
+
+	return ptr;
+
 }
 
 /* PULL */
@@ -189,6 +195,7 @@ void* SendBuffersFactory::Pull_FixPkt(SendPktInfo::Fix type)
 /* PUSH */
 void SendBuffersFactory::Push_VarPkt(size_t memorySize, void* ptr)
 {
+
 	if (memorySize <= 32) {
 		mMemPools_VarPkt[SendPktInfo::Var::BYTES_32]->Push(ptr);
 	}
@@ -219,6 +226,10 @@ void SendBuffersFactory::Push_FixPkt(SendPktInfo::Fix type, void* ptr)
 
 void SendBuffersFactory::Push_SendPkt(void* ptr)
 {
+	mPushCount.fetch_add(1);
+	//LOG_MGR->Cout("SENDPKT PUSH : ", ptr, "\n");
+	//LOG_MGR->Cout("REMAIN COUNT : ", mPullCount.load() - mPushCount.load(), "\n");
+
 	mMemPools_SptrSendPkt->Push(ptr);
 }
 

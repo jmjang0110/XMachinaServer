@@ -116,6 +116,9 @@
     <Filter Include="Framework\Contents\GameWorld\Resource">
       <UniqueIdentifier>{16f275fe-ca93-4106-a56c-4e35b19fa46a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Monster\BehaviorTree">
+      <UniqueIdentifier>{06347b9f-d671-4476-9c45-4730a12c7d22}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework.h">
@@ -296,6 +299,18 @@
     <ClInclude Include="Contents\SectorController.h">
       <Filter>Framework\Contents\GameWorld\Controller</Filter>
     </ClInclude>
+    <ClInclude Include="Contents\Monster_AdvancedCombatDroid_5.h">
+      <Filter>Framework\Contents\GameWorld\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Monster_Onyscidus.h">
+      <Filter>Framework\Contents\GameWorld\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\BehaviorTree.h">
+      <Filter>Framework\Contents\GameWorld\Monster\BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\BTNode.h">
+      <Filter>Framework\Contents\GameWorld\Monster\BehaviorTree</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp">
@@ -445,6 +460,18 @@
     </ClCompile>
     <ClCompile Include="Contents\SectorController.cpp">
       <Filter>Framework\Contents\GameWorld\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Monster_AdvancedCombatDroid_5.cpp">
+      <Filter>Framework\Contents\GameWorld\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Monster_Onyscidus.cpp">
+      <Filter>Framework\Contents\GameWorld\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\BehaviorTree.cpp">
+      <Filter>Framework\Contents\GameWorld\Monster\BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\BTNode.cpp">
+      <Filter>Framework\Contents\GameWorld\Monster\BehaviorTree</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

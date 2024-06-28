@@ -60,6 +60,8 @@ private:
 	std::unordered_map<SendPktInfo::Var, SPtr_SListMemoryPool> mMemPools_VarPkt      = {}; // 가변길이 패킷 전용 메모리 풀 
 	std::unordered_map<SendPktInfo::Fix, SPtr_SListMemoryPool> mMemPools_FixPkt      = {}; // 고정길이 패킷 전용 메모리 풀 
 
+	std::atomic_int mPushCount = 0;;
+	std::atomic_int mPullCount = 0;;
 public:
 	SendBuffersFactory();
 	~SendBuffersFactory();

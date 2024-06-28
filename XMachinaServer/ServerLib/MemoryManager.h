@@ -23,7 +23,7 @@ enum class MemorySize : UINT16
 
 enum class MemoryCnt : UINT16
 {
-	BYTES_32_CNT	= 100,
+	BYTES_32_CNT	= 1000000,
 	BYTES_64_CNT	= 100,
 	BYTES_128_CNT	= 100,
 	BYTES_256_CNT	= 80,

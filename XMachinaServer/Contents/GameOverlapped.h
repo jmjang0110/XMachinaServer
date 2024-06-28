@@ -1,5 +1,6 @@
 #pragma once
 #include "ServerLib/OverlappedObject.h"
+#include "ServerLib/MemoryManager.h"
 
 namespace OverlappedEx {
 	enum class Type  : UINT8 {
@@ -25,6 +26,8 @@ public:
 
 	~Overlapped_Monster_Update()
 	{
+		MEMORY->Delete(this);
+
 	}
 
 };

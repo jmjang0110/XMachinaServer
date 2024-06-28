@@ -14,6 +14,8 @@
 /// -------------------------------+
 
 #include "Monster_Ursacetus.h"
+#include "Monster_AdvancedCombatDroid_5.h"
+#include "Monster_Onyscidus.h"
 
 #define GAME_WORLD GameWorld::GetInst()
 
@@ -22,7 +24,9 @@ class GameWorld
 	DECLARE_SINGLETON(GameWorld);
 
 private:
-	std::shared_ptr<Monster_Ursacetus> m_Mon_Ursacetus[100]{};
+	std::shared_ptr<Monster_Ursacetus>				m_Mon_Ursacetus[100]{};
+	std::shared_ptr<Monster_AdvancedCombatDroid_5>	m_Mon_AndCombat5[100]{};
+	std::shared_ptr<Monster_Onyscidus>				m_Mon_Onyscidus[100]{};
 
 public:
 	GameWorld();
@@ -37,6 +41,8 @@ public:
 
 public:
 	SPtr_NetObj GetUrsacetusSPtr(int idx) { return m_Mon_Ursacetus[idx]; }
+	SPtr_NetObj GetAdvCombat5(int idx) { return m_Mon_AndCombat5[idx]; }
+	SPtr_NetObj GetOnyscidus(int idx) { return m_Mon_Onyscidus[idx]; }
 
 };
 

@@ -44,3 +44,10 @@ using SPtr_GamePlayer  = std::shared_ptr<class GamePlayer>;
 
 
 constexpr UINT32 MAX_SESSION_NUM = 500;
+
+/* ÁÂÇ¥ */
+struct Coordinate
+{
+	int x;
+	int z;
+};

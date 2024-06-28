@@ -5,7 +5,7 @@
 /// +-------------------------------
 ///		   PlayerController
 /// ________________________________
-///	[ 설명 ] 
+///	> [ 설명 ] 
 /// - Room 안에 있는 Player 들을 관리한다. 
 /// 
 /// 
@@ -13,6 +13,9 @@
 
 class PlayerController
 {
+private:
+	SPtr_GameRoom mOwnerRoom;
+
 private:
 	Lock::SRWLock mSRWLock;
 
@@ -22,7 +25,7 @@ private:
 
 public:
 	/* GamePlayer */
-	void			Init(int roomID);
+	void			Init(int roomID, SPtr_GameRoom owner);
 
 	// WRITE Lock
 	bool			EnterPlayer(SPtr_GamePlayer player); 
