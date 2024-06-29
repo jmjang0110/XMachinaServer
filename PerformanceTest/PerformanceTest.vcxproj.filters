@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Memory Test">
+      <UniqueIdentifier>{b7b2d9c5-eac4-404f-9fc6-ba9d261cf6e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{99e8d1c0-dd25-41ae-b6d1-dd199596ef2b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Memory Test\SList Memory">
+      <UniqueIdentifier>{651c7673-083d-48a8-8855-19d99978339f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Memory Test\Memory Test">
+      <UniqueIdentifier>{0a118b15-b114-40ff-bb2a-0251ebb93828}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="pch.cpp">
+      <Filter>Headers</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadManager.cpp" />
+    <ClCompile Include="MemoryTest\MemoryManager.cpp">
+      <Filter>Memory Test\SList Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="MemoryTest\SListMemoryPool.cpp">
+      <Filter>Memory Test\SList Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="MemoryTest\BlockMemoryPool.cpp">
+      <Filter>Memory Test\Memory Test</Filter>
+    </ClCompile>
+    <ClCompile Include="SpinLock.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="UtilityMacro.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadManager.h" />
+    <ClInclude Include="MemoryTest\MemoryManager.h">
+      <Filter>Memory Test\SList Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryTest\SListMemoryPool.h">
+      <Filter>Memory Test\SList Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryTest\BlockMemoryPool.h">
+      <Filter>Memory Test\Memory Test</Filter>
+    </ClInclude>
+    <ClInclude Include="SpinLock.h" />
+  </ItemGroup>
+</Project>

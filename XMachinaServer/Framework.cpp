@@ -183,48 +183,6 @@ bool Framework::Init(HINSTANCE& hInst)
 }
 
 
-template <typename T>
-class MemoryPool_TEST {
-public:
-	MemoryPool_TEST() {};
-	MemoryPool_TEST(size_t pool_Size) {
-		// 미리 지정한 크기만큼 메모리 블록을 할당합니다.
-		expandPool(pool_Size);
-	}
-
-	~MemoryPool_TEST() {
-		// 할당된 모든 메모리를 해제합니다.
-		for (auto ptr : pool) {
-			::operator delete(ptr);
-		}
-	}
-
-	T* allocate() {
-		if (pool.empty()) {
-			// 풀에 사용할 수 있는 메모리가 없으면 풀을 확장합니다.
-			expandPool(defaultPoolSize);
-		}
-		// 풀에서 메모리 블록을 하나 꺼내서 반환합니다.
-		T* ptr = static_cast<T*>(pool.back());
-		pool.pop_back();
-		return ptr;
-	}
-
-	void deallocate(T* ptr) {
-		// 사용한 메모리 블록을 다시 풀에 넣습니다.
-		pool.push_back(ptr);
-	}
-
-private:
-	std::vector<void*> pool;
-	const size_t defaultPoolSize = 10;
-
-	void expandPool(size_t size) {
-		for (size_t i = 0; i < size; ++i) {
-			pool.push_back(::operator new(sizeof(T)));
-		}
-	}
-};
 void Framework::Launch()
 {
 
@@ -260,46 +218,9 @@ void Framework::Launch()
 			UINT32 msTimeOut = 0;
 			while (!stop.load())
 			{
-
 				//LOG_MGR->Cout(TLS_MGR->Get_TlsInfoData()->id, " \n");
 				mServer->WorkerThread(msTimeOut);
 
-				// 메모리 풀을 생성합니다. 여기서 100개의 블록을 미리 할당합니다.
-				MemoryPool_TEST<int> intPool(100000);
-
-				// 두 번째 루프의 시간 측정
-				auto start3 = std::chrono::high_resolution_clock::now();
-				for (int i = 0; i < 100000; ++i) {
-					int* a = intPool.allocate();
-					intPool.deallocate(a);
-				}
-				auto end3 = std::chrono::high_resolution_clock::now();
-				std::chrono::duration<double> duration3 = end3 - start3;
-				std::cout << "MEMORYPOOL_TEST loop duration: " << duration3.count() << " seconds" << std::endl;
-
-				// 두 번째 루프의 시간 측정
-				auto start2 = std::chrono::high_resolution_clock::now();
-				for (int i = 0; i < 100000; ++i) {
-					int* a = MEMORY->New<int>();
-					MEMORY->Delete<int>(a);
-				}
-				auto end2 = std::chrono::high_resolution_clock::now();
-				std::chrono::duration<double> duration2 = end2 - start2;
-				std::cout << "MEMORY loop duration: " << duration2.count() << " seconds" << std::endl;
-
-
-				auto start1 = std::chrono::high_resolution_clock::now();
-				for (int i = 0; i < 100000; ++i) {
-					int* a = new int;
-					delete a;
-				}
-				auto end1 = std::chrono::high_resolution_clock::now();
-				std::chrono::duration<double> duration1 = end1 - start1;
-				std::cout << "NEW DELETE loop duration: " << duration1.count() << " seconds" << std::endl;
-
-
-				int g;
-				std::cin >> g;
 			}
 
 			});

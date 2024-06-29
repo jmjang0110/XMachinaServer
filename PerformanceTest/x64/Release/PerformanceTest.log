@@ -1,0 +1,15 @@
+﻿  main.cpp
+C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\MemoryTest\MemoryManager.h(26,2): warning C4309: '초기화 중': 상수 값이 잘립니다.
+  (소스 파일 '/main.cpp'을(를) 컴파일하는 중)
+  
+C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\MemoryTest\MemoryManager.h(26,2): warning C4369: 'MemoryCnt::BYTES_32_CNT':  열거자 값 '1000000'을(를) 'unsigned short'(으)로 나타낼 수 없습니다. 값은 '1000000'입니다.
+  (소스 파일 '/main.cpp'을(를) 컴파일하는 중)
+  
+  코드를 생성하고 있습니다.
+  1 of 633 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  코드를 생성했습니다.
+  PerformanceTest.vcxproj -> C:\MyGithub\Xmachina\XMachinaServer\x64\Release\PerformanceTest.exe
+  'pwsh.exe'은(는) 내부 또는 외부 명령, 실행할 수 있는 프로그램, 또는
+  배치 파일이 아닙니다.

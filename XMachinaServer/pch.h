@@ -38,9 +38,12 @@
 #include "Contents/LogManager.h"
 
 
-using SPtr_GameSession = std::shared_ptr<class GameSession>;
-using SPtr_GameRoom    = std::shared_ptr<class GameRoom>;
-using SPtr_GamePlayer  = std::shared_ptr<class GamePlayer>;
+using SPtr_GameSession   = std::shared_ptr<class GameSession>;
+using SPtr_GameRoom      = std::shared_ptr<class GameRoom>;
+using SPtr_GamePlayer    = std::shared_ptr<class GamePlayer>;
+using SPtr_GameMonster   = std::shared_ptr<class GameMonster>;
+using SPtr_GameStructure = std::shared_ptr<class GameStructure>;
+using SPtr_GameBullet    = std::shared_ptr<class GameBullet>;
 
 
 constexpr UINT32 MAX_SESSION_NUM = 500;

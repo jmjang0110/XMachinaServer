@@ -158,6 +158,7 @@
     <ClInclude Include="Contents\AStarPath.h" />
     <ClInclude Include="Contents\BehaviorTree.h" />
     <ClInclude Include="Contents\BTNode.h" />
+    <ClInclude Include="Contents\BTTask.h" />
     <ClInclude Include="Contents\DBController.h" />
     <ClInclude Include="Contents\DB_Inventory.h" />
     <ClInclude Include="Contents\DB_Item.h" />
@@ -174,6 +175,7 @@
     <ClInclude Include="Contents\GamePlayer.h" />
     <ClInclude Include="Contents\GameRoom.h" />
     <ClInclude Include="Contents\GameSession.h" />
+    <ClInclude Include="Contents\GameStructure.h" />
     <ClInclude Include="Contents\GameWorld.h" />
     <ClInclude Include="Contents\Key.h" />
     <ClInclude Include="Contents\LogManager.h" />
@@ -224,6 +226,7 @@
     <ClCompile Include="Contents\AStarPath.cpp" />
     <ClCompile Include="Contents\BehaviorTree.cpp" />
     <ClCompile Include="Contents\BTNode.cpp" />
+    <ClCompile Include="Contents\BTTask.cpp" />
     <ClCompile Include="Contents\DBController.cpp" />
     <ClCompile Include="Contents\DB_Inventory.cpp" />
     <ClCompile Include="Contents\DB_Item.cpp" />
@@ -239,6 +242,7 @@
     <ClCompile Include="Contents\GamePlayer.cpp" />
     <ClCompile Include="Contents\GameRoom.cpp" />
     <ClCompile Include="Contents\GameSession.cpp" />
+    <ClCompile Include="Contents\GameStructure.cpp" />
     <ClCompile Include="Contents\GameWorld.cpp" />
     <ClCompile Include="Contents\Key.cpp" />
     <ClCompile Include="Contents\LogManager.cpp" />

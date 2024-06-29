@@ -21,17 +21,29 @@ void BTNode::Attach(BTNode* node)
 {
 }
 
-BTNodeState Sequence_BTNode::Evaluate()
+/// +-------------------------------------------------------------------------
+///	> ¢º¢º¢º BT Node Sequence
+/// __________________________________________________________________________
+
+BTNodeState BTNode_Sequence::Evaluate()
 {
-    return BTNodeState();
+	return BTNodeState();
 }
 
-BTNodeState Action_BTNode::Evaluate()
+/// +-------------------------------------------------------------------------
+///	> ¢º¢º¢º BT Node Selector  
+/// __________________________________________________________________________
+BTNodeState BTNode_Selector::Evaluate()
 {
-    return BTNodeState();
+	return BTNodeState();
 }
 
-BTNodeState Selector_BTNode::Evaluate()
+
+/// +-------------------------------------------------------------------------
+///	> ¢º¢º¢º BT Node Action  
+/// __________________________________________________________________________
+
+BTNodeState BTNode_Action::Evaluate()
 {
-    return BTNodeState();
+	return BTNodeState();
 }

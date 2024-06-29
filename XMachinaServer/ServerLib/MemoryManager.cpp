@@ -76,9 +76,7 @@ bool MemoryManager::InitMemories()
 void MemoryManager::AddSListMemoryPool(std::string mpName, size_t MemorySize)
 {
     /* Locking */
-    while (mAtomicFlag.test_and_set(std::memory_order_acquire))
-    {
-    };
+  //  while (mAtomicFlag.test_and_set(std::memory_order_acquire)){ };
     
     if (mSLMemPoolsDict_Name[mpName] == nullptr) {
         SListMemoryPool* Pool = new SListMemoryPool(MemorySize);
@@ -93,16 +91,14 @@ void MemoryManager::AddSListMemoryPool(std::string mpName, size_t MemorySize)
     }
 
     /* UnLocking */
-    mAtomicFlag.clear(std::memory_order_release); 
+  //  mAtomicFlag.clear(std::memory_order_release); 
 }
 
 /* 메모리 풀을 메모리 사이즈로 관리 */
 void MemoryManager::AddSListMemoryPool(MemorySize memSize)
 { 
     /* Locking */
-    while (mAtomicFlag.test_and_set(std::memory_order_acquire))
-    {
-    };
+   // while (mAtomicFlag.test_and_set(std::memory_order_acquire)) { };
 
     if (mSLMemPoolsDict_Size[memSize] == nullptr) {
         SListMemoryPool* Pool = new SListMemoryPool(static_cast<size_t>(memSize));
@@ -115,13 +111,13 @@ void MemoryManager::AddSListMemoryPool(MemorySize memSize)
     }
 
     /* UnLocking */
-    mAtomicFlag.clear(std::memory_order_release);
+   // mAtomicFlag.clear(std::memory_order_release);
 
 }
 
 void* MemoryManager::Allocate(size_t size)
 {
-    while (mAtomicFlag.test_and_set(std::memory_order_acquire)); // Locking
+    //while (mAtomicFlag.test_and_set(std::memory_order_acquire)); // Locking
    
     void* ptr = nullptr;
 
@@ -163,13 +159,13 @@ void* MemoryManager::Allocate(size_t size)
         ptr = reinterpret_cast<void*>(reinterpret_cast<char*>(ptr) + sizeof(SLIST_ENTRY));
     }
 
-    mAtomicFlag.clear(std::memory_order_release); // Unlocking
+    //mAtomicFlag.clear(std::memory_order_release); // Unlocking
     return ptr;
 }
 
 void* MemoryManager::Allocate(std::string name)
 {
-    while (mAtomicFlag.test_and_set(std::memory_order_acquire)); // Locking
+   // while (mAtomicFlag.test_and_set(std::memory_order_acquire)); // Locking
 
     void* ptr = nullptr;
 
@@ -181,31 +177,27 @@ void* MemoryManager::Allocate(std::string name)
         }
     }
 
-    mAtomicFlag.clear(std::memory_order_release); // Unlocking
+  //  mAtomicFlag.clear(std::memory_order_release); // Unlocking
     return ptr;
 }
 
 void MemoryManager::Free(std::string mpName, void* ptr)
 {
     /* Locking */
-    while (mAtomicFlag.test_and_set(std::memory_order_acquire))
-    {
-    };
+   // while (mAtomicFlag.test_and_set(std::memory_order_acquire)) { };
 
     if (mSLMemPoolsDict_Name[mpName] != nullptr) {
         mSLMemPoolsDict_Name[mpName]->Push(ptr);
     }
 
     /* UnLocking */
-    mAtomicFlag.clear(std::memory_order_release);
+   // mAtomicFlag.clear(std::memory_order_release);
 }
 
 void MemoryManager::Free(size_t size, void* ptr)
 {
     ///* Locking */
-    while (mAtomicFlag.test_and_set(std::memory_order_acquire))
-    {
-    };
+    //while (mAtomicFlag.test_and_set(std::memory_order_acquire)){ };
 
     if (size <= 32) {
         mSLMemPoolsDict_Size[MemorySize::BYTES_32]->Push(ptr);
@@ -235,5 +227,5 @@ void MemoryManager::Free(size_t size, void* ptr)
     }*/
   
     /* UnLocking */
-    mAtomicFlag.clear(std::memory_order_release);
+    //mAtomicFlag.clear(std::memory_order_release);
 }
