@@ -10,37 +10,16 @@
 /// 
 /// -------------------------------+
 
-struct StructureInfos
-{
-	// Sector내에 모든 Structure 정보
-	concurrency::concurrent_unordered_map<UINT32, SPtr_GameStructure>	Structures;			// Key : ID / Value : Structre ( Shared Ptr )
-
-};
-
-struct BulletInfos
-{
-	// Sector내에 모든 Bullet 정보
-	concurrency::concurrent_unordered_map<UINT32, SPtr_GameBullet> Bullets;
-
-
-};
-
-struct MonsterInfos
-{
-	// Secotr내에 모든 Monster 정보 
-	concurrency::concurrent_unordered_map<UINT32, SPtr_GameMonster>	Monsters;			// Key : ID / Value : Moster ( Shared Ptr )
-
-};
-
 class NPCController
 {
 private:
 	SPtr_GameRoom mOwnerRoom;
 
 private:
-	MonsterInfos	mMI;
-	BulletInfos		mBI;
-	StructureInfos	mSI;
+	concurrency::concurrent_unordered_map<UINT32, SPtr_GameStructure>	mStructures;			// Key : ID / Value : Structre ( Shared Ptr )
+	concurrency::concurrent_unordered_map<UINT32, SPtr_GameBullet>		mBullets;
+	concurrency::concurrent_unordered_map<UINT32, SPtr_GameMonster>		mMonsters;				// Key : ID / Value : Moster ( Shared Ptr )
+
 
 public:
 	NPCController();

@@ -62,7 +62,8 @@ private:
 
 public:
 	/* LOGIN, LATENCY, CHAT */
-	SPtr_SendPktBuf SPkt_LogIn(bool success, PlayerInfo& myinfo, std::vector<PlayerInfo>& players);
+	SPtr_SendPktBuf SPkt_LogIn(bool success);
+	SPtr_SendPktBuf SPkt_EnterGame(PlayerInfo& myinfo, std::vector<PlayerInfo>& players);
 	SPtr_SendPktBuf SPkt_NetworkLatency(long long timestamp);
 	SPtr_SendPktBuf SPkt_Chat(uint32_t player_id, std::string msg);
 

@@ -1,5 +1,6 @@
 #pragma once
 #include "BTNode.h"
+#include "AStarPath.h"
 
 enum class BTTaskType : UINT16 {
 	/* Monster Task */
@@ -17,12 +18,17 @@ enum class BTTaskType : UINT16 {
 class BTTask : public BTNode_Action
 {
 private:
+	BTTaskType mType;
 
 public:
 	virtual BTNodeState Evaluate() override;
 
 public:
+	BTTaskType GetType() { return mType; }
+
+public:
 	BTTask();
+	BTTask(BTTaskType type);
 	~BTTask();
 
 };
@@ -117,6 +123,7 @@ namespace MonsterTask {
 
 	class PathPlanning_AStar : public BTTask {
 	private:
+		AStarPath mAStarPath;
 
 	public:
 		virtual BTNodeState Evaluate() override;

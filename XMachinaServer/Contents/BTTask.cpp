@@ -5,6 +5,13 @@ BTTask::BTTask()
 {
 }
 
+BTTask::BTTask(BTTaskType type)
+	: BTNode_Action()
+{
+	mType = type;
+
+}
+
 BTTask::~BTTask()
 {
 }
@@ -25,7 +32,9 @@ BTNodeState MonsterTask::Attack::Evaluate()
 }
 
 MonsterTask::Attack::Attack()
+	: BTTask(BTTaskType::MonT_Attack)
 {
+
 }
 
 MonsterTask::Attack::~Attack()
@@ -44,6 +53,7 @@ BTNodeState MonsterTask::GetHit::Evaluate()
 }
 
 MonsterTask::GetHit::GetHit()
+	: BTTask(BTTaskType::MonT_GetHit)
 {
 }
 
@@ -62,6 +72,7 @@ BTNodeState MonsterTask::MoveToPath::Evaluate()
 }
 
 MonsterTask::MoveToPath::MoveToPath()
+	: BTTask(BTTaskType::MonT_MoveToPath)
 {
 }
 
@@ -79,6 +90,7 @@ BTNodeState MonsterTask::MoveToTarget::Evaluate()
 }
 
 MonsterTask::MoveToTarget::MoveToTarget()
+	: BTTask(BTTaskType::MonT_MoveToTarget)
 {
 }
 
@@ -96,6 +108,7 @@ BTNodeState MonsterTask::PathPlanning_AStar::Evaluate()
 }
 
 MonsterTask::PathPlanning_AStar::PathPlanning_AStar()
+	: BTTask(BTTaskType::MonT_PathPlanningASatr)
 {
 }
 
@@ -113,6 +126,7 @@ BTNodeState MonsterTask::PathPlanningToSapwn::Evaluate()
 }
 
 MonsterTask::PathPlanningToSapwn::PathPlanningToSapwn()
+	: BTTask(BTTaskType::MonT_PathPlanningToSpawn)
 {
 }
 
@@ -130,6 +144,7 @@ BTNodeState MonsterTask::PathPlanningToTarget::Evaluate()
 }
 
 MonsterTask::PathPlanningToTarget::PathPlanningToTarget()
+	: BTTask(BTTaskType::MonT_PathPlanningToTarget)
 {
 }
 
@@ -147,6 +162,7 @@ BTNodeState MonsterTask::Patrol::Evaluate()
 }
 
 MonsterTask::Patrol::Patrol()
+	: BTTask(BTTaskType::MonT_Patrol)
 {
 }
 

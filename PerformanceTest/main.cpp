@@ -3,7 +3,8 @@
 #include "MemoryTest/BlockMemoryPool.h"
 #include "MemoryTest/MemoryManager.h"
 
-constexpr int TestNum = 1000'00;// 00;
+constexpr int TestNum2 = 1000'00;
+constexpr int TestNum = 1000'0000;
 
 BlockMemoryPool_Vector<int> intPool(TestNum);
 BlockMemoryPool_Array<int> intArrPool(TestNum);
@@ -21,7 +22,7 @@ int main(void) {
 
 
 			// 두 번째 루프의 시간 측정
-			for (int i = 0; i < TestNum; ++i) {
+			for (int i = 0; i < TestNum2; ++i) {
 
 				for (int i = 0; i < 100; ++i) {
 					int* a = intMyArrPool.Allocate();
@@ -48,7 +49,7 @@ int main(void) {
 
 
 			// 두 번째 루프의 시간 측정
-			for (int i = 0; i < TestNum; ++i) {
+			for (int i = 0; i < TestNum2; ++i) {
 				for (int i = 0; i < 100; ++i) {
 					int* a = intArrPool.allocate();
 					intArrPool.deallocate(a);
@@ -67,7 +68,7 @@ int main(void) {
 	THREAD_MGR->JoinAllThreads();
 
 
-	return 0;
+	//return 0;
 
 	for (int i = 0; i < Thread_Num; ++i) {
 		THREAD_MGR->RunThread("BlockMemoryPool_Vector TEST", [&]() {

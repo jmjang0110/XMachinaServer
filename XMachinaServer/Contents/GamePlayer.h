@@ -17,7 +17,14 @@
 namespace PlayerEnum
 {
 	enum class WeaponType : UINT8 {
-		H_Look, DBMS, Stuart, Descriptor, T_12, Pipeline, BurnOut, Direct_Drain
+		H_Look, 
+		DBMS, 
+		Stuart, 
+		Descriptor, 
+		T_12, 
+		Pipeline, 
+		BurnOut, 
+		Direct_Drain
 	};
 
 	enum class MotionState : DWORD {

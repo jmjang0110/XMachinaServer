@@ -175,29 +175,37 @@ bool FBsPacketFactory::Process_CPkt_LogIn(SPtr_Session session, const FBProtocol
 	LOG_MGR->WCout(L"-- LOG-IN-IP : IPv4-", gameSession->GetSocketData().GetIpAddress().c_str(), '\n');
 	LOG_MGR->SetColor(TextColor::Default);
 
-	/// +---------------------------------------------------------------------------------------------------------------
-	PlayerInfo				MyInfo = gameSession->GetPlayerInfo();  // MY GAME PLAYER INFO 
-	bool					LogInSuccess = true;						   // IS MY GAME PLAYER SUCCESS ?
-	std::vector<PlayerInfo> RemotePlayersInfo = GAME_MGR->GetPlayerInfos_Room(gameSession->GetPlayerInfo().RoomID); // REMOTE PLAYERS INFO IN ROOM ( MY PLAYER ROOM ID )
-	/// ---------------------------------------------------------------------------------------------------------------+
-
-	/// +-----------------------------------
-	/// GET SEND PKT ( LOG IN / NEW PLAYER )
-	/// -----------------------------------+
-	auto SendPkt_LogIn = FBS_FACTORY->SPkt_LogIn(LogInSuccess, MyInfo, RemotePlayersInfo);
-	auto SendPkt_NewPlayer = FBS_FACTORY->SPkt_NewPlayer(MyInfo);
 
 	/// +--------------------------------
 	/// SEND LOG IN PKT TO ME ( SESSION )
 	/// --------------------------------+
+	/// +---------------------------------------------------------------------------------------------------------------
+	bool LogInSuccess  = true;						   // IS MY GAME PLAYER SUCCESS ?
+	/// ---------------------------------------------------------------------------------------------------------------+
+
+	auto SendPkt_LogIn     = FBS_FACTORY->SPkt_LogIn(LogInSuccess);
 	session->Send(SendPkt_LogIn);
 	
+	return true;
+}
+
+bool FBsPacketFactory::Process_CPkt_EnterGame(SPtr_Session session, const FBProtocol::CPkt_EnterGame& pkt)
+{
+	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
+
+	int ID = pkt.player_id();
+
+	PlayerInfo				MyInfo            = gameSession->GetPlayerInfo();  // MY GAME PLAYER INFO 
+	std::vector<PlayerInfo> RemotePlayersInfo = GAME_MGR->GetPlayerInfos_Room(gameSession->GetPlayerInfo().RoomID); // REMOTE PLAYERS INFO IN ROOM ( MY PLAYER ROOM ID )
+
+	auto SendSPkt_EnterGame = FBS_FACTORY->SPkt_EnterGame(MyInfo, RemotePlayersInfo);
+	session->Send(SendSPkt_EnterGame);
 
 	/// +---------------------------------------------------------------------------------------
 	/// SEND NEW PLAYER PKT TO SESSIONS IN ROOM ( SESSION->GET ROOM ID ) - EXCEPT ME ( SESSION )
 	/// ---------------------------------------------------------------------------------------+
+	auto SendPkt_NewPlayer = FBS_FACTORY->SPkt_NewPlayer(MyInfo);
 	GAME_MGR->BroadcastRoom(gameSession->GetPlayerInfo().RoomID, SendPkt_NewPlayer, gameSession->GetID());
-
 
 	return true;
 }
@@ -206,12 +214,6 @@ bool FBsPacketFactory::Process_CPkt_Chat(SPtr_Session session, const FBProtocol:
 {
 	std::cout << "CPKT CHAT [" << session->GetID() << "] - SESSION : " << session.get() << " DATA : " <<
 		pkt.message()->c_str() << std::endl;
-	return true;
-}
-
-
-bool FBsPacketFactory::Process_CPkt_EnterGame(SPtr_Session session, const FBProtocol::CPkt_EnterGame& pkt)
-{
 	return true;
 }
 
@@ -350,53 +352,20 @@ bool FBsPacketFactory::Process_CPkt_Bullet_OnCollision(SPtr_Session session, con
 ///	◈ SEND [ LogIn, Chat, NetworkLatency ] PACKET ◈
 /// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------★
 
-SPtr_SendPktBuf FBsPacketFactory::SPkt_LogIn(bool success, PlayerInfo& myinfo, std::vector<PlayerInfo>& players)
+SPtr_SendPktBuf FBsPacketFactory::SPkt_LogIn(bool success)
 {
 	/// ○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○
 	/// table SPkt_LogIn
 	/// {
 	///		success: bool;			// 1 byte
-	///		myinfo: Player;			// 나의 정보 
-	///		players: [Player] ;		// 나를 포함한 Room안의 모든 player 정보 
+
 	/// }
 	/// ○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○
 
 	flatbuffers::FlatBufferBuilder builder;
 
-	/* Create ServerPacket */
-	bool successOffset = true;
-	std::vector<flatbuffers::Offset<FBProtocol::Player>> PlayerInfos_vector;
-
-	/* My Player Info */
-	auto position = FBProtocol::CreateVector3(builder, myinfo.Position.x, myinfo.Position.y, myinfo.Position.z);
-	auto rotation = FBProtocol::CreateVector3(builder, myinfo.Rotation.x, myinfo.Rotation.y, myinfo.Rotation.z);
-	auto transform = FBProtocol::CreateTransform(builder, position, rotation);
-
-	auto Spine_LookDir = FBProtocol::CreateVector3(builder, myinfo.SpineDir.x, myinfo.SpineDir.y, myinfo.SpineDir.z);
-	auto Myinfo = CreatePlayer(builder, myinfo.PlayerID, builder.CreateString(myinfo.Name), myinfo.Type, transform, Spine_LookDir);
-
-	/* Remote Players */
-	for (PlayerInfo& p : players) {
-		auto ID = p.PlayerID;
-		auto name = builder.CreateString(p.Name);
-		auto PlayerInfoType = p.Type;
-
-		auto position = FBProtocol::CreateVector3(builder, p.Position.x, p.Position.y, p.Position.z);
-		auto rotation = FBProtocol::CreateVector3(builder, p.Rotation.x, p.Rotation.y, p.Rotation.z);
-		auto transform = FBProtocol::CreateTransform(builder, position, rotation);
-
-		auto Spine_LookDir = FBProtocol::CreateVector3(builder, p.SpineDir.x, p.SpineDir.y, p.SpineDir.z);
-
-
-		auto PlayerInfo = CreatePlayer(builder, ID, name, PlayerInfoType, transform, Spine_LookDir); // CreatePlayerInfo는 스키마에 정의된 함수입니다.
-		PlayerInfos_vector.push_back(PlayerInfo);
-	}
-	auto PlayerInfosOffset = builder.CreateVector(PlayerInfos_vector);
-
-
-
 	/* CREATE LOG IN PACKET */
-	auto ServerPacket = FBProtocol::CreateSPkt_LogIn(builder, successOffset, Myinfo, PlayerInfosOffset);
+	auto ServerPacket = FBProtocol::CreateSPkt_LogIn(builder, success);
 	builder.Finish(ServerPacket);
 
 	/* Create SendBuffer */
@@ -427,6 +396,47 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_Chat(uint32_t player_id, std::string msg)
 	const uint16_t serializedDataSize = static_cast<uint16_t>(builder.GetSize());
 
 	return SEND_FACTORY->CreatePacket(bufferPtr, serializedDataSize, FBsProtocolID::SPkt_Chat);
+}
+
+SPtr_SendPktBuf FBsPacketFactory::SPkt_EnterGame(PlayerInfo& myinfo, std::vector<PlayerInfo>& players)
+{
+	flatbuffers::FlatBufferBuilder builder;
+
+	std::vector<flatbuffers::Offset<FBProtocol::Player>> PlayerInfos_vector;
+
+	/* My Player Info */
+	auto position      = FBProtocol::CreateVector3(builder, myinfo.Position.x, myinfo.Position.y, myinfo.Position.z);
+	auto rotation      = FBProtocol::CreateVector3(builder, myinfo.Rotation.x, myinfo.Rotation.y, myinfo.Rotation.z);
+	auto transform     = FBProtocol::CreateTransform(builder, position, rotation);
+	auto Spine_LookDir = FBProtocol::CreateVector3(builder, myinfo.SpineDir.x, myinfo.SpineDir.y, myinfo.SpineDir.z);
+	auto Myinfo        = CreatePlayer(builder, myinfo.PlayerID, builder.CreateString(myinfo.Name), myinfo.Type, transform, Spine_LookDir);
+
+	/* Remote Players */
+	for (PlayerInfo& p : players) {
+		auto ID             = p.PlayerID;
+		auto name           = builder.CreateString(p.Name);
+		auto PlayerInfoType = p.Type;
+		auto position       = FBProtocol::CreateVector3(builder, p.Position.x, p.Position.y, p.Position.z);
+		auto rotation       = FBProtocol::CreateVector3(builder, p.Rotation.x, p.Rotation.y, p.Rotation.z);
+		auto transform      = FBProtocol::CreateTransform(builder, position, rotation);
+		auto Spine_LookDir  = FBProtocol::CreateVector3(builder, p.SpineDir.x, p.SpineDir.y, p.SpineDir.z);
+
+
+		auto PlayerInfo = CreatePlayer(builder, ID, name, PlayerInfoType, transform, Spine_LookDir); // CreatePlayerInfo는 스키마에 정의된 함수입니다.
+		PlayerInfos_vector.push_back(PlayerInfo);
+	}
+	auto PlayerInfosOffset = builder.CreateVector(PlayerInfos_vector);
+
+	/* Enter Game Server Packet */
+	auto ServerPacket = FBProtocol::CreateSPkt_EnterGame(builder, Myinfo, PlayerInfosOffset);
+
+	builder.Finish(ServerPacket);
+
+	const uint8_t* bufferPtr = builder.GetBufferPointer();
+	const uint16_t serializedDataSize = static_cast<uint16_t>(builder.GetSize());
+
+	return SEND_FACTORY->CreatePacket(bufferPtr, serializedDataSize, FBsProtocolID::SPkt_EnterGame);
+
 }
 
 SPtr_SendPktBuf FBsPacketFactory::SPkt_NetworkLatency(long long timestamp)
