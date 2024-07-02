@@ -14,13 +14,23 @@
 ///	Monster_AdvancedCombatDroid_5
 /// -------------------------------+
 
+struct MonsterInfo {
+	uint32_t			ID;
+	MonsterType			Type;		/* 몬스터 종류*/
+	float				HP;		/* HP */
+	float				Attack;	/* 공격력 */
+
+	Vec3 Position;
+	Vec3 Rotation;
+
+	Vec3 SpineDir;
+
+};
 
 class GameMonster : public GameObject
 {
 private:
-	MonsterType			mType;		/* 몬스터 종류*/
-	float				mHP;		/* HP */
-	float				mAttack;	/* 공격력 */
+
 
 public:
 	virtual void Update() override;

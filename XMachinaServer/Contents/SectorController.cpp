@@ -19,7 +19,7 @@ SectorController::~SectorController()
 }
 
 
-bool SectorController::Init(SPtr_GameRoom owner)
+bool SectorController::Init(Coordinate sectorTotalSize, SPtr_GameRoom owner)
 {
     mOwnerRoom = owner;
 
@@ -31,14 +31,23 @@ bool SectorController::Init(SPtr_GameRoom owner)
         }
     }
 
+    mTotalSectorSize.x = sectorTotalSize.x;
+    mTotalSectorSize.z = sectorTotalSize.z;
+
+    mSectorSize.x = mTotalSectorSize.x / SectorInfo::Width;
+    mSectorSize.z = mTotalSectorSize.z / SectorInfo::height;
+
+
     return true;
 }
 
 Vec3 SectorController::GetSectorIdx(Vec3 Pos)
 {
-    Vec3 Result = Vec3();
-
-    return Result;
+    Vec3 sectorIdx;
+    sectorIdx.x = static_cast<int>(Pos.x / mSectorSize.x);
+    sectorIdx.y = 0.f;
+    sectorIdx.z = static_cast<int>(Pos.y / mSectorSize.z);
+    return sectorIdx;
 
 
 }

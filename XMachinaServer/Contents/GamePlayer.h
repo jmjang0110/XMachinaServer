@@ -93,11 +93,12 @@ public:
 	void SetType(FBProtocol::OBJECT_TYPE type)	{ mInfo.Type     = type; };
 
 	/* UPDATE FREQUENTLY --- DATA RACE ( Read / Write ) In MultiThreads */
-	void SetVelocity(float vel)					{ mSRWLock.LockWrite(); mInfo.Velocity = vel;  mSRWLock.UnlockWrite(); };
-	void SetPosition(Vec3 pos)					{ mSRWLock.LockWrite(); mInfo.Position = pos;  mSRWLock.UnlockWrite(); };
-	void SetRotation(Vec3 Rot)					{ mSRWLock.LockWrite(); mInfo.Rotation = Rot;  mSRWLock.UnlockWrite(); };
-	void SetFrontDir(Vec3 FDir)					{ mSRWLock.LockWrite(); mInfo.FrontDir = FDir; mSRWLock.UnlockWrite(); };
-	void SetSpineDir(Vec3 SDir)					{ mSRWLock.LockWrite(); mInfo.SpineDir = SDir; mSRWLock.UnlockWrite(); };
+	void SetVelocity(float vel)							 { mSRWLock.LockWrite(); mInfo.Velocity = vel;			 mSRWLock.UnlockWrite(); }
+	void SetPosition(Vec3 pos)							 { mSRWLock.LockWrite(); mInfo.Position = pos;			 mSRWLock.UnlockWrite(); }
+	void SetRotation(Vec3 Rot)							 { mSRWLock.LockWrite(); mInfo.Rotation = Rot;			 mSRWLock.UnlockWrite(); }
+	void SetFrontDir(Vec3 FDir)							 { mSRWLock.LockWrite(); mInfo.FrontDir = FDir;			 mSRWLock.UnlockWrite(); }
+	void SetSpineDir(Vec3 SDir)							 { mSRWLock.LockWrite(); mInfo.SpineDir = SDir;			 mSRWLock.UnlockWrite(); }
+	void SetSectorIdx(std::vector<Coordinate> sectorIdx) { mSRWLock.LockWrite(); mInfo.CurSectorID = sectorIdx;  mSRWLock.UnlockWrite(); }
 
 	void SetInfo(PlayerInfo& info)	{ mSRWLock.LockWrite(); mInfo = info; mSRWLock.UnlockWrite(); }
 	PlayerInfo GetInfo()			{ mSRWLock.LockRead(); PlayerInfo currInfo = mInfo; mSRWLock.UnlockRead(); return currInfo; };

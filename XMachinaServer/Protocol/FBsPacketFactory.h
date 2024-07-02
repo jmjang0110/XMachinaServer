@@ -15,6 +15,8 @@
 #include "Transform_generated.h"
 
 #include "Contents/GamePlayer.h"
+#include "Contents/GameMonster.h"
+
 
 using FBSPKT_FACTORY = class FBsPacketFactory;
 
@@ -75,7 +77,7 @@ public:
 	SPtr_SendPktBuf SPkt_Player_Weapon(uint32_t player_id, FBProtocol::WEAPON_TYPE weapon_type);
 
 	/* MONSTER */
-	SPtr_SendPktBuf SPkt_NewMonster(std::vector<FBProtocol::Monster>& new_monsters);
+	SPtr_SendPktBuf SPkt_NewMonster(std::vector<MonsterInfo>& new_monsters);
 	SPtr_SendPktBuf SPkt_RemoveMonster(uint32_t monster_id);
 	SPtr_SendPktBuf SPkt_Monster_Transform(uint32_t monster_id, FBProtocol::Transform trans);
 	SPtr_SendPktBuf SPkt_Monster_HP(uint32_t monster_id, float hp);

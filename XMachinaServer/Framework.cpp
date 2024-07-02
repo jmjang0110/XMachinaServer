@@ -156,7 +156,7 @@ bool Framework::Init(HINSTANCE& hInst)
 		mServer->SetMaxSessionCnt(MAX_SESSION_NUM); /* 弥措 立加 技记 */
 		mServer->SetSessionConstructorFunc(std::make_shared<GameSession>); /* GameSession栏肺 包府 */
 
-		mServerIP = L"127.0.0.1";
+		//mServerIP = L"127.0.0.1";
 		mServer->Start(mServerIP, 7777); /* Bind-Listen-AcceptEx.. */
 	}	
 	LOG_MGR->Cout("[SUCCESS] ServerNetwork INIT\n");

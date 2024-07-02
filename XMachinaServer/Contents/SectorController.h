@@ -38,14 +38,15 @@ private:
 private:
 	std::array<std::array<Sector*, SectorInfo::height>, SectorInfo::Width> mSectors;
 
-
+	Coordinate mTotalSectorSize = {}; // Sector 전체 크기 
+	Coordinate mSectorSize      = {}; // 각 Sector 크기 
 
 public:
 	SectorController();
 	~SectorController();
 
 public:
-	bool Init(SPtr_GameRoom owner);
+	bool Init(Coordinate sectorTotalSize, SPtr_GameRoom owner);
 
 
 	Vec3 GetSectorIdx(Vec3 Pos); // Position 에 따른 Index 를 받는다 .

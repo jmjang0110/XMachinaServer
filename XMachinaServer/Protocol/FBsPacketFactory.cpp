@@ -207,6 +207,39 @@ bool FBsPacketFactory::Process_CPkt_EnterGame(SPtr_Session session, const FBProt
 	auto SendPkt_NewPlayer = FBS_FACTORY->SPkt_NewPlayer(MyInfo);
 	GAME_MGR->BroadcastRoom(gameSession->GetPlayerInfo().RoomID, SendPkt_NewPlayer, gameSession->GetID());
 
+	/* TEST MONSTER */
+
+	std::vector<MonsterInfo> MonstersInfos;
+
+	MonsterInfo newMon;
+	newMon.ID = 1;
+	newMon.HP = 100;
+	newMon.Position = Vec3(28, 0, 270);
+	newMon.Type = MonsterType::AdvancedCombatDroid_5;
+
+	MonstersInfos.push_back(newMon);
+
+	newMon.ID = 2;
+	newMon.HP = 100;
+	newMon.Position = Vec3(40, 0, 270);
+	newMon.Type = MonsterType::Onyscidus;
+
+	MonstersInfos.push_back(newMon);
+
+	newMon.ID = 3;
+	newMon.HP = 100;
+	newMon.Position = Vec3(50, 0, 270);
+	newMon.Type = MonsterType::Ursacetus;
+
+	MonstersInfos.push_back(newMon);
+
+
+	std::cout << "BROADCAST NEW MONSTER INFOS \n";
+
+	auto SendPkt_NewMonster = FBS_FACTORY->SPkt_NewMonster(MonstersInfos);
+	GAME_MGR->BroadcastRoom(gameSession->GetPlayerInfo().RoomID, SendPkt_NewMonster);
+
+
 	return true;
 }
 
@@ -254,13 +287,13 @@ bool FBsPacketFactory::Process_CPkt_Player_Transform(SPtr_Session session, const
 	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
 	UINT32 id = session->GetID();
 
-	long long				latency = pkt.latency(); /* 해당 클라이언트의 평균 Latency (ms)  */
-	float					Vel = pkt.velocity();
-	Vec3					MoveDir = GetVector3(pkt.movedir());
-	Vec3					pos = GetVector3(pkt.trans()->position());
-	Vec3					rot = GetVector3(pkt.trans()->rotation());
+	long long				latency   = pkt.latency(); /* 해당 클라이언트의 평균 Latency (ms)  */
+	float					Vel       = pkt.velocity();
+	Vec3					MoveDir   = GetVector3(pkt.movedir());
+	Vec3					pos       = GetVector3(pkt.trans()->position());
+	Vec3					rot       = GetVector3(pkt.trans()->rotation());
 	int32_t					movestate = pkt.move_state();
-	Vec3					SDir = GetVector3(pkt.spine_look());
+	Vec3					SDir      = GetVector3(pkt.spine_look());
 
 	float					animparam_h = pkt.animparam_h();
 	float					animparam_v = pkt.animparam_v();
@@ -276,11 +309,11 @@ bool FBsPacketFactory::Process_CPkt_Player_Animation(SPtr_Session session, const
 {
 	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
 
-	int ObjectID = session->GetID();
+	int ObjectID                = session->GetID();
 	int32_t animation_upper_idx = pkt.animation_upper_index();
 	int32_t animation_lower_idx = pkt.animation_lower_index();
-	float animation_param_h = pkt.animation_param_h();
-	float animation_param_v = pkt.animation_param_v();
+	float animation_param_h     = pkt.animation_param_h();
+	float animation_param_v     = pkt.animation_param_v();
 
 
 	/* 클라이언트의 패킷을 그대로 다시 보낸다. */
@@ -613,7 +646,7 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_Player_Weapon(uint32_t player_id, FBProto
 ///	◈ SEND [ MONSTER ] PACKET ◈
 /// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------★
 
-SPtr_SendPktBuf FBsPacketFactory::SPkt_NewMonster(std::vector<FBProtocol::Monster>& new_monsters)
+SPtr_SendPktBuf FBsPacketFactory::SPkt_NewMonster(std::vector<MonsterInfo>& new_monsters)
 {
 	/// ○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○
 	/// table SPkt_NewMonster
@@ -622,7 +655,36 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_NewMonster(std::vector<FBProtocol::Monste
 	/// }
 	/// ○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○
 
-	return SPtr_SendPktBuf();
+	flatbuffers::FlatBufferBuilder builder{};
+
+	
+	std::vector<flatbuffers::Offset<FBProtocol::Monster>> MonsterInfos_Vector;
+
+	/* Remote Players */
+	for (MonsterInfo& p : new_monsters) {
+		auto ID   = p.ID;
+		auto HP   = p.HP;
+		auto Type = static_cast<uint8_t>(p.Type);
+		auto position       = FBProtocol::CreateVector3(builder, p.Position.x, p.Position.y, p.Position.z);
+		auto rotation       = FBProtocol::CreateVector3(builder, p.Rotation.x, p.Rotation.y, p.Rotation.z);
+		auto transform      = FBProtocol::CreateTransform(builder, position, rotation);
+		auto Spine_LookDir  = FBProtocol::CreateVector3(builder, p.SpineDir.x, p.SpineDir.y, p.SpineDir.z);
+
+
+		auto Monster = FBProtocol::CreateMonster(builder, ID, Type, HP, transform, Spine_LookDir); // CreatePlayerInfo는 스키마에 정의된 함수입니다.
+		MonsterInfos_Vector.push_back(Monster);
+	}
+
+
+	auto MonsterInfos_Offset = builder.CreateVector(MonsterInfos_Vector);
+	auto ServerPacket = FBProtocol::CreateSPkt_NewMonster(builder, MonsterInfos_Offset);
+	builder.Finish(ServerPacket);
+
+	const uint8_t* bufferPointer = builder.GetBufferPointer();
+	const uint16_t SerializeddataSize = static_cast<uint16_t>(builder.GetSize());;
+	SPtr_SendPktBuf sendBuffer = SEND_FACTORY->CreatePacket(bufferPointer, SerializeddataSize, FBsProtocolID::SPkt_NewMonster);
+
+	return sendBuffer;
 }
 
 SPtr_SendPktBuf FBsPacketFactory::SPkt_RemoveMonster(uint32_t monster_id)
