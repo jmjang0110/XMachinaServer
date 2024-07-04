@@ -26,7 +26,7 @@ void GameMonster::WakeUp()
 
 void GameMonster::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 {
-	int i = 0;
+
 
 }
 

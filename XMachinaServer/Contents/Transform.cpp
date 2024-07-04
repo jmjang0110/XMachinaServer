@@ -26,6 +26,40 @@ void Transform::UpdateLocalTransform(bool isComputeWorldTransform)
 	::memcpy(&mLocalTransform._41, &mPosition, sizeof(Vec3));
 }
 
+Transform::Transform()
+{
+}
+
+Transform::Transform(UINT32 id)
+	: Component(id)
+{
+}
+
+Transform::~Transform()
+{
+}
+
+bool Transform::WakeUp()
+{
+	Component::WakeUp();
+
+	return true;
+}
+
+bool Transform::Start()
+{
+	Component::Start();
+
+	return true;
+}
+
+bool Transform::Update()
+{
+	Component::Update();
+
+	return true;
+}
+
 Vec3 Transform::GetPosition()
 {
 	return mPosition;

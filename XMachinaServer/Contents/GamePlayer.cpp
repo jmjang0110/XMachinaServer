@@ -10,7 +10,8 @@ GamePlayer::GamePlayer()
 GamePlayer::GamePlayer(UINT32 sessionID, SPtr_GameSession owner)
 	: GameObject(sessionID)
 {
-	GameObject::Type = GameObjectInfo::Type::GamePlayer;
+
+	GameObject::SetType(GameObjectInfo::Type::GamePlayer);
 
 	mInfo.PlayerID = sessionID;
 	mInfo.Owner    = owner;

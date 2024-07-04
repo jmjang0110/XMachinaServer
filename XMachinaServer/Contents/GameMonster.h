@@ -14,22 +14,29 @@
 ///	Monster_AdvancedCombatDroid_5
 /// -------------------------------+
 
+
 struct MonsterInfo {
+
 	uint32_t			ID;
-	MonsterType			Type;		/* 몬스터 종류*/
-	float				HP;		/* HP */
-	float				Attack;	/* 공격력 */
+	MonsterType			Type;		/*	몬스터 종류	*/
+	
+	
+	/* Stat Script 로 빼자... */
+	float				HP;			/*		HP		*/
+	float				Attack;		/*	  공격력		*/
 
-	Vec3 Position;
-	Vec3 Rotation;
+	/* ... Transform Component로 빼자 */
+	Vec3				Position;
+	Vec3				Rotation;
 
-	Vec3 SpineDir;
+	Vec3				SpineDir;
 
 };
 
 class GameMonster : public GameObject
 {
 private:
+	MonsterInfo mInfo;
 
 
 public:

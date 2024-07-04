@@ -214,21 +214,21 @@ bool FBsPacketFactory::Process_CPkt_EnterGame(SPtr_Session session, const FBProt
 	MonsterInfo newMon;
 	newMon.ID = 1;
 	newMon.HP = 100;
-	newMon.Position = Vec3(28, 0, 270);
+	newMon.Position = Vec3(28, 0, 258);
 	newMon.Type = MonsterType::AdvancedCombatDroid_5;
 
 	MonstersInfos.push_back(newMon);
 
 	newMon.ID = 2;
 	newMon.HP = 100;
-	newMon.Position = Vec3(40, 0, 270);
+	newMon.Position = Vec3(40, 0, 258);
 	newMon.Type = MonsterType::Onyscidus;
 
 	MonstersInfos.push_back(newMon);
 
 	newMon.ID = 3;
 	newMon.HP = 100;
-	newMon.Position = Vec3(50, 0, 270);
+	newMon.Position = Vec3(50, 0, 258);
 	newMon.Type = MonsterType::Ursacetus;
 
 	MonstersInfos.push_back(newMon);
@@ -237,7 +237,7 @@ bool FBsPacketFactory::Process_CPkt_EnterGame(SPtr_Session session, const FBProt
 	std::cout << "BROADCAST NEW MONSTER INFOS \n";
 
 	auto SendPkt_NewMonster = FBS_FACTORY->SPkt_NewMonster(MonstersInfos);
-	GAME_MGR->BroadcastRoom(gameSession->GetPlayerInfo().RoomID, SendPkt_NewMonster);
+	//GAME_MGR->BroadcastRoom(gameSession->GetPlayerInfo().RoomID, SendPkt_NewMonster);
 
 
 	return true;

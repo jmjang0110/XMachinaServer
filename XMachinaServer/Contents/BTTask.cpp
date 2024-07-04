@@ -26,10 +26,7 @@ BTNodeState BTTask::Evaluate()
 ///	> ¢º¢º¢º Task Attack 
 /// __________________________________________________________________________
 
-BTNodeState MonsterTask::Attack::Evaluate()
-{
-	return BTNodeState();
-}
+
 
 MonsterTask::Attack::Attack()
 	: BTTask(BTTaskType::MonT_Attack)
@@ -39,8 +36,14 @@ MonsterTask::Attack::Attack()
 
 MonsterTask::Attack::~Attack()
 {
+
 }
 
+BTNodeState MonsterTask::Attack::Evaluate()
+{
+
+	return BTNodeState();
+}
 
 
 /// +-------------------------------------------------------------------------

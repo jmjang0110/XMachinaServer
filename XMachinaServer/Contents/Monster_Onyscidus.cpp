@@ -11,7 +11,7 @@ Monster_Onyscidus::Monster_Onyscidus()
 Monster_Onyscidus::Monster_Onyscidus(UINT32 sessionID)
 	: GameMonster(sessionID)
 {
-	GameObject::Type = GameObjectInfo::Type::Monster_Onyscidus;
+	GameObject::SetType(GameObjectInfo::Type::Monster_Onyscidus) ;
 
 
 }

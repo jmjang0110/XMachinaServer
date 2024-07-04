@@ -2,10 +2,17 @@
 #include "GameBullet.h"
 
 GameBullet::GameBullet()
+	: GameObject()
+{
+}
+
+GameBullet::GameBullet(UINT32 sessionID)
+	: GameObject(sessionID)
 {
 }
 
 GameBullet::GameBullet(UINT32 sessionID, SPtr_GameSession owner)
+	: GameObject(sessionID)
 {
 }
 

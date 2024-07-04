@@ -159,6 +159,8 @@
     <ClInclude Include="Contents\BehaviorTree.h" />
     <ClInclude Include="Contents\BTNode.h" />
     <ClInclude Include="Contents\BTTask.h" />
+    <ClInclude Include="Contents\Collider.h" />
+    <ClInclude Include="Contents\Component.h" />
     <ClInclude Include="Contents\DBController.h" />
     <ClInclude Include="Contents\DB_Inventory.h" />
     <ClInclude Include="Contents\DB_Item.h" />
@@ -166,6 +168,7 @@
     <ClInclude Include="Contents\DB_NPC.h" />
     <ClInclude Include="Contents\DB_Player.h" />
     <ClInclude Include="Contents\DB_Weapon.h" />
+    <ClInclude Include="Contents\FileIO.h" />
     <ClInclude Include="Contents\GameBullet.h" />
     <ClInclude Include="Contents\GameEntity.h" />
     <ClInclude Include="Contents\GameManager.h" />
@@ -177,6 +180,7 @@
     <ClInclude Include="Contents\GameSession.h" />
     <ClInclude Include="Contents\GameStructure.h" />
     <ClInclude Include="Contents\GameWorld.h" />
+    <ClInclude Include="Contents\HeightMapImage.h" />
     <ClInclude Include="Contents\Key.h" />
     <ClInclude Include="Contents\LogManager.h" />
     <ClInclude Include="Contents\Monster_AdvancedCombatDroid_5.h" />
@@ -185,6 +189,11 @@
     <ClInclude Include="Contents\NPCController.h" />
     <ClInclude Include="Contents\PlayerController.h" />
     <ClInclude Include="Contents\ResourceManager.h" />
+    <ClInclude Include="Contents\Script.h" />
+    <ClInclude Include="Contents\Script_EnemyController.h" />
+    <ClInclude Include="Contents\Script_EnemyStat.h" />
+    <ClInclude Include="Contents\Script_PlayerStat.h" />
+    <ClInclude Include="Contents\Script_Stat.h" />
     <ClInclude Include="Contents\Sector.h" />
     <ClInclude Include="Contents\SectorController.h" />
     <ClInclude Include="Contents\TimeManager.h" />
@@ -227,6 +236,8 @@
     <ClCompile Include="Contents\BehaviorTree.cpp" />
     <ClCompile Include="Contents\BTNode.cpp" />
     <ClCompile Include="Contents\BTTask.cpp" />
+    <ClCompile Include="Contents\Collider.cpp" />
+    <ClCompile Include="Contents\Component.cpp" />
     <ClCompile Include="Contents\DBController.cpp" />
     <ClCompile Include="Contents\DB_Inventory.cpp" />
     <ClCompile Include="Contents\DB_Item.cpp" />
@@ -234,6 +245,7 @@
     <ClCompile Include="Contents\DB_NPC.cpp" />
     <ClCompile Include="Contents\DB_Player.cpp" />
     <ClCompile Include="Contents\DB_Weapon.cpp" />
+    <ClCompile Include="Contents\FileIO.cpp" />
     <ClCompile Include="Contents\GameBullet.cpp" />
     <ClCompile Include="Contents\GameEntity.cpp" />
     <ClCompile Include="Contents\GameManager.cpp" />
@@ -244,6 +256,7 @@
     <ClCompile Include="Contents\GameSession.cpp" />
     <ClCompile Include="Contents\GameStructure.cpp" />
     <ClCompile Include="Contents\GameWorld.cpp" />
+    <ClCompile Include="Contents\HeightMapImage.cpp" />
     <ClCompile Include="Contents\Key.cpp" />
     <ClCompile Include="Contents\LogManager.cpp" />
     <ClCompile Include="Contents\Monster_AdvancedCombatDroid_5.cpp" />
@@ -252,6 +265,11 @@
     <ClCompile Include="Contents\NPCController.cpp" />
     <ClCompile Include="Contents\PlayerController.cpp" />
     <ClCompile Include="Contents\ResourceManager.cpp" />
+    <ClCompile Include="Contents\Script.cpp" />
+    <ClCompile Include="Contents\Script_EnemyController.cpp" />
+    <ClCompile Include="Contents\Script_EnemyStat.cpp" />
+    <ClCompile Include="Contents\Script_PlayerStat.cpp" />
+    <ClCompile Include="Contents\Script_Stat.cpp" />
     <ClCompile Include="Contents\Sector.cpp" />
     <ClCompile Include="Contents\SectorController.cpp" />
     <ClCompile Include="Contents\TimeManager.cpp" />

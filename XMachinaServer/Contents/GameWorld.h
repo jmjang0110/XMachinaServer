@@ -16,6 +16,7 @@
 #include "Monster_Ursacetus.h"
 #include "Monster_AdvancedCombatDroid_5.h"
 #include "Monster_Onyscidus.h"
+#include "HeightMapImage.h"
 
 #define GAME_WORLD GameWorld::GetInst()
 
@@ -27,6 +28,8 @@ private:
 	std::shared_ptr<Monster_Ursacetus>				m_Mon_Ursacetus[100]{};
 	std::shared_ptr<Monster_AdvancedCombatDroid_5>	m_Mon_AndCombat5[100]{};
 	std::shared_ptr<Monster_Onyscidus>				m_Mon_Onyscidus[100]{};
+
+	std::shared_ptr<HeightMapImage>					mHeightmapImage;
 
 public:
 	GameWorld();

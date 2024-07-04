@@ -65,9 +65,6 @@
     <Filter Include="Framework\Contents\RoomSession">
       <UniqueIdentifier>{2fc588fa-255d-4f5e-8eb7-e3bb924c381a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Framework\Contents\Component">
-      <UniqueIdentifier>{668a7e04-28dc-40d3-bf72-ffd6cfee81f0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Framework\Contents\DataBase">
       <UniqueIdentifier>{50b7bc6c-299f-4f96-bdac-e540524dc812}</UniqueIdentifier>
     </Filter>
@@ -121,6 +118,18 @@
     </Filter>
     <Filter Include="Framework\Contents\GameWorld\Structure">
       <UniqueIdentifier>{f7b0773c-1889-4e5c-ba94-89ca56de6804}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Terrain">
+      <UniqueIdentifier>{32dd79cc-31c4-401f-8e43-26a330f64c93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Entity\Component">
+      <UniqueIdentifier>{668a7e04-28dc-40d3-bf72-ffd6cfee81f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Entity\Script">
+      <UniqueIdentifier>{a124149d-77e8-4e7d-a548-46bd2779da56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Entity\Script\Stat">
+      <UniqueIdentifier>{16538096-f2b5-445b-8537-f12bd57e3f5c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -282,7 +291,7 @@
       <Filter>Framework\Contents\Overlapped</Filter>
     </ClInclude>
     <ClInclude Include="Contents\Transform.h">
-      <Filter>Framework\Contents\Component</Filter>
+      <Filter>Framework\Contents\GameWorld\Entity\Component</Filter>
     </ClInclude>
     <ClInclude Include="Contents\NPCController.h">
       <Filter>Framework\Contents\GameWorld\Controller</Filter>
@@ -319,6 +328,33 @@
     </ClInclude>
     <ClInclude Include="Contents\BTTask.h">
       <Filter>Framework\Contents\GameWorld\Monster\BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\FileIO.h">
+      <Filter>Framework\Contents\GameWorld\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\HeightMapImage.h">
+      <Filter>Framework\Contents\GameWorld\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Component.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Collider.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Script.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Script_EnemyStat.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Stat</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Script_PlayerStat.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Stat</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Script_Stat.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Stat</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Script_EnemyController.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -450,7 +486,7 @@
       <Filter>Framework\Contents\Timer</Filter>
     </ClCompile>
     <ClCompile Include="Contents\Transform.cpp">
-      <Filter>Framework\Contents\Component</Filter>
+      <Filter>Framework\Contents\GameWorld\Entity\Component</Filter>
     </ClCompile>
     <ClCompile Include="Contents\NPCController.cpp">
       <Filter>Framework\Contents\GameWorld\Controller</Filter>
@@ -487,6 +523,33 @@
     </ClCompile>
     <ClCompile Include="Contents\BTTask.cpp">
       <Filter>Framework\Contents\GameWorld\Monster\BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\FileIO.cpp">
+      <Filter>Framework\Contents\GameWorld\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\HeightMapImage.cpp">
+      <Filter>Framework\Contents\GameWorld\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Component.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Collider.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Script.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Script_EnemyStat.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Stat</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Script_PlayerStat.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Stat</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Script_Stat.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Stat</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Script_EnemyController.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

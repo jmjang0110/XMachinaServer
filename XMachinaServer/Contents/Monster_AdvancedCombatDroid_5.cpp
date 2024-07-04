@@ -10,7 +10,7 @@ Monster_AdvancedCombatDroid_5::Monster_AdvancedCombatDroid_5()
 Monster_AdvancedCombatDroid_5::Monster_AdvancedCombatDroid_5(UINT32 sessionID)
 	: GameMonster(sessionID)
 {
-	GameObject::Type = GameObjectInfo::Type::Monster_AdvancedCombat_5;
+	GameObject::SetType(GameObjectInfo::Type::Monster_AdvancedCombat_5);
 
 }
 

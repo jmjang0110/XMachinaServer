@@ -23,8 +23,6 @@
 
 class Monster_Ursacetus : public GameMonster
 {
-private:
-	float speed{}; /* TEST */
 
 public:
 	virtual void Update() override;

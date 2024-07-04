@@ -1,7 +1,7 @@
 #pragma once
 #include "GameEntity.h"
-
-class Transform;
+#include "Component.h"
+#include "Script.h"
 
 namespace GameObjectInfo
 {
@@ -20,28 +20,31 @@ namespace GameObjectInfo
 class GameObject : public GameEntity
 {
 private:
-	Transform* mTransform = {};
-
-protected:
-	GameObjectInfo::Type	Type = GameObjectInfo::Type::None;
-
-
-protected:
-	bool IsActive = false;
+	GameObjectInfo::Type	mType							= GameObjectInfo::Type::None;
+	Component*				mComponents[ComponentType::End];
+	Script*					mScripts[ScriptType::End];
 
 public:
 	GameObject();
 	GameObject(UINT32 sessionID);
-	virtual ~GameObject() override;
+	virtual ~GameObject() ;
 
 public:
 	virtual void Update() {};
 	virtual void WakeUp() {};
 
 public:
-	void SetType(GameObjectInfo::Type type) { Type = type; }
+	void SetType(GameObjectInfo::Type type) { mType = type; }
 
 public:
-	Transform* GetTransform() { return mTransform; }
+	template<typename T>
+	T* GetComponent(int32_t componentTYpe);
+
+
 };
 
+template<typename T>
+inline T* GameObject::GetComponent(int32_t componentTYpe)
+{
+	return reinterpret_cast<T*>(mComponents[componentTYpe]);
+}

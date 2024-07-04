@@ -26,8 +26,9 @@ class GameEntity : public NetworkObject
 {
 private:
 
-	int						mID = {};
-	std::string				mName = {};
+	int32_t						mID         = -1;
+	std::string					mName       = {};
+	bool						mIsActive	= false;
 
 public:
 	GameEntity();

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Key.h"
+#include "Component.h"
 
 namespace TransformInfo {
 	enum class Movement : DWORD {
@@ -19,14 +20,14 @@ namespace TransformInfo {
 		CCw = 0x10,
 	};
 
-	const float SitWalkSpeed = 1.5f;
+	const float SitWalkSpeed   = 1.5f;
 	const float StandWalkSpeed = 2.2f;
-	const float RunSpeed = 5.f;
-	const float SprintSpeed = 8.f;
+	const float RunSpeed       = 5.f;
+	const float SprintSpeed    = 8.f;
 }
 
 
-class Transform
+class Transform : public Component
 {
 private:
 	TransformInfo::Movement		mCurrMoveType  = TransformInfo::Movement::None;
@@ -54,6 +55,16 @@ private:
 
 	// set local transform from axis vectors
 	void UpdateLocalTransform(bool isComputeWorldTransform = true);
+
+public:
+	Transform();
+	Transform(UINT32 id);
+	~Transform();
+
+public:
+	virtual bool WakeUp()	override;
+	virtual bool Start()	override;
+	virtual bool Update()	override;
 
 public:
 	void SetPosition(Vec3 pos) { mPosition = pos; }

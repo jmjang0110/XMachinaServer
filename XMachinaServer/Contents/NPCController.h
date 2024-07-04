@@ -16,10 +16,12 @@ private:
 	SPtr_GameRoom mOwnerRoom;
 
 private:
-	concurrency::concurrent_unordered_map<UINT32, SPtr_GameStructure>	mStructures;			// Key : ID / Value : Structre ( Shared Ptr )
-	concurrency::concurrent_unordered_map<UINT32, SPtr_GameBullet>		mBullets;
-	concurrency::concurrent_unordered_map<UINT32, SPtr_GameMonster>		mMonsters;				// Key : ID / Value : Moster ( Shared Ptr )
+	//concurrency::concurrent_unordered_map<UINT32, SPtr_GameStructure>	mStructures;			// Key : ID / Value : Structre ( Shared Ptr )
+	//concurrency::concurrent_unordered_map<UINT32, SPtr_GameBullet>		mBullets;
+	//concurrency::concurrent_unordered_map<UINT32, SPtr_GameMonster>		mMonsters;				// Key : ID / Value : Moster ( Shared Ptr )
 
+	/* 배열로 관리하는 것이 나을 것 같은데?? */
+	
 
 public:
 	NPCController();

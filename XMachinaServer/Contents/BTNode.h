@@ -14,14 +14,14 @@ enum class BTNodeState {
 
 class BTNode
 {
-protected:
-	SPtr_NetObj				Owner      = {};
+public:
+	SPtr_NetObj				mOwner      = {};
 	
-	BTNode*					Root       = {};
-	BTNode*					Parent     = {};
+	BTNode*					mRoot       = {};
+	BTNode*					mParent     = {};
 
-	std::queue<BTNode*>		WaitQueue  = {};
-	std::vector<BTNode*>	children   = {};
+	std::queue<BTNode*>		mWaitQueue  = {};
+	std::vector<BTNode*>	mChildren   = {};
 
 public:
 	BTNode();

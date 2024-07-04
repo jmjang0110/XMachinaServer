@@ -6,6 +6,7 @@
 #include "ServerLib/MemoryManager.h"
 
 
+
 DEFINE_SINGLETON(GameWorld);
 
 GameWorld::GameWorld()
@@ -27,6 +28,12 @@ void GameWorld::Init()
 	for (int i = 0; i < 10; ++i) {
 		m_Mon_Onyscidus[i] = MEMORY->Make_Shared<Monster_Onyscidus>();
 	}
+
+	mHeightmapImage = MEMORY->Make_Shared<HeightMapImage>();
+	mHeightmapImage->Init("Contents/Resource/Terrain.bin");
+
+	int i = 0;
+
 }
 
 void GameWorld::PQCS(OverlappedObject* over)

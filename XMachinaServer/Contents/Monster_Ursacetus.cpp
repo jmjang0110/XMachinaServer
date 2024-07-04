@@ -13,7 +13,7 @@ Monster_Ursacetus::Monster_Ursacetus(UINT32 sessionID)
 	: GameMonster(sessionID)
 {
 
-	GameObject::Type = GameObjectInfo::Type::Monster_Ursacetus;
+	GameObject::SetType(GameObjectInfo::Type::Monster_Ursacetus);
 
 }
 
@@ -44,7 +44,6 @@ void Monster_Ursacetus::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 	t.Owner = shared_from_this();
 	TIME_MGR->PushTimerEvent(t);
 
-	speed += 1.f;
 
 	//if ((int)speed % 10'000 == 0)
 	//	LOG_MGR->Cout(this, " - URSACETUS : ", speed, "\n");
