@@ -15,10 +15,10 @@ enum class BTNodeState {
 class BTNode
 {
 public:
-	SPtr_NetObj				mOwner      = {};
-	
-	BTNode*					mRoot       = {};
-	BTNode*					mParent     = {};
+	SPtr_GameObject			mOwner          = {};
+
+	BTNode*					mRoot           = {};
+	BTNode*					mParent         = {};
 
 	std::queue<BTNode*>		mWaitQueue  = {};
 	std::vector<BTNode*>	mChildren   = {};

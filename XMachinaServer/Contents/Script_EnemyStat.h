@@ -5,6 +5,22 @@
 class Script_EnemyStat : public Script_Stat
 {
 private:
+	/* LEVEL */
+	int			mEnemyLevel          = {};
+	int			mPheroLevel          = {};
+
+	/* SPEED */
+	float		mMoveSpeed           = {};
+	float		mRotationSpeed       = {};
+	float		mAttackRotationSpeed = {};
+	
+	/* DETECTION */
+	float		mDetectionRange      = {};
+	
+	/* ATTACK */
+	float		mAttackRate          = {};
+	float		mAttackRange         = {};
+	float		mAttackCoolTime      = {};
 
 public:
 	Script_EnemyStat();
@@ -20,6 +36,7 @@ public:
 	virtual void Attack();
 	virtual void Death();
 	virtual bool Hit(float damage, GameObject* instigator = nullptr) override;
+
 public:
 
 

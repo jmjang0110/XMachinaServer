@@ -61,7 +61,7 @@ namespace MonsterTask {
 
 	public:
 		virtual BTNodeState Evaluate() override;
-
+		 
 	public:
 		GetHit();
 		~GetHit();

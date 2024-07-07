@@ -72,19 +72,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
-    <IncludePath>$(SolutionDir)XMachinaServer\;$(SolutionDir)XMachinaServer\Protocol\;$(SolutionDir)XMachinaServer\Protocol\FlatBuffers\flatbuffers-24.3.7\include\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)XMachinaServer\Contents\Util\;$(SolutionDir)XMachinaServer\;$(SolutionDir)XMachinaServer\Protocol\;$(SolutionDir)XMachinaServer\Protocol\FlatBuffers\flatbuffers-24.3.7\include\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
-    <IncludePath>$(SolutionDir)XMachinaServer\;$(SolutionDir)XMachinaServer\Protocol\;$(SolutionDir)XMachinaServer\Protocol\FlatBuffers\flatbuffers-24.3.7\include\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)XMachinaServer\Contents\Util\;$(SolutionDir)XMachinaServer\;$(SolutionDir)XMachinaServer\Protocol\;$(SolutionDir)XMachinaServer\Protocol\FlatBuffers\flatbuffers-24.3.7\include\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
-    <IncludePath>$(SolutionDir)XMachinaServer\;$(SolutionDir)XMachinaServer\Protocol\;$(SolutionDir)XMachinaServer\Protocol\FlatBuffers\flatbuffers-24.3.7\include\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)XMachinaServer\Contents\Util\;$(SolutionDir)XMachinaServer\;$(SolutionDir)XMachinaServer\Protocol\;$(SolutionDir)XMachinaServer\Protocol\FlatBuffers\flatbuffers-24.3.7\include\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
-    <IncludePath>$(SolutionDir)XMachinaServer\;$(SolutionDir)XMachinaServer\Protocol\;$(SolutionDir)XMachinaServer\Protocol\FlatBuffers\flatbuffers-24.3.7\include\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)XMachinaServer\Contents\Util\;$(SolutionDir)XMachinaServer\;$(SolutionDir)XMachinaServer\Protocol\;$(SolutionDir)XMachinaServer\Protocol\FlatBuffers\flatbuffers-24.3.7\include\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -274,6 +274,12 @@
     <ClCompile Include="Contents\SectorController.cpp" />
     <ClCompile Include="Contents\TimeManager.cpp" />
     <ClCompile Include="Contents\Transform.cpp" />
+    <ClCompile Include="Contents\Util\SimpleMath.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pch.cpp">

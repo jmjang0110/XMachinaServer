@@ -131,6 +131,9 @@
     <Filter Include="Framework\Contents\GameWorld\Entity\Script\Stat">
       <UniqueIdentifier>{16538096-f2b5-445b-8537-f12bd57e3f5c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Entity\Script\Enemy">
+      <UniqueIdentifier>{eb20aac7-1f1a-4aa9-b31c-45bfdf25981a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework.h">
@@ -354,7 +357,7 @@
       <Filter>Framework\Contents\GameWorld\Entity\Script\Stat</Filter>
     </ClInclude>
     <ClInclude Include="Contents\Script_EnemyController.h">
-      <Filter>Framework\Contents\GameWorld\Entity\Script</Filter>
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -549,7 +552,10 @@
       <Filter>Framework\Contents\GameWorld\Entity\Script\Stat</Filter>
     </ClCompile>
     <ClCompile Include="Contents\Script_EnemyController.cpp">
-      <Filter>Framework\Contents\GameWorld\Entity\Script</Filter>
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Util\SimpleMath.cpp">
+      <Filter>Framework\Contents\Util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

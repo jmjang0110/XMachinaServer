@@ -2,6 +2,18 @@
 #include "Script.h"
 #include "GameObject.h"
 
+/// +-------------------------------
+///		     Script_Stat 
+/// ________________________________
+///	> [ 설명 ] 
+///		- PC, NPC 의 스탯을 관리하기 위한 스크립트이다.
+///		- Script_Stat을 상속받아 각 Stat을 Script로 따로 구현한다.
+/// ________________________________
+///	> [ 구조 ] 
+///			 	   Script_Stat 
+///				↓			    ↓ 
+///	Script_EnemyStat		Script_PlayerStat 
+/// -------------------------------+
 
 class Script_Stat : public Script	
 {

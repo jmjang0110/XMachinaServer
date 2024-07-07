@@ -4,6 +4,11 @@
 
 namespace ScriptType {
 	constexpr UINT16 None = 0;
+
+	constexpr UINT16 EnemyStat       = 1;
+	constexpr UINT16 PlayerSTat      = 2;
+	constexpr UINT16 EnemyController = 3;
+
 	constexpr UINT16 End = 1;
 	
 }

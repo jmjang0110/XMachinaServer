@@ -1,5 +1,8 @@
 #include "pch.h"
 #include "BTTask.h"
+#include "Transform.h"
+#include "GameObject.h"
+
 
 BTTask::BTTask()
 {
@@ -41,7 +44,9 @@ MonsterTask::Attack::~Attack()
 
 BTNodeState MonsterTask::Attack::Evaluate()
 {
+	Transform* trans = mOwner->GetComponent<Transform>(ComponentType::Tarnsform);
 
+	
 	return BTNodeState();
 }
 

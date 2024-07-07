@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ServerLib/NetworkHeaders.h"
+#include "Contents/Util/Common.h"
 /// +------------------------
 ///			COMMON
 /// ------------------------+
@@ -10,8 +11,6 @@
 #include <functional>
 #include <cassert>
 #pragma endregion
-#include "Contents/Util/Common.h"
-
 
 /* Default */
 
@@ -36,6 +35,8 @@
 /* My Utility Hedaers */
 #include "ServerLib/UtilityMacro.h"
 #include "Contents/LogManager.h"
+#include "Contents/TimeManager.h"
+
 
 
 using SPtr_GameSession   = std::shared_ptr<class GameSession>;
@@ -44,6 +45,7 @@ using SPtr_GamePlayer    = std::shared_ptr<class GamePlayer>;
 using SPtr_GameMonster   = std::shared_ptr<class GameMonster>;
 using SPtr_GameStructure = std::shared_ptr<class GameStructure>;
 using SPtr_GameBullet    = std::shared_ptr<class GameBullet>;
+using SPtr_GameObject    = std::shared_ptr<class GameObject>;
 
 
 constexpr UINT32 MAX_SESSION_NUM = 500;
@@ -54,3 +56,6 @@ struct Coordinate
 	int x;
 	int z;
 };
+
+
+

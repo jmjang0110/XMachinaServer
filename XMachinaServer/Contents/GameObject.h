@@ -39,6 +39,8 @@ public:
 public:
 	template<typename T>
 	T* GetComponent(int32_t componentTYpe);
+	template<typename T>
+	T* GetScript(int32_t scriptType);
 
 
 };
@@ -47,4 +49,10 @@ template<typename T>
 inline T* GameObject::GetComponent(int32_t componentTYpe)
 {
 	return reinterpret_cast<T*>(mComponents[componentTYpe]);
+}
+
+template<typename T>
+inline T* GameObject::GetScript(int32_t scriptType)
+{
+	return reinterpret_cast<T*>(mScripts[scriptType]);
 }
