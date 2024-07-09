@@ -32,6 +32,17 @@ public:
 	virtual BTNodeState Evaluate() { return BTNodeState::Failure; }
 	void SetRoot();
 
+	SPtr_GameObject GetOwner() { return mOwner; }
+	BTNode*			GetRoot() { return mRoot; }
+	BTNode*			GetParent() { return mParent; }
+
+public:
+	void SetOwner(SPtr_GameObject owner) { mOwner = owner; }
+	void SetRoot(BTNode* root) { mRoot = root; }
+	void SetParent(BTNode* parent) { mParent = parent; }
+
+
+
 private:
 	void Attach(BTNode* node);
 

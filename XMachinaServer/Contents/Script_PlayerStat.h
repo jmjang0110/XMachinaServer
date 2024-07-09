@@ -31,6 +31,26 @@ class Script_PlayerStat : public Script_Stat
 {
 private:
 
+	/// +-------------------------------------------
+	///	 >> ▶▶▶▶▶ Player Info 
+	/// -------------------------------------------+
+	GameObject*		mTarget           = {};		// self GameObject
+	Vec3			mRespawn_Position = {};		// 리스폰 지점
+	int				mScore            = {};
+
+	/// +-------------------------------------------
+	///	 >> Phero
+	/// -------------------------------------------+
+	float mStartPheroAmount{};
+	float mCurrPheroAmount{};
+	float mMaxPheroAmount{};
+	float mPheroRegenRate{};
+
+	/// +-------------------------------------------
+	///	 >> Weapon
+	/// -------------------------------------------+
+	int mCrntWeaponNum{};
+	int mNextWeaponNum{};
 
 public:
 
@@ -40,15 +60,32 @@ public:
 
 
 public:
-	virtual bool WakeUp()	override;
-	virtual bool Start()	override;
-	virtual bool Update()	override;
+	virtual bool WakeUp();
+	virtual bool Start();
+	virtual bool Update();
+	virtual void OnDestory();
+
 
 	virtual void Attack();
-	virtual void Death();
-	virtual bool Hit(float damage, GameObject* instigator = nullptr) override;
+	virtual void Dead();
+	virtual bool Hit(float damage, SPtr_GameObject instigator = nullptr);
 
 public:
+	// player를 [pos]로 위치시키고 해당 위치를 리스폰 지점으로 설정한다.
+	void SetSpawn(const Vec3& pos);
 
+
+
+public:
+	/// +-------------------------------------------
+	///	 >> Phero
+	/// -------------------------------------------+
+	virtual void AddPheroAmount(float pheroAmount);
+	virtual bool ReducePheroAmount(float pheroCost, bool checkOnly = false);
+
+	/// +-------------------------------------------
+	///	 >> Weapon
+	/// -------------------------------------------+
+	
 };
 

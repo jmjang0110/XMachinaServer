@@ -26,6 +26,8 @@ bool Script_Stat::Start()
 {
     Script::Start();
 
+	mCrntHP = mMaxHP;
+	mPrevHP = mMaxHP;
     return true;
 }
 
@@ -36,7 +38,11 @@ bool Script_Stat::Update()
     return true;
 }
 
-bool Script_Stat::Hit(float damage, GameObject* instigator)
+void Script_Stat::OnDestroy()
+{
+}
+
+bool Script_Stat::Hit(float damage, SPtr_GameObject instigator)
 {
 	if (mCrntHP <= 0) {
 		return false;
@@ -60,5 +66,8 @@ bool Script_Stat::Hit(float damage, GameObject* instigator)
 void Script_Stat::Dead()
 {
 	mIsDead = true;
+}
 
+void Script_Stat::Attack()
+{
 }

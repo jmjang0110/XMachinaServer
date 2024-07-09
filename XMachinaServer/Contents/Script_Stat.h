@@ -37,9 +37,11 @@ public:
 	virtual bool WakeUp()	override;
 	virtual bool Start()	override;
 	virtual bool Update()	override;
+	virtual void OnDestroy();
 
-	virtual bool Hit(float damage, GameObject* instigator = nullptr);
+	virtual bool Hit(float damage, SPtr_GameObject instigator = nullptr);
 	virtual void Dead();
+	virtual void Attack();
 
 
 public:

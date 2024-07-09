@@ -2,14 +2,20 @@
 
 #include "GameEntity.h"
 
+class GameObject;
 
-namespace ComponentType {
-	constexpr UINT16 None      = 0;
+namespace ComponentInfo {
 
-	constexpr UINT16 Tarnsform = 1;
-	constexpr UINT16 Collider  = 2;
+	enum class Type : UINT16 {
+		None ,
 
-	constexpr UINT16 End       = 3;
+		Transform,
+		Collider,
+
+		Script,
+		End,
+
+	};
 }
 
 
@@ -17,17 +23,36 @@ namespace ComponentType {
 class Component : public GameEntity
 {
 private:
+	ComponentInfo::Type mType = ComponentInfo::Type::None;
+	SPtr_GameObject mOwner = nullptr;
+
+private:
+	bool mIsAwake  = false;
+	bool mIsStart  = false;
+	bool mIsActive = false;
 
 public:
 	Component();
-	Component(UINT32 id);
-	~Component();
+	Component(UINT32 id, ComponentInfo::Type Type);
+	virtual ~Component();
 
+public:
+	virtual void OnEnable();
+	virtual void OnDisable();
 
 public:
 	virtual bool WakeUp();
 	virtual bool Start();
 	virtual bool Update();
+	virtual void OnDestroy();
 
+public:
+	void		SetOwner(SPtr_GameObject owner) { mOwner = owner; }
+	SPtr_GameObject GetOwner() { return mOwner; }
+
+public:
+	bool IsAwake() const { return mIsAwake; }
+	bool IsStart() const { return mIsStart; }
+	bool IsActive() const { return mIsActive; }
 };
 

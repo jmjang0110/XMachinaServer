@@ -1,32 +1,41 @@
 #pragma once
-#include "GameEntity.h"
+#include "Component.h"
 
 
-namespace ScriptType {
-	constexpr UINT16 None = 0;
+namespace ScriptInfo {
 
-	constexpr UINT16 EnemyStat       = 1;
-	constexpr UINT16 PlayerSTat      = 2;
-	constexpr UINT16 EnemyController = 3;
+	enum class Type : UINT16 {
+		None, 
 
-	constexpr UINT16 End = 1;
+		Stat, // Enemy, Player 
+		EnemyController,
+
+		End,
+	};
+
 	
 }
+ 
 
-
-class Script : public GameEntity
+class Script : public Component
 {
 private:
+	ScriptInfo::Type mType = ScriptInfo::Type::None;
 
 
 public:
 	Script();
-	Script(UINT32 id);
-	~Script();
+	Script(ScriptInfo::Type type, UINT32 id);
+	virtual ~Script();
 
 public:
+	virtual void OnEnable();
+	virtual void OnDisable();
+
 	virtual bool WakeUp();
 	virtual bool Start();
 	virtual bool Update();
+	virtual void OnDestroy();
+
 };
 

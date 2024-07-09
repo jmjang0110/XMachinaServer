@@ -2,6 +2,7 @@
 #include "BTTask.h"
 #include "Transform.h"
 #include "GameObject.h"
+#include "BTNode.h"
 
 
 BTTask::BTTask()
@@ -44,7 +45,7 @@ MonsterTask::Attack::~Attack()
 
 BTNodeState MonsterTask::Attack::Evaluate()
 {
-	Transform* trans = mOwner->GetComponent<Transform>(ComponentType::Tarnsform);
+	Transform* trans = mOwner->GetComponent<Transform>(ComponentInfo::Type::Transform);
 
 	
 	return BTNodeState();

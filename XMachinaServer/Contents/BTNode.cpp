@@ -51,7 +51,7 @@ BTNodeState BTNode_Sequence::Evaluate()
 {
 	bool isRunning = false;
 
-	if (!mRoot->mWaitQueue.empty()) {
+	if (!GetRoot()->mWaitQueue.empty()) {
 		if (mRoot->mWaitQueue.front()->Evaluate() != BTNodeState::Wait) {
 			mRoot->mWaitQueue.pop();
 		}

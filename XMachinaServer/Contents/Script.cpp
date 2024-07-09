@@ -2,16 +2,25 @@
 #include "Script.h"
 
 Script::Script()
-	: GameEntity()
+	: Component()
 {
 }
 
-Script::Script(UINT32 id)
-	: GameEntity(id)
+Script::Script(ScriptInfo::Type type, UINT32 id)
+	: Component(id, ComponentInfo::Type::Script)
 {
+	mType = type;
 }
 
 Script::~Script()
+{
+}
+
+void Script::OnEnable()
+{
+}
+
+void Script::OnDisable()
 {
 }
 
@@ -28,4 +37,8 @@ bool Script::Start()
 bool Script::Update()
 {
 	return false;
+}
+
+void Script::OnDestroy()
+{
 }

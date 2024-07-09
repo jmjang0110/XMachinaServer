@@ -29,15 +29,21 @@ bool Script_EnemyStat::Update()
 	return false;
 }
 
+void Script_EnemyStat::OnDestroy()
+{
+}
+
 void Script_EnemyStat::Attack()
 {
 }
 
-void Script_EnemyStat::Death()
+void Script_EnemyStat::Dead()
 {
 }
 
-bool Script_EnemyStat::Hit(float damage, GameObject* instigator)
+
+
+bool Script_EnemyStat::Hit(float damage, SPtr_GameObject instigator)
 {
 	return false;
 }

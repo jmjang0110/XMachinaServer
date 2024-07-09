@@ -36,7 +36,7 @@
 #include "ServerLib/UtilityMacro.h"
 #include "Contents/LogManager.h"
 #include "Contents/TimeManager.h"
-
+#include "ServerLib/MemoryManager.h"
 
 
 using SPtr_GameSession   = std::shared_ptr<class GameSession>;

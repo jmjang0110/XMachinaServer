@@ -134,6 +134,15 @@
     <Filter Include="Framework\Contents\GameWorld\Entity\Script\Enemy">
       <UniqueIdentifier>{eb20aac7-1f1a-4aa9-b31c-45bfdf25981a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Entity\Script\Player">
+      <UniqueIdentifier>{aa55a5f4-a2ff-4254-a193-ecb733ba0e56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Entity\Script\Behavior Tree">
+      <UniqueIdentifier>{03b6f4b5-a9be-4ed3-a5d0-4a048da29866}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster">
+      <UniqueIdentifier>{ffae839c-97b3-4feb-b637-c3b8b2a82de3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework.h">
@@ -347,17 +356,29 @@
     <ClInclude Include="Contents\Script.h">
       <Filter>Framework\Contents\GameWorld\Entity\Script</Filter>
     </ClInclude>
-    <ClInclude Include="Contents\Script_EnemyStat.h">
-      <Filter>Framework\Contents\GameWorld\Entity\Script\Stat</Filter>
-    </ClInclude>
-    <ClInclude Include="Contents\Script_PlayerStat.h">
-      <Filter>Framework\Contents\GameWorld\Entity\Script\Stat</Filter>
-    </ClInclude>
     <ClInclude Include="Contents\Script_Stat.h">
       <Filter>Framework\Contents\GameWorld\Entity\Script\Stat</Filter>
     </ClInclude>
     <ClInclude Include="Contents\Script_EnemyController.h">
       <Filter>Framework\Contents\GameWorld\Entity\Script\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Script_EnemyStat.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Script_PlayerStat.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Script_Player.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Script_Enemy.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Script_BehaviorTree.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Script_DefaultEnemyBT.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -542,12 +563,6 @@
     <ClCompile Include="Contents\Script.cpp">
       <Filter>Framework\Contents\GameWorld\Entity\Script</Filter>
     </ClCompile>
-    <ClCompile Include="Contents\Script_EnemyStat.cpp">
-      <Filter>Framework\Contents\GameWorld\Entity\Script\Stat</Filter>
-    </ClCompile>
-    <ClCompile Include="Contents\Script_PlayerStat.cpp">
-      <Filter>Framework\Contents\GameWorld\Entity\Script\Stat</Filter>
-    </ClCompile>
     <ClCompile Include="Contents\Script_Stat.cpp">
       <Filter>Framework\Contents\GameWorld\Entity\Script\Stat</Filter>
     </ClCompile>
@@ -556,6 +571,24 @@
     </ClCompile>
     <ClCompile Include="Contents\Util\SimpleMath.cpp">
       <Filter>Framework\Contents\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Script_EnemyStat.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Script_PlayerStat.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Script_Player.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Script_Enemy.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Script_BehaviorTree.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Script_DefaultEnemyBT.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

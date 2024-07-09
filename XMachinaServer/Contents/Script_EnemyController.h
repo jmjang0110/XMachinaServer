@@ -38,22 +38,32 @@ private:
 	EnemyInfo::Stat		mStat   = {};
 	EnemyInfo::State	mState  = EnemyInfo::State::Idle;
 
-	GameObject*			mTarget = {};
-	std::stack<Vec3>	mPaths  = {};
+	SPtr_GameObject		mTarget     = {}; 
+	SPtr_GameObject		mPathTarget = {};
+	std::stack<Vec3>	mPaths      = {};
 
 
 public:
 	virtual bool WakeUp()	override;
 	virtual bool Start()	override;
 	virtual bool Update()	override;
+	virtual void OnDestroy() override;
 
 public:
 	void Reset();
-	void ForceSetTarget(GameObject* target) { mTarget = target; }
+	void ForceSetTarget(SPtr_GameObject target) { mTarget = target; }
 public:
 	Script_EnemyController();
 	Script_EnemyController(UINT32 id);
 	~Script_EnemyController();
+
+public:
+	SPtr_GameObject GetTargetObject() { return mTarget; }
+	SPtr_GameObject GetPathTargetObject() { return mPathTarget; }
+
+public:
+	void SetTargetObject(SPtr_GameObject target) { mTarget = target; }
+
 
 };
 

@@ -1,19 +1,45 @@
 #include "pch.h"
 #include "Script_EnemyController.h"
+#include "Script_Stat.h"
+
+
+
+Script_EnemyController::Script_EnemyController()
+	: Script()
+{
+}
+
+Script_EnemyController::Script_EnemyController(UINT32 id)
+	: Script(ScriptInfo::Type::EnemyController, id)
+{
+}
+
+Script_EnemyController::~Script_EnemyController()
+{
+}
 
 bool Script_EnemyController::WakeUp()
 {
-	return false;
+	return true;
 }
 
 bool Script_EnemyController::Start()
 {
-	return false;
+	return true;
 }
 
 bool Script_EnemyController::Update()
 {
-	return false;
+	if (mTarget) {
+		if (mTarget->GetScript<Script_Stat>(ScriptInfo::Type::Stat)){
+			mTarget = nullptr;
+		}
+	}
+	return true;
+}
+
+void Script_EnemyController::OnDestroy()
+{
 }
 
 void Script_EnemyController::Reset()
@@ -24,18 +50,4 @@ void Script_EnemyController::Reset()
 	while (!mPaths.empty()) {
 		mPaths.pop();
 	};
-}
-
-Script_EnemyController::Script_EnemyController()
-	: Script()
-{
-}
-
-Script_EnemyController::Script_EnemyController(UINT32 id)
-	: Script(id)
-{
-}
-
-Script_EnemyController::~Script_EnemyController()
-{
 }

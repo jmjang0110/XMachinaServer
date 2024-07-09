@@ -6,26 +6,50 @@ Component::Component()
 {
 }
 
-Component::Component(UINT32 id)
+Component::Component(UINT32 id, ComponentInfo::Type Type)
 	: GameEntity(id)
 {
+	mType = Type;
+
 }
 
 Component::~Component()
 {
 }
 
+void Component::OnEnable()
+{
+	if (!mIsAwake) {
+		WakeUp();
+	}
+
+	mIsActive = true;
+}
+
+void Component::OnDisable()
+{
+	mIsActive = false;
+}
+
 bool Component::WakeUp()
 {
-	return false;
+	mIsAwake = true;
+
+	return true;
 }
 
 bool Component::Start()
 {
-	return false;
+	mIsStart = true;
+
+	return true;
 }
 
 bool Component::Update()
 {
-	return false;
+	return true;
+}
+
+void Component::OnDestroy()
+{
 }
