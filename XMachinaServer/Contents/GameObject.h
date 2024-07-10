@@ -2,6 +2,7 @@
 #include "GameEntity.h"
 #include "Component.h"
 #include "Script.h"
+#include "Transform.h"
 
 namespace GameObjectInfo
 {
@@ -20,10 +21,9 @@ namespace GameObjectInfo
 class GameObject : public GameEntity
 {
 private:
-	GameObjectInfo::Type	mType		= GameObjectInfo::Type::None;
-
-	std::unordered_map<ComponentInfo::Type, Component*> mComponents = {};
-	std::unordered_map<ScriptInfo::Type, Script*> mScripts = {};
+	GameObjectInfo::Type								mType		= GameObjectInfo::Type::None;
+	std::unordered_map<ComponentInfo::Type, SPtr<Component>> mComponents = {};
+	std::unordered_map<ScriptInfo::Type, SPtr<Script>>		mScripts    = {};
 
 
 public:
@@ -35,57 +35,66 @@ public:
 	virtual void Update() {};
 	virtual void WakeUp() {};
 
+	virtual void Activate();
+	virtual void DeActivate();
 public:
 	void SetType(GameObjectInfo::Type type) { mType = type; }
 
+
 public:
-	template<typename T>
-	T* GetComponent(ComponentInfo::Type componentTYpe);
-	template<typename T>
-	T* GetScript(ScriptInfo::Type scriptType);
+	/* Util */
+	SPtr<Transform> GetTransform() { return GetComponent<Transform>(ComponentInfo::Type::Transform); }
 
 public:
 	template<typename T>
-	T* AddComponent(ComponentInfo::Type key);
+	SPtr<T>  GetComponent(ComponentInfo::Type componentTYpe);
+	template<typename T>
+	SPtr<T>  GetScript(ScriptInfo::Type scriptType);
+
+public:
+	template<typename T>
+	SPtr<T>  AddComponent(ComponentInfo::Type key);
 
 	template<typename T>
-	T* AddScript(ScriptInfo::Type key);
+	SPtr<T>  AddScript(ScriptInfo::Type key);
 
 };
 
 template<typename T>
-inline T* GameObject::GetComponent(ComponentInfo::Type componentTYpe)
+inline SPtr<T>  GameObject::GetComponent(ComponentInfo::Type componentType)
 {
-	if (mComponents.find(componentTYpe) != mComponents.end())
-		return reinterpret_cast<T*>(mComponents[componentTYpe]);
+	auto it = mComponents.find(componentType);
+	if (it != mComponents.end())
+		return std::dynamic_pointer_cast<T>(it->second);
 	else
 		return nullptr;
 
 }
 
 template<typename T>
-inline T* GameObject::GetScript(ScriptInfo::Type scriptType)
+inline SPtr<T> GameObject::GetScript(ScriptInfo::Type scriptType)
 {
-	if (mScripts.find(scriptType) != mScripts.end())
-		return reinterpret_cast<T*>(mScripts[scriptType]);
+	auto it = mScripts.find(scriptType);
+	if (it != mScripts.end())
+		return std::dynamic_pointer_cast<T>(it->second);
 	else
 		return nullptr;
 }
 
 template<typename T>
-inline T* GameObject::AddComponent(ComponentInfo::Type key)
+inline SPtr<T>  GameObject::AddComponent(ComponentInfo::Type key)
 {
 	if (mComponents.find(key) != mComponents.end())
-		mComponents.insert(std::make_pair<ComponentInfo::Type, T*>(key, MEMORY->New<T>()));
+		mComponents.insert(std::make_pair<ComponentInfo::Type, T*>(key, MEMORY->Make_Shared<T>()));
 	else
 		return mComponents.find(key)->second;
 }
 
 template<typename T>
-inline T* GameObject::AddScript(ScriptInfo::Type key)
+inline SPtr<T>  GameObject::AddScript(ScriptInfo::Type key)
 {
 	if (mScripts.find(key) != mScripts.end())
-		mScripts.insert(std::make_pair<ScriptInfo::Type, T*>(key, MEMORY->New<T>()));
+		mScripts.insert(std::make_pair<ScriptInfo::Type, T*>(key, MEMORY->Make_Shared<T>()));
 	else
 		return mScripts.find(key)->second;
 }

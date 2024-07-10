@@ -1,12 +1,15 @@
 #include "pch.h"
 #include "BTNode.h"
 
-BTNode::BTNode()
+BTNode::BTNode(SPtr_GameObject owner)
 {
+	mOwner = owner;
 }
 
-BTNode::BTNode(std::vector<BTNode*>& children)
+BTNode::BTNode(SPtr_GameObject owner, std::vector<BTNode*>& children)
 {
+	mOwner = owner;
+
 	for (auto& child : children) {
 		Attach(child);
 	}
@@ -112,12 +115,3 @@ BTNodeState BTNode_Selector::Evaluate()
 
 }
 
-
-/// +-------------------------------------------------------------------------
-///	> ¢º¢º¢º BT Node Action  
-/// __________________________________________________________________________
-
-BTNodeState BTNode_Action::Evaluate()
-{
-	return BTNodeState();
-}

@@ -37,6 +37,9 @@ public:
 	virtual ~Component();
 
 public:
+	virtual void Activate();
+	virtual void DeActivate();
+
 	virtual void OnEnable();
 	virtual void OnDisable();
 

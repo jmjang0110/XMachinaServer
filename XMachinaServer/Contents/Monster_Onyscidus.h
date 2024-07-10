@@ -7,8 +7,6 @@
 class Monster_Onyscidus : public GameMonster
 {
 private:
-	float speed = 0.f;
-
 
 public:
 	virtual void Update() override;

@@ -9,11 +9,21 @@ private:
 	
 
 public:
-	virtual bool WakeUp()	override;
-	virtual bool Start()	override;
-	virtual bool Update()	override;
-	virtual void OnDestroy() override;
+	/// +------------------------------
+	///		  virtual function 
+	/// ------------------------------+
+	virtual void Activate();
+	virtual void DeActivate();
 
+	virtual bool WakeUp();
+	virtual bool Start();
+	virtual bool Update();
+	virtual void OnDestroy();
+
+
+	/// +------------------------------
+	///		Stat :  virtual function 
+	/// ------------------------------+
 	virtual void Attack();
 	virtual void Dead();
 	virtual bool Hit(float damage, SPtr_GameObject instigator = nullptr) override;

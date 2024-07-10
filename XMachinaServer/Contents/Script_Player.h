@@ -8,6 +8,9 @@ private:
 
 
 public:
+	virtual void Activate();
+	virtual void DeActivate();
+
 	virtual bool WakeUp()	override;
 	virtual bool Start()	override;
 	virtual bool Update()	override;

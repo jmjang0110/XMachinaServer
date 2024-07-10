@@ -5,15 +5,14 @@
 #include "BTNode.h"
 
 
-BTTask::BTTask()
-{
-}
+/* Script */
 
-BTTask::BTTask(BTTaskType type)
-	: BTNode_Action()
+
+BTTask::BTTask(SPtr_GameObject owner, BTTaskType type, std::function<void()> callback)
+	: BTNode_Action(owner, callback)
 {
 	mType = type;
-
+	
 }
 
 BTTask::~BTTask()
@@ -30,11 +29,12 @@ BTNodeState BTTask::Evaluate()
 ///	> ▶▶▶ Task Attack 
 /// __________________________________________________________________________
 
-
-
-MonsterTask::Attack::Attack()
-	: BTTask(BTTaskType::MonT_Attack)
+MonsterTask::Attack::Attack(SPtr_GameObject owner, std::function<void()> callback)
+	: BTTask(owner, BTTaskType::MonT_Attack, callback)
 {
+
+	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
+	mStat = GetOwner()->GetScript<Script_Enemy>(ScriptInfo::Type::Stat);
 
 }
 
@@ -45,25 +45,34 @@ MonsterTask::Attack::~Attack()
 
 BTNodeState MonsterTask::Attack::Evaluate()
 {
-	Transform* trans = mOwner->GetComponent<Transform>(ComponentInfo::Type::Transform);
+	SPtr<Transform> trans = GetOwner()->GetTransform();
 
-	
-	return BTNodeState();
+
+	Vec3  TargetPos = mEnemyController->GetTargetObject()->GetTransform()->GetPosition();
+	float AttackRotSpeed = mStat->GetAttackRotationSpeed();
+	trans->RotateTargetAxisY(TargetPos, AttackRotSpeed);
+
+	BTNode_Action::ExecuteCallback();
+
+	return BTNodeState::Success;
 }
+
+
+
 
 
 /// +-------------------------------------------------------------------------
 ///	> ▶▶▶ Task Get Hit  
 /// __________________________________________________________________________
 
-BTNodeState MonsterTask::GetHit::Evaluate()
+MonsterTask::GetHit::GetHit(SPtr_GameObject owner, std::function<void()> callback)
+	: BTTask(owner, BTTaskType::MonT_GetHit, callback)
 {
-	return BTNodeState();
-}
 
-MonsterTask::GetHit::GetHit()
-	: BTTask(BTTaskType::MonT_GetHit)
-{
+	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
+	mStat = GetOwner()->GetScript<Script_Enemy>(ScriptInfo::Type::Stat);
+	mPrevHp = mStat->GetCrntHp();
+	mKnockBack = 0.05f;
 }
 
 MonsterTask::GetHit::~GetHit()
@@ -71,23 +80,78 @@ MonsterTask::GetHit::~GetHit()
 }
 
 
+BTNodeState MonsterTask::GetHit::Evaluate()
+{
+	if (!mEnemyController->GetTargetObject()) {
+		return BTNodeState::Failure;
+	}
+
+	const float crntHp = mStat->GetCrntHp();
+	if (!mStat->UpdatePrevHP()) {
+		mEnemyController->SetState(EnemyInfo::State::GetHit);
+
+		Vec3 TargetLook = mEnemyController->GetTargetObject()->GetTransform()->GetLook();
+		GetOwner()->GetTransform()->Translate(TargetLook, mKnockBack);
+	}
+
+	return BTNodeState::Success;
+}
+
+
+
 /// +-------------------------------------------------------------------------
 ///	> ▶▶▶ Task Move To Path  
 /// __________________________________________________________________________
 
-BTNodeState MonsterTask::MoveToPath::Evaluate()
+MonsterTask::MoveToPath::MoveToPath(SPtr_GameObject owner, std::function<void()> callback)
+	: BTTask(owner, BTTaskType::MonT_MoveToPath, callback)
 {
-	return BTNodeState();
-}
+	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
+	mStat            = GetOwner()->GetScript<Script_Enemy>(ScriptInfo::Type::Stat);
 
-MonsterTask::MoveToPath::MoveToPath()
-	: BTTask(BTTaskType::MonT_MoveToPath)
-{
+	mMoveSpeed       = mStat->GetMoveSpeed();
+	mReturnSpeed     = 1.7f * mMoveSpeed;
+	mPath            = mEnemyController->GetPaths();
+
 }
 
 MonsterTask::MoveToPath::~MoveToPath()
 {
 }
+
+BTNodeState MonsterTask::MoveToPath::Evaluate()
+{
+	if (mPath->empty())
+		return BTNodeState::Failure;
+
+
+	// 다음 경로까지의 벡터
+	Vec3 nextPos = (mPath->top() - GetOwner()->GetTransform()->GetPosition()).xz();
+
+	// 현재 복귀 상태라면 스피드를 올린다.
+	float speed{};
+	//if (mReturnParam->val.b) {
+	//	speed = mReturnSpeed;
+	//	//mWalkMotion->SetSpeed(1.7f);
+	//}
+	//else {
+	//	speed = mMoveSpeed;
+	//	//mWalkMotion->SetSpeed(1.f);
+	//}
+
+	// 다음 경로를 향해 이동 및 회전
+	GetOwner()->GetTransform()->RotateTargetAxisY(mPath->top(), mStat->GetRotationSpeed());
+	GetOwner()->GetTransform()->Translate(XMVector3Normalize(nextPos), speed * DELTA_TIME);
+
+	// 다음 경로에 도착 시 해당 경로 삭제
+	const float kMinDistance = 0.1f;
+	if (nextPos.Length() < kMinDistance)
+		mPath->pop();
+
+	return BTNodeState::Success;
+}
+
+
 
 /// +-------------------------------------------------------------------------
 ///	> ▶▶▶ Task Move To Target  
@@ -98,9 +162,12 @@ BTNodeState MonsterTask::MoveToTarget::Evaluate()
 	return BTNodeState();
 }
 
-MonsterTask::MoveToTarget::MoveToTarget()
-	: BTTask(BTTaskType::MonT_MoveToTarget)
+MonsterTask::MoveToTarget::MoveToTarget(SPtr_GameObject owner, std::function<void()> callback)
+	: BTTask(owner, BTTaskType::MonT_MoveToTarget, callback)
 {
+	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
+	mStat = GetOwner()->GetScript<Script_Enemy>(ScriptInfo::Type::Stat);
+
 }
 
 MonsterTask::MoveToTarget::~MoveToTarget()
@@ -116,9 +183,12 @@ BTNodeState MonsterTask::PathPlanning_AStar::Evaluate()
 	return BTNodeState();
 }
 
-MonsterTask::PathPlanning_AStar::PathPlanning_AStar()
-	: BTTask(BTTaskType::MonT_PathPlanningASatr)
+MonsterTask::PathPlanning_AStar::PathPlanning_AStar(SPtr_GameObject owner, std::function<void()> callback)
+	: BTTask(owner, BTTaskType::MonT_PathPlanningASatr, callback)
 {
+	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
+	mStat = GetOwner()->GetScript<Script_Enemy>(ScriptInfo::Type::Stat);
+
 }
 
 MonsterTask::PathPlanning_AStar::~PathPlanning_AStar()
@@ -134,9 +204,12 @@ BTNodeState MonsterTask::PathPlanningToSapwn::Evaluate()
 	return BTNodeState();
 }
 
-MonsterTask::PathPlanningToSapwn::PathPlanningToSapwn()
-	: BTTask(BTTaskType::MonT_PathPlanningToSpawn)
+MonsterTask::PathPlanningToSapwn::PathPlanningToSapwn(SPtr_GameObject owner, std::function<void()> callback)
+	: BTTask(owner, BTTaskType::MonT_PathPlanningToSpawn)
 {
+	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
+	mStat = GetOwner()->GetScript<Script_Enemy>(ScriptInfo::Type::Stat);
+
 }
 
 MonsterTask::PathPlanningToSapwn::~PathPlanningToSapwn()
@@ -152,9 +225,12 @@ BTNodeState MonsterTask::PathPlanningToTarget::Evaluate()
 	return BTNodeState();
 }
 
-MonsterTask::PathPlanningToTarget::PathPlanningToTarget()
-	: BTTask(BTTaskType::MonT_PathPlanningToTarget)
+MonsterTask::PathPlanningToTarget::PathPlanningToTarget(SPtr_GameObject owner, std::function<void()> callback)
+	: BTTask(owner, BTTaskType::MonT_PathPlanningToTarget, callback)
 {
+	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
+	mStat = GetOwner()->GetScript<Script_Enemy>(ScriptInfo::Type::Stat);
+
 }
 
 MonsterTask::PathPlanningToTarget::~PathPlanningToTarget()
@@ -170,11 +246,137 @@ BTNodeState MonsterTask::Patrol::Evaluate()
 	return BTNodeState();
 }
 
-MonsterTask::Patrol::Patrol()
-	: BTTask(BTTaskType::MonT_Patrol)
+MonsterTask::Patrol::Patrol(SPtr_GameObject owner, std::function<void()> callback)
+	: BTTask(owner, BTTaskType::MonT_Patrol, callback)
 {
+	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
+	mStat = GetOwner()->GetScript<Script_Enemy>(ScriptInfo::Type::Stat);
+
 }
 
 MonsterTask::Patrol::~Patrol()
+{
+}
+
+/// +-------------------------------------------------------------------------
+///	> ▶▶▶ Task Check Patrol Range 
+/// __________________________________________________________________________
+
+
+BTNodeState MonsterTask::CheckPatrolRange::Evaluate()
+{
+	return BTNodeState();
+}
+
+MonsterTask::CheckPatrolRange::CheckPatrolRange(SPtr_GameObject owner, std::function<void()> callback)
+	: BTTask(owner, BTTaskType::MonT_CheckPatrolRange, callback)
+{
+	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
+	mStat = GetOwner()->GetScript<Script_Enemy>(ScriptInfo::Type::Stat);
+
+}
+
+MonsterTask::CheckPatrolRange::~CheckPatrolRange()
+{
+}
+
+/// +-------------------------------------------------------------------------
+///	> ▶▶▶ Task Mind Detection Range 
+/// __________________________________________________________________________
+
+BTNodeState MonsterTask::CheckMindDetectionRange::Evaluate()
+{
+	return BTNodeState();
+}
+
+MonsterTask::CheckMindDetectionRange::CheckMindDetectionRange(SPtr_GameObject owner, std::function<void()> callback)
+	: BTTask(owner, BTTaskType::MonT_CheckMindDetectionRange, callback)
+{
+	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
+	mStat = GetOwner()->GetScript<Script_Enemy>(ScriptInfo::Type::Stat);
+
+}
+
+MonsterTask::CheckMindDetectionRange::~CheckMindDetectionRange()
+{
+}
+
+/// +-------------------------------------------------------------------------
+///	> ▶▶▶ Task Check Detection Range 
+/// __________________________________________________________________________
+
+BTNodeState MonsterTask::CheckDetectionRange::Evaluate()
+{
+	return BTNodeState();
+}
+
+MonsterTask::CheckDetectionRange::CheckDetectionRange(SPtr_GameObject owner, std::function<void()> callback)
+	: BTTask(owner, BTTaskType::MonT_CheckDetectionRange, callback)
+
+{
+	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
+	mStat = GetOwner()->GetScript<Script_Enemy>(ScriptInfo::Type::Stat);
+
+}
+
+MonsterTask::CheckDetectionRange::~CheckDetectionRange()
+{
+}
+
+/// +-------------------------------------------------------------------------
+///	> ▶▶▶ Task Check Death  
+/// __________________________________________________________________________
+
+BTNodeState MonsterTask::CheckDeath::Evaluate()
+{
+	if (!mStat->IsDead())
+		return BTNodeState::Failure;
+
+	mEnemyController->SetState(EnemyInfo::State::Death);
+
+
+	mAccTime += DELTA_TIME;
+
+	ExecuteCallback();
+
+	if (mAccTime >= mRemoveTime) {
+		GetOwner()->DeActivate();
+	}
+
+	return BTNodeState::Success;
+}
+
+MonsterTask::CheckDeath::CheckDeath(SPtr_GameObject owner, std::function<void()> callback)
+	: BTTask(owner, BTTaskType::MonT_CheckDeath, callback)
+
+{
+	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
+	mStat = GetOwner()->GetScript<Script_Enemy>(ScriptInfo::Type::Stat);
+
+}
+
+MonsterTask::CheckDeath::~CheckDeath()
+{
+}
+
+/// +-------------------------------------------------------------------------
+///	> ▶▶▶ Task Check Attack Range 
+/// __________________________________________________________________________
+
+BTNodeState MonsterTask::CheckAttackRange::Evaluate()
+{
+	return BTNodeState();
+}
+
+MonsterTask::CheckAttackRange::CheckAttackRange(SPtr_GameObject owner, std::function<void()> callback)
+	: BTTask(owner, BTTaskType::MonT_CheckAttackRange, callback)
+
+{
+	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
+	mStat = GetOwner()->GetScript<Script_Enemy>(ScriptInfo::Type::Stat);
+
+}
+
+MonsterTask::CheckAttackRange::~CheckAttackRange()
 {
 }

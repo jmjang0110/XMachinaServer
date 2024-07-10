@@ -1,6 +1,18 @@
 #include "pch.h"
 #include "Script_Player.h"
 
+void Script_Player::Activate()
+{
+    Script_PlayerStat::Activate();
+
+}
+
+void Script_Player::DeActivate()
+{
+    Script_PlayerStat::DeActivate();
+
+}
+
 bool Script_Player::WakeUp()
 {
     return false;

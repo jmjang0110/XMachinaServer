@@ -21,6 +21,7 @@
 
 #include <cassert>
 #include <string>
+#include <numeric>
 
 /* STL */
 #include <vector>
@@ -37,6 +38,10 @@
 #include "Contents/LogManager.h"
 #include "Contents/TimeManager.h"
 #include "ServerLib/MemoryManager.h"
+
+
+template<typename T>
+using SPtr = std::shared_ptr<T>;
 
 
 using SPtr_GameSession   = std::shared_ptr<class GameSession>;

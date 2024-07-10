@@ -17,3 +17,11 @@ GameEntity::~GameEntity()
 void GameEntity::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 {
 }
+
+void GameEntity::Activate()
+{
+}
+
+void GameEntity::DeActivate()
+{
+}

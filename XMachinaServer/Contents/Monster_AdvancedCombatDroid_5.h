@@ -5,7 +5,6 @@
 class Monster_AdvancedCombatDroid_5 : public GameMonster
 {
 private:
-	float speed = 0.f;
 
 
 

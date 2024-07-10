@@ -34,7 +34,7 @@ private:
 	/// +-------------------------------------------
 	///	 >> ▶▶▶▶▶ Player Info 
 	/// -------------------------------------------+
-	GameObject*		mTarget           = {};		// self GameObject
+	SPtr_GameObject	mTarget           = {};		// self GameObject
 	Vec3			mRespawn_Position = {};		// 리스폰 지점
 	int				mScore            = {};
 
@@ -60,12 +60,21 @@ public:
 
 
 public:
+
+	/// +------------------------------
+	///			virtual function 
+	/// ------------------------------+
+	virtual void Activate();
+	virtual void DeActivate();
+
 	virtual bool WakeUp();
 	virtual bool Start();
 	virtual bool Update();
 	virtual void OnDestory();
 
-
+	/// +------------------------------
+	///		 Stat : virtual function 
+	/// ------------------------------+
 	virtual void Attack();
 	virtual void Dead();
 	virtual bool Hit(float damage, SPtr_GameObject instigator = nullptr);

@@ -16,6 +16,18 @@ Script_PlayerStat::~Script_PlayerStat()
 {
 }
 
+void Script_PlayerStat::Activate()
+{
+	Script::Activate();
+
+}
+
+void Script_PlayerStat::DeActivate()
+{
+	Script::DeActivate();
+
+}
+
 bool Script_PlayerStat::WakeUp()
 {
 	return false;

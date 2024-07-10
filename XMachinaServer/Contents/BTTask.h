@@ -1,17 +1,29 @@
 #pragma once
 #include "BTNode.h"
 #include "AStarPath.h"
+#include "Script_Enemy.h"
+#include "Script_EnemyController.h"
 
 enum class BTTaskType : UINT16 {
 	/* Monster Task */
 	MonT_Attack,
 	MonT_GetHit,
 	MonT_Patrol,
+	
 	MonT_MoveToPath,
 	MonT_MoveToTarget,
+	
 	MonT_PathPlanningASatr,
 	MonT_PathPlanningToSpawn,
 	MonT_PathPlanningToTarget,
+
+	MonT_CheckAttackRange,
+	MonT_CheckDeath,
+	MonT_CheckDetectionRange,
+	MonT_CheckMindDetectionRange,
+	MonT_CheckPatrolRange,
+
+	End,
 
 };
 
@@ -27,11 +39,12 @@ public:
 	BTTaskType GetType() { return mType; }
 
 public:
-	BTTask();
-	BTTask(BTTaskType type);
+	BTTask(SPtr_GameObject owner, BTTaskType type, std::function<void()> callback = nullptr);
 	~BTTask();
 
 };
+
+
 
 namespace MonsterTask {
 
@@ -42,12 +55,14 @@ namespace MonsterTask {
 
 	class Attack : public BTTask {
 	private:
+		SPtr<Script_EnemyController>  mEnemyController;
+		SPtr<Script_Enemy>			  mStat;
 
 	public:
 		virtual BTNodeState Evaluate() override;
 
 	public:
-		Attack();
+		Attack(SPtr_GameObject owner,std::function<void()> callback);
 		~Attack();
 	};
 
@@ -58,12 +73,17 @@ namespace MonsterTask {
 
 	class GetHit : public BTTask {
 	private:
+		SPtr<Script_EnemyController>  mEnemyController;
+		SPtr<Script_Enemy>			  mStat;
+		float						  mPrevHp{};
+		float						  mKnockBack{};
 
 	public:
 		virtual BTNodeState Evaluate() override;
+
 		 
 	public:
-		GetHit();
+		GetHit(SPtr_GameObject owner, std::function<void()> callback = nullptr);
 		~GetHit();
 	};
 
@@ -74,12 +94,13 @@ namespace MonsterTask {
 
 	class Patrol : public BTTask {
 	private:
-
+		SPtr<Script_EnemyController>  mEnemyController;
+		SPtr<Script_Enemy>			  mStat;
 	public:
 		virtual BTNodeState Evaluate() override;
 
 	public:
-		Patrol();
+		Patrol(SPtr_GameObject owner, std::function<void()> callback = nullptr);
 		~Patrol();
 	};
 
@@ -91,12 +112,18 @@ namespace MonsterTask {
 
 	class MoveToPath : public BTTask {
 	private:
+		SPtr<Script_EnemyController>  mEnemyController;
+		SPtr<Script_Enemy>			  mStat;
+
+		float						  mMoveSpeed{};
+		float						  mReturnSpeed{};
+		std::stack<Vec3>*			  mPath;
 
 	public:
 		virtual BTNodeState Evaluate() override;
 
 	public:
-		MoveToPath();
+		MoveToPath(SPtr_GameObject owner, std::function<void()> callback = nullptr);
 		~MoveToPath();
 	};
 
@@ -107,12 +134,13 @@ namespace MonsterTask {
 
 	class MoveToTarget : public BTTask {
 	private:
-
+		SPtr<Script_EnemyController>  mEnemyController;
+		SPtr<Script_Enemy>			  mStat;
 	public:
 		virtual BTNodeState Evaluate() override;
 
 	public:
-		MoveToTarget();
+		MoveToTarget(SPtr_GameObject owner, std::function<void()> callback = nullptr);
 		~MoveToTarget();
 	};
 
@@ -124,12 +152,13 @@ namespace MonsterTask {
 	class PathPlanning_AStar : public BTTask {
 	private:
 		AStarPath mAStarPath;
-
+		SPtr<Script_EnemyController>  mEnemyController;
+		SPtr<Script_Enemy>			  mStat;
 	public:
 		virtual BTNodeState Evaluate() override;
 
 	public:
-		PathPlanning_AStar();
+		PathPlanning_AStar(SPtr_GameObject owner, std::function<void()> callback = nullptr);
 		~PathPlanning_AStar();
 	};
 
@@ -140,12 +169,13 @@ namespace MonsterTask {
 
 	class PathPlanningToSapwn : public BTTask {
 	private:
-
+		SPtr<Script_EnemyController>  mEnemyController;
+		SPtr<Script_Enemy>			  mStat;
 	public:
 		virtual BTNodeState Evaluate() override;
 
 	public:
-		PathPlanningToSapwn();
+		PathPlanningToSapwn(SPtr_GameObject owner, std::function<void()> callback = nullptr);
 		~PathPlanningToSapwn();
 	};
 
@@ -156,14 +186,105 @@ namespace MonsterTask {
 
 	class PathPlanningToTarget : public BTTask {
 	private:
+		SPtr<Script_EnemyController>  mEnemyController;
+		SPtr<Script_Enemy>			  mStat;
+	public:
+		virtual BTNodeState Evaluate() override;
+
+	public:
+		PathPlanningToTarget(SPtr_GameObject owner, std::function<void()> callback = nullptr);
+		~PathPlanningToTarget();
+	};
+
+
+	/// +-------------------------------------------------------------------------
+	///	> ¢º¢º¢º Task Check Attack Range
+	/// __________________________________________________________________________
+	/// -------------------------------------------------------------------------+
+
+	class CheckAttackRange : public BTTask {
+	private:
+		SPtr<Script_EnemyController>  mEnemyController;
+		SPtr<Script_Enemy>			  mStat;
+	public:
+		virtual BTNodeState Evaluate() override;
+
+	public:
+		CheckAttackRange(SPtr_GameObject owner, std::function<void()> callback = nullptr);
+		~CheckAttackRange();
+	};
+
+
+	/// +-------------------------------------------------------------------------
+	///	> ¢º¢º¢º Task Check Death 
+	/// __________________________________________________________________________
+	/// -------------------------------------------------------------------------+
+
+	class CheckDeath : public BTTask {
+	private:
+		SPtr<Script_EnemyController>  mEnemyController;
+		SPtr<Script_Enemy>			  mStat;
+		float mAccTime{};
+		float mRemoveTime{};
 
 	public:
 		virtual BTNodeState Evaluate() override;
 
 	public:
-		PathPlanningToTarget();
-		~PathPlanningToTarget();
+		CheckDeath(SPtr_GameObject owner, std::function<void()> callback = nullptr);
+		~CheckDeath();
 	};
 
+	
+	/// +-------------------------------------------------------------------------
+	///	> ¢º¢º¢º Task Check Detection Range
+	/// __________________________________________________________________________
+	/// -------------------------------------------------------------------------+
 
+	class CheckDetectionRange : public BTTask {
+	private:
+		SPtr<Script_EnemyController>  mEnemyController;
+		SPtr<Script_Enemy>			  mStat;
+	public:
+		virtual BTNodeState Evaluate() override;
+
+	public:
+		CheckDetectionRange(SPtr_GameObject owner, std::function<void()> callback = nullptr);
+		~CheckDetectionRange();
+	};
+	
+
+	/// +-------------------------------------------------------------------------
+	///	> ¢º¢º¢º Task Check Mind Detection Range
+	/// __________________________________________________________________________
+	/// -------------------------------------------------------------------------+
+
+	class CheckMindDetectionRange : public BTTask {
+	private:
+		SPtr<Script_EnemyController>  mEnemyController;
+		SPtr<Script_Enemy>			  mStat;
+	public:
+		virtual BTNodeState Evaluate() override;
+
+	public:
+		CheckMindDetectionRange(SPtr_GameObject owner, std::function<void()> callback = nullptr);
+		~CheckMindDetectionRange();
+	};
+
+	/// +-------------------------------------------------------------------------
+///	> ¢º¢º¢º Task Check Patrol Range
+/// __________________________________________________________________________
+/// -------------------------------------------------------------------------+
+
+	class CheckPatrolRange : public BTTask {
+	private:
+		SPtr<Script_EnemyController>  mEnemyController;
+		SPtr<Script_Enemy>			  mStat;
+	public:
+		virtual BTNodeState Evaluate() override;
+
+	public:
+		CheckPatrolRange(SPtr_GameObject owner, std::function<void()> callback = nullptr);
+		~CheckPatrolRange();
+	};
 }

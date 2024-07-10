@@ -210,15 +210,41 @@ void Framework::Launch()
 	std::cout << "Core : " << CoreNum << std::endl;
 	std::atomic<bool> stop(false);
 
+
+
+
 	/// +---------------------- IOCP WORKER THREAD : 3 ---------------------------+
 	/* 3 : IOCP Thread  1 : Timer Thread*/
 	for (INT32 i = 1; i <= CoreNum ; ++i) { 
+
 		THREAD_MGR->RunThread("Worker Threads : 3 (CoreNum - 1(Timer))" + std::to_string(i), [&]() {
 
 			UINT32 msTimeOut = 0;
+			float time = 0;
+			float prev = 0;
 			while (!stop.load())
 			{
-				//LOG_MGR->Cout(TLS_MGR->Get_TlsInfoData()->id, " \n");
+				TLS_MGR->Get_TlsInfoData()->TimeMgr.Tick(60.f);
+
+				//time += DELTA_TIME;// DELTA_TIME;
+				//LOG_MGR->Cout("[", TLS_MGR->Get_TlsInfoData()->id, "] : ", DELTA_TIME, "\n");
+				time += TLS_MGR->Get_TlsInfoData()->TimeMgr.GetTimeElapsed();
+
+				if (TLS_MGR->Get_TlsInfoData()->id == 2)
+				{
+					
+					int i = 0;
+					while (true) {
+						i++;
+						if (i > 500000000)break;
+					}
+				}
+
+				if ((int)time != (int)prev) {
+					LOG_MGR->Cout("[", TLS_MGR->Get_TlsInfoData()->id,"] : ", TLS_MGR->Get_TlsInfoData()->TimeMgr.GetTimeElapsed(), "\n");
+					prev = time;
+				}
+
 				mServer->WorkerThread(msTimeOut);
 
 			}
@@ -247,15 +273,10 @@ void Framework::Launch()
 		TIME_MGR->PushTimerEvent(t3);
 	}
 
-
-
-
 	/// +-------------------------	TIMER THREAD : 1 ------------------------------+
-	THREAD_MGR->RunThread("Timer Thread : 1", [&]() {
-			TIME_MGR->Launch();
-		});
-
-
+//THREAD_MGR->RunThread("Timer Thread : 1", [&]() {
+	TIME_MGR->Launch();
+	//});
 
 #ifdef  CONNECT_WITH_TEST_CLIENT
 	THREAD_MGR->RunThread("Send Test", [&]() {

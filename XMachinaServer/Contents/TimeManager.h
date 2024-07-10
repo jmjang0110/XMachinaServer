@@ -22,6 +22,8 @@ struct TimerEvent {
 	constexpr bool operator<(const TimerEvent& L) const{ return (WakeUp_Time > L.WakeUp_Time);}
 };
 
+static float g_ElapsedTime = 0.f;
+
 #define DELTA_TIME TimeManager::GetInst()->GetTimeElapsed()
 struct Timer {
 	constexpr static ULONG kMaxSampleCnt = 50;		// Maximum frame time sample count
@@ -58,6 +60,7 @@ private:
 	Timer m_Timer;
 	double m_Time{};
 
+	float m_CurTimeElapsed{};
 public:
 	void Launch();
 	void Process_TimerEvent(TimerEvent ev);
@@ -75,7 +78,9 @@ public:
 	float GetTotalTime() const;
 
 	// 프레임 전환 시간를 반환한다.
-	float GetTimeElapsed() const { return m_Timer.TimeElapsed; }
+	float GetTimeElapsed() const {
+		return m_CurTimeElapsed;
+	}//return m_Timer.TimeElapsed; }
 	// 현재 frame rate를 문자열로 반환한다.
 	const WCHAR* GetFrameRate() const;
 

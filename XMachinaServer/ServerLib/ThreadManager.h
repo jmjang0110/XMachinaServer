@@ -52,6 +52,7 @@ namespace TLS {
 	struct TlsInfoData {
 		int			id;
 		std::string threadName;
+		TimeManager TimeMgr;
 	};
 
 	struct TlsSendPacketFactory {

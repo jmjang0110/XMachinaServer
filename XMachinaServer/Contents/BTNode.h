@@ -24,8 +24,8 @@ public:
 	std::vector<BTNode*>	mChildren   = {};
 
 public:
-	BTNode();
-	BTNode(std::vector<BTNode*>& children);
+	BTNode(SPtr_GameObject owner);
+	BTNode(SPtr_GameObject owner, std::vector<BTNode*>& children);
 	virtual ~BTNode();
 
 public:
@@ -61,8 +61,8 @@ public:
 	virtual BTNodeState Evaluate() override;
 
 public:
-	BTNode_Sequence() : BTNode() {};
-	BTNode_Sequence(std::vector<BTNode*>& children) : BTNode(children) {};
+	BTNode_Sequence(SPtr_GameObject owner) : BTNode(owner) {};
+	BTNode_Sequence(SPtr_GameObject owner, std::vector<BTNode*>& children) : BTNode(owner, children) {};
 };
 
 /// +-------------------------------------------------------------------------
@@ -78,14 +78,14 @@ public:
 	virtual BTNodeState Evaluate() override;
 
 public:
-	BTNode_Selector() : BTNode() {};
-	BTNode_Selector(std::vector<BTNode*>& children) : BTNode(children) {};
+	BTNode_Selector(SPtr_GameObject owner) : BTNode(owner) {};
+	BTNode_Selector(SPtr_GameObject owner, std::vector<BTNode*>& children) : BTNode(owner, children) {};
 };
 
 /// +-------------------------------------------------------------------------
 ///	> ▶▶▶ Action Tree Node 
 /// __________________________________________________________________________
-/// - Action Node를 상속받는다는 것은 
+/// mCallback 함수를 실행시켜 Action을 취한다. 
 /// -------------------------------------------------------------------------+
 
 
@@ -95,9 +95,15 @@ private:
 	std::function<void()> mCallback;
 
 public:
-	virtual BTNodeState Evaluate() override;
+	virtual BTNodeState Evaluate() { return BTNode::Evaluate(); };
 
 public:
-	BTNode_Action() : BTNode() {};
-	BTNode_Action(std::function<void()> callback) : mCallback(callback) {}
+	BTNode_Action(SPtr_GameObject owner) : BTNode(owner) {};
+	BTNode_Action(SPtr_GameObject owner, std::function<void()> callback) : BTNode(owner) { mCallback = callback; }
+
+public:
+	void ExecuteCallback() {
+		if (mCallback)
+			mCallback();
+	}
 };

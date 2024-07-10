@@ -14,6 +14,13 @@ public:
 	virtual ~Script_BehaviorTree();
 
 public:
+
+	/// +------------------------------
+	///		  virtual function 
+	/// ------------------------------+
+	virtual void Activate();
+	virtual void DeActivate();
+
 	virtual bool WakeUp();
 	virtual bool Start();
 	virtual bool Update();

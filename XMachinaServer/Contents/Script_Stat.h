@@ -26,26 +26,33 @@ private:
 
 	bool  mIsDead       = {};
 
-
-
 public:
 	Script_Stat();
 	Script_Stat(UINT32 id);
 	~Script_Stat();
 
 public:
+
+	/// +------------------------------
+	///			virtual function 
+	/// ------------------------------+
+	virtual void Activate();
+	virtual void DeActivate();
+
 	virtual bool WakeUp()	override;
 	virtual bool Start()	override;
 	virtual bool Update()	override;
 	virtual void OnDestroy();
 
+	/// +------------------------------
+	///		 Stat : virtual function 
+	/// ------------------------------+
 	virtual bool Hit(float damage, SPtr_GameObject instigator = nullptr);
 	virtual void Dead();
 	virtual void Attack();
 
 
 public:
-	bool UpdatePrevHP() { bool res = mPrevHP == mCrntHP; mPrevHP = mCrntHP; return res; }
 
 	/* Set */
 	void SetMaxHP(float hp)		 { mMaxHP = hp; }
@@ -57,6 +64,8 @@ public:
 	float	GetCrntHp() const { return mCrntHP; }
 	float	GetMaxHp() const { return mMaxHP; }
 
+public:
+	bool UpdatePrevHP() { bool res = mPrevHP == mCrntHP; mPrevHP = mCrntHP; return res; }
 
 
 };

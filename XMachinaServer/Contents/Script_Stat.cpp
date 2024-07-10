@@ -71,3 +71,11 @@ void Script_Stat::Dead()
 void Script_Stat::Attack()
 {
 }
+
+void Script_Stat::Activate()
+{
+}
+
+void Script_Stat::DeActivate()
+{
+}

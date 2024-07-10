@@ -18,6 +18,18 @@ Script_EnemyController::~Script_EnemyController()
 {
 }
 
+void Script_EnemyController::Activate()
+{
+	Script::Activate();
+
+}
+
+void Script_EnemyController::DeActivate()
+{
+	Script::DeActivate();
+
+}
+
 bool Script_EnemyController::WakeUp()
 {
 	return true;

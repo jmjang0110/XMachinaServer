@@ -16,12 +16,29 @@ Script::~Script()
 {
 }
 
+void Script::Activate()
+{
+	Component::Activate();
+
+	OnEnable();
+
+}
+
+void Script::DeActivate()
+{
+	Component::DeActivate();
+
+	OnDisable();
+}
+
 void Script::OnEnable()
 {
+
 }
 
 void Script::OnDisable()
 {
+
 }
 
 bool Script::WakeUp()

@@ -35,7 +35,6 @@ namespace EnemyInfo
 class Script_EnemyController : public Script
 {
 private:
-	EnemyInfo::Stat		mStat   = {};
 	EnemyInfo::State	mState  = EnemyInfo::State::Idle;
 
 	SPtr_GameObject		mTarget     = {}; 
@@ -44,6 +43,12 @@ private:
 
 
 public:
+	/// +------------------------------
+	///		  virtual function 
+	/// ------------------------------+
+	virtual void Activate();
+	virtual void DeActivate();
+
 	virtual bool WakeUp()	override;
 	virtual bool Start()	override;
 	virtual bool Update()	override;
@@ -52,14 +57,19 @@ public:
 public:
 	void Reset();
 	void ForceSetTarget(SPtr_GameObject target) { mTarget = target; }
+
 public:
 	Script_EnemyController();
 	Script_EnemyController(UINT32 id);
 	~Script_EnemyController();
 
 public:
-	SPtr_GameObject GetTargetObject() { return mTarget; }
-	SPtr_GameObject GetPathTargetObject() { return mPathTarget; }
+	SPtr_GameObject GetTargetObject()		{ return mTarget;	  }
+	SPtr_GameObject GetPathTargetObject()	{ return mPathTarget; }
+
+	EnemyInfo::State GetState() { return mState; }
+	void SetState(EnemyInfo::State state) { mState = state; }
+	std::stack<Vec3>*	GetPaths() { return &mPaths; }
 
 public:
 	void SetTargetObject(SPtr_GameObject target) { mTarget = target; }

@@ -96,6 +96,7 @@ void ThreadLocalStorageManager::Init_TlsInfoData(std::string threadName)
 	TLS::TlsInfoData* TlsData = new TLS::TlsInfoData;
 	TlsData->id               = TlsMgr::NewThreadID.fetch_add(1); // atomic 
 	TlsData->threadName       = threadName;
+	TlsData->TimeMgr          = TimeManager();
 
 	/* lock! */
 	std::lock_guard<std::mutex> lock(mMutexArr[TlsIndexIdx]);

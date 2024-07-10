@@ -17,6 +17,20 @@ Component::~Component()
 {
 }
 
+void Component::Activate()
+{
+	GameEntity::Activate();
+
+	OnEnable();
+}
+
+void Component::DeActivate()
+{
+	GameEntity::DeActivate();
+
+	OnDisable();
+}
+
 void Component::OnEnable()
 {
 	if (!mIsAwake) {

@@ -17,7 +17,7 @@ private:
 	std::wstring		mServerIP    = L"127.0.0.1";
 	SPtr_ServerNetwork  mServer      = {};
 	SPtr_SendBufFactory mSendFactory = {};
-
+	
 public:
 	Framework();
 	~Framework();

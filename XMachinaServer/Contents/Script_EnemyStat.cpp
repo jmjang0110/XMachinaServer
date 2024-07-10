@@ -14,6 +14,18 @@ Script_EnemyStat::~Script_EnemyStat()
 {
 }
 
+void Script_EnemyStat::Activate()
+{
+	Script::Activate();
+
+}
+
+void Script_EnemyStat::DeActivate()
+{
+	Script::DeActivate();
+
+}
+
 bool Script_EnemyStat::WakeUp()
 {
 	return false;

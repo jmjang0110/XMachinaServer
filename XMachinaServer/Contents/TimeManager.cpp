@@ -3,15 +3,14 @@
 #include "GameOverlapped.h"
 #include "ServerLib/MemoryManager.h"
 #include "GameWorld.h"
+#include "ServerLib/ThreadManager.h"
+
 
 DEFINE_SINGLETON(TimeManager);
 
 void TimeManager::Launch()
 {
 	while (m_LaunchThread) {
-		//LOG_MGR->Cout(DELTA_TIME, "\n");
-
-
 		TimerEvent TEvent;
 		auto CurTime = std::chrono::system_clock::now();
 
@@ -147,6 +146,11 @@ void TimeManager::Tick(float lockFPS)
 	if (m_Timer.SampleCnt > 0) {
 		m_Timer.TimeElapsed /= m_Timer.SampleCnt;
 	}
+
+	m_CurTimeElapsed = m_Timer.TimeElapsed;
+
+	g_ElapsedTime = m_Timer.TimeElapsed;
+
 }
 
 void TimeManager::Start()

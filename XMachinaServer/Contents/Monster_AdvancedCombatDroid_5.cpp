@@ -37,7 +37,6 @@ void Monster_AdvancedCombatDroid_5::Dispatch(OverlappedObject* overlapped, UINT3
 	t.Owner       = shared_from_this();
 	TIME_MGR->PushTimerEvent(t);
 
-	speed += 1.f;
 
 	//if ((int)speed % 10'000 == 0)
 	//	LOG_MGR->Cout(this, " - ADVCOM5 : ", speed, "\n");

@@ -47,5 +47,11 @@ public:
 
 	int GetID() { return  mID; }
 	std::string GetName() { return mName; }
+
+public:
+	bool IsActive() { return mIsActive; }
+	virtual void Activate();
+	virtual void DeActivate();
+
 };
 
