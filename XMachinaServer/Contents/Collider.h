@@ -9,7 +9,7 @@ private:
 
 public:
 	Collider();
-	Collider(UINT32 id);
+	Collider(SPtr<GameObject> owner, ComponentInfo::Type Type);
 	~Collider();
 
 public:

@@ -1,10 +1,17 @@
 #pragma once
 #include "Script_Enemy.h"
 
+class GameObject;
 
 class Script_Ursacetus : public Script_Enemy
 {
 private:
+
+
+public:
+	Script_Ursacetus();
+	Script_Ursacetus(SPtr<GameObject> owner, ScriptInfo::Type type);
+	virtual ~Script_Ursacetus();
 
 public:
 	/// +------------------------------

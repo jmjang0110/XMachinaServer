@@ -1,8 +1,9 @@
 #pragma once
 #include "GamePlayer.h"
-#include "PlayerController.h"
-#include "NPCController.h"
-#include "SectorController.h"
+
+class PlayerController;
+class NPCController;
+class SectorController;
 
 class GameObject;
 namespace RoomInfo
@@ -14,6 +15,7 @@ class GameRoom : public GameEntity
 
 private:
 	int					mID = -1; /* ROOM ID */
+
 	PlayerController*	mPC = {};
 	NPCController*		mNC = {};
 	SectorController*	mSC = {};
@@ -22,6 +24,9 @@ private:
 public:
 	GameRoom();
 	~GameRoom();
+
+public:
+	void PQCS(OverlappedObject* over);
 
 public:
 	/// +-------------------------------------------------------------------
@@ -52,6 +57,12 @@ public:
 	/// -------------------------------------------------------------------+
 
 
-	
+public:
+	/// +-------------------------------------------------------------------
+	///	¡å Getter 
+	/// -------------------------------------------------------------------+
+	PlayerController*	 GetPlayerController()		{ return mPC; }
+	NPCController*		 GetNPCController()			{ return mNC; }
+	SectorController*	 GetSectorController()		{ return mSC; }
 };
 

@@ -6,8 +6,8 @@ Script::Script()
 {
 }
 
-Script::Script(ScriptInfo::Type type, UINT32 id)
-	: Component(id, ComponentInfo::Type::Script)
+Script::Script(SPtr<GameObject> owner, ScriptInfo::Type type, UINT32 id)
+	: Component(owner, ComponentInfo::Type::Script, id)
 {
 	mType = type;
 }

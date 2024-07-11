@@ -8,8 +8,8 @@ Monster_Onyscidus::Monster_Onyscidus()
 {
 }
 
-Monster_Onyscidus::Monster_Onyscidus(UINT32 sessionID)
-	: GameMonster(sessionID)
+Monster_Onyscidus::Monster_Onyscidus(UINT32 sessionID, Coordinate sectorIdx)
+	: GameMonster(sessionID, sectorIdx)
 {
 	GameObject::SetType(GameObjectInfo::Type::Monster_Onyscidus) ;
 
@@ -20,24 +20,36 @@ Monster_Onyscidus::~Monster_Onyscidus()
 {
 }
 
+void Monster_Onyscidus::Init()
+{
+}
+
 void Monster_Onyscidus::Update()
 {
+	GameMonster::Update();
+	std::cout << "Monster_Onyscidus\n";
+
 }
 
 void Monster_Onyscidus::WakeUp()
 {
 }
 
+void Monster_Onyscidus::Activate()
+{
+}
+
+void Monster_Onyscidus::DeActivate()
+{
+}
+
 void Monster_Onyscidus::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 {
 	MEMORY->Delete(overlapped);
-	//return;
 
-	TimerEvent t;
-	t.Type = TimerEventType::Update_Onyscidus;
-	t.WakeUp_Time = std::chrono::system_clock::now(); // 지금 당장 시작 
-	t.Owner = shared_from_this();
-	TIME_MGR->PushTimerEvent(t);
+	Update();
+
+	GameObject::RegisterUpdate();
 
 	//if ((int)speed % 10'000 == 0)
 	//	LOG_MGR->Cout(this, " - ONYSCIDUS : ", speed, "\n");

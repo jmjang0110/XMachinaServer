@@ -5,8 +5,8 @@ Script_EnemyStat::Script_EnemyStat()
 {
 }
 
-Script_EnemyStat::Script_EnemyStat(UINT32 id)
-	: Script_Stat(id)
+Script_EnemyStat::Script_EnemyStat(SPtr<GameObject> owner, ScriptInfo::Type type)
+	: Script_Stat(owner , type)
 {
 }
 
@@ -28,25 +28,34 @@ void Script_EnemyStat::DeActivate()
 
 bool Script_EnemyStat::WakeUp()
 {
+	Script::WakeUp();
+
 	return false;
 }
 
 bool Script_EnemyStat::Start()
 {
+	Script::Start();
+
 	return false;
 }
 
 bool Script_EnemyStat::Update()
 {
+	Script::Update();
+
 	return false;
 }
 
 void Script_EnemyStat::OnDestroy()
 {
+	Script::OnDestroy();
+
 }
 
 void Script_EnemyStat::Attack()
 {
+
 }
 
 void Script_EnemyStat::AttackCallback()
@@ -55,6 +64,7 @@ void Script_EnemyStat::AttackCallback()
 
 void Script_EnemyStat::Dead()
 {
+
 }
 
 

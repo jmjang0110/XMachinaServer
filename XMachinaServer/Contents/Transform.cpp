@@ -6,8 +6,8 @@
 Transform::Transform()
 {
 }
-Transform::Transform(UINT32 id)
-	: Component(id, ComponentInfo::Type::Transform)
+Transform::Transform(SPtr<GameObject> owner, ComponentInfo::Type Type)
+	: Component(owner, ComponentInfo::Type::Transform, static_cast<UINT32>(ComponentInfo::Type::Transform))
 {
 }
 Transform::~Transform()

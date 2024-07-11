@@ -9,7 +9,7 @@ private:
 
 public:
 	Script_Phero();
-	Script_Phero(UINT32 id);
+	Script_Phero(SPtr<GameObject> owner, ScriptInfo::Type type);
 	~Script_Phero();
 
 public:

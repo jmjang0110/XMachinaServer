@@ -34,34 +34,12 @@ void TimeManager::Process_TimerEvent(TimerEvent ev)
 	
 	switch (ev.Type)
 	{
-	case TimerEventType::Update_Ursacetus:
-	{
-	
-		Overlapped_Monster_Update* over = MEMORY->New<Overlapped_Monster_Update>();
-		over->SetOwner(ev.Owner);
-		GAME_WORLD->PQCS(reinterpret_cast<OverlappedObject*>(over));
-
-	}
-	break;
-	case TimerEventType::Update_AdvancedCombatDroid_5:
-	{
-
-		Overlapped_Monster_Update* over = MEMORY->New<Overlapped_Monster_Update>();
-		over->SetOwner(ev.Owner);
-		GAME_WORLD->PQCS(reinterpret_cast<OverlappedObject*>(over));
-
-	}
-	break;
-	case TimerEventType::Update_Onyscidus:
-	{
-
-		Overlapped_Monster_Update* over = MEMORY->New<Overlapped_Monster_Update>();
-		over->SetOwner(ev.Owner);
-		GAME_WORLD->PQCS(reinterpret_cast<OverlappedObject*>(over));
-
-	}
-	break;
-	default:
+		case TimerEventType::Update_GameObject:
+		{
+			Overlapped_GameObject_Update* over = MEMORY->New<Overlapped_GameObject_Update>();
+			over->SetOwner(ev.Owner);
+			GAME_WORLD->PQCS(reinterpret_cast<OverlappedObject*>(over));
+		}
 		break;
 	}
 

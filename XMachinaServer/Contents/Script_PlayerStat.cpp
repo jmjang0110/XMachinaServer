@@ -6,8 +6,8 @@ Script_PlayerStat::Script_PlayerStat()
 
 }
 
-Script_PlayerStat::Script_PlayerStat(UINT32 id)
-	: Script_Stat(id)
+Script_PlayerStat::Script_PlayerStat(SPtr<GameObject> owner, ScriptInfo::Type type)
+	: Script_Stat(owner, type)
 {
 
 }

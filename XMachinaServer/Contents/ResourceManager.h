@@ -1,5 +1,6 @@
 #pragma once
 
+#include "HeightMapImage.h"
 
 /// +-------------------------------
 ///		   ResourceManager
@@ -19,11 +20,21 @@ class ResourceManager
 	DECLARE_SINGLETON(ResourceManager);
 
 private:
+	SPtr<HeightMapImage> mHeightMapImg;
 
 
 public:
 	ResourceManager();
 	~ResourceManager();
+
+public:
+	void Init();
+
+public:
+	/// +--------------------------------------------------
+	///	¡å Getter
+	/// --------------------------------------------------+
+	SPtr<HeightMapImage> GetHeightMapImage() { return mHeightMapImg; }
 
 };
 

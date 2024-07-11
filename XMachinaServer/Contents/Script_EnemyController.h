@@ -60,7 +60,7 @@ public:
 
 public:
 	Script_EnemyController();
-	Script_EnemyController(UINT32 id);
+	Script_EnemyController(SPtr<GameObject> owner, ScriptInfo::Type type);
 	~Script_EnemyController();
 
 public:

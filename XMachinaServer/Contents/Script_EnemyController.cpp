@@ -9,8 +9,8 @@ Script_EnemyController::Script_EnemyController()
 {
 }
 
-Script_EnemyController::Script_EnemyController(UINT32 id)
-	: Script(ScriptInfo::Type::EnemyController, id)
+Script_EnemyController::Script_EnemyController(SPtr<GameObject> owner, ScriptInfo::Type type)
+	: Script(owner, type, static_cast<UINT32>(type))
 {
 }
 

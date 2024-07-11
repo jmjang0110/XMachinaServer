@@ -5,7 +5,8 @@ Script_Stat::Script_Stat()
 {
 }
 
-Script_Stat::Script_Stat(UINT32 id)
+Script_Stat::Script_Stat(SPtr<GameObject> owner, ScriptInfo::Type type)
+	: Script(owner, type, static_cast<UINT32>(type))
 {
 }
 

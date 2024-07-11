@@ -1,6 +1,19 @@
 #include "pch.h"
 #include "Script_AdvancedCombatDroid_5.h"
 
+Script_AdvancedCombatDroid_5::Script_AdvancedCombatDroid_5()
+{
+}
+
+Script_AdvancedCombatDroid_5::Script_AdvancedCombatDroid_5(SPtr<GameObject> owner, ScriptInfo::Type type)
+    :Script_Enemy(owner, type)
+{
+}
+
+Script_AdvancedCombatDroid_5::~Script_AdvancedCombatDroid_5()
+{
+}
+
 void Script_AdvancedCombatDroid_5::Activate()
 {
 }

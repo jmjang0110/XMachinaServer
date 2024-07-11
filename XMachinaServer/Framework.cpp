@@ -19,6 +19,7 @@
 #include "Protocol/FBsPacketFactory.h"
 #include "Contents/DBController.h"
 #include "Contents/GameWorld.h"
+#include "Contents/ResourceManager.h"
 
 
 #undef max 
@@ -126,6 +127,8 @@ bool Framework::Init(HINSTANCE& hInst)
 	/// +-----------------------------------------
 	///	GAME MANAGER : Game Room, Player ... 관리
 	/// -----------------------------------------+
+	RESOURCE_MGR->Init();
+	GAME_WORLD->Init();
 	GAME_MGR->Init();	
 
 
@@ -176,7 +179,7 @@ bool Framework::Init(HINSTANCE& hInst)
 	LOG_MGR->Cout("[SUCCESS] SendBuffersFactory INIT\n");
 
 
-	GAME_WORLD->Init();
+
 
 
 	return true;
@@ -210,14 +213,11 @@ void Framework::Launch()
 	std::cout << "Core : " << CoreNum << std::endl;
 	std::atomic<bool> stop(false);
 
-
-
-
-	/// +---------------------- IOCP WORKER THREAD : 3 ---------------------------+
-	/* 3 : IOCP Thread  1 : Timer Thread*/
+	/// +---------------------- IOCP WORKER THREAD : 4 (worker Thread ---------------------------+
+	/* 4 : IOCP Thread  1 : Timer Thread*/
 	for (INT32 i = 1; i <= CoreNum ; ++i) { 
 
-		THREAD_MGR->RunThread("Worker Threads : 3 (CoreNum - 1(Timer))" + std::to_string(i), [&]() {
+		THREAD_MGR->RunThread("Worker Threads : 4 (CoreNum - 1(Timer))" + std::to_string(i), [&]() {
 
 			UINT32 msTimeOut = 0;
 			float time = 0;
@@ -238,30 +238,28 @@ void Framework::Launch()
 	}
 
 	/* GameWorld Update Test */
-	for (int i = 0; i < 10; ++i) {
+	for (int i = 0; i < 1; ++i) {
 		TimerEvent t;
-		t.Type = TimerEventType::Update_Ursacetus;
+		t.Type = TimerEventType::Update_GameObject;
 		t.WakeUp_Time = std::chrono::system_clock::now() + std::chrono::seconds(0); // 지금 당장 시작 
 		t.Owner = GAME_WORLD->GetUrsacetusSPtr(i);
 		TIME_MGR->PushTimerEvent(t);
 
-		TimerEvent t2;
-		t2.Type = TimerEventType::Update_AdvancedCombatDroid_5;
-		t2.WakeUp_Time = std::chrono::system_clock::now(); // 지금 당장 시작 
-		t2.Owner = GAME_WORLD->GetAdvCombat5(i);
-		TIME_MGR->PushTimerEvent(t2);
+		//TimerEvent t2;
+		//t2.Type = TimerEventType::Update_GameObject;
+		//t2.WakeUp_Time = std::chrono::system_clock::now(); // 지금 당장 시작 
+		//t2.Owner = GAME_WORLD->GetAdvCombat5(i);
+		//TIME_MGR->PushTimerEvent(t2);
 
-		TimerEvent t3;
-		t3.Type = TimerEventType::Update_Onyscidus;
-		t3.WakeUp_Time = std::chrono::system_clock::now() + std::chrono::seconds(0); // 지금 당장 시작 
-		t3.Owner = GAME_WORLD->GetOnyscidus(i);
-		TIME_MGR->PushTimerEvent(t3);
+		//TimerEvent t3;
+		//t3.Type = TimerEventType::Update_GameObject;
+		//t3.WakeUp_Time = std::chrono::system_clock::now() + std::chrono::seconds(0); // 지금 당장 시작 
+		//t3.Owner = GAME_WORLD->GetOnyscidus(i);
+		//TIME_MGR->PushTimerEvent(t3);
 	}
 
-	/// +-------------------------	TIMER THREAD : 1 ------------------------------+
-//THREAD_MGR->RunThread("Timer Thread : 1", [&]() {
+	/// +-------------------------	TIMER THREAD : 1 (main) ------------------------------+
 	TIME_MGR->Launch();
-	//});
 
 #ifdef  CONNECT_WITH_TEST_CLIENT
 	THREAD_MGR->RunThread("Send Test", [&]() {
@@ -276,16 +274,6 @@ void Framework::Launch()
 		});
 #endif //  CONNECT_WITH_TEST_CLIENT
 
-
-	std::cout << "Q : stop\n";
-	char key;
-	std::cin >> key;
-
-	// If 'q' is pressed, stop the threads
-	if (key == 'q') {
-		stop.store(true);
-		std::cout << "STOP!!\n";
-	}
 
 	THREAD_MGR->JoinAllThreads();
 }

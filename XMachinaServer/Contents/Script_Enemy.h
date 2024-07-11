@@ -9,6 +9,7 @@ private:
 	
 public:
 	Script_Enemy();
+	Script_Enemy(SPtr<GameObject> owner, ScriptInfo::Type type);
 	~Script_Enemy();
 
 
@@ -16,6 +17,7 @@ public:
 	/// +------------------------------
 	///		  virtual function 
 	/// ------------------------------+
+	/* Runtime */
 	virtual void Activate();
 	virtual void DeActivate();
 
@@ -32,7 +34,6 @@ public:
 	virtual void AttackCallback();
 	virtual void Dead();
 	virtual bool Hit(float damage, SPtr_GameObject instigator = nullptr) override;
-
 
 };
 

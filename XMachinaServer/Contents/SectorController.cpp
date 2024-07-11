@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "SectorController.h"
 #include "ServerLib/MemoryManager.h"
+#include "ResourceManager.h"
+#include "HeightMapImage.h"
+#include "Sector.h"
 
 
 SectorController::SectorController()
@@ -19,7 +22,7 @@ SectorController::~SectorController()
 }
 
 
-bool SectorController::Init(Coordinate sectorTotalSize, SPtr_GameRoom owner)
+bool SectorController::Init(SPtr_GameRoom owner)
 {
     mOwnerRoom = owner;
 
@@ -31,11 +34,14 @@ bool SectorController::Init(Coordinate sectorTotalSize, SPtr_GameRoom owner)
         }
     }
 
-    mTotalSectorSize.x = sectorTotalSize.x;
-    mTotalSectorSize.z = sectorTotalSize.z;
+    SPtr<HeightMapImage> hmRes = RESOURCE_MGR->GetHeightMapImage();
+ 
 
-    mSectorSize.x = mTotalSectorSize.x / SectorInfo::Width;
-    mSectorSize.z = mTotalSectorSize.z / SectorInfo::height;
+    mTotalSectorSize.x = hmRes->GetHeightMapWidth();
+    mTotalSectorSize.z = hmRes->GetHeightMapLength();
+    
+    mSectorSize.x      = mTotalSectorSize.x / SectorInfo::Width;
+    mSectorSize.z      = mTotalSectorSize.z / SectorInfo::height;
 
 
     return true;
@@ -44,10 +50,15 @@ bool SectorController::Init(Coordinate sectorTotalSize, SPtr_GameRoom owner)
 Vec3 SectorController::GetSectorIdx(Vec3 Pos)
 {
     Vec3 sectorIdx;
-    sectorIdx.x = static_cast<int>(Pos.x / mSectorSize.x);
+    sectorIdx.x = (Pos.x / mSectorSize.x);
     sectorIdx.y = 0.f;
-    sectorIdx.z = static_cast<int>(Pos.y / mSectorSize.z);
+    sectorIdx.z = (Pos.y / mSectorSize.z);
     return sectorIdx;
 
 
+}
+
+SectorInfo::Type SectorController::GetSectorType(Coordinate idx)
+{
+    return mSectors[idx.z][idx.x]->GetSectorType();
 }

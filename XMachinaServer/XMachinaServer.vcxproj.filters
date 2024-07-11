@@ -155,6 +155,9 @@
     <Filter Include="Framework\Contents\GameWorld\Entity\Script\Enemy\Monster">
       <UniqueIdentifier>{1d99b89e-07c2-46ca-b1f1-2664b4cbe5de}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\Contents\GameWorld\NPC">
+      <UniqueIdentifier>{1bedc080-c0cf-4d5e-8793-a04303ed3d39}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework.h">
@@ -407,6 +410,9 @@
     <ClInclude Include="Contents\Script_Onyscidus.h">
       <Filter>Framework\Contents\GameWorld\Entity\Script\Enemy\Monster</Filter>
     </ClInclude>
+    <ClInclude Include="Contents\GameNPC.h">
+      <Filter>Framework\Contents\GameWorld\NPC</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp">
@@ -631,6 +637,9 @@
     </ClCompile>
     <ClCompile Include="Contents\Script_Onyscidus.cpp">
       <Filter>Framework\Contents\GameWorld\Entity\Script\Enemy\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\GameNPC.cpp">
+      <Filter>Framework\Contents\GameWorld\NPC</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

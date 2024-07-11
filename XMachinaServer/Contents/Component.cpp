@@ -6,9 +6,11 @@ Component::Component()
 {
 }
 
-Component::Component(UINT32 id, ComponentInfo::Type Type)
+Component::Component(SPtr<GameObject> owner, ComponentInfo::Type Type, UINT32 id)
 	: GameEntity(id)
+
 {
+	mOwner = owner;
 	mType = Type;
 
 }

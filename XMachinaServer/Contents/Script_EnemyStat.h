@@ -24,7 +24,7 @@ private:
 
 public:
 	Script_EnemyStat();
-	Script_EnemyStat(UINT32 id);
+	Script_EnemyStat(SPtr<GameObject> owner, ScriptInfo::Type type);
 	~Script_EnemyStat();
 
 

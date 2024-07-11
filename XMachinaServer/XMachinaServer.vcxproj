@@ -173,6 +173,7 @@
     <ClInclude Include="Contents\GameEntity.h" />
     <ClInclude Include="Contents\GameManager.h" />
     <ClInclude Include="Contents\GameMonster.h" />
+    <ClInclude Include="Contents\GameNPC.h" />
     <ClInclude Include="Contents\GameObject.h" />
     <ClInclude Include="Contents\GameOverlapped.h" />
     <ClInclude Include="Contents\GamePlayer.h" />
@@ -259,6 +260,7 @@
     <ClCompile Include="Contents\GameEntity.cpp" />
     <ClCompile Include="Contents\GameManager.cpp" />
     <ClCompile Include="Contents\GameMonster.cpp" />
+    <ClCompile Include="Contents\GameNPC.cpp" />
     <ClCompile Include="Contents\GameObject.cpp" />
     <ClCompile Include="Contents\GamePlayer.cpp" />
     <ClCompile Include="Contents\GameRoom.cpp" />

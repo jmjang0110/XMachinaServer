@@ -28,7 +28,7 @@ private:
 
 public:
 	Script();
-	Script(ScriptInfo::Type type, UINT32 id);
+	Script(SPtr<GameObject> owner, ScriptInfo::Type type, UINT32 id);
 	virtual ~Script();
 
 public:

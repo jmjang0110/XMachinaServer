@@ -1,9 +1,9 @@
 #pragma once
 
-#include "GameEntity.h"
+#include "SectorController.h"
+#include "GameObject.h"
 #include "GameMonster.h"
-#include "GamePlayer.h"
-
+#include "GameNPC.h"
 
 /// +-------------------------------
 ///		        Sector
@@ -16,22 +16,42 @@
 /// 24.06.27 : Player , NPC - 어떤 ID 가 해당 Sector에 속해있는지 관리한다. 실제 객체는 PlayerController 나 NPCController에 있으니 여기에 있는 ID를 통해서 접근한다. 
 /// -------------------------------+
 
+class GameMonster;
+class GameNPC;
 
-class Sector : public GameEntity
+class Sector : public GameObject
 {
 private:
-	std::vector<int> mMonsters_IDInfos;		// 해당 Sector에 속해있는 Monster ID. ( 몬스터가 죽으면 IsActive를 잠시 껐다가 부활 시키면 true로 하는 방식 )
-	std::vector<int> mPlayers_IDInfos;		// 해당 Sector에 속해있는 Player ID. 
-	std::vector<int> mNPCs_IDInfos;			// 해당 Secto에 속해있는 NPC ID
+	SectorInfo::Type mType = SectorInfo::Type::None;
+	Coordinate		 mIndex = {};
+private:
+	std::unordered_map<UINT32, SPtr<GameMonster>> mMonsters;
+	std::unordered_map<UINT32, SPtr<GameNPC>>	  mNPCs;
 
 
 public:
 	Sector();
-	Sector(int id);
-	virtual ~Sector() override;
+	Sector(UINT32 id, Coordinate sectorIdx); /* NPC 생성 아이디 - (생성되고 소멸될 때 까지 임시 아이디)*/
+	virtual ~Sector();
+
 
 public:
-	void Init();
+	virtual void Update() override;
+	virtual void WakeUp() override;
+	virtual void Start();
+
+	virtual void Dispatch(class OverlappedObject* overlapped, UINT32 bytes = 0) override;
+
+
+	/* 초기화 - Room/NPCController가 Sector에 Monster를 추가한다. */
+public:
+	void Init(SectorInfo::Type type = SectorInfo::Type::None);
+
+	bool AddMonster(UINT32 id, SPtr<GameMonster> monster);
+	bool AddNPC(UINT32 id, SPtr<GameNPC> npc);
+
+
+	SectorInfo::Type GetSectorType() { return mType; }
 
 
 };

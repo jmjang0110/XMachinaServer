@@ -19,7 +19,6 @@ namespace ComponentInfo {
 }
 
 
-
 class Component : public GameEntity
 {
 private:
@@ -33,7 +32,7 @@ private:
 
 public:
 	Component();
-	Component(UINT32 id, ComponentInfo::Type Type);
+	Component(SPtr<GameObject> owner, ComponentInfo::Type Type, UINT32 id);
 	virtual ~Component();
 
 public:

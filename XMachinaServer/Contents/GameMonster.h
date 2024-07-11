@@ -35,18 +35,24 @@ struct MonsterInfo
 class GameMonster : public GameObject
 {
 private:
-	MonsterInfo mInfo;
+	Coordinate  mSectorIndex;   // 어느 섹터에 속해있는가?
+	MonsterInfo mInfo;			// 몬스터 정보 
 
 
 public:
 	virtual void Update() override;
 	virtual void WakeUp() override;
+	virtual void Start();
+
+	virtual void Activate();
+	virtual void DeActivate();
 
 	virtual void Dispatch(class OverlappedObject* overlapped, UINT32 bytes = 0) override;
 
+
 public:
 	GameMonster();
-	GameMonster(UINT32 id); /* Monster 생성 아이디 - (생성되고 소멸될 때 까지 임시 아이디)*/
+	GameMonster(UINT32 id, Coordinate sectorIdx); /* Monster 생성 아이디 - (생성되고 소멸될 때 까지 임시 아이디)*/
 	virtual ~GameMonster();
 
 };

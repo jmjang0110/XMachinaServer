@@ -1,6 +1,6 @@
 #pragma once
 
-//#define CONNECT_WITH_TEST_CLIENT
+#define CONNECT_WITH_TEST_CLIENT
 #ifdef CONNECT_WITH_TEST_CLIENT
 
 namespace FBsProtocolID

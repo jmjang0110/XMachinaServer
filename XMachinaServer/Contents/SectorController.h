@@ -23,11 +23,20 @@
 /// 
 /// -------------------------------+
 
-#include "Sector.h"
+class Sector;
 
+/* Height map (W : 1000, H : 500 )*/
 namespace SectorInfo {
 	constexpr UINT8 Width  = 10;
 	constexpr UINT8 height = 10;
+
+	enum class Type
+	{
+		None,
+		Monsters,	/* Monster가 있는 Sector  */
+		Boss,		/* Boss 가 존재하는 Sector */
+		End,
+	};
 
 }
 class SectorController
@@ -38,19 +47,23 @@ private:
 private:
 	std::array<std::array<Sector*, SectorInfo::height>, SectorInfo::Width> mSectors;
 
-	Coordinate mTotalSectorSize = {}; // Sector 전체 크기 
-	Coordinate mSectorSize      = {}; // 각 Sector 크기 
+	Coordinate mTotalSectorSize = {}; // Sector 전체 크기  ( Image )
+	Coordinate mSectorSize      = {}; // 각 Sector 크기	  ( Image )
 
 public:
 	SectorController();
 	~SectorController();
 
 public:
-	bool Init(Coordinate sectorTotalSize, SPtr_GameRoom owner);
+	bool Init(SPtr_GameRoom owner);
 
 
 	Vec3 GetSectorIdx(Vec3 Pos); // Position 에 따른 Index 를 받는다 .
+	Coordinate GetTotalSectorSize() { return mTotalSectorSize; }
+	Coordinate GetSectorSize()		{ return mSectorSize; }
+	Coordinate GetMaxSectorIndex() { return Coordinate(static_cast<int>(mSectors[0].size()), static_cast<int>(mSectors.size())); }
 
+	SectorInfo::Type GetSectorType(Coordinate idx);
 
 };
 

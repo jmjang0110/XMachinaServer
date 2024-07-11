@@ -1,4 +1,8 @@
 #pragma once
+#include "GameMonster.h"
+#include "GameBullet.h"
+#include "GameNPC.h"
+#include "GameRoom.h"
 
 /// +-------------------------------
 ///		   NPCController
@@ -13,14 +17,13 @@
 class NPCController
 {
 private:
-	SPtr_GameRoom mOwnerRoom;
+	SPtr<GameRoom> mOwnerRoom;
 
 private:
-	//concurrency::concurrent_unordered_map<UINT32, SPtr_GameStructure>	mStructures;			// Key : ID / Value : Structre ( Shared Ptr )
-	//concurrency::concurrent_unordered_map<UINT32, SPtr_GameBullet>		mBullets;
-	//concurrency::concurrent_unordered_map<UINT32, SPtr_GameMonster>		mMonsters;				// Key : ID / Value : Moster ( Shared Ptr )
-
-	/* 배열로 관리하는 것이 나을 것 같은데?? */
+	/* Room 안의 모든 GameObject (NPC) 관리 */
+	std::unordered_map<UINT32, SPtr<GameMonster>> mMonsters;
+	std::unordered_map<UINT32, SPtr<GameBullet>>  mBullets;
+	std::unordered_map<UINT32, SPtr<GameNPC>>     mNPCs;
 	
 
 public:
@@ -30,6 +33,12 @@ public:
 public:
 	void Init(SPtr_GameRoom owner);
 
+	/* sectorIdx 에 따라서 다른 몬스터 종류를 생성 - monTypes에 있는 MonsterType 몬스터 생성*/
+	void InitMonsters(Coordinate maxSectorIdx);
+	void InitBullets();
+	void InitNPCs();
+
+	SPtr<GameMonster> CreateMonster(UINT32 id, Coordinate sectorIdx, MonsterType monType);
 
 };
 

@@ -1,11 +1,16 @@
 #pragma once
 
-#include "GameMonster.h"
+#include "GameObject.h"
 
-class Monster_AdvancedCombatDroid_5 : public GameMonster
+class GameNPC : public GameObject
 {
 private:
 
+
+public:
+	GameNPC();
+	GameNPC(UINT32 id); /* NPC 생성 아이디 - (생성되고 소멸될 때 까지 임시 아이디)*/
+	virtual ~GameNPC();
 
 
 public:
@@ -16,11 +21,6 @@ public:
 	virtual void DeActivate();
 
 	virtual void Dispatch(class OverlappedObject* overlapped, UINT32 bytes = 0) override;
-
-public:
-	Monster_AdvancedCombatDroid_5();
-	Monster_AdvancedCombatDroid_5(UINT32 sessionID, Coordinate sectorIdx);
-	~Monster_AdvancedCombatDroid_5();
 
 
 };

@@ -10,7 +10,7 @@ private:
 
 public:
 	Script_BehaviorTree();
-	Script_BehaviorTree(UINT32 id);
+	Script_BehaviorTree(SPtr<GameObject> owner, ScriptInfo::Type type);
 	virtual ~Script_BehaviorTree();
 
 public:

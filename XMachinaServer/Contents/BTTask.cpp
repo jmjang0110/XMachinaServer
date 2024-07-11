@@ -45,6 +45,8 @@ MonsterTask::Attack::~Attack()
 
 BTNodeState MonsterTask::Attack::Evaluate()
 {
+	LOG_MGR->Cout("Attack \n");
+
 	SPtr<Transform> trans = GetOwner()->GetTransform();
 
 
@@ -82,6 +84,8 @@ MonsterTask::GetHit::~GetHit()
 
 BTNodeState MonsterTask::GetHit::Evaluate()
 {
+	LOG_MGR->Cout("GetHit \n");
+
 	if (!mEnemyController->GetTargetObject()) {
 		return BTNodeState::Failure;
 	}
@@ -243,6 +247,8 @@ MonsterTask::PathPlanningToTarget::~PathPlanningToTarget()
 
 BTNodeState MonsterTask::Patrol::Evaluate()
 {
+	LOG_MGR->Cout("Patrol \n");
+
 	return BTNodeState();
 }
 
@@ -265,6 +271,8 @@ MonsterTask::Patrol::~Patrol()
 
 BTNodeState MonsterTask::CheckPatrolRange::Evaluate()
 {
+	LOG_MGR->Cout("CheckPatrolRange \n");
+
 	return BTNodeState();
 }
 
@@ -329,6 +337,8 @@ MonsterTask::CheckDetectionRange::~CheckDetectionRange()
 
 BTNodeState MonsterTask::CheckDeath::Evaluate()
 {
+	LOG_MGR->Cout("CheckDeath\n");
+
 	if (!mStat->IsDead())
 		return BTNodeState::Failure;
 
@@ -350,6 +360,7 @@ MonsterTask::CheckDeath::CheckDeath(SPtr_GameObject owner, std::function<void()>
 	: BTTask(owner, BTTaskType::MonT_CheckDeath, callback)
 
 {
+
 	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
 	mStat = GetOwner()->GetScript<Script_Enemy>(ScriptInfo::Type::Stat);
 
@@ -365,16 +376,47 @@ MonsterTask::CheckDeath::~CheckDeath()
 
 BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 {
-	return BTNodeState();
+	LOG_MGR->Cout("CheckAttackRange\n");
+
+	if (!mEnemyController->GetTargetObject()) {
+		return BTNodeState::Failure;
+	}
+
+	if (mEnemyController->GetState() == EnemyInfo::State::Attack) {
+		return BTNodeState::Success;
+	}
+
+	/* Àº½Å */
+	//const auto& abilitys = mEnemyController->mTarget->GetComponents<Script_AbilityHolder>();
+	//for (const auto& ability : abilitys) {
+	//	if (ability->GetAbilityName() == "Cloaking" && ability->GetAbilityState() == AbilityState::Active) {
+	//		mEnemyMgr->mTarget = nullptr;
+	//		return BT::NodeState::Failure;
+	//	}
+	//}
+
+	//constexpr float minDistance = 1.f;
+	//const float distance = (GetOwner()->GetTransform()->GetPosition() - mEnemyController->GetTargetObject()->GetTransform()->GetPosition()).Length();
+	//if (distance < mEnemyController->mStat.AttackRange) {
+	//	const Vec3 toTargetDir = Vector3::Normalized(mEnemyMgr->mTarget->GetPosition() - mObject->GetPosition());
+	//	const float angle = Vector3::Angle(mObject->GetLook(), toTargetDir);
+	//	if (minDistance < 1.f || angle < 80.f) {
+	//		mEnemyMgr->mState = EnemyState::Attack;
+	//		mEnemyMgr->RemoveAllAnimation();
+	//		mEnemyMgr->mController->SetValue("Attack", true);
+
+	//		return BT::NodeState::Success;
+	//	}
+	//}
+
+	//return BT::NodeState::Failure;
 }
 
 MonsterTask::CheckAttackRange::CheckAttackRange(SPtr_GameObject owner, std::function<void()> callback)
 	: BTTask(owner, BTTaskType::MonT_CheckAttackRange, callback)
 
 {
-	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
-	mStat = GetOwner()->GetScript<Script_Enemy>(ScriptInfo::Type::Stat);
-
+	
 }
 
 MonsterTask::CheckAttackRange::~CheckAttackRange()

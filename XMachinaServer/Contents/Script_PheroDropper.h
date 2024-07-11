@@ -10,7 +10,7 @@ private:
 
 public:
 	Script_PheroDropper();
-	Script_PheroDropper(UINT32 id);
+	Script_PheroDropper(SPtr<GameObject> owner, ScriptInfo::Type type);
 	~Script_PheroDropper();
 
 public:

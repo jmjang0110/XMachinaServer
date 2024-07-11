@@ -36,7 +36,7 @@ public:
 
 public:
 	Transform();
-	Transform(UINT32 id);
+	Transform(SPtr<GameObject> owner, ComponentInfo::Type Type);
 	~Transform();
 
 

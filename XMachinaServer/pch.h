@@ -58,8 +58,8 @@ constexpr UINT32 MAX_SESSION_NUM = 500;
 /* ÁÂÇ¥ */
 struct Coordinate
 {
-	int x;
-	int z;
+	int x = -1;
+	int z = -1;
 };
 
 

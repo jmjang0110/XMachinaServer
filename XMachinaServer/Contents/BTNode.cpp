@@ -52,6 +52,8 @@ void BTNode::Attach(BTNode* node)
 
 BTNodeState BTNode_Sequence::Evaluate()
 {
+	LOG_MGR->Cout("BTNode_Sequence \n");
+
 	bool isRunning = false;
 
 	if (!GetRoot()->mWaitQueue.empty()) {
@@ -87,7 +89,9 @@ BTNodeState BTNode_Sequence::Evaluate()
 /// __________________________________________________________________________
 BTNodeState BTNode_Selector::Evaluate()
 {
-	if (mRoot->mWaitQueue.empty()) {
+	LOG_MGR->Cout("BTNode_Selector \n");
+
+	if (!mRoot->mWaitQueue.empty()) {
 		if (mRoot->mWaitQueue.front()->Evaluate() != BTNodeState::Wait)
 			mRoot->mWaitQueue.pop();
 		

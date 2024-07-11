@@ -5,7 +5,8 @@ Script_PheroDropper::Script_PheroDropper()
 {
 }
 
-Script_PheroDropper::Script_PheroDropper(UINT32 id)
+Script_PheroDropper::Script_PheroDropper(SPtr<GameObject> owner, ScriptInfo::Type type)
+	: Script(owner, type, static_cast<UINT32>(type))
 {
 }
 

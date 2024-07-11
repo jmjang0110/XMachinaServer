@@ -5,7 +5,8 @@ Collider::Collider()
 {
 }
 
-Collider::Collider(UINT32 id)
+Collider::Collider(SPtr<GameObject> owner, ComponentInfo::Type Type)
+    : Component(owner, ComponentInfo::Type::Collider, static_cast<UINT32>(ComponentInfo::Type::Collider))
 {
 }
 

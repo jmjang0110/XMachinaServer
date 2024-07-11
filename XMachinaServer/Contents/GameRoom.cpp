@@ -2,6 +2,14 @@
 #include "GameRoom.h"
 #include "GameSession.h"
 #include "ServerLib/ThreadManager.h"
+#include "PlayerController.h"
+#include "NPCController.h"
+#include "SectorController.h"
+#include "GameOverlapped.h"
+#include "Framework.h"
+#include "ServerLib/ServerNetwork.h"
+#include "ServerLib/MemoryManager.h"
+
 
 GameRoom::GameRoom()
 {
@@ -13,6 +21,12 @@ GameRoom::~GameRoom()
 	SAFE_DELETE(mPC);
 	SAFE_DELETE(mNC);
 	SAFE_DELETE(mSC);
+
+}
+
+void GameRoom::PQCS(OverlappedObject* over)
+{
+	::PostQueuedCompletionStatus(SERVER_NETWORK->GetIocpHandle(), 1, 0, over);
 
 }
 
@@ -28,6 +42,9 @@ void GameRoom::Init(int roomid)
 	mSC = new SectorController;
 
 	mPC->Init(roomid, std::static_pointer_cast<GameRoom>(shared_from_this()));
+	mSC->Init(std::static_pointer_cast<GameRoom>(shared_from_this()));
+	mNC->Init(std::static_pointer_cast<GameRoom>(shared_from_this()));
+
 
 }
 

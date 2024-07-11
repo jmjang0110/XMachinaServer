@@ -5,7 +5,8 @@ Script_Phero::Script_Phero()
 {
 }
 
-Script_Phero::Script_Phero(UINT32 id)
+Script_Phero::Script_Phero(SPtr<GameObject> owner, ScriptInfo::Type type)
+    : Script(owner, type, static_cast<UINT32>(type))
 {
 }
 

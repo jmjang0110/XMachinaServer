@@ -6,10 +6,10 @@ GameMonster::GameMonster()
 {
 }
 
-GameMonster::GameMonster(UINT32 id)
+GameMonster::GameMonster(UINT32 id, Coordinate sectorIdx)
 	: GameObject(id)
 {
-	
+	mSectorIndex = sectorIdx;
 }
 
 GameMonster::~GameMonster()
@@ -18,10 +18,32 @@ GameMonster::~GameMonster()
 
 void GameMonster::Update()
 {
+	GameObject::Update();
+
 }
 
 void GameMonster::WakeUp()
 {
+	GameObject::WakeUp();
+
+}
+
+void GameMonster::Start()
+{
+	GameObject::Start();
+
+}
+
+void GameMonster::Activate()
+{
+	GameObject::Activate();
+
+}
+
+void GameMonster::DeActivate()
+{
+	GameObject::DeActivate();
+
 }
 
 void GameMonster::Dispatch(OverlappedObject* overlapped, UINT32 bytes)

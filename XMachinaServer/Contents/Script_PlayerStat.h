@@ -55,7 +55,7 @@ private:
 public:
 
 	Script_PlayerStat();
-	Script_PlayerStat(UINT32 id);
+	Script_PlayerStat(SPtr<GameObject> owner, ScriptInfo::Type type);
 	~Script_PlayerStat();
 
 

@@ -98,7 +98,7 @@ BTNode* Script_DefaultEnemyBT::SetupTree()
 		root_selector_Children.push_back(SelNode);
 	}
 
-	BTNode* Root = MEMORY->New<BTNode_Sequence>(GetOwner(), root_selector_Children);
+	BTNode* Root = MEMORY->New<BTNode_Selector>(GetOwner(), root_selector_Children);
 	return Root;
 }
 
@@ -110,8 +110,8 @@ Script_DefaultEnemyBT::Script_DefaultEnemyBT()
 
 }
 
-Script_DefaultEnemyBT::Script_DefaultEnemyBT(UINT32 id)
-    : Script_BehaviorTree(id)
+Script_DefaultEnemyBT::Script_DefaultEnemyBT(SPtr<GameObject> owner, ScriptInfo::Type type)
+    : Script_BehaviorTree(owner, type)
 {
 
 }

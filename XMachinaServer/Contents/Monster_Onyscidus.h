@@ -9,14 +9,23 @@ class Monster_Onyscidus : public GameMonster
 private:
 
 public:
-	virtual void Update() override;
-	virtual void WakeUp() override;
-	virtual void Dispatch(class OverlappedObject* overlapped, UINT32 bytes = 0) override;
+	Monster_Onyscidus();
+	Monster_Onyscidus(UINT32 sessionID, Coordinate sectorIdx);
+	~Monster_Onyscidus();
 
 public:
-	Monster_Onyscidus();
-	Monster_Onyscidus(UINT32 sessionID);
-	~Monster_Onyscidus();
+	void Init();
+
+public:
+	virtual void Update() override;
+	virtual void WakeUp() override;
+
+	virtual void Activate();
+	virtual void DeActivate();
+
+	virtual void Dispatch(class OverlappedObject* overlapped, UINT32 bytes = 0) override;
+
+
 
 };
 

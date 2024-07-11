@@ -10,7 +10,7 @@ private:
 public:
 public:
 	Script_DefaultEnemyBT();
-	Script_DefaultEnemyBT(UINT32 id);
+	Script_DefaultEnemyBT(SPtr<GameObject> owner, ScriptInfo::Type type);
 	virtual ~Script_DefaultEnemyBT();
 
 public:

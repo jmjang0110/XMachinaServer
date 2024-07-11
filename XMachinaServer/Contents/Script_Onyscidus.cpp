@@ -1,6 +1,19 @@
 #include "pch.h"
 #include "Script_Onyscidus.h"
 
+Script_Onyscidus::Script_Onyscidus()
+{
+}
+
+Script_Onyscidus::Script_Onyscidus(SPtr<GameObject> owner, ScriptInfo::Type type)
+	: Script_Enemy(owner, type)
+{
+}
+
+Script_Onyscidus::~Script_Onyscidus()
+{
+}
+
 void Script_Onyscidus::Activate()
 {
 }
