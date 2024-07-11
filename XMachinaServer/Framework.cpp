@@ -225,28 +225,13 @@ void Framework::Launch()
 			while (!stop.load())
 			{
 				TLS_MGR->Get_TlsInfoData()->TimeMgr.Tick(60.f);
-
-				//time += DELTA_TIME;// DELTA_TIME;
-				//LOG_MGR->Cout("[", TLS_MGR->Get_TlsInfoData()->id, "] : ", DELTA_TIME, "\n");
 				time += TLS_MGR->Get_TlsInfoData()->TimeMgr.GetTimeElapsed();
-
-				if (TLS_MGR->Get_TlsInfoData()->id == 2)
-				{
-					
-					int i = 0;
-					while (true) {
-						i++;
-						if (i > 500000000)break;
-					}
-				}
-
-				if ((int)time != (int)prev) {
-					LOG_MGR->Cout("[", TLS_MGR->Get_TlsInfoData()->id,"] : ", TLS_MGR->Get_TlsInfoData()->TimeMgr.GetTimeElapsed(), "\n");
-					prev = time;
-				}
-
 				mServer->WorkerThread(msTimeOut);
 
+				//if ((int)time != (int)prev) {
+				//	LOG_MGR->Cout("[", TLS_MGR->Get_TlsInfoData()->id,"] : ", TLS_MGR->Get_TlsInfoData()->TimeMgr.GetTimeElapsed(), "\n");
+				//	prev = time;
+				//}
 			}
 
 			});
@@ -256,7 +241,7 @@ void Framework::Launch()
 	for (int i = 0; i < 10; ++i) {
 		TimerEvent t;
 		t.Type = TimerEventType::Update_Ursacetus;
-		t.WakeUp_Time = std::chrono::system_clock::now(); // 지금 당장 시작 
+		t.WakeUp_Time = std::chrono::system_clock::now() + std::chrono::seconds(0); // 지금 당장 시작 
 		t.Owner = GAME_WORLD->GetUrsacetusSPtr(i);
 		TIME_MGR->PushTimerEvent(t);
 
@@ -268,7 +253,7 @@ void Framework::Launch()
 
 		TimerEvent t3;
 		t3.Type = TimerEventType::Update_Onyscidus;
-		t3.WakeUp_Time = std::chrono::system_clock::now(); // 지금 당장 시작 
+		t3.WakeUp_Time = std::chrono::system_clock::now() + std::chrono::seconds(0); // 지금 당장 시작 
 		t3.Owner = GAME_WORLD->GetOnyscidus(i);
 		TIME_MGR->PushTimerEvent(t3);
 	}

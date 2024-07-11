@@ -21,15 +21,15 @@ namespace GameObjectInfo
 class GameObject : public GameEntity
 {
 private:
-	GameObjectInfo::Type								mType		= GameObjectInfo::Type::None;
-	std::unordered_map<ComponentInfo::Type, SPtr<Component>> mComponents = {};
-	std::unordered_map<ScriptInfo::Type, SPtr<Script>>		mScripts    = {};
+	GameObjectInfo::Type										mType		= GameObjectInfo::Type::None;
+	std::unordered_map<ComponentInfo::Type, SPtr<Component>>	mComponents = {};
+	std::unordered_map<ScriptInfo::Type,    SPtr<Script>>		mScripts    = {};
 
 
 public:
 	GameObject();
 	GameObject(UINT32 sessionID);
-	virtual ~GameObject() ;
+	virtual ~GameObject();
 
 public:
 	virtual void Update() {};
@@ -37,6 +37,7 @@ public:
 
 	virtual void Activate();
 	virtual void DeActivate();
+
 public:
 	void SetType(GameObjectInfo::Type type) { mType = type; }
 
@@ -48,6 +49,7 @@ public:
 public:
 	template<typename T>
 	SPtr<T>  GetComponent(ComponentInfo::Type componentTYpe);
+
 	template<typename T>
 	SPtr<T>  GetScript(ScriptInfo::Type scriptType);
 
@@ -85,7 +87,7 @@ template<typename T>
 inline SPtr<T>  GameObject::AddComponent(ComponentInfo::Type key)
 {
 	if (mComponents.find(key) != mComponents.end())
-		mComponents.insert(std::make_pair<ComponentInfo::Type, T*>(key, MEMORY->Make_Shared<T>()));
+		mComponents.insert(std::make_pair<ComponentInfo::Type, SPtr<T>>(key, MEMORY->Make_Shared<T>()));
 	else
 		return mComponents.find(key)->second;
 }
@@ -93,8 +95,13 @@ inline SPtr<T>  GameObject::AddComponent(ComponentInfo::Type key)
 template<typename T>
 inline SPtr<T>  GameObject::AddScript(ScriptInfo::Type key)
 {
-	if (mScripts.find(key) != mScripts.end())
-		mScripts.insert(std::make_pair<ScriptInfo::Type, T*>(key, MEMORY->Make_Shared<T>()));
-	else
-		return mScripts.find(key)->second;
+	auto it = mScripts.find(key);
+	if (it == mScripts.end()) {
+		SPtr<T> script = MEMORY->Make_Shared<T>();
+		mScripts.insert(std::make_pair(key, script));
+		return script;
+	}
+	else {
+		return std::dynamic_pointer_cast<T>(it->second);
+	}
 }

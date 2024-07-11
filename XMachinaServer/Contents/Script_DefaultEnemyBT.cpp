@@ -107,12 +107,13 @@ BTNode* Script_DefaultEnemyBT::SetupTree()
 Script_DefaultEnemyBT::Script_DefaultEnemyBT()
     :   Script_BehaviorTree()
 {
+
 }
 
 Script_DefaultEnemyBT::Script_DefaultEnemyBT(UINT32 id)
     : Script_BehaviorTree(id)
-
 {
+
 }
 
 Script_DefaultEnemyBT::~Script_DefaultEnemyBT()

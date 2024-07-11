@@ -113,9 +113,6 @@
     <Filter Include="Framework\Contents\GameWorld\Resource">
       <UniqueIdentifier>{16f275fe-ca93-4106-a56c-4e35b19fa46a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Framework\Contents\GameWorld\Monster\BehaviorTree">
-      <UniqueIdentifier>{06347b9f-d671-4476-9c45-4730a12c7d22}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Framework\Contents\GameWorld\Structure">
       <UniqueIdentifier>{f7b0773c-1889-4e5c-ba94-89ca56de6804}</UniqueIdentifier>
     </Filter>
@@ -145,6 +142,18 @@
     </Filter>
     <Filter Include="Framework\Contents\GameWorld\Entity\Script\Enemy\Controller">
       <UniqueIdentifier>{784a5247-1695-4c87-ab6b-c5d55ff9b511}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Entity\Script\Item">
+      <UniqueIdentifier>{cd5fe6b6-26a2-4e17-90a9-2e23e81eb88e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Entity\Script\Item\Phero">
+      <UniqueIdentifier>{7fa92401-6f5e-4295-9e49-505f99fabf1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT">
+      <UniqueIdentifier>{06347b9f-d671-4476-9c45-4730a12c7d22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Entity\Script\Enemy\Monster">
+      <UniqueIdentifier>{1d99b89e-07c2-46ca-b1f1-2664b4cbe5de}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -333,16 +342,16 @@
       <Filter>Framework\Contents\GameWorld\Monster</Filter>
     </ClInclude>
     <ClInclude Include="Contents\BehaviorTree.h">
-      <Filter>Framework\Contents\GameWorld\Monster\BehaviorTree</Filter>
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT</Filter>
     </ClInclude>
     <ClInclude Include="Contents\BTNode.h">
-      <Filter>Framework\Contents\GameWorld\Monster\BehaviorTree</Filter>
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT</Filter>
     </ClInclude>
     <ClInclude Include="Contents\GameStructure.h">
       <Filter>Framework\Contents\GameWorld\Structure</Filter>
     </ClInclude>
     <ClInclude Include="Contents\BTTask.h">
-      <Filter>Framework\Contents\GameWorld\Monster\BehaviorTree</Filter>
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT</Filter>
     </ClInclude>
     <ClInclude Include="Contents\FileIO.h">
       <Filter>Framework\Contents\GameWorld\Terrain</Filter>
@@ -382,6 +391,21 @@
     </ClInclude>
     <ClInclude Include="Contents\Script_EnemyController.h">
       <Filter>Framework\Contents\GameWorld\Entity\Script\Enemy\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Script_Phero.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Item\Phero</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Script_PheroDropper.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Item\Phero</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Script_Ursacetus.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Enemy\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Script_AdvancedCombatDroid_5.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Enemy\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Script_Onyscidus.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Enemy\Monster</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -540,16 +564,16 @@
       <Filter>Framework\Contents\GameWorld\Monster</Filter>
     </ClCompile>
     <ClCompile Include="Contents\BehaviorTree.cpp">
-      <Filter>Framework\Contents\GameWorld\Monster\BehaviorTree</Filter>
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT</Filter>
     </ClCompile>
     <ClCompile Include="Contents\BTNode.cpp">
-      <Filter>Framework\Contents\GameWorld\Monster\BehaviorTree</Filter>
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT</Filter>
     </ClCompile>
     <ClCompile Include="Contents\GameStructure.cpp">
       <Filter>Framework\Contents\GameWorld\Structure</Filter>
     </ClCompile>
     <ClCompile Include="Contents\BTTask.cpp">
-      <Filter>Framework\Contents\GameWorld\Monster\BehaviorTree</Filter>
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT</Filter>
     </ClCompile>
     <ClCompile Include="Contents\FileIO.cpp">
       <Filter>Framework\Contents\GameWorld\Terrain</Filter>
@@ -592,6 +616,21 @@
     </ClCompile>
     <ClCompile Include="Contents\Script_EnemyController.cpp">
       <Filter>Framework\Contents\GameWorld\Entity\Script\Enemy\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Script_Phero.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Item\Phero</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Script_PheroDropper.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Item\Phero</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Script_Ursacetus.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Enemy\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Script_AdvancedCombatDroid_5.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Enemy\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Script_Onyscidus.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Enemy\Monster</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

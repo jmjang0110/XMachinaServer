@@ -10,6 +10,8 @@ namespace ScriptInfo {
 		Stat, // Enemy, Player 
 		EnemyController,
 		BehaviorTree,
+		Phero,
+		PheroDropper,
 
 		End,
 	};

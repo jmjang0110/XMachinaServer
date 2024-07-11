@@ -1,17 +1,17 @@
 #pragma once
-
 #include "Script.h"
-#include "BTNode.h"
 
-class Script_BehaviorTree : public Script
+
+
+class Script_PheroDropper : public Script
 {
 private:
-	BTNode* mRoot{};
+
 
 public:
-	Script_BehaviorTree();
-	Script_BehaviorTree(UINT32 id);
-	virtual ~Script_BehaviorTree();
+	Script_PheroDropper();
+	Script_PheroDropper(UINT32 id);
+	~Script_PheroDropper();
 
 public:
 	/// +------------------------------
@@ -25,9 +25,6 @@ public:
 	virtual bool Update();
 	virtual void OnDestroy();
 
-
-protected:
-	virtual BTNode* SetupTree() abstract;
 
 
 };

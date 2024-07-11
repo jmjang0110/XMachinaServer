@@ -1,16 +1,10 @@
 #pragma once
-#include "Script_EnemyStat.h"
-#include "Script_EnemyController.h"
+#include "Script_Enemy.h"
 
-class Script_Enemy : public Script_EnemyStat
+
+class Script_Ursacetus : public Script_Enemy
 {
 private:
-	SPtr<Script_EnemyController> mEnemyController = {};
-	
-public:
-	Script_Enemy();
-	~Script_Enemy();
-
 
 public:
 	/// +------------------------------
@@ -23,7 +17,6 @@ public:
 	virtual bool Start();
 	virtual bool Update();
 	virtual void OnDestroy();
-
 
 	/// +------------------------------
 	///		Stat :  virtual function 

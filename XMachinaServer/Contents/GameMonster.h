@@ -15,11 +15,10 @@
 /// -------------------------------+
 
 
-struct MonsterInfo {
-
+struct MonsterInfo 
+{
 	uint32_t			ID;
 	MonsterType			Type;		/*	몬스터 종류	*/
-	
 	
 	/* Stat Script 로 빼자... */
 	float				HP;			/*		HP		*/

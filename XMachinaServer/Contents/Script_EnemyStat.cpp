@@ -49,6 +49,10 @@ void Script_EnemyStat::Attack()
 {
 }
 
+void Script_EnemyStat::AttackCallback()
+{
+}
+
 void Script_EnemyStat::Dead()
 {
 }
