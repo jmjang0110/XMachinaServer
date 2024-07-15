@@ -38,10 +38,13 @@ public:
 	void SendPacket(UINT32 sessionID, SPtr_SendPktBuf sendPkt);
 
 
-	std::vector<PlayerInfo> GetInsertedPlayersInfo(); // READ Lock 
+	std::vector<PlayerSnapShot> GetInsertedPlayersInfo(); // READ Lock 
+	std::vector<SPtr<GamePlayer>> GetPlayersInViewRange(Vec3 player_pos, float viewrange_radius);
+
+
 
 	UINT32			GetPlayersSize() { return mCurrPlayerCnt.load(); }
-
+	SPtr<GameRoom>  GetOwnerRoom() { return mOwnerRoom; }
 
 public:
 	PlayerController();

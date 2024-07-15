@@ -70,7 +70,7 @@ bool GameManager::ExitInRoom(SPtr_GamePlayer player)
 {
 	//mSRWLock.LockWrite();
 
-	mRooms[player->GetInfo().RoomID].get()->ExitPlayer(player->GetID());
+	mRooms[player->GetSnapShot().RoomID].get()->ExitPlayer(player->GetID());
 
 	//mSRWLock.UnlockWrite();
 
@@ -102,9 +102,9 @@ void GameManager::Send(SPtr_SendPktBuf& pkt, int roomID, int sessionID)
 	mRooms[roomID]->SendPacket(static_cast<UINT32>(sessionID), pkt);
 }
 
-std::vector<PlayerInfo> GameManager::GetPlayerInfos_Room(int roomid)
+std::vector<PlayerSnapShot> GameManager::GetPlayerSnapShots_Room(int roomid)
 {
-	std::vector<PlayerInfo> playerInfos = mRooms[roomid].get()->GetInsertedPlayersInfo(); // READ Lock
-	return playerInfos;
+	std::vector<PlayerSnapShot> PlayerSnapShots = mRooms[roomid].get()->GetInsertedPlayersInfo(); // READ Lock
+	return PlayerSnapShots;
 }
 

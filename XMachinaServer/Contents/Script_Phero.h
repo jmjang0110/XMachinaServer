@@ -5,7 +5,8 @@
 class Script_Phero : public Script
 {
 private:
-
+	float	mLifeTime = {};
+	float	mAmount   = {};
 
 public:
 	Script_Phero();

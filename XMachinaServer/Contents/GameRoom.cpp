@@ -80,7 +80,7 @@ void GameRoom::SendPacket(UINT32 sessionid, SPtr_SendPktBuf packet)
 	mPC->SendPacket(sessionid, packet);
 }
 
-std::vector<PlayerInfo> GameRoom::GetInsertedPlayersInfo()
+std::vector<PlayerSnapShot> GameRoom::GetInsertedPlayersInfo()
 {
 	return mPC->GetInsertedPlayersInfo();
 }

@@ -6,7 +6,7 @@ class Script_Enemy : public Script_EnemyStat
 {
 private:
 	SPtr<Script_EnemyController> mEnemyController = {};
-	
+
 public:
 	Script_Enemy();
 	Script_Enemy(SPtr<GameObject> owner, ScriptInfo::Type type);

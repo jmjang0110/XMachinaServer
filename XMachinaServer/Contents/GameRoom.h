@@ -44,7 +44,7 @@ public:
 	bool ExitPlayer(UINT32 id);
 	void Broadcast(SPtr_SendPktBuf packet, UINT32 exceptsessionid = -1);
 	void SendPacket(UINT32 sessionid, SPtr_SendPktBuf packet);
-	std::vector<PlayerInfo> GetInsertedPlayersInfo();
+	std::vector<PlayerSnapShot> GetInsertedPlayersInfo();
 
 public:
 	/// +-------------------------------------------------------------------

@@ -239,11 +239,11 @@ void Framework::Launch()
 
 	/* GameWorld Update Test */
 	for (int i = 0; i < 1; ++i) {
-		TimerEvent t;
-		t.Type = TimerEventType::Update_GameObject;
-		t.WakeUp_Time = std::chrono::system_clock::now() + std::chrono::seconds(0); // 지금 당장 시작 
-		t.Owner = GAME_WORLD->GetUrsacetusSPtr(i);
-		TIME_MGR->PushTimerEvent(t);
+		//TimerEvent t;
+		//t.Type = TimerEventType::Update_GameObject;
+		//t.WakeUp_Time = std::chrono::system_clock::now() + std::chrono::seconds(0); // 지금 당장 시작 
+		//t.Owner = GAME_WORLD->GetUrsacetusSPtr(i);
+		//TIME_MGR->PushTimerEvent(t);
 
 		//TimerEvent t2;
 		//t2.Type = TimerEventType::Update_GameObject;

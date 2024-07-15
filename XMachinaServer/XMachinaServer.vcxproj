@@ -206,11 +206,13 @@
     <ClInclude Include="Contents\Script_Ursacetus.h" />
     <ClInclude Include="Contents\Sector.h" />
     <ClInclude Include="Contents\SectorController.h" />
+    <ClInclude Include="Contents\Skill.h" />
     <ClInclude Include="Contents\TimeManager.h" />
     <ClInclude Include="Contents\Transform.h" />
     <ClInclude Include="Contents\Util\Common.h" />
     <ClInclude Include="Contents\Util\DwordOverloader.h" />
     <ClInclude Include="Contents\Util\SimpleMath.h" />
+    <ClInclude Include="Contents\Weapon.h" />
     <ClInclude Include="Framework.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Protocol\Enum_generated.h" />
@@ -292,6 +294,7 @@
     <ClCompile Include="Contents\Script_Ursacetus.cpp" />
     <ClCompile Include="Contents\Sector.cpp" />
     <ClCompile Include="Contents\SectorController.cpp" />
+    <ClCompile Include="Contents\Skill.cpp" />
     <ClCompile Include="Contents\TimeManager.cpp" />
     <ClCompile Include="Contents\Transform.cpp" />
     <ClCompile Include="Contents\Util\SimpleMath.cpp">
@@ -300,6 +303,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Contents\Weapon.cpp" />
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pch.cpp">

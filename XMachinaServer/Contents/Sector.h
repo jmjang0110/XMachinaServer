@@ -2,6 +2,7 @@
 
 #include "SectorController.h"
 #include "GameObject.h"
+#include "GamePlayer.h"
 #include "GameMonster.h"
 #include "GameNPC.h"
 
@@ -18,13 +19,17 @@
 
 class GameMonster;
 class GameNPC;
+class SectorController;
 
 class Sector : public GameObject
 {
 private:
 	SectorInfo::Type mType = SectorInfo::Type::None;
 	Coordinate		 mIndex = {};
+	SectorController* mOwnerSC = nullptr;
+
 private:
+	std::atomic<int> mActivateRef = 0;
 	std::unordered_map<UINT32, SPtr<GameMonster>> mMonsters;
 	std::unordered_map<UINT32, SPtr<GameNPC>>	  mNPCs;
 
@@ -36,6 +41,11 @@ public:
 
 
 public:
+	virtual void Activate();
+	virtual void DeActivate();
+	virtual bool IsActive();
+
+
 	virtual void Update() override;
 	virtual void WakeUp() override;
 	virtual void Start();
@@ -49,9 +59,17 @@ public:
 
 	bool AddMonster(UINT32 id, SPtr<GameMonster> monster);
 	bool AddNPC(UINT32 id, SPtr<GameNPC> npc);
+	
 
 
 	SectorInfo::Type GetSectorType() { return mType; }
+
+public:
+	void SetOwnerSectorController(SectorController* ownerSC) { mOwnerSC = ownerSC; }
+	SectorController* GetOwnerSectorController() { return mOwnerSC; }
+	std::vector<SPtr<GameMonster>> GetMonstersInViewRange(Vec3 player_pos, float viewRange_radius);
+
+
 
 
 };

@@ -7,6 +7,8 @@
 Monster_Ursacetus::Monster_Ursacetus() 
 	: GameMonster()
 {
+	GameObject::SetType(GameObjectInfo::Type::Monster_Ursacetus);
+
 }
 
 Monster_Ursacetus::Monster_Ursacetus(UINT32 sessionID, Coordinate sectorIdx)
@@ -14,6 +16,14 @@ Monster_Ursacetus::Monster_Ursacetus(UINT32 sessionID, Coordinate sectorIdx)
 {
 
 	GameObject::SetType(GameObjectInfo::Type::Monster_Ursacetus);
+
+	GameMonster::SetID(sessionID);
+	GameMonster::SetType(MonsterType::Ursacetus);
+	GameMonster::SetAttack(100);
+	GameMonster::SetHP(100);
+	GameMonster::SetPosition(Vec3(0.f, 0.f, 0.f));
+	GameMonster::SetRotation(Vec3(0.f, 0.f, 0.f));
+	GameMonster::SetSpineDir(Vec3(0.f, 0.f, 0.f));
 
 }
 

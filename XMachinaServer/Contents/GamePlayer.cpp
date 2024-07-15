@@ -1,6 +1,11 @@
 #include "pch.h"
 #include "GamePlayer.h"
+#include "PlayerController.h"
+#include "Sector.h"
+#include "SectorController.h"
+#include "NPCController.h"
 
+#include "GameRoom.h"
 
 GamePlayer::GamePlayer()
 	: GameObject(-1)
@@ -26,6 +31,9 @@ void GamePlayer::Update()
 {
 	GameObject::Update();
 
+	/* Update View List */
+	mInfo.Vlist = mOwnerPC->GetOwnerRoom()->GetSectorController()->GetViewList(mInfo.Position, mInfo.ViewRangeRadius);
+	
 }
 
 void GamePlayer::WakeUp()
@@ -36,6 +44,8 @@ void GamePlayer::WakeUp()
 
 void GamePlayer::Start()
 {
+	GameObject::Start();
+
 }
 
 void GamePlayer::Activate()

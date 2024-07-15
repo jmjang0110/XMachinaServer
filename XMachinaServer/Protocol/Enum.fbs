@@ -60,3 +60,17 @@ enum MONSTER_STATE_TYPE : ubyte {
 	PATROL,
 	DEAD
 }
+
+// +------------------------
+//      SKILL TYPE
+// ------------------------+
+enum PLAYER_SKILL_TYPE : ubyte {
+	// X : Denied 
+	IMPOSSIBLE,
+	
+	// O : permit
+	CLOACKING,	
+	IR_DETECTOR,
+	MIND_CONTROL,
+	SHIELD,
+}

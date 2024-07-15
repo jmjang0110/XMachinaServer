@@ -40,6 +40,7 @@ MonsterTask::Attack::Attack(SPtr_GameObject owner, std::function<void()> callbac
 
 MonsterTask::Attack::~Attack()
 {
+	mEnemyController = nullptr;
 
 }
 
@@ -51,7 +52,7 @@ BTNodeState MonsterTask::Attack::Evaluate()
 
 
 	Vec3  TargetPos = mEnemyController->GetTargetObject()->GetTransform()->GetPosition();
-	float AttackRotSpeed = mStat->GetAttackRotationSpeed();
+	float AttackRotSpeed = mStat->GetStat_AttackRotationSpeed();
 	trans->RotateTargetAxisY(TargetPos, AttackRotSpeed);
 
 	BTNode_Action::ExecuteCallback();
@@ -79,6 +80,8 @@ MonsterTask::GetHit::GetHit(SPtr_GameObject owner, std::function<void()> callbac
 
 MonsterTask::GetHit::~GetHit()
 {
+	mEnemyController = nullptr;
+
 }
 
 
@@ -113,7 +116,7 @@ MonsterTask::MoveToPath::MoveToPath(SPtr_GameObject owner, std::function<void()>
 	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
 	mStat            = GetOwner()->GetScript<Script_Enemy>(ScriptInfo::Type::Stat);
 
-	mMoveSpeed       = mStat->GetMoveSpeed();
+	mMoveSpeed       = mStat->GetStat_MoveSpeed();
 	mReturnSpeed     = 1.7f * mMoveSpeed;
 	mPath            = mEnemyController->GetPaths();
 
@@ -121,6 +124,8 @@ MonsterTask::MoveToPath::MoveToPath(SPtr_GameObject owner, std::function<void()>
 
 MonsterTask::MoveToPath::~MoveToPath()
 {
+	mEnemyController = nullptr;
+
 }
 
 BTNodeState MonsterTask::MoveToPath::Evaluate()
@@ -144,7 +149,7 @@ BTNodeState MonsterTask::MoveToPath::Evaluate()
 	//}
 
 	// 다음 경로를 향해 이동 및 회전
-	GetOwner()->GetTransform()->RotateTargetAxisY(mPath->top(), mStat->GetRotationSpeed());
+	GetOwner()->GetTransform()->RotateTargetAxisY(mPath->top(), mStat->GetStat_RotationSpeed());
 	GetOwner()->GetTransform()->Translate(XMVector3Normalize(nextPos), speed * DELTA_TIME);
 
 	// 다음 경로에 도착 시 해당 경로 삭제
@@ -176,6 +181,8 @@ MonsterTask::MoveToTarget::MoveToTarget(SPtr_GameObject owner, std::function<voi
 
 MonsterTask::MoveToTarget::~MoveToTarget()
 {
+	mEnemyController = nullptr;
+
 }
 
 /// +-------------------------------------------------------------------------
@@ -197,6 +204,8 @@ MonsterTask::PathPlanning_AStar::PathPlanning_AStar(SPtr_GameObject owner, std::
 
 MonsterTask::PathPlanning_AStar::~PathPlanning_AStar()
 {
+	mEnemyController = nullptr;
+
 }
 
 /// +-------------------------------------------------------------------------
@@ -218,6 +227,8 @@ MonsterTask::PathPlanningToSapwn::PathPlanningToSapwn(SPtr_GameObject owner, std
 
 MonsterTask::PathPlanningToSapwn::~PathPlanningToSapwn()
 {
+	mEnemyController = nullptr;
+
 }
 
 /// +-------------------------------------------------------------------------
@@ -239,6 +250,8 @@ MonsterTask::PathPlanningToTarget::PathPlanningToTarget(SPtr_GameObject owner, s
 
 MonsterTask::PathPlanningToTarget::~PathPlanningToTarget()
 {
+	mEnemyController = nullptr;
+
 }
 
 /// +-------------------------------------------------------------------------
@@ -262,6 +275,8 @@ MonsterTask::Patrol::Patrol(SPtr_GameObject owner, std::function<void()> callbac
 
 MonsterTask::Patrol::~Patrol()
 {
+	mEnemyController = nullptr;
+
 }
 
 /// +-------------------------------------------------------------------------
@@ -286,6 +301,8 @@ MonsterTask::CheckPatrolRange::CheckPatrolRange(SPtr_GameObject owner, std::func
 
 MonsterTask::CheckPatrolRange::~CheckPatrolRange()
 {
+	mEnemyController = nullptr;
+
 }
 
 /// +-------------------------------------------------------------------------
@@ -307,6 +324,8 @@ MonsterTask::CheckMindDetectionRange::CheckMindDetectionRange(SPtr_GameObject ow
 
 MonsterTask::CheckMindDetectionRange::~CheckMindDetectionRange()
 {
+	mEnemyController = nullptr;
+
 }
 
 /// +-------------------------------------------------------------------------
@@ -329,6 +348,8 @@ MonsterTask::CheckDetectionRange::CheckDetectionRange(SPtr_GameObject owner, std
 
 MonsterTask::CheckDetectionRange::~CheckDetectionRange()
 {
+	mEnemyController = nullptr;
+
 }
 
 /// +-------------------------------------------------------------------------
@@ -368,6 +389,8 @@ MonsterTask::CheckDeath::CheckDeath(SPtr_GameObject owner, std::function<void()>
 
 MonsterTask::CheckDeath::~CheckDeath()
 {
+	mEnemyController = nullptr;
+
 }
 
 /// +-------------------------------------------------------------------------
@@ -386,12 +409,12 @@ BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 		return BTNodeState::Success;
 	}
 
-	/* 은신 */
-	//const auto& abilitys = mEnemyController->mTarget->GetComponents<Script_AbilityHolder>();
+	///* 타겟한 플레이어가 은신 상태라면.. */
+	//const auto& abilitys = mEnemyController->GetTargetObject()->;
 	//for (const auto& ability : abilitys) {
 	//	if (ability->GetAbilityName() == "Cloaking" && ability->GetAbilityState() == AbilityState::Active) {
-	//		mEnemyMgr->mTarget = nullptr;
-	//		return BT::NodeState::Failure;
+	//		mEnemyController->SetTargetObject(nullptr);
+	//		return BTNodeState::Failure;
 	//	}
 	//}
 
@@ -421,4 +444,6 @@ MonsterTask::CheckAttackRange::CheckAttackRange(SPtr_GameObject owner, std::func
 
 MonsterTask::CheckAttackRange::~CheckAttackRange()
 {
+	mEnemyController = nullptr;
+
 }

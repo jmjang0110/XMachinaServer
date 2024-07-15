@@ -37,20 +37,27 @@ namespace PlayerEnum
 	};
 }
 
-/* 플레이어 상태 */
-struct PlayerInfo
+struct ViewList
 {
+	std::vector<SPtr<GamePlayer>> VL_Players;
+	std::vector<SPtr<GameMonster>> VL_Monsters;
+
+};
+
+/* 플레이어 상태 */
+struct PlayerSnapShot
+{
+	std::string				Name      = {};
+
 	FBProtocol::OBJECT_TYPE	Type      = FBProtocol::OBJECT_TYPE::OBJECT_TYPE_PLAYER;
 	SPtr_GameSession		Owner     = {}; /* OWNER SESSION */
 
-	long long				Timestamp = {};
 
 	UINT32					PlayerID  = -1; /* PLAYER ID */ /// - 여기서 ID는 현재 접속 후의 일시적인 아이디이다. DB에서 정보를 받을려면 stirngID를 이용해야한다.
 	UINT32					RoomID	  = -1; /* ROOM NUMBER */
 	std::vector<Coordinate>	CurSectorID;	// 현재 속해있는 Sector index ( 여러개일 수 있음 ) 최대 4개..
-	std::string				Name      = {};
 
-
+	long long				Timestamp = {};
 	float					Velocity  = {};
 
 	Vec3					Position  = {};
@@ -59,25 +66,25 @@ struct PlayerInfo
 	Vec3					FrontDir  = {};
 	Vec3					SpineDir  = {};
 
-	PlayerInfo(){}
-	PlayerInfo(UINT32 id, std::string name, FBProtocol::OBJECT_TYPE type) { PlayerID = id, Name = name, Type = type; }
-	~PlayerInfo() { Owner = nullptr; /* Decrease Ref */ };
+	float					ViewRangeRadius = 5.f;
+	ViewList				Vlist;
+
+	PlayerSnapShot(){}
+	PlayerSnapShot(UINT32 id, std::string name, FBProtocol::OBJECT_TYPE type) { PlayerID = id, Name = name, Type = type; }
+	~PlayerSnapShot() { Owner = nullptr; /* Decrease Ref */ };
 };
 
-struct ViewList
-{
-	std::unordered_map<int, GameObject*> VL_Players;
-	std::unordered_map<int, GameObject*> VL_Monsters;
 
-};
 
 
 /* GAME PLAYER */
 class GamePlayer : public GameObject
 {
 private:
+	class PlayerController* mOwnerPC = nullptr;
+
 	Lock::SRWLock mSRWLock;
-	PlayerInfo	mInfo = {};
+	PlayerSnapShot	mInfo = {};
 
 public:
 	GamePlayer();
@@ -111,9 +118,13 @@ public:
 	void SetSpineDir(Vec3 SDir)							 { mSRWLock.LockWrite(); mInfo.SpineDir = SDir;			 mSRWLock.UnlockWrite(); }
 	void SetSectorIdx(std::vector<Coordinate> sectorIdx) { mSRWLock.LockWrite(); mInfo.CurSectorID = sectorIdx;  mSRWLock.UnlockWrite(); }
 
-	void SetInfo(PlayerInfo& info)	{ mSRWLock.LockWrite(); mInfo = info; mSRWLock.UnlockWrite(); }
-	PlayerInfo GetInfo()			{ mSRWLock.LockRead(); PlayerInfo currInfo = mInfo; mSRWLock.UnlockRead(); return currInfo; };
+	/* Get Set : Player Info */
+	void SetSnapShot(PlayerSnapShot& info)	{ mSRWLock.LockWrite(); mInfo = info; mSRWLock.UnlockWrite(); }
+	PlayerSnapShot GetSnapShot()			{ mSRWLock.LockRead(); PlayerSnapShot currInfo = mInfo; mSRWLock.UnlockRead(); return currInfo; };
 
+	void SetOwnerPlayerController(PlayerController* pc) { mOwnerPC = pc; }
+	PlayerController* GetOwnerPlayerController() { return mOwnerPC; }
+	float GetViewRangeRadius() { /* 혹시 ViewRange 를 바꾸는 일이 있다면 lock 을 걸어야한다. */ return mInfo.ViewRangeRadius; }
 public:
 	void DecRef_OwnerGameSession() { mInfo.Owner = nullptr; }
 

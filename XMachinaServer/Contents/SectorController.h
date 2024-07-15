@@ -23,6 +23,8 @@
 /// 
 /// -------------------------------+
 
+#include "GamePlayer.h"
+
 class Sector;
 
 /* Height map (W : 1000, H : 500 )*/
@@ -45,10 +47,13 @@ private:
 	SPtr_GameRoom mOwnerRoom; // 자신이 속해있는 Room 포인터 
 
 private:
+	std::unordered_map<UINT32, SPtr<GamePlayer>> mPlayers;
+	Lock::SRWLock mPlayers_SRWLock;
+
 	std::array<std::array<Sector*, SectorInfo::height>, SectorInfo::Width> mSectors;
 
 	Coordinate mTotalSectorSize = {}; // Sector 전체 크기  ( Image )
-	Coordinate mSectorSize      = {}; // 각 Sector 크기	  ( Image )
+	Coordinate mSectorSize      = {}; // 각 Sector 크기	  
 
 public:
 	SectorController();
@@ -57,13 +62,24 @@ public:
 public:
 	bool Init(SPtr_GameRoom owner);
 
+	void UpdateSectorsActivate(Vec3 player_pos, float radius);
+	
+	ViewList GetViewList(Vec3 player_pos, float viewRange_radius);
 
-	Vec3 GetSectorIdx(Vec3 Pos); // Position 에 따른 Index 를 받는다 .
-	Coordinate GetTotalSectorSize() { return mTotalSectorSize; }
-	Coordinate GetSectorSize()		{ return mSectorSize; }
-	Coordinate GetMaxSectorIndex() { return Coordinate(static_cast<int>(mSectors[0].size()), static_cast<int>(mSectors.size())); }
 
+	/// +------------------------------------------------------------
+	///		GET
+	/// -------------------------------------------------------------+
+	Coordinate	     GetSectorIdx(Vec3 Pos); // Position 에 따른 Index 를 받는다 .
+	Coordinate	     GetTotalSectorSize() { return mTotalSectorSize; }
+	Coordinate	     GetSectorSize()		{ return mSectorSize; }
+	Coordinate	     GetMaxSectorIndex() { return Coordinate(static_cast<int>(mSectors[0].size()), static_cast<int>(mSectors.size())); }
 	SectorInfo::Type GetSectorType(Coordinate idx);
+	SPtr<GameRoom>   GetOwnerRoom() { return mOwnerRoom; }
 
+	/* Function */
+	bool AddMonsterInSector(Coordinate sectorIdx, int monster_id , SPtr<GameMonster> monster);
+
+	
 };
 

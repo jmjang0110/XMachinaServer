@@ -19,8 +19,10 @@ bool PlayerController::EnterPlayer(SPtr_GamePlayer player)
 
 	{
 		mSRWLock.LockWrite();
+
 		mGamePlayers[player->GetID()] = player;
 		player->setRoomID(mRoomID);
+		player->SetOwnerPlayerController(this);
 
 		mSRWLock.UnlockWrite();
 	}
@@ -81,7 +83,7 @@ void PlayerController::Broadcast(SPtr_SendPktBuf spkt, UINT32 exceptSessionID)
 
 	for (auto& player : mGamePlayers) {
 		if (player.first == exceptSessionID) continue;
-		SPtr_GameSession session = player.second->GetInfo().Owner;
+		SPtr_GameSession session = player.second->GetSnapShot().Owner;
 		session->Send(spkt);
 
 	}
@@ -95,7 +97,7 @@ void PlayerController::SendPacket(UINT32 sessionID, SPtr_SendPktBuf sendPkt)
 
 	const auto& iter = mGamePlayers.find(sessionID);
 	if (iter != mGamePlayers.end()) {
-		SPtr_GameSession session = iter->second->GetInfo().Owner;
+		SPtr_GameSession session = iter->second->GetSnapShot().Owner;
 		if (sendPkt != nullptr)
 			session->Send(sendPkt);
 	}
@@ -103,17 +105,36 @@ void PlayerController::SendPacket(UINT32 sessionID, SPtr_SendPktBuf sendPkt)
 	mSRWLock.UnlockRead();
 }
 
-std::vector<PlayerInfo> PlayerController::GetInsertedPlayersInfo()
+std::vector<PlayerSnapShot> PlayerController::GetInsertedPlayersInfo()
 {
 	mSRWLock.LockRead();
 
-	std::vector<PlayerInfo> playerInfos = {};
+	std::vector<PlayerSnapShot> PlayerSnapShots = {};
 	for (auto& player : mGamePlayers) {
-		playerInfos.push_back(player.second->GetInfo());
+		PlayerSnapShots.push_back(player.second->GetSnapShot());
 	}
 
 	mSRWLock.UnlockRead();
 
-	return playerInfos;
+	return PlayerSnapShots;
+}
+
+std::vector<SPtr<GamePlayer>> PlayerController::GetPlayersInViewRange(Vec3 player_pos, float viewrange_radius)
+{
+	std::vector<SPtr<GamePlayer>> playersInView;
+	for (auto& player : mGamePlayers) {
+		PlayerSnapShot snapShot = player.second->GetSnapShot();
+
+
+		// x, z 좌표 간의 거리 계산
+		float distance = std::sqrt(std::pow(snapShot.Position.x - player_pos.x, 2) + std::pow(snapShot.Position.z - player_pos.z, 2));
+
+		// 거리 비교
+		if (distance <= viewrange_radius) {
+			playersInView.push_back(player.second);
+		}
+	}
+
+	return playersInView;
 }
 

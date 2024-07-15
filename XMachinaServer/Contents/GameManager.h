@@ -38,7 +38,7 @@ public:
 	void Send(SPtr_SendPktBuf& pkt, int roomID, int sessionID); // Room 안에 해당 Session에 접근해 Send 
 
 
-	std::vector<PlayerInfo> GetPlayerInfos_Room(int roomid);
+	std::vector<PlayerSnapShot> GetPlayerSnapShots_Room(int roomid);
 
 
 };

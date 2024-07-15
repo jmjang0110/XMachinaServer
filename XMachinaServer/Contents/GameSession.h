@@ -23,7 +23,7 @@ public:
 
 public:
 	SPtr_GamePlayer GetPlayer() { return mPlayer; };
-	PlayerInfo GetPlayerInfo() { return mPlayer->GetInfo(); };
+	PlayerSnapShot GetPlayerSnapShot() { return mPlayer->GetSnapShot(); };
 
 };
 

@@ -39,6 +39,11 @@ public:
 	void InitNPCs();
 
 	SPtr<GameMonster> CreateMonster(UINT32 id, Coordinate sectorIdx, MonsterType monType);
+	void AddMonster(UINT32 id, SPtr<GameMonster> monster);
+	SPtr<GameRoom>  GetOwnerRoom() { return mOwnerRoom; }
+
+
+	std::vector<SPtr<GameMonster>> GetMonstersInViewRange(Vec3 palyer_pos, float viewRange_radius);
 
 };
 

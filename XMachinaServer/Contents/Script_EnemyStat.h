@@ -52,31 +52,31 @@ public:
 public:
 
 	// Getters
-	int GetEnemyLevel() const				 { return mEnemyLevel; }
-	int GetPheroLevel() const				 { return mPheroLevel; }
+	int GetStat_EnemyLevel() const				 { return mEnemyLevel; }
+	int GetStat_PheroLevel() const				 { return mPheroLevel; }
 											 
-	float GetMoveSpeed() const				 { return mMoveSpeed; }
-	float GetRotationSpeed() const			 { return mRotationSpeed; }
+	float GetStat_MoveSpeed() const				 { return mMoveSpeed; }
+	float GetStat_RotationSpeed() const			 { return mRotationSpeed; }
 	
-	float GetAttackRotationSpeed() const	 { return mAttackRotationSpeed; }
-	float GetDetectionRange() const			 { return mDetectionRange; }
+	float GetStat_AttackRotationSpeed() const	 { return mAttackRotationSpeed; }
+	float GetStat_DetectionRange() const			 { return mDetectionRange; }
 	
-	float GetAttackRate() const				 { return mAttackRate; }
-	float GetAttackRange() const			 { return mAttackRange; }
-	float GetAttackCoolTime() const			 { return mAttackCoolTime; }
+	float GetStat_AttackRate() const				 { return mAttackRate; }
+	float GetStat_AttackRange() const { return mAttackRange; }
+	float GetStat_AttackCoolTime() const			 { return mAttackCoolTime; }
 
 	// Setters
-	void SetEnemyLevel(int level)			 { mEnemyLevel = level; }
-	void SetPheroLevel(int level)			 { mPheroLevel = level; }
+	void SetStat_EnemyLevel(int level)			 { mEnemyLevel = level; }
+	void SetStat_PheroLevel(int level)			 { mPheroLevel = level; }
 	
-	void SetMoveSpeed(float speed)			 { mMoveSpeed = speed; }
-	void SetRotationSpeed(float speed)		 { mRotationSpeed = speed; }
+	void SetStat_MoveSpeed(float speed)			 { mMoveSpeed = speed; }
+	void SetStat_RotationSpeed(float speed)		 { mRotationSpeed = speed; }
 	
-	void SetAttackRotationSpeed(float speed) { mAttackRotationSpeed = speed; }
-	void SetDetectionRange(float range)		 { mDetectionRange = range; }
+	void SetStat_AttackRotationSpeed(float speed) { mAttackRotationSpeed = speed; }
+	void SetStat_DetectionRange(float range)		 { mDetectionRange = range; }
 	
-	void SetAttackRate(float rate)			 { mAttackRate = rate; }
-	void SetAttackRange(float range)		 { mAttackRange = range; }
-	void SetAttackCoolTime(float time)	     { mAttackCoolTime = time; }
+	void SetStat_AttackRate(float rate)			 { mAttackRate = rate; }
+	void SetStat_AttackRange(float range)		 { mAttackRange = range; }
+	void SetStat_AttackCoolTime(float time)	     { mAttackCoolTime = time; }
 };
 

@@ -32,6 +32,7 @@
 #include <concurrent_queue.h>
 #include <concurrent_priority_queue.h>
 #include <concurrent_unordered_map.h>
+#include <atomic>
 
 /* My Utility Hedaers */
 #include "ServerLib/UtilityMacro.h"
@@ -60,7 +61,23 @@ struct Coordinate
 {
 	int x = -1;
 	int z = -1;
+
+	// Overloading the != operator
+	bool operator!=(const Coordinate& other) const {
+		return x != other.x || z != other.z;
+	}
+	bool operator==(const Coordinate& other) const {
+		return x == other.x || z == other.z;
+	}
 };
 
+
+struct Atomic_Vec3
+{
+	std::atomic<float> x;
+	std::atomic<float> y;
+	std::atomic<float> z;
+
+};
 
 

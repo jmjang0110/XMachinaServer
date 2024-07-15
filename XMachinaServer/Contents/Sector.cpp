@@ -20,8 +20,35 @@ Sector::~Sector()
 {
 }
 
+void Sector::Activate()
+{
+	if (mActivateRef.load() == 0)
+		GameObject::Activate();
+
+	mActivateRef.fetch_add(1);
+
+}
+
+void Sector::DeActivate()
+{
+	mActivateRef.fetch_sub(1);
+	if (mActivateRef.load() < 0)
+	{
+		GameObject::DeActivate();
+	}
+}
+
+bool Sector::IsActive()
+{
+	if (mActivateRef.load() > 0)
+		return true;
+	else
+		return false;
+}
+
 void Sector::Update()
 {
+	
 }
 
 void Sector::WakeUp()
@@ -61,3 +88,24 @@ bool Sector::AddNPC(UINT32 id, SPtr<GameNPC> npc)
 	}
 	return false;
 }
+
+std::vector<SPtr<GameMonster>> Sector::GetMonstersInViewRange(Vec3 player_pos, float viewRange_radius)
+{
+	std::vector<SPtr<GameMonster>> monstersInView;
+
+	for (auto& Mon : mMonsters) {
+		Vec3 pos = Mon.second->GetPosition(); /* Snap Shot - Position */
+
+		// x, z 좌표 간의 거리 계산
+		float distance = std::sqrt(std::pow(pos.x - player_pos.x, 2) + std::pow(pos.z - player_pos.z, 2));
+
+		// 거리 비교
+		if (distance <= viewRange_radius) {
+			monstersInView.push_back(Mon.second);
+		}
+	}
+
+	return monstersInView;
+}
+
+

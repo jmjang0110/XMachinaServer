@@ -2,7 +2,7 @@
 
 #include "Script_Stat.h"
 
-namespace PlayerInfo {
+namespace PlayerSnapShot {
 	enum class Movement : DWORD {
 		None   = 0x00,
 		Stand  = 0x01,
@@ -51,6 +51,11 @@ private:
 	/// -------------------------------------------+
 	int mCrntWeaponNum{};
 	int mNextWeaponNum{};
+
+	/// +-------------------------------------------
+	///	 >> Skill
+	/// -------------------------------------------+
+
 
 public:
 

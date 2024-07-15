@@ -13,7 +13,13 @@ Monster_Onyscidus::Monster_Onyscidus(UINT32 sessionID, Coordinate sectorIdx)
 {
 	GameObject::SetType(GameObjectInfo::Type::Monster_Onyscidus) ;
 
-
+	GameMonster::SetID(sessionID);
+	GameMonster::SetType(MonsterType::Onyscidus);
+	GameMonster::SetAttack(100);
+	GameMonster::SetHP(100);
+	GameMonster::SetPosition(Vec3(0.f, 0.f, 0.f));
+	GameMonster::SetRotation(Vec3(0.f, 0.f, 0.f));
+	GameMonster::SetSpineDir(Vec3(0.f, 0.f, 0.f));
 }
 
 Monster_Onyscidus::~Monster_Onyscidus()
