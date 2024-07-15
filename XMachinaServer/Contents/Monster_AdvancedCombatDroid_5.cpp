@@ -54,6 +54,7 @@ void Monster_AdvancedCombatDroid_5::Dispatch(OverlappedObject* overlapped, UINT3
 	Update();
 
 
-	GameObject::RegisterUpdate();
+	if (GameMonster::GetActivate_RefCnt() > 0)
+		GameObject::RegisterUpdate();
 
 }

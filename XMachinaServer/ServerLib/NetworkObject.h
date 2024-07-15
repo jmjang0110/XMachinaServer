@@ -36,6 +36,7 @@ public:
 	void		SetName(std::string name) { mName = name; }
 
 	UINT32 GetID() { return ID; }
+	void PQCS(OverlappedObject* over);
 
 };
 

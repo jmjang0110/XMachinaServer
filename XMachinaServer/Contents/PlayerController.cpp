@@ -83,7 +83,7 @@ void PlayerController::Broadcast(SPtr_SendPktBuf spkt, UINT32 exceptSessionID)
 
 	for (auto& player : mGamePlayers) {
 		if (player.first == exceptSessionID) continue;
-		SPtr_GameSession session = player.second->GetSnapShot().Owner;
+		SPtr_GameSession session = player.second->GetSessionOwner();
 		session->Send(spkt);
 
 	}
@@ -97,7 +97,7 @@ void PlayerController::SendPacket(UINT32 sessionID, SPtr_SendPktBuf sendPkt)
 
 	const auto& iter = mGamePlayers.find(sessionID);
 	if (iter != mGamePlayers.end()) {
-		SPtr_GameSession session = iter->second->GetSnapShot().Owner;
+		SPtr_GameSession session = iter->second->GetSessionOwner();
 		if (sendPkt != nullptr)
 			session->Send(sendPkt);
 	}
@@ -127,7 +127,7 @@ std::vector<SPtr<GamePlayer>> PlayerController::GetPlayersInViewRange(Vec3 playe
 
 
 		// x, z 좌표 간의 거리 계산
-		float distance = std::sqrt(std::pow(snapShot.Position.x - player_pos.x, 2) + std::pow(snapShot.Position.z - player_pos.z, 2));
+		float distance = static_cast<float>(std::sqrt(std::pow(snapShot.Position.x - player_pos.x, 2) + std::pow(snapShot.Position.z - player_pos.z, 2)));
 
 		// 거리 비교
 		if (distance <= viewrange_radius) {

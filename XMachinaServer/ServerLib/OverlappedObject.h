@@ -45,6 +45,7 @@ class OverlappedObject : public WSAOVERLAPPED
 private:
 	UINT8				mIoType = static_cast<UINT8>(OverlappedIO::Type::None);
 	SPtr_NetObj			mOwner  = nullptr;		// Session? Listener?
+	HANDLE				mIocpHandle = {};
 
 public:
 	OverlappedObject(OverlappedIO::Type ioType);
@@ -54,9 +55,10 @@ public:
 	/* Get */
 	SPtr_NetObj			GetOwner()	{ return mOwner; }
 	OverlappedIO::Type	GetIoType() { return static_cast<OverlappedIO::Type>(mIoType); }
-
+	HANDLE GetIocpHandle() { return mIocpHandle; }
 	/* Set */
 	void				SetOwner(SPtr_NetObj owner) { mOwner = owner; }
+	void SetIocpHandle(HANDLE IocpHandle) { mIocpHandle = IocpHandle; }
 
 	/* Ref Counting бщ */
 	void DecRef_NetObj() { mOwner = nullptr; }

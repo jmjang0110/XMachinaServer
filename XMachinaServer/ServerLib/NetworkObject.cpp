@@ -12,3 +12,9 @@ NetworkObject::~NetworkObject()
 
 }
 
+void NetworkObject::PQCS(OverlappedObject* over)
+{
+	::PostQueuedCompletionStatus(over->GetIocpHandle(), 1, 0, over);
+
+}
+

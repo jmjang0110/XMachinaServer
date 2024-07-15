@@ -21,7 +21,7 @@ Monster_Ursacetus::Monster_Ursacetus(UINT32 sessionID, Coordinate sectorIdx)
 	GameMonster::SetType(MonsterType::Ursacetus);
 	GameMonster::SetAttack(100);
 	GameMonster::SetHP(100);
-	GameMonster::SetPosition(Vec3(0.f, 0.f, 0.f));
+	GameMonster::SetPosition(Vec3(25.f, 0.f, 260.f));
 	GameMonster::SetRotation(Vec3(0.f, 0.f, 0.f));
 	GameMonster::SetSpineDir(Vec3(0.f, 0.f, 0.f));
 
@@ -72,12 +72,13 @@ void Monster_Ursacetus::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 
 
 	Update();
+	LOG_MGR->Cout(GetID(), " - Monster Ursacetus Updated\n");
 
-
-	GameObject::RegisterUpdate();
+	if (GameMonster::GetActivate_RefCnt() > 0)
+		GameObject::RegisterUpdate();
 
 	//if ((int)speed % 10'000 == 0)
-	//	LOG_MGR->Cout(this, " - URSACETUS : ", speed, "\n");
+		//LOG_MGR->Cout(this, " - URSACETUS : ", GetID(), " \n");
 
 }
 

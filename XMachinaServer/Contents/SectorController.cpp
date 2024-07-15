@@ -105,7 +105,7 @@ void SectorController::UpdateSectorsActivate(Vec3 player_pos, float radius)
 
 }
 
-ViewList SectorController::GetViewList(Vec3 player_pos, float viewRange_radius)
+ViewList SectorController::UpdateViewList(GamePlayer* player, Vec3 player_pos, float viewRange_radius)
 {
     ViewList vList;
 
@@ -156,6 +156,8 @@ ViewList SectorController::GetViewList(Vec3 player_pos, float viewRange_radius)
 
 
     //LOG_MGR->Cout("Sector Size : ", mSectorSize.z, mSectorSize.x, "  -- curSectorIdx : ", " z :", curSectorIdx.z, " x : ", curSectorIdx.x, '\n');
+    std::vector<SPtr<GameMonster>> AllView_Monsters;
+    std::vector<SPtr<GamePlayer>> AllView_Players;
 
     for (int i = 0; i < sectors.size(); ++i) {
         if (sectors[i].x == -1)
@@ -163,12 +165,20 @@ ViewList SectorController::GetViewList(Vec3 player_pos, float viewRange_radius)
 
         // 해당 섹터에서 Monster 와 Player 들을 확인한다.
         //LOG_MGR->Cout("Sector Size : ", mSectorSize.z, mSectorSize.x , "  -- SECTORS IDX : ", " z :", sectors[i].z, " x : ", sectors[i].x, '\n');
-        vList.VL_Monsters = mSectors[sectors[i].z][sectors[i].x]->GetMonstersInViewRange(player_pos, viewRange_radius);
-        vList.VL_Players = mOwnerRoom->GetPlayerController()->GetPlayersInViewRange(player_pos, viewRange_radius);
+        std::vector<SPtr<GameMonster>> VL_Monsters = mSectors[sectors[i].z][sectors[i].x]->GetMonstersInViewRange(player_pos, viewRange_radius);
+        std::vector<SPtr<GamePlayer>>  VL_Players  = mOwnerRoom->GetPlayerController()->GetPlayersInViewRange(player_pos, viewRange_radius);
 
+        for (int i = 0; i < VL_Monsters.size(); ++i) {
+            AllView_Monsters.push_back(VL_Monsters[i]);
+        }
+        for (int i = 0; i < VL_Players.size(); ++i) {
+            AllView_Players.push_back(VL_Players[i]);
+        }
     }
 
+    player->UpdateViewList(AllView_Players, AllView_Monsters);
 
+ 
     return vList;
 }
 
@@ -179,8 +189,8 @@ Coordinate SectorController::GetSectorIdx(Vec3 Pos)
     }
 
     Coordinate sectorIdx{};
-    sectorIdx.x = (Pos.x / mSectorSize.x);
-    sectorIdx.z = (Pos.z / mSectorSize.z);
+    sectorIdx.x = static_cast<int>((Pos.x / mSectorSize.x));
+    sectorIdx.z = static_cast<int>((Pos.z / mSectorSize.z));
     return sectorIdx;
 
 

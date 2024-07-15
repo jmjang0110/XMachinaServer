@@ -4,7 +4,8 @@
 #include "ServerLib/MemoryManager.h"
 #include "GameWorld.h"
 #include "ServerLib/ThreadManager.h"
-
+#include "Framework.h"
+#include "ServerLib/ServerNetwork.h"
 
 DEFINE_SINGLETON(TimeManager);
 
@@ -38,7 +39,8 @@ void TimeManager::Process_TimerEvent(TimerEvent ev)
 		{
 			Overlapped_GameObject_Update* over = MEMORY->New<Overlapped_GameObject_Update>();
 			over->SetOwner(ev.Owner);
-			GAME_WORLD->PQCS(reinterpret_cast<OverlappedObject*>(over));
+			over->SetIocpHandle(SERVER_NETWORK->GetIocpHandle());
+			ev.Owner->PQCS(reinterpret_cast<OverlappedObject*>(over));
 		}
 		break;
 	}

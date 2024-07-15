@@ -39,8 +39,66 @@ namespace PlayerEnum
 
 struct ViewList
 {
-	std::vector<SPtr<GamePlayer>> VL_Players;
-	std::vector<SPtr<GameMonster>> VL_Monsters;
+	std::unordered_map<UINT32, SPtr<GamePlayer>> VL_Players;
+	std::unordered_map<UINT32, SPtr<GameMonster>> VL_Monsters;
+
+	bool TryInsertPlayer(UINT32 key, SPtr<GamePlayer> player)
+	{
+		auto monsterIt = VL_Players.find(key);
+		// 이미 존재한다.
+		if (monsterIt != VL_Players.end())
+			return false;
+		else
+			VL_Players.insert(std::make_pair(key, player));
+		
+		return true;
+
+	}
+	bool TryInsertMonster(UINT32 key, SPtr<GameMonster> monster)
+	{
+		auto monsterIt = VL_Monsters.find(key);
+		// 이미 존재한다.
+		if (monsterIt != VL_Monsters.end())
+			return false;
+		else
+		{
+			VL_Monsters.insert(std::make_pair(key, monster));
+			monster->Activate();
+		}
+
+		return true;
+	}
+	bool RemovePlayer(UINT32 key)
+	{
+		auto playerIt = VL_Players.find(key);
+		if (playerIt != VL_Players.end())
+		{
+			VL_Players.erase(playerIt);
+			return true;
+		}
+		return false;
+	}
+
+	bool RemoveMonster(UINT32 key)
+	{
+		auto monsterIt = VL_Monsters.find(key);
+		if (monsterIt != VL_Monsters.end())
+		{
+			monsterIt->second->DeActivate();
+			VL_Monsters.erase(monsterIt);
+			return true;
+		}
+		return false;
+	}
+
+	void Clear()
+	{
+		for (auto& it : VL_Monsters)
+			it.second->DecreaseRef();
+
+		VL_Monsters.clear();
+		VL_Players.clear();
+	}
 
 };
 
@@ -68,6 +126,7 @@ struct PlayerSnapShot
 
 	float					ViewRangeRadius = 5.f;
 	ViewList				Vlist;
+	ViewList				VList_Prev;
 
 	PlayerSnapShot(){}
 	PlayerSnapShot(UINT32 id, std::string name, FBProtocol::OBJECT_TYPE type) { PlayerID = id, Name = name, Type = type; }
@@ -120,7 +179,8 @@ public:
 
 	/* Get Set : Player Info */
 	void SetSnapShot(PlayerSnapShot& info)	{ mSRWLock.LockWrite(); mInfo = info; mSRWLock.UnlockWrite(); }
-	PlayerSnapShot GetSnapShot()			{ mSRWLock.LockRead(); PlayerSnapShot currInfo = mInfo; mSRWLock.UnlockRead(); return currInfo; };
+	PlayerSnapShot GetSnapShot()			{ mSRWLock.LockWrite(); PlayerSnapShot currInfo = mInfo; mSRWLock.UnlockWrite(); return currInfo; };
+	SPtr<GameSession> GetSessionOwner() { return mInfo.Owner; };
 
 	void SetOwnerPlayerController(PlayerController* pc) { mOwnerPC = pc; }
 	PlayerController* GetOwnerPlayerController() { return mOwnerPC; }
@@ -128,5 +188,10 @@ public:
 public:
 	void DecRef_OwnerGameSession() { mInfo.Owner = nullptr; }
 
+	void UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vector<SPtr<GameMonster>> montser);
+	
+	ViewList GetCurrViewList() { return mInfo.Vlist; }
+	ViewList GetPrevViewList() { return mInfo.VList_Prev; }
+	void SwapViewList() { mInfo.VList_Prev = mInfo.Vlist; }
 };
 

@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "GameObject.h"
 #include "Transform.h"
-
+#include "ServerLib/ServerNetwork.h"
+#include "Framework.h"
 
 GameObject::GameObject()
 	: GameEntity()
@@ -91,3 +92,4 @@ bool GameObject::RegisterUpdate(std::chrono::system_clock::duration offset)
 	return true;
 
 }
+

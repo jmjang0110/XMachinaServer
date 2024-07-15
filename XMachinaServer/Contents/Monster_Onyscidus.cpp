@@ -55,7 +55,8 @@ void Monster_Onyscidus::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 
 	Update();
 
-	GameObject::RegisterUpdate();
+	if (GameMonster::GetActivate_RefCnt() > 0)
+		GameObject::RegisterUpdate();
 
 	//if ((int)speed % 10'000 == 0)
 	//	LOG_MGR->Cout(this, " - ONYSCIDUS : ", speed, "\n");

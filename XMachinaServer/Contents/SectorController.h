@@ -64,18 +64,18 @@ public:
 
 	void UpdateSectorsActivate(Vec3 player_pos, float radius);
 	
-	ViewList GetViewList(Vec3 player_pos, float viewRange_radius);
+	ViewList UpdateViewList(GamePlayer* player, Vec3 player_pos, float viewRange_radius);
 
 
 	/// +------------------------------------------------------------
 	///		GET
 	/// -------------------------------------------------------------+
 	Coordinate	     GetSectorIdx(Vec3 Pos); // Position 에 따른 Index 를 받는다 .
-	Coordinate	     GetTotalSectorSize() { return mTotalSectorSize; }
+	Coordinate	     GetTotalSectorSize() 	{ return mTotalSectorSize; }
 	Coordinate	     GetSectorSize()		{ return mSectorSize; }
-	Coordinate	     GetMaxSectorIndex() { return Coordinate(static_cast<int>(mSectors[0].size()), static_cast<int>(mSectors.size())); }
+	Coordinate	     GetMaxSectorIndex()	{ return Coordinate(static_cast<int>(mSectors[0].size()), static_cast<int>(mSectors.size())); }
 	SectorInfo::Type GetSectorType(Coordinate idx);
-	SPtr<GameRoom>   GetOwnerRoom() { return mOwnerRoom; }
+	SPtr<GameRoom>   GetOwnerRoom()			{ return mOwnerRoom; }
 
 	/* Function */
 	bool AddMonsterInSector(Coordinate sectorIdx, int monster_id , SPtr<GameMonster> monster);

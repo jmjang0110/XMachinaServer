@@ -97,7 +97,7 @@ std::vector<SPtr<GameMonster>> Sector::GetMonstersInViewRange(Vec3 player_pos, f
 		Vec3 pos = Mon.second->GetPosition(); /* Snap Shot - Position */
 
 		// x, z 좌표 간의 거리 계산
-		float distance = std::sqrt(std::pow(pos.x - player_pos.x, 2) + std::pow(pos.z - player_pos.z, 2));
+		float distance = static_cast<float>(std::sqrt(std::pow(pos.x - player_pos.x, 2) + std::pow(pos.z - player_pos.z, 2)));
 
 		// 거리 비교
 		if (distance <= viewRange_radius) {
