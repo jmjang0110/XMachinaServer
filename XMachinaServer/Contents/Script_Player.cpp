@@ -1,12 +1,13 @@
 #include "pch.h"
 #include "Script_Player.h"
+#include "GamePlayer.h"
 
 Script_Player::Script_Player()
     : Script_PlayerStat()
 {
 }
 
-Script_Player::Script_Player(SPtr<GameObject> owner, ScriptInfo::Type type)
+Script_Player::Script_Player(SPtr<GamePlayer> owner, ScriptInfo::Type type)
     : Script_PlayerStat(owner, type)
 {
     for (int i = 0; i < static_cast<UINT8>(SkillInfo::Type::End); ++i) {
@@ -16,16 +17,16 @@ Script_Player::Script_Player(SPtr<GameObject> owner, ScriptInfo::Type type)
             switch (t)
             {
             case SkillInfo::Type::Cloaking:
-                mSkills[i] = new Skill(GetOwner(), t, 3.f , 0.f /* 무한 */);
+                mSkills[i] = new Skill(std::dynamic_pointer_cast<GamePlayer>(GetOwner()), t, 3.f, 0.f /* 무한 */);
                 break;
             case SkillInfo::Type::MindControl:
-                mSkills[i] = new Skill(GetOwner(), t, 10.f, 30.f);
+                mSkills[i] = new Skill(std::dynamic_pointer_cast<GamePlayer>(GetOwner()), t, 10.f, 30.f);
                 break;
             case SkillInfo::Type::IRDetector:
-                mSkills[i] = new Skill(GetOwner(), t, 2.f, 10.f) ;
+                mSkills[i] = new Skill(std::dynamic_pointer_cast<GamePlayer>(GetOwner()), t, 2.f, 10.f) ;
                 break;
             case SkillInfo::Type::Shield:
-                mSkills[i] = new Skill(GetOwner(), t, 2.f, 4.5f );
+                mSkills[i] = new Skill(std::dynamic_pointer_cast<GamePlayer>(GetOwner()), t, 2.f, 4.5f );
                 break;
             }
         }

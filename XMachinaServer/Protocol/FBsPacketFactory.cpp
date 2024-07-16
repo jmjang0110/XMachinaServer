@@ -820,7 +820,7 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_Player_Weapon(uint32_t player_id, FBProto
 ///	◈ SEND [ MONSTER ] PACKET ◈
 /// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------★
 
-SPtr_SendPktBuf FBsPacketFactory::SPkt_NewMonster(std::vector<MonsterSnapShot>& new_monsters)
+SPtr_SendPktBuf FBsPacketFactory::SPkt_NewMonster(std::vector<MonsterSnapShot_ReadOnly>& new_monsters)
 {
 	///  >  ▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽
 	/// > table Phero{
@@ -851,7 +851,7 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_NewMonster(std::vector<MonsterSnapShot>& 
 	/// +------------------------------------------------------------------------------------------
 	///	Monster 정보 저장 
 	/// ------------------------------------------------------------------------------------------+
-	for (MonsterSnapShot& p : new_monsters) {
+	for (MonsterSnapShot_ReadOnly& p : new_monsters) {
 		auto pos     = FBProtocol::CreatePosition_Vec2(builder, p.Position.x, p.Position.z);
 		auto Monster = FBProtocol::CreateMonster(builder, p.ID, static_cast<uint8_t>(p.Type), pos); 
 		MonsterSnapShots_Vector.push_back(Monster);

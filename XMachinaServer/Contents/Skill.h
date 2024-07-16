@@ -25,7 +25,7 @@ namespace SkillInfo
 class Skill 
 {
 private:
-	SPtr<GameObject> mOwner			= nullptr;		// 스킬 소유 게임 오브젝트 ( 플레이어 )
+	SPtr<GamePlayer> mOwner			= nullptr;		// 스킬 소유 게임 오브젝트 ( 플레이어 )
 
 private:
 	SkillInfo::Type	 mType          = SkillInfo::Type::None;			// 스킬 타입 
@@ -36,13 +36,13 @@ private:
 
 public:
 	Skill();
-	Skill(SPtr<GameObject> owner, SkillInfo::Type type, float cooltime, float activeduration);
+	Skill(SPtr<GamePlayer> owner, SkillInfo::Type type, float cooltime, float activeduration);
 	~Skill();
 
 public:
 	void Update();
 
-	SkillInfo::State GetState() { return mState; }
-
+	SkillInfo::State GetState()     { return mState; }
+	SkillInfo::Type  GetSkillType() { return mType;  }
 };
 

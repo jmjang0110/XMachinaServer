@@ -3,9 +3,12 @@
 #include "Transform.h"
 #include "GameObject.h"
 #include "BTNode.h"
+#include "Script_Player.h"
+
 
 
 /* Script */
+
 
 
 BTTask::BTTask(SPtr_GameObject owner, BTTaskType type, std::function<void()> callback)
@@ -166,11 +169,6 @@ BTNodeState MonsterTask::MoveToPath::Evaluate()
 ///	> ▶▶▶ Task Move To Target  
 /// __________________________________________________________________________
 
-BTNodeState MonsterTask::MoveToTarget::Evaluate()
-{
-	return BTNodeState();
-}
-
 MonsterTask::MoveToTarget::MoveToTarget(SPtr_GameObject owner, std::function<void()> callback)
 	: BTTask(owner, BTTaskType::MonT_MoveToTarget, callback)
 {
@@ -185,14 +183,18 @@ MonsterTask::MoveToTarget::~MoveToTarget()
 
 }
 
+
+BTNodeState MonsterTask::MoveToTarget::Evaluate()
+{
+	return BTNodeState();
+}
+
+
+
 /// +-------------------------------------------------------------------------
 ///	> ▶▶▶ Task Path Planning A*  
 /// __________________________________________________________________________
 
-BTNodeState MonsterTask::PathPlanning_AStar::Evaluate()
-{
-	return BTNodeState();
-}
 
 MonsterTask::PathPlanning_AStar::PathPlanning_AStar(SPtr_GameObject owner, std::function<void()> callback)
 	: BTTask(owner, BTTaskType::MonT_PathPlanningASatr, callback)
@@ -207,6 +209,51 @@ MonsterTask::PathPlanning_AStar::~PathPlanning_AStar()
 	mEnemyController = nullptr;
 
 }
+
+
+BTNodeState MonsterTask::PathPlanning_AStar::Evaluate()
+{
+	return BTNodeState();
+}
+
+
+bool MonsterTask::PathPlanning_AStar::PathPlanningAStar(Path::Pos start, Path::Pos dest)
+{
+	return true;
+	
+}
+
+Path::Pos  MonsterTask::PathPlanning_AStar::FindNoneTileFromBFS(const Path::Pos& pos)
+{
+	/*std::queue<Pos> q;
+	std::map<Pos, bool> visited;
+	q.push(pos);
+
+	Pos curPos{};
+	while (!q.empty()) {
+		curPos = q.front();
+		q.pop();
+
+		if (Scene::I->GetTileFromUniqueIndex(curPos) == Tile::None)
+			return curPos;
+
+		if (visited[curPos])
+			continue;
+
+		visited[curPos] = true;
+
+		for (int dir = 0; dir < 4; ++dir) {
+			Pos nextPos = curPos + gkFront[dir];
+			q.push(nextPos);
+		}
+	}
+
+	return curPos;*/
+	return Path::Pos();
+
+}
+
+
 
 /// +-------------------------------------------------------------------------
 ///	> ▶▶▶ Task Path Planning To Spawn 
@@ -397,6 +444,20 @@ MonsterTask::CheckDeath::~CheckDeath()
 ///	> ▶▶▶ Task Check Attack Range 
 /// __________________________________________________________________________
 
+MonsterTask::CheckAttackRange::CheckAttackRange(SPtr_GameObject owner, std::function<void()> callback)
+	: BTTask(owner, BTTaskType::MonT_CheckAttackRange, callback)
+
+{
+	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
+	mStat = GetOwner()->GetScript<Script_Enemy>(ScriptInfo::Type::Stat);
+}
+
+MonsterTask::CheckAttackRange::~CheckAttackRange()
+{
+	mEnemyController = nullptr;
+
+}
+
 BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 {
 	LOG_MGR->Cout("CheckAttackRange\n");
@@ -410,40 +471,31 @@ BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 	}
 
 	///* 타겟한 플레이어가 은신 상태라면.. */
-	//const auto& abilitys = mEnemyController->GetTargetObject()->;
-	//for (const auto& ability : abilitys) {
-	//	if (ability->GetAbilityName() == "Cloaking" && ability->GetAbilityState() == AbilityState::Active) {
-	//		mEnemyController->SetTargetObject(nullptr);
-	//		return BTNodeState::Failure;
-	//	}
-	//}
-
-	//constexpr float minDistance = 1.f;
-	//const float distance = (GetOwner()->GetTransform()->GetPosition() - mEnemyController->GetTargetObject()->GetTransform()->GetPosition()).Length();
-	//if (distance < mEnemyController->mStat.AttackRange) {
-	//	const Vec3 toTargetDir = Vector3::Normalized(mEnemyMgr->mTarget->GetPosition() - mObject->GetPosition());
-	//	const float angle = Vector3::Angle(mObject->GetLook(), toTargetDir);
-	//	if (minDistance < 1.f || angle < 80.f) {
-	//		mEnemyMgr->mState = EnemyState::Attack;
-	//		mEnemyMgr->RemoveAllAnimation();
-	//		mEnemyMgr->mController->SetValue("Attack", true);
-
-	//		return BT::NodeState::Success;
-	//	}
-	//}
-
-	//return BT::NodeState::Failure;
-}
-
-MonsterTask::CheckAttackRange::CheckAttackRange(SPtr_GameObject owner, std::function<void()> callback)
-	: BTTask(owner, BTTaskType::MonT_CheckAttackRange, callback)
-
-{
+	const auto& playerScript = mEnemyController->GetTargetObject()->GetScript<Script_Player>(ScriptInfo::Type::Stat);
+	Skill* cloacking = playerScript->GetSkill(SkillInfo::Type::Cloaking);
+	if (cloacking->GetState() == SkillInfo::State::Active) {
+		mEnemyController->SetTargetObject(nullptr);
+		return BTNodeState::Failure;
+	}
 	
+
+
+	constexpr float minDistance = 1.f;
+	const float distance = (GetOwner()->GetTransform()->GetPosition() - mEnemyController->GetTargetObject()->GetTransform()->GetPosition()).Length();
+	if (distance < mStat->GetStat_AttackRange()) {
+
+		Vec3		 TargetPos         = mEnemyController->GetTargetObject()->GetTransform()->GetPosition();
+		Vec3		 MyPos             = GetOwner()->GetTransform()->GetPosition();
+		const Vec3	 toTargetDir       = Vector3::Normalized(TargetPos - MyPos);
+
+		const float	 angle      = Vector3::Angle(GetOwner()->GetTransform()->GetLook(), toTargetDir);
+		if (minDistance < 1.f || angle < 80.f) {
+			mEnemyController->SetState(EnemyInfo::State::Attack);
+			return BTNodeState::Success;
+		}
+	}
+
+	return BTNodeState::Failure;
 }
 
-MonsterTask::CheckAttackRange::~CheckAttackRange()
-{
-	mEnemyController = nullptr;
 
-}

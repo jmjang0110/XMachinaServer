@@ -1,5 +1,6 @@
 #pragma once
 
+#include "TileMap.h"
 
 /// +-------------------------------
 ///		   SectorController
@@ -44,16 +45,17 @@ namespace SectorInfo {
 class SectorController
 {
 private:
-	SPtr_GameRoom mOwnerRoom; // 자신이 속해있는 Room 포인터 
+	SPtr_GameRoom								 mOwnerRoom; // 자신이 속해있는 Room 포인터 
+	SPtr<TileMap>									 mTileMap;
 
 private:
 	std::unordered_map<UINT32, SPtr<GamePlayer>> mPlayers;
-	Lock::SRWLock mPlayers_SRWLock;
+	Lock::SRWLock								 mPlayers_SRWLock;
 
 	std::array<std::array<Sector*, SectorInfo::height>, SectorInfo::Width> mSectors;
 
-	Coordinate mTotalSectorSize = {}; // Sector 전체 크기  ( Image )
-	Coordinate mSectorSize      = {}; // 각 Sector 크기	  
+	Coordinate									mTotalSectorSize = {}; // Sector 전체 크기  ( Image )
+	Coordinate									mSectorSize      = {}; // 각 Sector 크기	  
 
 public:
 	SectorController();

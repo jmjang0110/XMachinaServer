@@ -31,6 +31,22 @@ struct MonsterSnapShot
 	Atomic_Vec3				SpineDir;
 };
 
+struct MonsterSnapShot_ReadOnly // 외부에서 MonsterSnapSHot 을 읽어서 복사해 저장할 때 사용 .
+{
+	uint32_t			ID;
+	MonsterType			Type;		/*	몬스터 종류	*/
+
+	/* Stat Script 로 빼자... */
+	float				HP;			/*		HP		*/
+	float				Attack;		/*	  공격력		*/
+
+	/* ... Transform Component로 빼자 */
+	Vec3				Position;
+	Vec3				Rotation;
+	Vec3				SpineDir;
+
+};
+
 class GameMonster : public GameObject
 {
 private:
@@ -74,6 +90,9 @@ public:
 	NPCController* GetOwnerNPCController() { return mOwnerNC; }
 	int GetActivate_RefCnt() { return mActivate_Ref.load(); }
 	void DecreaseRef() { mActivate_Ref.fetch_sub(1); if (mActivate_Ref.load() < 0) mActivate_Ref = 0; }
+
+	MonsterSnapShot_ReadOnly GetCopySnapShot();
+
 
 public:
 	GameMonster();

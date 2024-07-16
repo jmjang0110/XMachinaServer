@@ -83,7 +83,7 @@ public:
 	SPtr_SendPktBuf SPkt_Player_Weapon(uint32_t player_id, FBProtocol::WEAPON_TYPE weapon_type);
 
 	/* MONSTER */
-	SPtr_SendPktBuf SPkt_NewMonster(std::vector<MonsterSnapShot>& new_monsters);
+	SPtr_SendPktBuf SPkt_NewMonster(std::vector<MonsterSnapShot_ReadOnly>& new_monsters);
 	SPtr_SendPktBuf SPkt_DeadMonster(uint32_t monster_id, Vec2 dead_point);
 	SPtr_SendPktBuf SPkt_RemoveMonster(uint32_t monster_id);
 	SPtr_SendPktBuf SPkt_Monster_Transform(uint32_t monster_id, Vec3 pos, Vec3 rot);

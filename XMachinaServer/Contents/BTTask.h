@@ -136,8 +136,10 @@ namespace MonsterTask {
 	private:
 		SPtr<Script_EnemyController>  mEnemyController;
 		SPtr<Script_Enemy>			  mStat;
+
 	public:
 		virtual BTNodeState Evaluate() override;
+
 
 	public:
 		MoveToTarget(SPtr_GameObject owner, std::function<void()> callback = nullptr);
@@ -151,11 +153,24 @@ namespace MonsterTask {
 
 	class PathPlanning_AStar : public BTTask {
 	private:
-		AStarPath mAStarPath;
 		SPtr<Script_EnemyController>  mEnemyController;
 		SPtr<Script_Enemy>			  mStat;
+
+
+	private:
+		std::priority_queue<PQNode, std::vector<PQNode>, std::greater<PQNode>> pq;
+
+		std::stack<Vec3>* mPath;
+		Path::Pos						mStart;
+		Path::Pos						mDest;
+
+		int								mkWeight = 10;
+		int								mkMaxVisited = 2000;
+
 	public:
 		virtual BTNodeState Evaluate() override;
+		bool PathPlanningAStar(Path::Pos start, Path::Pos dest);
+		Path::Pos FindNoneTileFromBFS(const Path::Pos& pos);
 
 	public:
 		PathPlanning_AStar(SPtr_GameObject owner, std::function<void()> callback = nullptr);

@@ -10,7 +10,9 @@ namespace ComponentInfo {
 		None ,
 
 		Transform,
-		Collider,
+		BoxCollider,
+		SphereCollider,
+		ObjectCollider,
 
 		Script,
 		End,

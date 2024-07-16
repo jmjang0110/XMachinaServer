@@ -4,7 +4,7 @@
 #include "Skill.h"
 
 
-
+class GamePlayer;
 class Script_Player : public Script_PlayerStat
 {
 private:
@@ -13,7 +13,7 @@ private:
 
 public:
 	Script_Player();
-	Script_Player(SPtr<GameObject> owner, ScriptInfo::Type type);
+	Script_Player(SPtr<GamePlayer> owner, ScriptInfo::Type type);
 	~Script_Player();
 
 
@@ -31,5 +31,7 @@ public:
 	virtual void Dead()		override;
 	virtual bool Hit(float damage, SPtr_GameObject instigator = nullptr) override;
 
+public:
+	Skill* GetSkill(SkillInfo::Type skill_type) { return mSkills[static_cast<UINT8>(skill_type)]; }
 };
 

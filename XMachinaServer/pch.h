@@ -29,6 +29,7 @@
 #include <stack>
 #include <unordered_map>
 #include <unordered_set>
+#include <map>
 
 /* Concurrent */
 #include <concurrent_queue.h>
@@ -42,6 +43,7 @@
 #include "Contents/LogManager.h"
 #include "Contents/TimeManager.h"
 #include "ServerLib/MemoryManager.h"
+#include "Contents/Util/Common.h"
 
 
 template<typename T>

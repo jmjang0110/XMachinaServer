@@ -6,7 +6,7 @@ Skill::Skill()
 
 }
 
-Skill::Skill(SPtr<GameObject> owner, SkillInfo::Type type, float cooltime, float activeduration)
+Skill::Skill(SPtr<GamePlayer> owner, SkillInfo::Type type, float cooltime, float activeduration)
 		: mOwner(owner)
 		, mType(type)
 		, mCoolTime(cooltime)

@@ -64,12 +64,12 @@ public:
 	~Script_EnemyController();
 
 public:
-	SPtr_GameObject GetTargetObject()		{ return mTarget;	  }
-	SPtr_GameObject GetPathTargetObject()	{ return mPathTarget; }
+	SPtr_GameObject		GetTargetObject()					{ return mTarget;	  }
+	SPtr_GameObject		GetPathTargetObject()				{ return mPathTarget; }
 
-	EnemyInfo::State GetState() { return mState; }
-	void SetState(EnemyInfo::State state) { mState = state; }
-	std::stack<Vec3>*	GetPaths() { return &mPaths; }
+	EnemyInfo::State	GetState()							{ return mState; }
+	void				SetState(EnemyInfo::State state)	{ mState = state; }
+	std::stack<Vec3>*	GetPaths()							{ return &mPaths; }
 
 public:
 	void SetTargetObject(SPtr_GameObject target) { mTarget = target; }

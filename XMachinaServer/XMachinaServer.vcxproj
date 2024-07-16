@@ -181,6 +181,7 @@
     <ClInclude Include="Contents\GameSession.h" />
     <ClInclude Include="Contents\GameStructure.h" />
     <ClInclude Include="Contents\GameWorld.h" />
+    <ClInclude Include="Contents\TileMap.h" />
     <ClInclude Include="Contents\HeightMapImage.h" />
     <ClInclude Include="Contents\Key.h" />
     <ClInclude Include="Contents\LogManager.h" />
@@ -269,6 +270,7 @@
     <ClCompile Include="Contents\GameSession.cpp" />
     <ClCompile Include="Contents\GameStructure.cpp" />
     <ClCompile Include="Contents\GameWorld.cpp" />
+    <ClCompile Include="Contents\TileMap.cpp" />
     <ClCompile Include="Contents\HeightMapImage.cpp" />
     <ClCompile Include="Contents\Key.cpp" />
     <ClCompile Include="Contents\LogManager.cpp" />

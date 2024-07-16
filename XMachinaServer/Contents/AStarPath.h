@@ -24,6 +24,7 @@ private:
 	int				  mMaxVisited          = 2000;
 
 public:
-
+	bool PathPlanningAStar(Path::Pos start, Path::Pos dest);
+	Path::Pos FindNoneTileFromBfs(const Path::Pos& pos);
 };
 

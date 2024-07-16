@@ -104,26 +104,41 @@ struct ViewList
 
 /* 플레이어 상태 */
 struct PlayerSnapShot
-{
+{	
+	/// +-----------------------------------------------------------
+	///		base 
+	/// -----------------------------------------------------------+
 	std::string				Name      = {};
-
 	FBProtocol::OBJECT_TYPE	Type      = FBProtocol::OBJECT_TYPE::OBJECT_TYPE_PLAYER;
 	SPtr_GameSession		Owner     = {}; /* OWNER SESSION */
 
-
+	/// +-----------------------------------------------------------
+	///		Info 
+	/// -----------------------------------------------------------+
 	UINT32					PlayerID  = -1; /* PLAYER ID */ /// - 여기서 ID는 현재 접속 후의 일시적인 아이디이다. DB에서 정보를 받을려면 stirngID를 이용해야한다.
 	UINT32					RoomID	  = -1; /* ROOM NUMBER */
 	std::vector<Coordinate>	CurSectorID;	// 현재 속해있는 Sector index ( 여러개일 수 있음 ) 최대 4개..
 
-	long long				Timestamp = {};
-	float					Velocity  = {};
 
+
+	/// +-----------------------------------------------------------
+	///		latency 
+	/// -----------------------------------------------------------+
+	long long				Timestamp = {};
+
+	/// +-----------------------------------------------------------
+	///		Transform 
+	/// -----------------------------------------------------------+
+	float					Velocity  = {};
 	Vec3					Position  = {};
 	Vec3					Rotation  = {};
 
 	Vec3					FrontDir  = {};
 	Vec3					SpineDir  = {};
 
+	/// +-----------------------------------------------------------
+	///		View List 
+	/// -----------------------------------------------------------+
 	float					ViewRangeRadius = 5.f;
 	ViewList				Vlist;
 	ViewList				VList_Prev;
@@ -143,7 +158,7 @@ private:
 	class PlayerController* mOwnerPC = nullptr;
 
 	Lock::SRWLock mSRWLock;
-	PlayerSnapShot	mInfo = {};
+	PlayerSnapShot	mInfo;
 
 public:
 	GamePlayer();
@@ -162,13 +177,14 @@ public:
 
 	 
 public:
-	/* UPDATE ONCE */
-	void SetOWner(SPtr_GameSession gsession)	{ mInfo.Owner    = gsession; };
-	void SetPlayerID(UINT32 playerid)			{ mInfo.PlayerID = playerid; };
-	void setRoomID(UINT32 roomid)				{ mInfo.RoomID   = roomid; };
-	void SetName(std::string name)				{ mInfo.Name     = name; };
-	void SetType(FBProtocol::OBJECT_TYPE type)	{ mInfo.Type     = type; };
-
+	/// +-----------------------------------------------------------
+	///		S E T T E R 
+	/// -----------------------------------------------------------+
+	void SetOWner(SPtr_GameSession gsession)			 { mInfo.Owner    = gsession; };
+	void SetPlayerID(UINT32 playerid)					 { mInfo.PlayerID = playerid; };
+	void setRoomID(UINT32 roomid)						 { mInfo.RoomID   = roomid; };
+	void SetName(std::string name)						 { mInfo.Name     = name; };
+	void SetType(FBProtocol::OBJECT_TYPE type)			 { mInfo.Type     = type; };
 	/* UPDATE FREQUENTLY --- DATA RACE ( Read / Write ) In MultiThreads */
 	void SetVelocity(float vel)							 { mSRWLock.LockWrite(); mInfo.Velocity = vel;			 mSRWLock.UnlockWrite(); }
 	void SetPosition(Vec3 pos)							 { mSRWLock.LockWrite(); mInfo.Position = pos;			 mSRWLock.UnlockWrite(); }
@@ -177,21 +193,23 @@ public:
 	void SetSpineDir(Vec3 SDir)							 { mSRWLock.LockWrite(); mInfo.SpineDir = SDir;			 mSRWLock.UnlockWrite(); }
 	void SetSectorIdx(std::vector<Coordinate> sectorIdx) { mSRWLock.LockWrite(); mInfo.CurSectorID = sectorIdx;  mSRWLock.UnlockWrite(); }
 
-	/* Get Set : Player Info */
-	void SetSnapShot(PlayerSnapShot& info)	{ mSRWLock.LockWrite(); mInfo = info; mSRWLock.UnlockWrite(); }
-	PlayerSnapShot GetSnapShot()			{ mSRWLock.LockWrite(); PlayerSnapShot currInfo = mInfo; mSRWLock.UnlockWrite(); return currInfo; };
-	SPtr<GameSession> GetSessionOwner() { return mInfo.Owner; };
+	void SetSnapShot(PlayerSnapShot& info)				 { mSRWLock.LockWrite(); mInfo = info; mSRWLock.UnlockWrite(); }
+	void SetOwnerPlayerController(PlayerController* pc)  { mOwnerPC = pc; }
+	
+public:
+	/// +-----------------------------------------------------------
+	///		G E T T E R 
+	/// -----------------------------------------------------------+
+	PlayerSnapShot		GetSnapShot()			        { mSRWLock.LockWrite(); PlayerSnapShot currInfo = mInfo; mSRWLock.UnlockWrite(); return currInfo; };
+	SPtr<GameSession>	GetSessionOwner()		        { return mInfo.Owner; };
+	PlayerController*	GetOwnerPlayerController()      { return mOwnerPC; }
+	float				GetViewRangeRadius()	        { /* 혹시 ViewRange 를 바꾸는 일이 있다면 lock 을 걸어야한다. */ return mInfo.ViewRangeRadius; }
+	ViewList			GetCurrViewList()		        { return mInfo.Vlist; }
+	ViewList			GetPrevViewList()		        { return mInfo.VList_Prev; }
 
-	void SetOwnerPlayerController(PlayerController* pc) { mOwnerPC = pc; }
-	PlayerController* GetOwnerPlayerController() { return mOwnerPC; }
-	float GetViewRangeRadius() { /* 혹시 ViewRange 를 바꾸는 일이 있다면 lock 을 걸어야한다. */ return mInfo.ViewRangeRadius; }
 public:
 	void DecRef_OwnerGameSession() { mInfo.Owner = nullptr; }
-
 	void UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vector<SPtr<GameMonster>> montser);
 	
-	ViewList GetCurrViewList() { return mInfo.Vlist; }
-	ViewList GetPrevViewList() { return mInfo.VList_Prev; }
-	void SwapViewList() { mInfo.VList_Prev = mInfo.Vlist; }
 };
 

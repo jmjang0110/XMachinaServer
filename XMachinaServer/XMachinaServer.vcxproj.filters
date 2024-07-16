@@ -170,6 +170,9 @@
     <Filter Include="Framework\Contents\GameWorld\Player\Weapon">
       <UniqueIdentifier>{db7a2c9b-6c49-4c59-82d1-6ef7704639b7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Sector\Grid">
+      <UniqueIdentifier>{0b6ebbf5-d6b8-42f3-b8ac-99ddc401480b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework.h">
@@ -431,6 +434,9 @@
     <ClInclude Include="Contents\Weapon.h">
       <Filter>Framework\Contents\GameWorld\Player\Weapon</Filter>
     </ClInclude>
+    <ClInclude Include="Contents\TileMap.h">
+      <Filter>Framework\Contents\GameWorld\Sector\Grid</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp">
@@ -664,6 +670,9 @@
     </ClCompile>
     <ClCompile Include="Contents\Weapon.cpp">
       <Filter>Framework\Contents\GameWorld\Player\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\TileMap.cpp">
+      <Filter>Framework\Contents\GameWorld\Sector\Grid</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

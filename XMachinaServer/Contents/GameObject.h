@@ -14,6 +14,8 @@ namespace GameObjectInfo
 		Monster_Onyscidus,
 		Monster_AdvancedCombat_5,
 
+		Building,
+
 		END,
 	};
 }
@@ -41,7 +43,7 @@ public:
 
 public:
 	void SetType(GameObjectInfo::Type type) { mType = type; }
-
+	GameObjectInfo::Type GetType() { return mType; }
 	bool RegisterUpdate(std::chrono::system_clock::duration offset = std::chrono::seconds(0)); /// PQCS 를 이옹해 다음에 업데이트 할 것을 등록한다. 
 
 

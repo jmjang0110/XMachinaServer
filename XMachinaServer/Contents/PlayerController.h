@@ -13,6 +13,7 @@
 
 class PlayerController
 {
+
 private:
 	SPtr_GameRoom mOwnerRoom;
 
@@ -26,7 +27,6 @@ private:
 public:
 	/* GamePlayer */
 	void			Init(int roomID, SPtr_GameRoom owner);
-
 	// WRITE Lock
 	bool			EnterPlayer(SPtr_GamePlayer player); 
 	// WRITE Lock
