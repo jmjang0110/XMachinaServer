@@ -609,20 +609,19 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_EnterGame(PlayerSnapShot& myinfo, std::ve
 	auto rotation      = FBProtocol::CreateVector3(builder, myinfo.Rotation.x, myinfo.Rotation.y, myinfo.Rotation.z);
 	auto transform     = FBProtocol::CreateTransform(builder, position, rotation);
 	auto Spine_LookDir = FBProtocol::CreateVector3(builder, myinfo.SpineDir.x, myinfo.SpineDir.y, myinfo.SpineDir.z);
-	auto Myinfo        = CreatePlayer(builder, myinfo.ID, builder.CreateString(myinfo.Name), myinfo.Type, transform, Spine_LookDir);
+	auto Myinfo        = CreatePlayer(builder, myinfo.ID, builder.CreateString(myinfo.Name), FBProtocol::OBJECT_TYPE::OBJECT_TYPE_PLAYER, transform, Spine_LookDir);
 
 	/* Remote Players */
 	for (PlayerSnapShot& p : players) {
 		auto ID             = p.ID;
 		auto name           = builder.CreateString(p.Name);
-		auto PlayerSnapShotType = p.Type;
 		auto position       = FBProtocol::CreateVector3(builder, p.Position.x, p.Position.y, p.Position.z);
 		auto rotation       = FBProtocol::CreateVector3(builder, p.Rotation.x, p.Rotation.y, p.Rotation.z);
 		auto transform      = FBProtocol::CreateTransform(builder, position, rotation);
 		auto Spine_LookDir  = FBProtocol::CreateVector3(builder, p.SpineDir.x, p.SpineDir.y, p.SpineDir.z);
 
 
-		auto PlayerSnapShot = CreatePlayer(builder, ID, name, PlayerSnapShotType, transform, Spine_LookDir); // CreatePlayerSnapShot는 스키마에 정의된 함수입니다.
+		auto PlayerSnapShot = CreatePlayer(builder, ID, name, FBProtocol::OBJECT_TYPE::OBJECT_TYPE_PLAYER, transform, Spine_LookDir); // CreatePlayerSnapShot는 스키마에 정의된 함수입니다.
 		PlayerSnapShots_vector.push_back(PlayerSnapShot);
 	}
 	auto PlayerSnapShotsOffset = builder.CreateVector(PlayerSnapShots_vector);
@@ -677,13 +676,12 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_NewPlayer(PlayerSnapShot& newPlayerSnapSh
 
 	auto ID = newPlayerSnapShot.ID;
 	auto name = builder.CreateString(newPlayerSnapShot.Name);
-	auto PlayerSnapShotType = newPlayerSnapShot.Type;
 
 	auto position = FBProtocol::CreateVector3(builder, newPlayerSnapShot.Position.x, newPlayerSnapShot.Position.y, newPlayerSnapShot.Position.z);
 	auto rotation = FBProtocol::CreateVector3(builder, newPlayerSnapShot.Rotation.x, newPlayerSnapShot.Rotation.y, newPlayerSnapShot.Rotation.z);
 	auto transform = FBProtocol::CreateTransform(builder, position, rotation);
 	auto Spine_LookDir = FBProtocol::CreateVector3(builder, newPlayerSnapShot.SpineDir.x, newPlayerSnapShot.SpineDir.y, newPlayerSnapShot.SpineDir.z);
-	auto PlayerSnapShot = CreatePlayer(builder, ID, name, PlayerSnapShotType, transform, Spine_LookDir); // CreatePlayerSnapShot는 스키마에 정의된 함수입니다.
+	auto PlayerSnapShot = CreatePlayer(builder, ID, name, FBProtocol::OBJECT_TYPE::OBJECT_TYPE_PLAYER, transform, Spine_LookDir); // CreatePlayerSnapShot는 스키마에 정의된 함수입니다.
 
 	auto ServerPacket = FBProtocol::CreateSPkt_NewPlayer(builder, PlayerSnapShot);
 	builder.Finish(ServerPacket);

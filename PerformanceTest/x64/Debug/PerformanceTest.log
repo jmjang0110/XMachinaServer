@@ -1,34 +1,4 @@
-﻿  pch.cpp
-  main.cpp
-C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\MemoryTest\MemoryManager.h(26,2): warning C4309: '초기화 중': 상수 값이 잘립니다.
-  (소스 파일 '/main.cpp'을(를) 컴파일하는 중)
-  
-C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\MemoryTest\MemoryManager.h(26,2): warning C4369: 'MemoryCnt::BYTES_32_CNT':  열거자 값 '1000000'을(를) 'unsigned short'(으)로 나타낼 수 없습니다. 값은 '1000000'입니다.
-  (소스 파일 '/main.cpp'을(를) 컴파일하는 중)
-  
-C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\MemoryTest\BlockMemoryPool.h(169,19): warning C4244: '초기화 중': '__int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  (소스 파일 '/main.cpp'을(를) 컴파일하는 중)
-  C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\MemoryTest\BlockMemoryPool.h(169,19):
-  템플릿 인스턴스화 컨텍스트(가장 오래된 인스턴스화 컨텍스트)가
-  	C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\main.cpp(11,23):
-  	컴파일되는 클래스 템플릿 인스턴스화 'MemoryPool_MyArr<int>'에 대한 참조를 확인하세요.
-  	C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\MemoryTest\BlockMemoryPool.h(166,10):
-  	클래스 템플릿 멤버 함수 'void MemoryPool_MyArr<int>::Deallocate(void *)'을(를) 컴파일하는 중입니다.
-  		C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\main.cpp(30,29):
-  		'main::<lambda_1>::operator ()'에서 'MemoryPool_MyArr<int>::Deallocate'에 대한 첫 번째 참조를 확인하세요.
-  
-  BlockMemoryPool.cpp
-  MemoryManager.cpp
-C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\MemoryTest\MemoryManager.h(26,2): warning C4309: '초기화 중': 상수 값이 잘립니다.
-  (소스 파일 '/MemoryTest/MemoryManager.cpp'을(를) 컴파일하는 중)
-  
-C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\MemoryTest\MemoryManager.h(26,2): warning C4369: 'MemoryCnt::BYTES_32_CNT':  열거자 값 '1000000'을(를) 'unsigned short'(으)로 나타낼 수 없습니다. 값은 '1000000'입니다.
-  (소스 파일 '/MemoryTest/MemoryManager.cpp'을(를) 컴파일하는 중)
-  
-  SListMemoryPool.cpp
-  SpinLock.cpp
-  ThreadManager.cpp
-  코드를 생성하고 있습니다...
+﻿  main.cpp
   PerformanceTest.vcxproj -> C:\MyGithub\Xmachina\XMachinaServer\x64\Debug\PerformanceTest.exe
   'pwsh.exe'은(는) 내부 또는 외부 명령, 실행할 수 있는 프로그램, 또는
   배치 파일이 아닙니다.

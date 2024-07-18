@@ -4,6 +4,7 @@
 #include "GameObject.h"
 #include "GameMonster.h"
 #include "ObjectSnapShot.h"
+#include "Skill.h"
 
 /// +-------------------------------
 ///		     GamePlayer
@@ -103,38 +104,44 @@ struct ViewList
 
 };
 
+
 /* 플레이어 상태 */
 struct PlayerSnapShot : public ObjectSnapShot
 {	
 	/// +-----------------------------------------------------------
 	///		base 
 	/// -----------------------------------------------------------+
-	std::string				Name      = {};
-	FBProtocol::OBJECT_TYPE	Type      = FBProtocol::OBJECT_TYPE::OBJECT_TYPE_PLAYER;
-	SPtr_GameSession		Owner     = {}; /* OWNER SESSION */
-
-	/// +-----------------------------------------------------------
-	///		Info 
-	/// -----------------------------------------------------------+
-	UINT32					RoomID	  = -1; /* ROOM NUMBER */
-	std::vector<Coordinate>	CurSectorID;	// 현재 속해있는 Sector index ( 여러개일 수 있음 ) 최대 4개..
-
-
+	std::string				Name			= {};
+	SPtr<GameSession>		Owner			= {};	/* OWNER SESSION */ 
+	UINT32					RoomID			= -1;	/* ROOM NUMBER	*/
+	std::vector<Coordinate>	CurSectorID;			 // 현재 속해있는 Sector index ( 여러개일 수 있음 ) 최대 4개..
 
 	/// +-----------------------------------------------------------
 	///		latency 
 	/// -----------------------------------------------------------+
-	long long				Timestamp = {};
+	long long				Timestamp		= {};
 
 	/// +-----------------------------------------------------------
 	///		Transform 
 	/// -----------------------------------------------------------+
-	float					Velocity  = {};
-	Vec3					Position  = {};
-	Vec3					Rotation  = {};
+	float					Velocity = {}; Lock::SRWLock Lock_Velocity;
+	Vec3					Position = {}; Lock::SRWLock Lock_Position;
+	Vec3					Rotation = {}; Lock::SRWLock Lock_Rotation;
 
-	Vec3					FrontDir  = {};
-	Vec3					SpineDir  = {};
+	Vec3					FrontDir = {}; Lock::SRWLock Lock_FrontDir;
+	Vec3					SpineDir = {}; Lock::SRWLock Lock_SpineDir;
+
+	/// +-----------------------------------------------------------
+	///		Skill 
+	/// -----------------------------------------------------------+
+	bool					ActiveSkills[static_cast<UINT8>(SkillInfo::Type::End)]{ false, }; Lock::SRWLock Lock_ActiveSkills;
+
+	float					HP;     Lock::SRWLock lock_HP;
+	float					Shield; Lock::SRWLock Lock_Shield;
+	/// +-----------------------------------------------------------
+	///		Phero 
+	/// -----------------------------------------------------------+
+	float					Phero;  Lock::SRWLock Lock_Phero; // 현재 페로 양 
 
 	/// +-----------------------------------------------------------
 	///		View List 
@@ -144,7 +151,7 @@ struct PlayerSnapShot : public ObjectSnapShot
 	ViewList				VList_Prev;
 
 	PlayerSnapShot(){}
-	PlayerSnapShot(UINT32 id, std::string name, FBProtocol::OBJECT_TYPE type) { ObjectSnapShot::ID = id, Name = name, Type = type; }
+	PlayerSnapShot(UINT32 id, std::string name) { ObjectSnapShot::ID = id, Name = name; }
 	~PlayerSnapShot() { Owner = nullptr; /* Decrease Ref */ };
 };
 
@@ -157,7 +164,7 @@ class GamePlayer : public GameObject
 private:
 	class PlayerController* mOwnerPC = nullptr;
 
-	Lock::SRWLock mSRWLock;
+	Lock::SRWLock mSRWLock_SnapShot;
 	PlayerSnapShot	mInfo;
 
 public:
@@ -184,29 +191,51 @@ public:
 	void SetPlayerID(UINT32 playerid)					 { mInfo.ID       = playerid; };
 	void setRoomID(UINT32 roomid)						 { mInfo.RoomID   = roomid; };
 	void SetName(std::string name)						 { mInfo.Name     = name; };
-	void SetType(FBProtocol::OBJECT_TYPE type)			 { mInfo.Type     = type; };
-	/* UPDATE FREQUENTLY --- DATA RACE ( Read / Write ) In MultiThreads */
-	void SetVelocity(float vel)							 { mSRWLock.LockWrite(); mInfo.Velocity = vel;			 mSRWLock.UnlockWrite(); }
-	void SetPosition(Vec3 pos)							 { mSRWLock.LockWrite(); mInfo.Position = pos;			 mSRWLock.UnlockWrite(); }
-	void SetRotation(Vec3 Rot)							 { mSRWLock.LockWrite(); mInfo.Rotation = Rot;			 mSRWLock.UnlockWrite(); }
-	void SetFrontDir(Vec3 FDir)							 { mSRWLock.LockWrite(); mInfo.FrontDir = FDir;			 mSRWLock.UnlockWrite(); }
-	void SetSpineDir(Vec3 SDir)							 { mSRWLock.LockWrite(); mInfo.SpineDir = SDir;			 mSRWLock.UnlockWrite(); }
-	void SetSectorIdx(std::vector<Coordinate> sectorIdx) { mSRWLock.LockWrite(); mInfo.CurSectorID = sectorIdx;  mSRWLock.UnlockWrite(); }
-
-	void SetSnapShot(PlayerSnapShot& info)				 { mSRWLock.LockWrite(); mInfo = info; mSRWLock.UnlockWrite(); }
 	void SetOwnerPlayerController(PlayerController* pc)  { mOwnerPC = pc; }
-	
+
+	/* UPDATE FREQUENTLY --- DATA RACE ( Read / Write ) In MultiThreads */
+	void SetVelocity(float vel)							 { mInfo.Lock_Velocity.LockWrite();	mInfo.Velocity = vel;	mInfo.Lock_Velocity.UnlockWrite(); }
+	void SetPosition(Vec3 pos)							 { mInfo.Lock_Position.LockWrite();	mInfo.Position = pos;	mInfo.Lock_Position.UnlockWrite(); }
+	void SetRotation(Vec3 Rot)							 { mInfo.Lock_Rotation.LockWrite();	mInfo.Rotation = Rot;	mInfo.Lock_Rotation.UnlockWrite(); }
+	void SetFrontDir(Vec3 FDir)							 { mInfo.Lock_FrontDir.LockWrite();	mInfo.FrontDir = FDir;	mInfo.Lock_FrontDir.UnlockWrite(); }
+	void SetSpineDir(Vec3 SDir)							 { mInfo.Lock_SpineDir.LockWrite();	mInfo.SpineDir = SDir;	mInfo.Lock_SpineDir.UnlockWrite(); }
+	void SetSnapShot(PlayerSnapShot& info)				 { mSRWLock_SnapShot.LockWrite();	mInfo          = info;	mSRWLock_SnapShot.UnlockWrite(); }
+	void SetPhero(float phero)							 { mInfo.Lock_Phero.LockWrite();	mInfo.Phero    = phero; mInfo.Lock_Phero.UnlockWrite(); }
+	void SetActiveSkill(SkillInfo::Type skillType, bool isActive) { mInfo.Lock_ActiveSkills.LockWrite(); mInfo.ActiveSkills[static_cast<UINT8>(skillType)] = isActive; mInfo.Lock_ActiveSkills.UnlockWrite(); }
+
 public:
 	/// +-----------------------------------------------------------
 	///		G E T T E R 
 	/// -----------------------------------------------------------+
 	
-	PlayerSnapShot		GetSnapShot()			        { mSRWLock.LockWrite(); PlayerSnapShot currInfo = mInfo; mSRWLock.UnlockWrite(); return currInfo; };
+	PlayerSnapShot		GetSnapShot()			        { mSRWLock_SnapShot.LockWrite(); PlayerSnapShot currInfo = mInfo; mSRWLock_SnapShot.UnlockWrite(); return currInfo; };
 	SPtr<GameSession>	GetSessionOwner()		        { return mInfo.Owner; };
 	PlayerController*	GetOwnerPlayerController()      { return mOwnerPC; }
-	float				GetViewRangeRadius()	        { /* 혹시 ViewRange 를 바꾸는 일이 있다면 lock 을 걸어야한다. */ return mInfo.ViewRangeRadius; }
-	ViewList			GetCurrViewList()		        { return mInfo.Vlist; }
-	ViewList			GetPrevViewList()		        { return mInfo.VList_Prev; }
+	float				GetViewRangeRadius()	        { return mInfo.ViewRangeRadius; }
+
+	// Getters
+	std::string			GetName()		 { return mInfo.Name; }
+	UINT32				GetRoomID()		 { return mInfo.RoomID; }
+	long long			GetTimestamp()	 { return mInfo.Timestamp; }
+
+	float				GetVelocity()	 { mInfo.Lock_Velocity.LockRead(); float vel = mInfo.Velocity; mInfo.Lock_Velocity.UnlockRead(); return vel; }
+	Vec3				GetPosition()	 { mInfo.Lock_Position.LockRead(); Vec3 pos = mInfo.Position;  mInfo.Lock_Position.UnlockRead(); return pos; }
+	Vec3				GetRotation()	 { mInfo.Lock_Rotation.LockRead(); Vec3 rot = mInfo.Rotation;  mInfo.Lock_Rotation.UnlockRead(); return rot; }
+	Vec3				GetFrontDir()	 { mInfo.Lock_FrontDir.LockRead(); Vec3 front = mInfo.FrontDir; mInfo.Lock_FrontDir.UnlockRead(); return front; }
+	Vec3				GetSpineDir()	 { mInfo.Lock_SpineDir.LockRead(); Vec3 spine = mInfo.SpineDir; mInfo.Lock_SpineDir.UnlockRead(); return spine; }
+	bool				GetActiveSkill(SkillInfo::Type skillType)  { mInfo.Lock_ActiveSkills.LockRead(); bool active = mInfo.ActiveSkills[static_cast<UINT8>(skillType)]; mInfo.Lock_ActiveSkills.UnlockRead(); return active; }
+	float				GetPhero()		 { mInfo.Lock_Phero.LockRead(); float phero = mInfo.Phero; mInfo.Lock_Phero.UnlockRead(); return phero; }
+	// Get all active skills
+	std::vector<bool> GetActiveSkills() {
+		mInfo.Lock_ActiveSkills.LockRead();
+		std::vector<bool> activeSkills(static_cast<UINT8>(SkillInfo::Type::End));
+		for (size_t i = 0; i < static_cast<size_t>(SkillInfo::Type::End); ++i) { activeSkills[i] = mInfo.ActiveSkills[i]; }
+		mInfo.Lock_ActiveSkills.UnlockRead();
+		return activeSkills;
+	}
+
+
+
 
 public:
 	void DecRef_OwnerGameSession() { mInfo.Owner = nullptr; }
