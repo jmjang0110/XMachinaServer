@@ -1,5 +1,7 @@
 #pragma once
 
+class Model;
+
 namespace FileIO {
 	// 단일 문자열을 읽어 out으로 반환한다.
 	inline void ReadString(std::ifstream& file, std::string& out)
@@ -60,4 +62,6 @@ namespace FileIO {
 
 		return file;
 	}
+
+	sptr<Model> LoadGeometryFromFile(const std::string& filePath);
 };

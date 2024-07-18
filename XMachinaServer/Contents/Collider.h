@@ -55,7 +55,8 @@ public:
 	void UpdateColliderSnapShot();
 	void UpdateTransform();
 
-
+	void SetBoundingSphereList(const std::vector<MyBoundingSphere>& sphereList);
+	void SetBoundingBoxList(const std::vector<MyBoundingOrientedBox>& boxList);
 };
 
 

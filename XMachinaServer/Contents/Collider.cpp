@@ -74,8 +74,13 @@ void Collider::SwapSnapShotIndex()
 
 void Collider::UpdateColliderSnapShot()
 {
-    std::memcpy(mColliderSnapShot[mSnapShotIndex].BoundingBoxList.data(), mBoundingBoxList.data(), sizeof(MyBoundingOrientedBox) * mBoundingBoxList.size());
+    auto& myBoundingSphereList = mColliderSnapShot[mSnapShotIndex].BoundingBoxList;
+    auto& myBoundingBoxList = mColliderSnapShot[mSnapShotIndex].BoundingBoxList;
+    myBoundingSphereList.resize(mBoundingSphereList.size());
+    myBoundingBoxList.resize(mBoundingBoxList.size());
+
     std::memcpy(mColliderSnapShot[mSnapShotIndex].BoundingSphereList.data(), mBoundingSphereList.data(), sizeof(MyBoundingSphere) * mBoundingSphereList.size());
+    std::memcpy(mColliderSnapShot[mSnapShotIndex].BoundingBoxList.data(), mBoundingBoxList.data(), sizeof(MyBoundingOrientedBox) * mBoundingBoxList.size());
 
 }
 
@@ -91,6 +96,18 @@ void Collider::UpdateTransform()
        iter.Transform(worldTransform);
    }
 
+}
+
+void Collider::SetBoundingSphereList(const std::vector<MyBoundingSphere>& sphereList)
+{
+    mBoundingSphereList.resize(sphereList.size());
+    std::memcpy(mBoundingSphereList.data(), sphereList.data(), sizeof(MyBoundingSphere) * sphereList.size());
+}
+
+void Collider::SetBoundingBoxList(const std::vector<MyBoundingOrientedBox>& boxList)
+{
+    mBoundingBoxList.resize(boxList.size());
+    std::memcpy(mBoundingBoxList.data(), boxList.data(), sizeof(MyBoundingOrientedBox) * boxList.size());
 }
 
 void Collider::OnEnable()

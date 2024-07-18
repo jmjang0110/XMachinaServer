@@ -22,6 +22,7 @@
 #include <cassert>
 #include <string>
 #include <numeric>
+#include <filesystem>
 
 /* STL */
 #include <vector>
