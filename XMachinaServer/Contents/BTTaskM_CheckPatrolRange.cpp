@@ -7,9 +7,7 @@
 
 BTNodeState MonsterTask::CheckPatrolRange::Evaluate()
 {
-	LOG_MGR->Cout("CheckPatrolRange \n");
-
-	return BTNodeState();
+	return BTNodeState::Running;
 }
 
 MonsterTask::CheckPatrolRange::CheckPatrolRange(SPtr_GameObject owner, std::function<void()> callback)

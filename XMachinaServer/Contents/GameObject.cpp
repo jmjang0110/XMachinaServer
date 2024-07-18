@@ -35,7 +35,12 @@ void GameObject::Update()
 		}
 	}
 
-	mComponents[ComponentInfo::Type::Transform]->LateUpdate();
+	for (auto& pair : mComponents) {
+		if (pair.second) {  // Check if the shared pointer is not null
+			pair.second->LateUpdate();
+		}
+	}
+
 }
 
 void GameObject::WakeUp()

@@ -21,6 +21,9 @@ GameSession::~GameSession()
 void GameSession::OnConnected()
 {
 	mPlayer = MEMORY->Make_Shared<GamePlayer>(this->GetID(), std::static_pointer_cast<GameSession>(shared_from_this()));
+	mPlayer->AddComponent<Transform>(ComponentInfo::Type::Transform);
+	mPlayer->AddComponent<Collider>(ComponentInfo::Type::Collider);
+
 	GAME_MGR->EnterInRoom(mPlayer); // WRITE Lock 
 }
 

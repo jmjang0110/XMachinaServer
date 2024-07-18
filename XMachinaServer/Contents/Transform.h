@@ -10,6 +10,9 @@ struct TransformSnapShot : public ObjectSnapShot
 	Vec3 GetPosition() { return Vec3(WorldTransform._41, WorldTransform._42, WorldTransform._43); }
 	Vec3 GetRotation() { return Quaternion::ToEuler(Quat::CreateFromRotationMatrix(WorldTransform)); }
 
+	Vec3 GetRight()  { return Vector3::Normalized(Vec3(WorldTransform._11, WorldTransform._12, WorldTransform._13)); }
+	Vec3 GetUp()     { return Vector3::Normalized(Vec3(WorldTransform._21, WorldTransform._22, WorldTransform._23)); }
+	Vec3 GetLook()   { return Vector3::Normalized(Vec3(WorldTransform._31, WorldTransform._32, WorldTransform._33)); }
 };
 
 // position, rotation of an object.

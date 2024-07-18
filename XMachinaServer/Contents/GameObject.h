@@ -43,6 +43,7 @@ public:
 public:
 	/* Util */
 	SPtr<Transform> GetTransform() { return GetComponent<Transform>(ComponentInfo::Type::Transform); }
+	SPtr<Collider> GetCollider() { return GetComponent<Collider>(ComponentInfo::Type::Collider); }
 
 public:
 	template<typename T>

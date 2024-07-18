@@ -9,7 +9,7 @@
 #include "Contents/GamePlayer.h"
 #include "Contents/GameManager.h"
 #include "Contents/Skill.h"
-
+#include "Contents/Collider.h"
 
 DEFINE_SINGLETON(FBsPacketFactory);
 
@@ -361,7 +361,7 @@ bool FBsPacketFactory::Process_CPkt_Player_Transform(SPtr_Session session, const
 	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
 	UINT32 id = session->GetID();
 
-	int32_t					move_state = pkt.move_state();
+	int32_t					move_state  = pkt.move_state();
 									    
 	long long				latency     = pkt.latency();			/* 해당 클라이언트의 평균 Latency (ms)  */
 	float					velocity    = pkt.velocity();
@@ -375,6 +375,8 @@ bool FBsPacketFactory::Process_CPkt_Player_Transform(SPtr_Session session, const
 
 	/* Player Info Update */
 	gameSession->GetPlayer()->SetPosition(pos);
+	gameSession->GetPlayer()->GetTransform()->SetPosition(pos);
+	gameSession->GetPlayer()->GetTransform()->SetLocalRotation(Quaternion::ToQuaternion(rot));
 	gameSession->GetPlayer()->Update();
 
 	/* Boradcast Player's Transform Update */
@@ -386,7 +388,7 @@ bool FBsPacketFactory::Process_CPkt_Player_Transform(SPtr_Session session, const
 
 bool FBsPacketFactory::Process_CPkt_Player_Animation(SPtr_Session session, const FBProtocol::CPkt_Player_Animation& pkt)
 {   
-	/// > ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
+	/// ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
 	/// > table CPkt_Player_Animation
 	/// > {
 	/// > 	animation_upper_index	: int;		// 4 bytes
@@ -394,7 +396,7 @@ bool FBsPacketFactory::Process_CPkt_Player_Animation(SPtr_Session session, const
 	/// > 	animation_param_h		: float;	// 4 bytes
 	/// > 	animation_param_v		: float;	// 4 bytes
 	/// > }
-	/// > ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
+	/// ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
 	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
 
 	int		ObjectID                = session->GetID();
@@ -818,7 +820,7 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_Player_Weapon(uint32_t player_id, FBProto
 ///	◈ SEND [ MONSTER ] PACKET ◈
 /// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------★
 
-SPtr_SendPktBuf FBsPacketFactory::SPkt_NewMonster(std::vector<MonsterSnapShot_ReadOnly>& new_monsters)
+SPtr_SendPktBuf FBsPacketFactory::SPkt_NewMonster(std::vector<MonsterSnapShot>& new_monsters)
 {
 	///  >  ▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽
 	/// > table Phero{
@@ -849,7 +851,7 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_NewMonster(std::vector<MonsterSnapShot_Re
 	/// +------------------------------------------------------------------------------------------
 	///	Monster 정보 저장 
 	/// ------------------------------------------------------------------------------------------+
-	for (MonsterSnapShot_ReadOnly& p : new_monsters) {
+	for (MonsterSnapShot& p : new_monsters) {
 		auto pos     = FBProtocol::CreatePosition_Vec2(builder, p.Position.x, p.Position.z);
 		auto Monster = FBProtocol::CreateMonster(builder, p.ID, static_cast<uint8_t>(p.Type), pos); 
 		MonsterSnapShots_Vector.push_back(Monster);

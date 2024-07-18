@@ -41,7 +41,7 @@ public:
 	std::vector<PlayerSnapShot> GetInsertedPlayersInfo(); // READ Lock 
 	std::vector<SPtr<GamePlayer>> GetPlayersInViewRange(Vec3 player_pos, float viewrange_radius);
 
-
+	SPtr_GamePlayer GetPlayerTest() { return mGamePlayers.begin()->second; }
 
 	UINT32			GetPlayersSize() { return mCurrPlayerCnt.load(); }
 	SPtr<GameRoom>  GetOwnerRoom() { return mOwnerRoom; }

@@ -46,6 +46,12 @@ bool Collider::Update()
 {
     Component::Update();
 
+
+    return true;
+}
+
+bool Collider::LateUpdate()
+{
     UpdateTransform();
 
     /* Update Snap Shot */
@@ -69,7 +75,7 @@ ColliderSnapShot Collider::GetSnapShot()
 void Collider::SwapSnapShotIndex()
 {
     // [SnapShot Index] Swap!!!!
-    mSnapShotIndex != mSnapShotIndex;
+    mSnapShotIndex.store(!mSnapShotIndex);;
 }
 
 void Collider::UpdateColliderSnapShot()

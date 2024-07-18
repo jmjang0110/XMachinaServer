@@ -2,6 +2,8 @@
 #include "BTTask.h"
 #include "Skill.h"
 #include "Script_Player.h"
+#include "GameMonster.h"
+
 /// +-------------------------------------------------------------------------
 ///	> ▶▶▶ Task Check Attack Range 
 /// __________________________________________________________________________
@@ -17,26 +19,32 @@ BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 		return BTNodeState::Success;
 	}
 
-	///* 타겟한 플레이어가 은신 상태라면.. */
-	const auto& playerScript = mEnemyController->GetTargetObject()->GetScript<Script_Player>(ScriptInfo::Type::Stat);
-	Skill* cloacking = playerScript->GetSkill(SkillInfo::Type::Cloaking);
-	if (cloacking->GetState() == SkillInfo::State::Active) {
-		mEnemyController->SetTargetObject(nullptr);
-		return BTNodeState::Failure;
+	
+	if(mEnemyController->IsMindControlled() == false) {
+		///* 타겟한 플레이어가 은신 상태라면.. */
+		bool IsCloakingOn = mEnemyController->GetTargetPlayer()->GetActiveSkill(SkillInfo::Type::Cloaking);
+		if (IsCloakingOn == true) {
+			mEnemyController->SetTargetPlayer(nullptr);
+			return BTNodeState::Failure;
+		}
 	}
 
 
 
 	constexpr float minDistance = 1.f;
-	const float distance = (GetOwner()->GetTransform()->GetPosition() - mEnemyController->GetTargetObject()->GetTransform()->GetPosition()).Length();
+	Vec3 Monster_Pos = mEnemyController->GetOwnerMonster()->GetTransform()->GetSnapShot().GetPosition();
+	Vec3  TargetPos{};
+
+	if (mEnemyController->IsMindControlled() == false)
+		TargetPos = mEnemyController->GetTargetPlayer()->GetPosition();
+	else
+		TargetPos = mEnemyController->GetTargetMonster()->GetTransform()->GetSnapShot().GetPosition();
+
+	float distance = (Monster_Pos - TargetPos).Length();
 	if (distance < mStat->GetStat_AttackRange()) {
-
-		Vec3		 TargetPos = mEnemyController->GetTargetObject()->GetTransform()->GetPosition();
-		Vec3		 MyPos = GetOwner()->GetTransform()->GetPosition();
-		const Vec3	 toTargetDir = Vector3::Normalized(TargetPos - MyPos);
-
-		const float	 angle = Vector3::Angle(GetOwner()->GetTransform()->GetLook(), toTargetDir);
-		if (minDistance < 1.f || angle < 80.f) {
+		Vec3	ToTargetDir = Vector3::Normalized(TargetPos - Monster_Pos);
+		float	Angle       = Vector3::Angle(mEnemyController->GetOwnerMonster()->GetTransform()->GetSnapShot().GetLook(), ToTargetDir);
+		if (minDistance < 1.f || Angle < 80.f) {
 			mEnemyController->SetState(EnemyInfo::State::Attack);
 			return BTNodeState::Success;
 		}

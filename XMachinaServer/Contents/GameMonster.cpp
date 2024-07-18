@@ -1,20 +1,6 @@
 #include "pch.h"
 #include "GameMonster.h"
 
-MonsterSnapShot_ReadOnly GameMonster::GetCopySnapShot()
-{
-	MonsterSnapShot_ReadOnly snapShot;
-
-	snapShot.ID       = GetID();;
-	snapShot.Type     = GetType();
-	snapShot.HP       = GetHP();
-	snapShot.Attack   = GetAttack();
-	snapShot.Position = GetPosition();
-	snapShot.Rotation = GetRotation();
-	snapShot.SpineDir = GetSpineDir();
-
-	return snapShot;
-}
 
 GameMonster::GameMonster()
 	: GameObject(-1)

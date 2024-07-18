@@ -33,11 +33,12 @@ GamePlayer::~GamePlayer()
 
 void GamePlayer::Update()
 {
-	//GameObject::Update();
+	GameObject::Update(); // CPkt_PlayerTRnasform 패킷을 받을 때만 Update 
 
 	/* Update View List */
 	mOwnerPC->GetOwnerRoom()->GetSectorController()->UpdateViewList(this, mInfo.Position, mInfo.ViewRangeRadius);
 	
+	//LOG_MGR->Cout("POS : ", GetTransform()->GetWorldTransform()._41, " ", GetTransform()->GetWorldTransform()._42, " ", GetTransform()->GetWorldTransform()._43 ," \n");
 }
 
 void GamePlayer::WakeUp()
@@ -71,8 +72,8 @@ void GamePlayer::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vector<SPtr<GameMonster>> monster)
 {
 	mInfo.VList_Prev = mInfo.Vlist;
-	std::vector<MonsterSnapShot_ReadOnly> NewMonsters;
-	std::vector<MonsterSnapShot_ReadOnly> RemoveMonsters;
+	std::vector<MonsterSnapShot> NewMonsters;
+	std::vector<MonsterSnapShot> RemoveMonsters;
 
 	for (int i = 0; i < players.size(); ++i) {
 		mInfo.Vlist.TryInsertPlayer(players[i]->GetID(), players[i]);
@@ -82,7 +83,7 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 		bool IsSuccess = mInfo.Vlist.TryInsertMonster(monster[i]->GetID(), monster[i]);
 		if (IsSuccess) {
 			// 새로 들어옴 
-			MonsterSnapShot_ReadOnly snapShot = monster[i]->GetCopySnapShot();
+			MonsterSnapShot snapShot = monster[i]->GetSnapShot();
 			NewMonsters.push_back(snapShot);
 		}
 	}
@@ -97,7 +98,7 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 		if (currentMonsterIDs.find(it.first) == currentMonsterIDs.end()) {
 			mInfo.Vlist.RemoveMonster(it.first);
 
-			MonsterSnapShot_ReadOnly snapShot = it.second->GetCopySnapShot();
+			MonsterSnapShot snapShot = it.second->GetSnapShot();
 			RemoveMonsters.push_back(snapShot);
 
 			LOG_MGR->Cout(it.second, " : DeActivate\n");

@@ -309,6 +309,11 @@ namespace MonsterTask {
 	private:
 		SPtr<Script_EnemyController>  mEnemyController;
 		SPtr<Script_Enemy>			  mStat;
+
+		Vec3  mSpawnPos{};
+		Vec3  mBaryCenter{};
+		float mPatrolRange{};
+
 	public:
 		virtual BTNodeState Evaluate() override;
 

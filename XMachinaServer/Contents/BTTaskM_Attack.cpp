@@ -13,10 +13,24 @@ BTNodeState MonsterTask::Attack::Evaluate()
 {
 	LOG_MGR->Cout("Attack \n");
 
-	GetOwner()->GetTransform()->RotateTargetAxisY(mEnemyController->GetTargetObject()->GetTransform()->GetPosition(), mStat->GetStat_AttackRotationSpeed());
-	mStat->UpdatePrevHP();
-	ExecuteCallback();
+	if (mEnemyController->IsMindControlled())
+	{
+		/* Mind Control On */
+		Vec3 TargetPos = mEnemyController->GetTargetMonster()->GetTransform()->GetSnapShot().GetPosition();
+		GetOwner()->GetTransform()->RotateTargetAxisY(TargetPos, mStat->GetStat_AttackRotationSpeed());
+		mStat->UpdatePrevHP();
+		ExecuteCallback();
 
+	}
+	else 
+	{
+		/* Mind Control Off */
+
+		Vec3 TargetPos = mEnemyController->GetTargetPlayer()->GetPosition();
+		GetOwner()->GetTransform()->RotateTargetAxisY(TargetPos, mStat->GetStat_AttackRotationSpeed());
+		mStat->UpdatePrevHP();
+		ExecuteCallback();
+	}
 	return BTNodeState::Success;
 }
 

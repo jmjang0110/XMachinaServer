@@ -3,6 +3,13 @@
 #include "TimeManager.h"
 #include "ServerLib/MemoryManager.h"
 #include "ServerLib/ThreadManager.h"
+#include "NPCController.h"
+#include "GameRoom.h"
+#include "GamePlayer.h"
+#include "PlayerController.h"
+#include "GameObject.h"
+#include "Collider.h"
+
 
 Monster_Ursacetus::Monster_Ursacetus() 
 	: GameMonster()
@@ -72,7 +79,14 @@ void Monster_Ursacetus::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 
 
 	Update();
-	//LOG_MGR->Cout(GetID(), " - Monster Ursacetus Updated\n");
+	LOG_MGR->Cout(GetID(), " - Monster Ursacetus Updated\n");
+
+	/* TEST */
+	ColliderSnapShot P_SnapShot = GetOwnerNPCController()->GetOwnerRoom()->GetPlayerController()->GetPlayerTest()->GetComponent<Collider>(ComponentInfo::Type::Collider)->GetSnapShot();
+	//SPtr<GamePlayer> gamePlayer = GetOwnerNPCController()->GetOwnerRoom()->GetPlayerController()->GetPlayerTest();// ->GetComponent<Collider>(ComponentInfo::Type::Collider)->GetSnapShot();
+	ColliderSnapShot M_SnapShot = GetCollider()->GetSnapShot();
+
+
 
 	if (GameMonster::GetActivate_RefCnt() > 0)
 		GameObject::RegisterUpdate();

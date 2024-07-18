@@ -17,15 +17,25 @@ BTNodeState MonsterTask::CheckDetectionRange::Evaluate()
 	}
 
 	///* 타겟한 플레이어가 은신 상태라면.. */
-	const auto& playerScript = mEnemyController->GetTargetObject()->GetScript<Script_Player>(ScriptInfo::Type::Stat);
-	Skill* cloacking = playerScript->GetSkill(SkillInfo::Type::Cloaking);
-	if (cloacking->GetState() == SkillInfo::State::Active) {
-		mEnemyController->SetTargetObject(nullptr);
-		return BTNodeState::Failure;
+	if (mEnemyController->IsMindControlled() == false) {
+		///* 타겟한 플레이어가 은신 상태라면.. */
+		bool IsCloakingOn = mEnemyController->GetTargetPlayer()->GetActiveSkill(SkillInfo::Type::Cloaking);
+		if (IsCloakingOn == true) {
+			mEnemyController->SetTargetPlayer(nullptr);
+			return BTNodeState::Failure;
+		}
 	}
 
 	// 경로 길찾기가 실행중이거나 감지 범위 내에 들어온 경우 다음 노드로 진행
-	if ((GetOwner()->GetTransform()->GetPosition() - mEnemyController->GetTargetObject()->GetTransform()->GetPosition()).Length() < mStat->GetStat_DetectionRange()) {
+	Vec3 TargetPos;
+	if (mEnemyController->IsMindControlled() == false) {
+		TargetPos = mEnemyController->GetTargetPlayer()->GetPosition();
+	}
+	else {
+		TargetPos = mEnemyController->GetTargetMonster()->GetTransform()->GetSnapShot().GetPosition();
+	}
+
+	if ((GetOwner()->GetTransform()->GetPosition() - TargetPos).Length() < mStat->GetStat_DetectionRange()) {
 		mEnemyController->SetState(EnemyInfo::State::Walk);
 		return BTNodeState::Success;
 	}

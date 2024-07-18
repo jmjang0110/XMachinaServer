@@ -30,8 +30,37 @@ BTNodeState MonsterTask::CheckMindDetectionRange::Evaluate()
 bool MonsterTask::CheckMindDetectionRange::SetTargetNearestEnemy()
 {
 
+	//if (mEnemyMgr->mTarget) {
+	//	return true;
+	//}
+
+	//bool isSetTarget = false;
+	//float minDistance = FLT_MAX;
+	//const std::vector<sptr<Grid>>& grids = Scene::I->GetNeighborGrids(Scene::I->GetGridIndexFromPos(mObject->GetPosition()), true);
+	//for (const auto& grid : grids) {
+	//	for (const auto& object : grid->GetObjectsFromTag(ObjectTag::Enemy)) {
+	//		// 해당 오브젝트가 자신이면 넘어감
+	//		if (object == mObject) {
+	//			continue;
+	//		}
+
+	//		// 해당 오브젝트가 죽었다면 넘어감
+	//		if (object->GetComponent<Script_LiveObject>()->IsDead()) {
+	//			continue;
+	//		}
+
+	//		float distance = Vec3::Distance(mObject->GetPosition(), object->GetPosition());
+	//		if (distance < minDistance && distance < mEnemyMgr->mStat.DetectionRange) {
+	//			minDistance = distance;
+	//			mEnemyMgr->mTarget = object;
+	//			isSetTarget = true;
+	//		}
+	//	}
+	//}
+
+	//return isSetTarget;
 	return true;
-	
+
 }
 
 

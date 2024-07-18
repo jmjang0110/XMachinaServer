@@ -26,7 +26,7 @@ BTNode* Script_DefaultEnemyBT::SetupTree()
 	// 무게 중심으로부터 가장 먼 길이 계산
 	float maxDis{};
 	for (const auto& wayPoint : wayPoints)
-		maxDis = max(maxDis, Vec3::Distance(baryCenter, wayPoint));
+		maxDis = std::max(maxDis, Vec3::Distance(baryCenter, wayPoint));
 #pragma endregion
 
 	SPtr<Script_Enemy> enemy = GetOwner()->GetScript<Script_Enemy>(ScriptInfo::Type::Stat);
