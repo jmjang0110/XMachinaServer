@@ -177,11 +177,6 @@ ViewList SectorController::UpdateViewList(GamePlayer* player, Vec3 player_pos, f
         std::vector<SPtr<GamePlayer>>  VL_Players  = mOwnerRoom->GetPlayerController()->GetPlayersInViewRange(player_pos, viewRange_radius);
 
         for (int i = 0; i < VL_Monsters.size(); ++i) {
-            ColliderSnapShot snapShot_0 = VL_Monsters[i]->GetComponent<Collider>(ComponentInfo::Type::Collider)->GetSnapShot();
-            TransformSnapShot snapShot_1 = VL_Monsters[i]->GetComponent<Transform>(ComponentInfo::Type::Transform)->GetSnapShot();
-
-            LOG_MGR->Cout(snapShot_0.ID, "Snap Shot Test \n");
-
             AllView_Monsters.push_back(VL_Monsters[i]);
         }
         for (int i = 0; i < VL_Players.size(); ++i) {

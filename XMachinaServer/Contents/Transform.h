@@ -6,6 +6,10 @@
 struct TransformSnapShot : public ObjectSnapShot
 {
 	Matrix	WorldTransform;
+
+	Vec3 GetPosition() { return Vec3(WorldTransform._41, WorldTransform._42, WorldTransform._43); }
+	Vec3 GetRotation() { return Quaternion::ToEuler(Quat::CreateFromRotationMatrix(WorldTransform)); }
+
 };
 
 // position, rotation of an object.

@@ -200,6 +200,7 @@ public:
 	/// +-----------------------------------------------------------
 	///		G E T T E R 
 	/// -----------------------------------------------------------+
+	
 	PlayerSnapShot		GetSnapShot()			        { mSRWLock.LockWrite(); PlayerSnapShot currInfo = mInfo; mSRWLock.UnlockWrite(); return currInfo; };
 	SPtr<GameSession>	GetSessionOwner()		        { return mInfo.Owner; };
 	PlayerController*	GetOwnerPlayerController()      { return mOwnerPC; }
