@@ -3,6 +3,8 @@
 #include "AStarPath.h"
 #include "Script_Enemy.h"
 #include "Script_EnemyController.h"
+#include "GameObject.h"
+
 
 enum class BTTaskType : UINT16 {
 	/* Monster Task */
@@ -160,7 +162,7 @@ namespace MonsterTask {
 	private:
 		std::priority_queue<PQNode, std::vector<PQNode>, std::greater<PQNode>> pq;
 
-		std::stack<Vec3>* mPath;
+		std::stack<Vec3>*				 mPath;
 		Path::Pos						mStart;
 		Path::Pos						mDest;
 
@@ -170,9 +172,11 @@ namespace MonsterTask {
 	public:
 		virtual BTNodeState Evaluate() override;
 		bool PathPlanningAStar(Path::Pos start, Path::Pos dest);
-		Path::Pos FindNoneTileFromBFS(const Path::Pos& pos);
+		Path::Pos FindNoneTileFromBfs(const Path::Pos& pos);
 
 	public:
+		PathPlanning_AStar(SPtr_GameObject owner, BTTaskType type, std::function<void()> callback = nullptr);
+
 		PathPlanning_AStar(SPtr_GameObject owner, std::function<void()> callback = nullptr);
 		~PathPlanning_AStar();
 	};
@@ -182,10 +186,13 @@ namespace MonsterTask {
 	/// __________________________________________________________________________
 	/// -------------------------------------------------------------------------+
 
-	class PathPlanningToSapwn : public BTTask {
+	class PathPlanningToSapwn : public PathPlanning_AStar {
 	private:
 		SPtr<Script_EnemyController>  mEnemyController;
 		SPtr<Script_Enemy>			  mStat;
+
+		Vec3						  mSpawnPos{};
+
 	public:
 		virtual BTNodeState Evaluate() override;
 
@@ -260,6 +267,10 @@ namespace MonsterTask {
 	private:
 		SPtr<Script_EnemyController>  mEnemyController;
 		SPtr<Script_Enemy>			  mStat;
+
+		SPtr<GameObject>			mTarget;
+
+
 	public:
 		virtual BTNodeState Evaluate() override;
 
@@ -278,6 +289,9 @@ namespace MonsterTask {
 	private:
 		SPtr<Script_EnemyController>  mEnemyController;
 		SPtr<Script_Enemy>			  mStat;
+
+	private:
+		bool SetTargetNearestEnemy();
 	public:
 		virtual BTNodeState Evaluate() override;
 

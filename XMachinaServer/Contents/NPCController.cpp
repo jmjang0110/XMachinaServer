@@ -55,6 +55,9 @@ void NPCController::InitMonsters(Coordinate maxSectorIdx)
 				// TEST : 섹터에 몬스터 두마리 생성 
 				for (int i = 0; i < 2; ++i) {
 					SPtr<GameMonster> monster = CreateMonster(monster_id, sectorIdx, MonsterType::Ursacetus);
+					monster->AddComponent<Transform>(ComponentInfo::Type::Transform);
+					monster->AddComponent<Collider>(ComponentInfo::Type::Collider);
+
 					monster->SetOwnerNPCController(this);
 
 					AddMonster(monster_id, monster);
@@ -68,6 +71,9 @@ void NPCController::InitMonsters(Coordinate maxSectorIdx)
 			{
 				/* Boss */
 				SPtr<GameMonster> monster = CreateMonster(monster_id, sectorIdx, MonsterType::Onyscidus);
+				monster->AddComponent<Transform>(ComponentInfo::Type::Transform);
+				monster->AddComponent<Collider>(ComponentInfo::Type::Collider);
+
 				monster->SetOwnerNPCController(this);
 
 				AddMonster(monster_id, monster);

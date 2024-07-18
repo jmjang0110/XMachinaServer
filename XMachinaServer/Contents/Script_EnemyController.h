@@ -73,7 +73,7 @@ public:
 
 public:
 	void SetTargetObject(SPtr_GameObject target) { mTarget = target; }
-
+	void SetPathTargetObject(SPtr<GameObject> target) { mPathTarget = target; }
 
 };
 

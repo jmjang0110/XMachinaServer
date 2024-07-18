@@ -30,9 +30,10 @@ private:
 
 private:
 	std::atomic<int> mActivateRef = 0;
-	std::unordered_map<UINT32, SPtr<GameMonster>> mMonsters;
-	std::unordered_map<UINT32, SPtr<GameNPC>>	  mNPCs;
 
+	std::unordered_map<UINT32, SPtr<GameMonster>>	  mMonsters;
+	std::unordered_map<UINT32, SPtr<GameNPC>>		  mNPCs;
+	std::unordered_map<UINT32, SPtr<GameStructure>>   mStructures; // ±¸Á¶¹° ( ex. ºôµù.. ) 
 
 public:
 	Sector();
@@ -60,15 +61,24 @@ public:
 	bool AddMonster(UINT32 id, SPtr<GameMonster> monster);
 	bool AddNPC(UINT32 id, SPtr<GameNPC> npc);
 	
-
-
-	SectorInfo::Type GetSectorType() { return mType; }
-
 public:
+	/// +---------------------------------------------------------
+	///	S E T T E R
+	/// ---------------------------------------------------------+
 	void SetOwnerSectorController(SectorController* ownerSC) { mOwnerSC = ownerSC; }
-	SectorController* GetOwnerSectorController() { return mOwnerSC; }
-	std::vector<SPtr<GameMonster>> GetMonstersInViewRange(Vec3 player_pos, float viewRange_radius);
 
+
+	/// +---------------------------------------------------------
+	///	G E T T E R
+	/// ---------------------------------------------------------+
+	SectorInfo::Type				GetSectorType()					{ return mType; }
+	SectorController*				GetOwnerSectorController()		{ return mOwnerSC; }
+	std::vector<SPtr<GameMonster>>	GetMonstersInViewRange(Vec3 player_pos, float viewRange_radius);
+
+	/// +---------------------------------------------------------
+	///	  C O L L I S I O N 
+	/// ---------------------------------------------------------+
+	float CheckCollisionsRay(const Ray& ray, GameObjectInfo::Type objType) const;
 
 
 

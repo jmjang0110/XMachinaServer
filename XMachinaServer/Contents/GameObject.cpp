@@ -34,6 +34,8 @@ void GameObject::Update()
 			pair.second->Update();
 		}
 	}
+
+	mComponents[ComponentInfo::Type::Transform]->LateUpdate();
 }
 
 void GameObject::WakeUp()
@@ -78,6 +80,10 @@ void GameObject::DeActivate()
 		iter.second->DeActivate();
 	}
 
+}
+
+void GameObject::OnCollision(GameObject* other)
+{
 }
 
 bool GameObject::RegisterUpdate(std::chrono::system_clock::duration offset)

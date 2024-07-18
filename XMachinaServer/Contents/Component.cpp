@@ -66,6 +66,11 @@ bool Component::Update()
 	return true;
 }
 
+bool Component::LateUpdate()
+{
+	return false;
+}
+
 void Component::OnDestroy()
 {
 }

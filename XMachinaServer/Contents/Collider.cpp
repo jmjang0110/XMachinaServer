@@ -13,31 +13,20 @@ Collider::Collider()
 Collider::Collider(SPtr<GameObject> owner, ComponentInfo::Type Type)
     : Component(owner, Type, static_cast<UINT32>(Type))
 {
+
 }
 
 Collider::~Collider()
 {
 }
 
-BoxCollider* Collider::GetBoxCollider()
+void Collider::Activate()
 {
-    if (GetType() != Type::Box) {
-        return nullptr;
-    }
-
-    return static_cast<BoxCollider*>(this);
 }
 
-SphereCollider* Collider::GetSphereCollider()
+void Collider::DeActivate()
 {
-    if (GetType() != Type::Sphere) {
-        return nullptr;
-    }
-
-    return static_cast<SphereCollider*>(this);
 }
-
-
 
 bool Collider::WakeUp()
 {
@@ -57,286 +46,82 @@ bool Collider::Update()
 {
     Component::Update();
 
+    UpdateTransform();
+
+    /* Update Snap Shot */
+    UpdateColliderSnapShot();
+    SwapSnapShotIndex();
+
     return true;
+}
+
+void Collider::OnDestroy()
+{
+}
+
+ColliderSnapShot Collider::GetSnapShot()
+{
+    ColliderSnapShot snapShot = mColliderSnapShot[mSnapShotIndex];
+    return snapShot;
+
+}
+
+void Collider::SwapSnapShotIndex()
+{
+    // [SnapShot Index] Swap!!!!
+    mSnapShotIndex != mSnapShotIndex;
+}
+
+void Collider::UpdateColliderSnapShot()
+{
+    std::memcpy(mColliderSnapShot[mSnapShotIndex].BoundingBoxList.data(), mBoundingBoxList.data(), sizeof(MyBoundingOrientedBox) * mBoundingBoxList.size());
+    std::memcpy(mColliderSnapShot[mSnapShotIndex].BoundingSphereList.data(), mBoundingSphereList.data(), sizeof(MyBoundingSphere) * mBoundingSphereList.size());
+
+}
+
+void Collider::UpdateTransform()
+{
+
+   const Matrix& worldTransform =  GetOwner()->GetTransform()->GetWorldTransform();
+
+   for (auto& iter : mBoundingBoxList) {
+       iter.Transform(worldTransform);
+   }
+   for (auto& iter : mBoundingSphereList) {
+       iter.Transform(worldTransform);
+   }
+
 }
 
 void Collider::OnEnable()
 {
     Component::OnEnable();
 
-    UpdateTransform();
+
 }
 
-
-/// +----------------------------------------------------------------------
-///     SphereCollider 
-/// ----------------------------------------------------------------------+
-
-SphereCollider::SphereCollider()
+void Collider::OnDisable()
 {
 }
 
-SphereCollider::SphereCollider(SPtr<GameObject> owner, ComponentInfo::Type Type)
-    : Collider(owner, Type)
-{
-}
-
-SphereCollider::~SphereCollider()
-{
-}
-
-SphereCollider& SphereCollider::operator=(const SphereCollider& other)
-{
-    if (this == &other) {
-        return *this;
-    }
-
-    mBS = other.mBS;
-
-    return *this;
-}
-
-bool SphereCollider::WakeUp()
-{
-    return true;
-}
-
-bool SphereCollider::Start()
-{
-    return true;
-}
-
-bool SphereCollider::Update()
-{
-    Collider::Update();
-
-    UpdateTransform();
-
-    return true;
-}
-
-bool SphereCollider::Intersects(SPtr<Collider> other) const
-{
-    if (!IsActive()) {
-        return false;
-    }
-
-    switch (other->GetType()) {
-    case Type::Box:
-        return mBS.Intersects(reinterpret_cast<BoxCollider*>(other.get())->mBox);
-    case Type::Sphere:
-        return mBS.Intersects(reinterpret_cast<SphereCollider*>(other.get())->mBS);
-    default:
-        assert(0);
-        break;
-    }
-
-    return false;
-}
-
-bool SphereCollider::Intersects(const BoundingBox& bb) const
-{
-    if (!IsActive()) {
-        return false;
-    }
-
-    return mBS.Intersects(bb);
-}
-
-bool SphereCollider::Intersects(const BoundingOrientedBox& obb) const
-{
-    if (!IsActive()) {
-        return false;
-    }
-
-    return mBS.Intersects(obb);
-}
-
-bool SphereCollider::Intersects(const BoundingSphere& bs) const
-{
-    if (!IsActive()) {
-        return false;
-    }
-
-    return mBS.Intersects(bs);
-}
-
-bool SphereCollider::Intersects(const Ray& ray, float& dist) const
-{
-    if (!IsActive()) {
-        return false;
-    }
-
-    return mBS.Intersects(_VECTOR(ray.Position), _VECTOR(ray.Direction), dist);
-}
-
-void SphereCollider::UpdateTransform()
-{
-    mBS.Transform(GetOwner()->GetTransform()->GetWorldTransform());
-
-}
 
 
-/// +----------------------------------------------------------------------
-///     BoxCollider 
-/// ----------------------------------------------------------------------+
-
-
-BoxCollider::BoxCollider()
-    : Collider()
-{
-}
-
-BoxCollider::BoxCollider(SPtr<GameObject> owner, ComponentInfo::Type Type)
-    : Collider(owner, Type)
-{
-}
-
-BoxCollider::~BoxCollider()
-{
-}
-
-BoxCollider& BoxCollider::operator=(const BoxCollider& other)
-{
-    if (this == &other) {
-        return *this;
-    }
-
-    mBox = other.mBox;
-
-    return *this;
-}
-
-bool BoxCollider::WakeUp()
-{
-    return false;
-}
-
-bool BoxCollider::Start()
-{
-    return false;
-}
-
-bool BoxCollider::Update()
-{
-    Collider::Update();
-
-    UpdateTransform();
-
-    return true;
-
-}
-
-bool BoxCollider::Intersects(SPtr<Collider> other) const
-{
-    if (!IsActive()) {
-        return false;
-    }
-
-    switch (other->GetType()) {
-    case Type::Box:
-        return mBox.Intersects(reinterpret_cast<BoxCollider*>(other.get())->mBox);
-    case Type::Sphere:
-        return mBox.Intersects(reinterpret_cast<SphereCollider*>(other.get())->mBS);
-    default:
-        assert(0);
-        break;
-    }
-
-    return false;
-}
-
-bool BoxCollider::Intersects(const BoundingBox& bb) const
-{
-    if (!IsActive()) {
-        return false;
-    }
-
-    return mBox.Intersects(bb);
-}
-
-bool BoxCollider::Intersects(const BoundingOrientedBox& obb) const
-{
-    if (!IsActive()) {
-        return false;
-    }
-
-    return mBox.Intersects(obb);;
-}
-
-bool BoxCollider::Intersects(const BoundingSphere& bs) const
-{
-    if (!IsActive()) {
-        return false;
-    }
-
-    return mBox.Intersects(bs);
-}
-
-bool BoxCollider::Intersects(const Ray& ray, float& dist) const
-{
-    if (!IsActive()) {
-        return false;
-    }
-
-    if (Vector3::IsZero(ray.Direction)) {
-        return false;
-    }
-    return mBox.Intersects(_VECTOR(ray.Position), XMVector3Normalize(_VECTOR(ray.Direction)), dist);
-}
-
-void BoxCollider::UpdateTransform()
-{
-    mBox.Transform(GetOwner()->GetTransform()->GetWorldTransform());
-
-}
-
-
-/// +----------------------------------------------------------------------
-///     ObjectCollider 
-/// ----------------------------------------------------------------------+
-
-
-ObjectCollider::ObjectCollider()
-{
-}
-
-ObjectCollider::ObjectCollider(SPtr<GameObject> owner, ComponentInfo::Type Type)
-    : Component(owner, ComponentInfo::Type::ObjectCollider, static_cast<UINT32>(ComponentInfo::Type::ObjectCollider))
-{
-}
-
-ObjectCollider::~ObjectCollider()
-{
-}
-
-bool ObjectCollider::WakeUp()
-{
-    return false;
-}
-
-bool ObjectCollider::Start()
-{
-    return false;
-}
-
-bool ObjectCollider::Update()
-{
-    return false;
-}
-
-bool ObjectCollider::Intersects(const ObjectCollider* other) const
-{
-    return false;
-}
-
-bool ObjectCollider::Intersects(rsptr<Collider> collider) const
-{
-    return false;
-}
-
-bool ObjectCollider::Intersects(const GameObject& a, const GameObject& b)
-{
-    return false;
-}
+//bool ObjectCollider::Intersects(const GameObject& a, const GameObject& b)
+//{
+//
+//    const auto& colliderA = a.GetCollider();
+//    const auto& colliderB = b.GetCollider();
+//
+//    // 반드시 두 객체 모두 ObjectCollider를 가지고 있어야 한다.
+//    if (!colliderA || !colliderB) {
+//        return false;
+//    }
+//
+//    // 둘 중 하나라도 비활성 상태라면 검사하지 않는다.
+//    if (!colliderA->IsActive() || !colliderB->IsActive()) {
+//        return false;
+//    }
+//
+//    return colliderA->Intersects(colliderB);
+//}
 

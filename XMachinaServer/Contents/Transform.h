@@ -1,6 +1,12 @@
 #pragma once
 #include "Component.h"
+#include "GameInfo.h"
+#include "ObjectSnapShot.h"
 
+struct TransformSnapShot : public ObjectSnapShot
+{
+	Matrix	WorldTransform;
+};
 
 // position, rotation of an object.
 // every object in a Scene has a Transform.
@@ -9,15 +15,15 @@
 // transform can access to self Object
 class Transform : public Component{
 private:
-	int mIndex{};
-	Matrix mWorldTransform	= {};				// transform of     affected by a parent (world)
-	Matrix mLocalTransform	= {};				// transform of not affected by a parent (local)
-	Matrix mPrevTransform	= {};				// transform of previous frame
+	int		mIndex{};
+	Matrix	mWorldTransform	= {};				// transform of     affected by a parent (world)
+	Matrix	mLocalTransform	= {};				// transform of not affected by a parent (local)
+	Matrix	mPrevTransform	= {};				// transform of previous frame
 
-	Vec3 mPosition			= Vector3::Zero;	// local space position
-	Vec3 mRight				= Vector3::Right;	// right(x) axis in local space
-	Vec3 mUp				= Vector3::Up;		// up(y)    axis in local space
-	Vec3 mLook				= Vector3::Forward;	// look(z)  axis in local space
+	Vec3	mPosition			= Vector3::Zero;	// local space position
+	Vec3	mRight				= Vector3::Right;	// right(x) axis in local space
+	Vec3	mUp				    = Vector3::Up;		// up(y)    axis in local space
+	Vec3	mLook				= Vector3::Forward;	// look(z)  axis in local space
 
 	void* mObject{};							// self Object
 
@@ -30,9 +36,18 @@ public:
 	mutable ObjectConstants		mObjectCB{};
 
 public:
-	Transform* mParent{};
+	Transform*					mParent{};
 	sptr<Transform>				mChild{};
 	sptr<Transform>				mSibling{};
+
+private:
+	std::atomic_bool mSnapShotIndex = 0;
+	TransformSnapShot mTransformSnapShot[2]{};
+
+public:
+	TransformSnapShot GetSnapShot();
+	void SwapSnapShotIndex();
+	void UpdateTransofrmSnapShot();
 
 public:
 	Transform();
@@ -43,7 +58,30 @@ public:
 	virtual bool WakeUp() override;
 	virtual bool Start() override;
 	virtual bool Update() override;
+	virtual bool LateUpdate() override;
 
+public:
+#pragma endregion
+
+	/* Others */
+	virtual void Awake();
+	virtual void OnDestroy();
+
+
+	void BeforeUpdateTransform();
+	void NormalizeAxis();
+
+	void DoAllTransforms(const std::function<void(Transform*)>& processFunc);
+	void DoAllChilds(const std::function<void(Transform*)>& processFunc);
+
+	// returns self Object
+	template<class T>
+	T* GetObj() { return static_cast<T*>(mObject); }
+	template<class T>
+	const T* GetObj() const { return static_cast<T*>(mObject); }
+
+	// Merge all under transforms from [rootTransform] except a parent
+	static void MergeTransform(std::vector<const Transform*>& out, const Transform* rootTransform);
 
 #pragma region Getter
 	/* Position */
@@ -184,28 +222,5 @@ private:
 	// set local transform from axis vectors
 	void UpdateLocalTransform(bool isComputeWorldTransform = true);
 
-public:
-#pragma endregion
 
-	/* Others */
-	virtual void Awake();
-	virtual void OnDestroy();
-
-
-	void BeforeUpdateTransform();
-
-
-	void NormalizeAxis();
-
-	void DoAllTransforms(const std::function<void(Transform*)>& processFunc);
-	void DoAllChilds(const std::function<void(Transform*)>& processFunc);
-
-	// returns self Object
-	template<class T>
-	T* GetObj() { return static_cast<T*>(mObject); }
-	template<class T>
-	const T* GetObj() const { return static_cast<T*>(mObject); }
-
-	// Merge all under transforms from [rootTransform] except a parent
-	static void MergeTransform(std::vector<const Transform*>& out, const Transform* rootTransform);
 };

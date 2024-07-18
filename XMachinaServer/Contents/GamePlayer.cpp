@@ -22,7 +22,7 @@ GamePlayer::GamePlayer(UINT32 sessionID, SPtr_GameSession owner)
 
 	GameObject::SetType(GameObjectInfo::Type::GamePlayer);
 
-	mInfo.PlayerID = sessionID;
+	mInfo.ID       = sessionID;
 	mInfo.Owner    = owner;
 }
 
@@ -33,7 +33,7 @@ GamePlayer::~GamePlayer()
 
 void GamePlayer::Update()
 {
-	GameObject::Update();
+	//GameObject::Update();
 
 	/* Update View List */
 	mOwnerPC->GetOwnerRoom()->GetSectorController()->UpdateViewList(this, mInfo.Position, mInfo.ViewRangeRadius);
@@ -120,3 +120,4 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 		GetSessionOwner()->Send(RemoveMonster_serverPacket);
 	}
 }
+

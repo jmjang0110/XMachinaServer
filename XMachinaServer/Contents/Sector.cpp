@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "Sector.h"
-
-
+#include "GameObject.h"
+#include "GameStructure.h"
+#include "Collider.h"
 
 Sector::Sector()
 	: GameObject(-1)
@@ -106,6 +107,14 @@ std::vector<SPtr<GameMonster>> Sector::GetMonstersInViewRange(Vec3 player_pos, f
 	}
 
 	return monstersInView;
+}
+
+float Sector::CheckCollisionsRay(const Ray& ray, GameObjectInfo::Type objType) const
+{
+
+	float minDist = 999.f;
+
+	return minDist;
 }
 
 

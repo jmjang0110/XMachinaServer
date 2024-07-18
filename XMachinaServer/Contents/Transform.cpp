@@ -15,16 +15,50 @@ Transform::~Transform()
 }
 bool Transform::WakeUp()
 {
-	return false;
+	return true;
 }
 bool Transform::Start()
 {
-	return false;
+	return true;
 }
 bool Transform::Update()
 {
-	return false;
+	Component::Update();
+
+	return true;
 }
+
+bool Transform::LateUpdate()
+{
+	Component::LateUpdate();
+
+	ComputeWorldTransform(nullptr); // 마지막으로 World Transform 행렬 계산 
+
+	/* Update Snap Shot */
+	UpdateTransofrmSnapShot();
+	SwapSnapShotIndex();
+
+	return true;
+}
+
+TransformSnapShot Transform::GetSnapShot()
+{
+	TransformSnapShot snapShot = mTransformSnapShot[mSnapShotIndex];
+	return snapShot;
+}
+
+void Transform::SwapSnapShotIndex()
+{
+	// [SnapShot Index] Swap!!!!
+	mSnapShotIndex != mSnapShotIndex;
+}
+
+void Transform::UpdateTransofrmSnapShot()
+{
+	std::memcpy(&mTransformSnapShot[mSnapShotIndex].WorldTransform, &GetWorldTransform(), sizeof(Matrix));
+}
+
+
 Quat Transform::GetLocalRotation() const
 {
 	return Quat::CreateFromRotationMatrix(mLocalTransform);

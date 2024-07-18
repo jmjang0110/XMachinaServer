@@ -42,12 +42,12 @@ namespace SectorInfo {
 	};
 
 }
+
 class SectorController
 {
 private:
 	SPtr_GameRoom								 mOwnerRoom; // 자신이 속해있는 Room 포인터 
-	SPtr<TileMap>									 mTileMap;
-
+	
 private:
 	std::unordered_map<UINT32, SPtr<GamePlayer>> mPlayers;
 	Lock::SRWLock								 mPlayers_SRWLock;
@@ -56,6 +56,14 @@ private:
 
 	Coordinate									mTotalSectorSize = {}; // Sector 전체 크기  ( Image )
 	Coordinate									mSectorSize      = {}; // 각 Sector 크기	  
+
+
+public:
+	static Coordinate							Total_SectorSize; // Sector 전체 크기  ( Image )
+	static Coordinate							Each_SectorSize; // 각 Sector 크기	  
+
+
+
 
 public:
 	SectorController();
@@ -82,6 +90,15 @@ public:
 	/* Function */
 	bool AddMonsterInSector(Coordinate sectorIdx, int monster_id , SPtr<GameMonster> monster);
 
-	
+public:
+	/// +------------------------------------------------------------
+	///		Collision ray 
+	/// -------------------------------------------------------------+
+	float CheckCollisionsRay(Coordinate sectorIdx, const Ray& ray) const;
+
+
+public:
+	static Coordinate GetSectorIdxByPosition(Vec3 Pos);
+
 };
 

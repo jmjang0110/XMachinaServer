@@ -72,7 +72,7 @@ void Monster_Ursacetus::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 
 
 	Update();
-	LOG_MGR->Cout(GetID(), " - Monster Ursacetus Updated\n");
+	//LOG_MGR->Cout(GetID(), " - Monster Ursacetus Updated\n");
 
 	if (GameMonster::GetActivate_RefCnt() > 0)
 		GameObject::RegisterUpdate();

@@ -13,6 +13,10 @@
 #include "PlayerController.h"
 
 
+Coordinate SectorController::Total_SectorSize = {};
+Coordinate SectorController::Each_SectorSize  = {};
+
+
 SectorController::SectorController()
 {
 }
@@ -38,6 +42,10 @@ bool SectorController::Init(SPtr_GameRoom owner)
     mTotalSectorSize.z         = hmRes->GetHeightMapLength();
     mSectorSize.x              = mTotalSectorSize.x / SectorInfo::Width;
     mSectorSize.z              = mTotalSectorSize.z / SectorInfo::height;
+    
+    SectorController::Total_SectorSize = mTotalSectorSize;
+    SectorController::Each_SectorSize  = mSectorSize;
+
 
     /* Memory Manager는 실시간으로 메모리를 할당할 때 쓴다 (과부하를 줄이기 위해서) 이는 처음 서버가 시작할 때 초기화 되므로 Memory Pool에서의 메모리를 쓸 필요가 없다.*/
     for (UINT8 i = 0; i < SectorInfo::height; ++i) {
@@ -169,6 +177,11 @@ ViewList SectorController::UpdateViewList(GamePlayer* player, Vec3 player_pos, f
         std::vector<SPtr<GamePlayer>>  VL_Players  = mOwnerRoom->GetPlayerController()->GetPlayersInViewRange(player_pos, viewRange_radius);
 
         for (int i = 0; i < VL_Monsters.size(); ++i) {
+            ColliderSnapShot snapShot_0 = VL_Monsters[i]->GetComponent<Collider>(ComponentInfo::Type::Collider)->GetSnapShot();
+            TransformSnapShot snapShot_1 = VL_Monsters[i]->GetComponent<Transform>(ComponentInfo::Type::Transform)->GetSnapShot();
+
+            LOG_MGR->Cout(snapShot_0.ID, "Snap Shot Test \n");
+
             AllView_Monsters.push_back(VL_Monsters[i]);
         }
         for (int i = 0; i < VL_Players.size(); ++i) {
@@ -192,8 +205,6 @@ Coordinate SectorController::GetSectorIdx(Vec3 Pos)
     sectorIdx.x = static_cast<int>((Pos.x / mSectorSize.x));
     sectorIdx.z = static_cast<int>((Pos.z / mSectorSize.z));
     return sectorIdx;
-
-
 }
 
 SectorInfo::Type SectorController::GetSectorType(Coordinate idx)
@@ -206,3 +217,22 @@ bool SectorController::AddMonsterInSector(Coordinate sectorIdx, int monster_id ,
     return mSectors[sectorIdx.z][sectorIdx.x]->AddMonster(monster_id, monster);
 
 }
+
+float SectorController::CheckCollisionsRay(Coordinate sectorIdx, const Ray& ray) const
+{
+   // return mSectors[sectorIdx.z][sectorIdx.x]->CheckCollisionsRay(ray);
+    return 0.f;
+}
+
+Coordinate SectorController::GetSectorIdxByPosition(Vec3 Pos)
+{
+    if (Pos.x < 0 || Pos.x >= SectorController::Total_SectorSize.x || Pos.z < 0 || Pos.z >= SectorController::Total_SectorSize.z) {
+        return Coordinate();
+    }
+
+    Coordinate sectorIdx{};
+    sectorIdx.x = static_cast<int>((Pos.x / SectorController::Each_SectorSize.x));
+    sectorIdx.z = static_cast<int>((Pos.z / SectorController::Each_SectorSize.z));
+    return sectorIdx;
+}
+

@@ -49,54 +49,5 @@ TileMapInfo::TileType TileMap::GetTileFromPos(const Vec3& pos) const
 
 void TileMap::UpdateTiles(TileMapInfo::TileType tile, GameObject* object)
 {
-	// 정적 오브젝트가 Building 태그인 경우에만 벽으로 설정
-	if (object->GetType() != GameObjectInfo::Type::Building)
-		return;
 
-	// BFS를 통해 주변 타일도 업데이트
-	std::queue<Path::Pos> q;
-	std::map<Path::Pos, bool> visited;
-
-	// 오브젝트의 충돌 박스
-	for (const auto& collider : object->GetComponent<ObjectCollider>(ComponentInfo::Type::ObjectCollider)->GetColliders()) {
-		if (collider->GetType() != Collider::Type::Box) {
-			continue;
-		}
-
-
-
-		// 오브젝트의 타일 기준 인덱스 계산
-		Vec3 pos = collider->GetCenter();
-		Path::Pos index = GetTileUniqueIndexFromPos(pos);
-		SetTileFromUniqueIndex(index, tile);
-		q.push(index);
-
-		// q가 빌 때까지 BFS를 돌며 현재 타일이 오브젝트와 충돌 했다면 해당 타일을 업데이트
-		while (!q.empty()) {
-     	Path::Pos curNode = q.front();
-			q.pop();
-
-			if (visited[curNode])
-				continue;
-
-			visited[curNode] = true;
-
-			for (int dir = 0; dir < 4; ++dir) {
-				Path::Pos nextPosT = curNode + Path::gkFront[dir];
-				if (nextPosT.X < 0 || nextPosT.Z < 0) {
-					continue;
-				}
-
-				Vec3 nextPosW = GetTilePosFromUniqueIndex(nextPosT);
-				nextPosW.y = pos.y;
-
-				BoundingBox bb{ nextPosW, Vec3{mkTileWidth, mkTileWidth, mkTileHeight} };
-
-				if (collider->Intersects(bb)) {
-					SetTileFromUniqueIndex(nextPosT, tile);
-					q.push(nextPosT);
-				}
-			}
-		}
-	}
 }

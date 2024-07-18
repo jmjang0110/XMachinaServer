@@ -1,6 +1,7 @@
 #pragma once
 
 #include "HeightMapImage.h"
+#include "TileMap.h"
 
 /// +-------------------------------
 ///		   ResourceManager
@@ -21,6 +22,8 @@ class ResourceManager
 
 private:
 	SPtr<HeightMapImage> mHeightMapImg;
+	SPtr<TileMap>		 mTileMap;
+
 
 
 public:
@@ -35,6 +38,7 @@ public:
 	///	¡å Getter
 	/// --------------------------------------------------+
 	SPtr<HeightMapImage> GetHeightMapImage() { return mHeightMapImg; }
+	SPtr<TileMap>		 GetTileMap()		 { return mTileMap; }
 
 };
 

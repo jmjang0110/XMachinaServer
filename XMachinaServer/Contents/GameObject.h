@@ -3,22 +3,9 @@
 #include "Component.h"
 #include "Script.h"
 #include "Transform.h"
+#include "Collider.h"
 
-namespace GameObjectInfo
-{
-	enum class Type : UINT16 {
-		None,
 
-		GamePlayer,
-		Monster_Ursacetus,
-		Monster_Onyscidus,
-		Monster_AdvancedCombat_5,
-
-		Building,
-
-		END,
-	};
-}
 
 class GameObject : public GameEntity
 {
@@ -34,12 +21,17 @@ public:
 	virtual ~GameObject();
 
 public:
-	virtual void Update();
 	virtual void WakeUp();
+	virtual void Update();
 	virtual void Start();
+
+
 
 	virtual void Activate();
 	virtual void DeActivate();
+
+	// 객체(other)와 충돌 시 호출된다.
+	virtual void OnCollision(GameObject* other);
 
 public:
 	void SetType(GameObjectInfo::Type type) { mType = type; }

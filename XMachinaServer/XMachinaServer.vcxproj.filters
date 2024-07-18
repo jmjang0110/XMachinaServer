@@ -170,8 +170,17 @@
     <Filter Include="Framework\Contents\GameWorld\Player\Weapon">
       <UniqueIdentifier>{db7a2c9b-6c49-4c59-82d1-6ef7704639b7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Framework\Contents\GameWorld\Sector\Grid">
+    <Filter Include="Framework\Contents\GameWorld\Sector\TileMap">
       <UniqueIdentifier>{0b6ebbf5-d6b8-42f3-b8ac-99ddc401480b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask">
+      <UniqueIdentifier>{4297653e-4bcb-4627-87cf-faf00b03ed0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Manager">
+      <UniqueIdentifier>{beb74bbf-0773-4fd0-b700-c7b8db51008c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Entity\SnapShot">
+      <UniqueIdentifier>{651c291e-f1ec-4ec1-b1e0-7dadd0d97f80}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -435,7 +444,16 @@
       <Filter>Framework\Contents\GameWorld\Player\Weapon</Filter>
     </ClInclude>
     <ClInclude Include="Contents\TileMap.h">
-      <Filter>Framework\Contents\GameWorld\Sector\Grid</Filter>
+      <Filter>Framework\Contents\GameWorld\Sector\TileMap</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\CollisionManager.h">
+      <Filter>Framework\Contents\GameWorld\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\ObjectSnapShot.h">
+      <Filter>Framework\Contents\GameWorld\Entity\SnapShot</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Gameinfo.h">
+      <Filter>Framework\Contents\GameWorld\Entity</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -672,7 +690,55 @@
       <Filter>Framework\Contents\GameWorld\Player\Weapon</Filter>
     </ClCompile>
     <ClCompile Include="Contents\TileMap.cpp">
-      <Filter>Framework\Contents\GameWorld\Sector\Grid</Filter>
+      <Filter>Framework\Contents\GameWorld\Sector\TileMap</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\BTTaskM_Attack.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\BTTaskM_GetHit.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\BTTaskM_Patrol.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\BTTaskM_MoveToPath.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\BTTaskM_MoveToTarget.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\BTTaskM_PathPlanning_AStar.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\BTTaskM_PathPlanningToSpawn.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\BTTaskM_PathPlanningToTarget.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\BTTaskM_CheckAttackRange.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\BTTaskM_CheckDeath.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\BTTaskM_CheckDetectionRange.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\BTTaskM_CheckPatrolRange.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\BTTaskM_CheckMindDetectioonRange.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\CollisionManager.cpp">
+      <Filter>Framework\Contents\GameWorld\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\ObjectSnapShot.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\SnapShot</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Gameinfo.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

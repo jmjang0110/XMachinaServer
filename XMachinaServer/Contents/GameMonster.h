@@ -2,6 +2,7 @@
 
 #include "GameObject.h"
 #include "DB_Monster.h"
+#include "ObjectSnapShot.h"
 
 /// +-------------------------------
 ///		     Game Monster
@@ -16,9 +17,8 @@
 
 class NPCController;
 
-struct MonsterSnapShot 
+struct MonsterSnapShot : public ObjectSnapShot
 {
-	uint32_t			ID;
 	MonsterType			Type;		/*	몬스터 종류	*/
 	
 	/* Stat Script 로 빼자... */
@@ -31,9 +31,10 @@ struct MonsterSnapShot
 	Atomic_Vec3				SpineDir;
 };
 
-struct MonsterSnapShot_ReadOnly // 외부에서 MonsterSnapSHot 을 읽어서 복사해 저장할 때 사용 .
+
+// 외부에서 MonsterSnapSHot 을 읽어서 복사해 저장할 때 사용 .
+struct MonsterSnapShot_ReadOnly : public ObjectSnapShot
 {
-	uint32_t			ID;
 	MonsterType			Type;		/*	몬스터 종류	*/
 
 	/* Stat Script 로 빼자... */

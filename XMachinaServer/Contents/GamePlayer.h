@@ -3,6 +3,7 @@
 #include "Enum_generated.h"
 #include "GameObject.h"
 #include "GameMonster.h"
+#include "ObjectSnapShot.h"
 
 /// +-------------------------------
 ///		     GamePlayer
@@ -103,7 +104,7 @@ struct ViewList
 };
 
 /* 플레이어 상태 */
-struct PlayerSnapShot
+struct PlayerSnapShot : public ObjectSnapShot
 {	
 	/// +-----------------------------------------------------------
 	///		base 
@@ -115,7 +116,6 @@ struct PlayerSnapShot
 	/// +-----------------------------------------------------------
 	///		Info 
 	/// -----------------------------------------------------------+
-	UINT32					PlayerID  = -1; /* PLAYER ID */ /// - 여기서 ID는 현재 접속 후의 일시적인 아이디이다. DB에서 정보를 받을려면 stirngID를 이용해야한다.
 	UINT32					RoomID	  = -1; /* ROOM NUMBER */
 	std::vector<Coordinate>	CurSectorID;	// 현재 속해있는 Sector index ( 여러개일 수 있음 ) 최대 4개..
 
@@ -144,7 +144,7 @@ struct PlayerSnapShot
 	ViewList				VList_Prev;
 
 	PlayerSnapShot(){}
-	PlayerSnapShot(UINT32 id, std::string name, FBProtocol::OBJECT_TYPE type) { PlayerID = id, Name = name, Type = type; }
+	PlayerSnapShot(UINT32 id, std::string name, FBProtocol::OBJECT_TYPE type) { ObjectSnapShot::ID = id, Name = name, Type = type; }
 	~PlayerSnapShot() { Owner = nullptr; /* Decrease Ref */ };
 };
 
@@ -181,7 +181,7 @@ public:
 	///		S E T T E R 
 	/// -----------------------------------------------------------+
 	void SetOWner(SPtr_GameSession gsession)			 { mInfo.Owner    = gsession; };
-	void SetPlayerID(UINT32 playerid)					 { mInfo.PlayerID = playerid; };
+	void SetPlayerID(UINT32 playerid)					 { mInfo.ID       = playerid; };
 	void setRoomID(UINT32 roomid)						 { mInfo.RoomID   = roomid; };
 	void SetName(std::string name)						 { mInfo.Name     = name; };
 	void SetType(FBProtocol::OBJECT_TYPE type)			 { mInfo.Type     = type; };
@@ -211,5 +211,9 @@ public:
 	void DecRef_OwnerGameSession() { mInfo.Owner = nullptr; }
 	void UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vector<SPtr<GameMonster>> montser);
 	
+
+public:
+	static Coordinate GetSectorIdx(Vec3& Pos);
+
 };
 

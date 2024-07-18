@@ -30,6 +30,8 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <map>
+#include <ranges>
+
 
 /* Concurrent */
 #include <concurrent_queue.h>
@@ -44,7 +46,7 @@
 #include "Contents/TimeManager.h"
 #include "ServerLib/MemoryManager.h"
 #include "Contents/Util/Common.h"
-
+#include "Contents/Gameinfo.h"
 
 template<typename T>
 using SPtr = std::shared_ptr<T>;

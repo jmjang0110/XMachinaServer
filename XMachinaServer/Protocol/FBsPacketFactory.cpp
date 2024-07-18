@@ -609,11 +609,11 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_EnterGame(PlayerSnapShot& myinfo, std::ve
 	auto rotation      = FBProtocol::CreateVector3(builder, myinfo.Rotation.x, myinfo.Rotation.y, myinfo.Rotation.z);
 	auto transform     = FBProtocol::CreateTransform(builder, position, rotation);
 	auto Spine_LookDir = FBProtocol::CreateVector3(builder, myinfo.SpineDir.x, myinfo.SpineDir.y, myinfo.SpineDir.z);
-	auto Myinfo        = CreatePlayer(builder, myinfo.PlayerID, builder.CreateString(myinfo.Name), myinfo.Type, transform, Spine_LookDir);
+	auto Myinfo        = CreatePlayer(builder, myinfo.ID, builder.CreateString(myinfo.Name), myinfo.Type, transform, Spine_LookDir);
 
 	/* Remote Players */
 	for (PlayerSnapShot& p : players) {
-		auto ID             = p.PlayerID;
+		auto ID             = p.ID;
 		auto name           = builder.CreateString(p.Name);
 		auto PlayerSnapShotType = p.Type;
 		auto position       = FBProtocol::CreateVector3(builder, p.Position.x, p.Position.y, p.Position.z);
@@ -675,7 +675,7 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_NewPlayer(PlayerSnapShot& newPlayerSnapSh
 
 	flatbuffers::FlatBufferBuilder builder{};
 
-	auto ID = newPlayerSnapShot.PlayerID;
+	auto ID = newPlayerSnapShot.ID;
 	auto name = builder.CreateString(newPlayerSnapShot.Name);
 	auto PlayerSnapShotType = newPlayerSnapShot.Type;
 

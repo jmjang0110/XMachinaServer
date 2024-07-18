@@ -160,6 +160,7 @@
     <ClInclude Include="Contents\BTNode.h" />
     <ClInclude Include="Contents\BTTask.h" />
     <ClInclude Include="Contents\Collider.h" />
+    <ClInclude Include="Contents\CollisionManager.h" />
     <ClInclude Include="Contents\Component.h" />
     <ClInclude Include="Contents\DBController.h" />
     <ClInclude Include="Contents\DB_Inventory.h" />
@@ -171,6 +172,7 @@
     <ClInclude Include="Contents\FileIO.h" />
     <ClInclude Include="Contents\GameBullet.h" />
     <ClInclude Include="Contents\GameEntity.h" />
+    <ClInclude Include="Contents\Gameinfo.h" />
     <ClInclude Include="Contents\GameManager.h" />
     <ClInclude Include="Contents\GameMonster.h" />
     <ClInclude Include="Contents\GameNPC.h" />
@@ -181,6 +183,7 @@
     <ClInclude Include="Contents\GameSession.h" />
     <ClInclude Include="Contents\GameStructure.h" />
     <ClInclude Include="Contents\GameWorld.h" />
+    <ClInclude Include="Contents\ObjectSnapShot.h" />
     <ClInclude Include="Contents\TileMap.h" />
     <ClInclude Include="Contents\HeightMapImage.h" />
     <ClInclude Include="Contents\Key.h" />
@@ -250,6 +253,7 @@
     <ClCompile Include="Contents\BTNode.cpp" />
     <ClCompile Include="Contents\BTTask.cpp" />
     <ClCompile Include="Contents\Collider.cpp" />
+    <ClCompile Include="Contents\CollisionManager.cpp" />
     <ClCompile Include="Contents\Component.cpp" />
     <ClCompile Include="Contents\DBController.cpp" />
     <ClCompile Include="Contents\DB_Inventory.cpp" />
@@ -261,6 +265,7 @@
     <ClCompile Include="Contents\FileIO.cpp" />
     <ClCompile Include="Contents\GameBullet.cpp" />
     <ClCompile Include="Contents\GameEntity.cpp" />
+    <ClCompile Include="Contents\Gameinfo.cpp" />
     <ClCompile Include="Contents\GameManager.cpp" />
     <ClCompile Include="Contents\GameMonster.cpp" />
     <ClCompile Include="Contents\GameNPC.cpp" />
@@ -270,6 +275,20 @@
     <ClCompile Include="Contents\GameSession.cpp" />
     <ClCompile Include="Contents\GameStructure.cpp" />
     <ClCompile Include="Contents\GameWorld.cpp" />
+    <ClCompile Include="Contents\BTTaskM_Attack.cpp" />
+    <ClCompile Include="Contents\BTTaskM_CheckAttackRange.cpp" />
+    <ClCompile Include="Contents\BTTaskM_CheckDeath.cpp" />
+    <ClCompile Include="Contents\BTTaskM_CheckDetectionRange.cpp" />
+    <ClCompile Include="Contents\BTTaskM_CheckMindDetectioonRange.cpp" />
+    <ClCompile Include="Contents\BTTaskM_CheckPatrolRange.cpp" />
+    <ClCompile Include="Contents\BTTaskM_GetHit.cpp" />
+    <ClCompile Include="Contents\BTTaskM_MoveToPath.cpp" />
+    <ClCompile Include="Contents\BTTaskM_MoveToTarget.cpp" />
+    <ClCompile Include="Contents\BTTaskM_PathPlanningToSpawn.cpp" />
+    <ClCompile Include="Contents\BTTaskM_PathPlanningToTarget.cpp" />
+    <ClCompile Include="Contents\BTTaskM_PathPlanning_AStar.cpp" />
+    <ClCompile Include="Contents\BTTaskM_Patrol.cpp" />
+    <ClCompile Include="Contents\ObjectSnapShot.cpp" />
     <ClCompile Include="Contents\TileMap.cpp" />
     <ClCompile Include="Contents\HeightMapImage.cpp" />
     <ClCompile Include="Contents\Key.cpp" />

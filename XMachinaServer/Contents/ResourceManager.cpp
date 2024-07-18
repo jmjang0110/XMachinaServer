@@ -21,5 +21,4 @@ void ResourceManager::Init()
 	mHeightMapImg = MEMORY->Make_Shared<HeightMapImage>();
 	mHeightMapImg->Init("Contents/Resource/Terrain.bin");
 
-
 }
