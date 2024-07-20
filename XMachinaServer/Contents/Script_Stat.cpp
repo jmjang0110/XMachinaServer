@@ -73,6 +73,11 @@ void Script_Stat::Attack()
 {
 }
 
+SPtr<Component> Script_Stat::Clone(SPtr<GameObject> copyOwner) const
+{
+	return SPtr<Component>();
+}
+
 void Script_Stat::Activate()
 {
 }

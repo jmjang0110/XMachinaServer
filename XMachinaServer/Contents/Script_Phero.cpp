@@ -14,6 +14,11 @@ Script_Phero::~Script_Phero()
 {
 }
 
+SPtr<Component> Script_Phero::Clone(SPtr<GameObject> copyOwner) const
+{
+    return SPtr<Component>();
+}
+
 void Script_Phero::Activate()
 {
 

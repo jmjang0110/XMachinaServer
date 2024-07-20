@@ -5,6 +5,12 @@ GameEntity::GameEntity()
 {
 }
 
+GameEntity::GameEntity(const GameEntity& other)
+	: mID(other.ID),
+	mName(other.mName)
+{
+}
+
 GameEntity::GameEntity(int id)
 	: mID(id)
 {

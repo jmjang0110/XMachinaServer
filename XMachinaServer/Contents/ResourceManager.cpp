@@ -50,6 +50,7 @@ void BattleScene::Load()
 	int sameObjectCnt = 0;
 	sptr<Model> model{};
 	ObjectTag objectTag{};
+	GameObjectInfo::Type objectType{};
 
 	for (int i = 0; i < objectCnt; ++i) {
 		if (sameObjectCnt <= 0) {
@@ -60,9 +61,16 @@ void BattleScene::Load()
 			std::string modelName = FileIO::ReadString(file);
 			if (tag == "Enemy") {
 				objectTag = ObjectTag::Enemy;
+				if (modelName == "Onyscidus")
+					objectType = GameObjectInfo::Type::Monster_Onyscidus;
+				else if (modelName == "Ursacetus;")
+					objectType = GameObjectInfo::Type::Monster_Ursacetus;
+				else if (modelName == "AdvancedCombat_5")
+					objectType = GameObjectInfo::Type::Monster_AdvancedCombat_5;
 			}
 			else if(tag == "Building" || tag == "Dissolve_Building") {
 				objectTag = ObjectTag::Building;
+				objectType = GameObjectInfo::Type::Building;
 			}
 			else {
 				objectTag = ObjectTag::None;
@@ -82,12 +90,18 @@ void BattleScene::Load()
 
 		if (sameObjectCnt > 0) {
 			SPtr<GameObject> object = std::make_shared<GameObject>();
+			object->SetType(objectType);
+			object->SetID(i);
+			
 			Matrix transform = FileIO::ReadVal<Matrix>(file);
+
 			object->AddComponent<Transform>(ComponentInfo::Type::Transform)->SetLocalTransform(transform);
 			const auto& collider = object->AddComponent<Collider>(ComponentInfo::Type::Collider);
 
 			if (model) {
 				object->SetName(model->mName);
+				model->mTransform = transform;
+				
 
 				collider->SetBoundingSphereList(model->mBSList);
 				collider->SetBoundingBoxList(model->mBoxList);
@@ -117,13 +131,18 @@ ResourceManager::ResourceManager()
 
 ResourceManager::~ResourceManager()
 {
+	mTileMap      = nullptr;
+	mHeightMapImg = nullptr;
+	mBattleScene  = nullptr;
 }
 
 void ResourceManager::Init()
 {
 	LoadTerrain();
 	LoadModels();
-	mBattleScene.Load();
+
+	mBattleScene = std::make_shared<BattleScene>();
+	mBattleScene->Load();
 }
 
 /// +----------------------------------------------------
@@ -131,7 +150,7 @@ void ResourceManager::Init()
 /// ----------------------------------------------------+
 void ResourceManager::LoadTerrain()
 {
-	mHeightMapImg = MEMORY->Make_Shared<HeightMapImage>();
+	mHeightMapImg = std::make_shared<HeightMapImage>();
 	mHeightMapImg->Init(kTerrainDataPath);
 }
 

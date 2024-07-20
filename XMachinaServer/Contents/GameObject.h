@@ -59,6 +59,9 @@ public:
 	template<typename T>
 	SPtr<T>  AddScript(ScriptInfo::Type key);
 
+public:
+	// 깊은 복사 함수 선언
+	SPtr<GameObject> DeepCopy() const;
 };
 
 template<typename T>
@@ -87,9 +90,9 @@ inline SPtr<T>  GameObject::AddComponent(ComponentInfo::Type key)
 {
 	auto it = mComponents.find(key);
 	if (it == mComponents.end()) {
-		SPtr<T> script = MEMORY->Make_Shared<T>(std::dynamic_pointer_cast<GameObject>(shared_from_this()), key);
-		mComponents.insert(std::make_pair(key, script));
-		return script;
+		SPtr<T> component = MEMORY->Make_Shared<T>(std::dynamic_pointer_cast<GameObject>(shared_from_this()), key);
+		mComponents.insert(std::make_pair(key, component));
+		return component;
 	}
 	else {
 		return std::dynamic_pointer_cast<T>(it->second);

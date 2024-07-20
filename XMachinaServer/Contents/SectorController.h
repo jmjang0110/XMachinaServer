@@ -20,8 +20,9 @@
 ///  [	][	][	][	][	][	]...[  ]
 ///  [	][	][	][	][	][	]...[  ]
 ///  [	][	][	][	][	][	]...[  ]
-///  [	][	][	][	][	][	]...[  ]
-/// 
+///  [0,0][	][	][	][	][	]...[  ]
+///  ↑
+///  Start Pos 
 /// -------------------------------+
 
 #include "GamePlayer.h"
@@ -56,12 +57,12 @@ private:
 
 	Coordinate									mTotalSectorSize = {}; // Sector 전체 크기  ( Image )
 	Coordinate									mSectorSize      = {}; // 각 Sector 크기	  
-
+	Coordinate									mSectorStartPos  = {0,0};
 
 public:
 	static Coordinate							Total_SectorSize; // Sector 전체 크기  ( Image )
 	static Coordinate							Each_SectorSize; // 각 Sector 크기	  
-
+	static Coordinate							SectorStartPos;
 
 
 
@@ -72,7 +73,6 @@ public:
 public:
 	bool Init(SPtr_GameRoom owner);
 
-	void UpdateSectorsActivate(Vec3 player_pos, float radius);
 	
 	ViewList UpdateViewList(GamePlayer* player, Vec3 player_pos, float viewRange_radius);
 
@@ -86,6 +86,8 @@ public:
 	Coordinate	     GetMaxSectorIndex()	{ return Coordinate(static_cast<int>(mSectors[0].size()), static_cast<int>(mSectors.size())); }
 	SectorInfo::Type GetSectorType(Coordinate idx);
 	SPtr<GameRoom>   GetOwnerRoom()			{ return mOwnerRoom; }
+	static Coordinate		GetSectorStartPos(Coordinate sectorIdx);
+
 
 	/* Function */
 	bool AddMonsterInSector(Coordinate sectorIdx, int monster_id , SPtr<GameMonster> monster);
@@ -94,7 +96,7 @@ public:
 	/// +------------------------------------------------------------
 	///		Collision ray 
 	/// -------------------------------------------------------------+
-	float CheckCollisionsRay(Coordinate sectorIdx, const Ray& ray) const;
+	float CollideCheckRay_MinimumDist(Coordinate sectorIdx, const Ray& ray, GameObjectInfo::Type targetType) const;
 
 
 public:

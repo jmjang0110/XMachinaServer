@@ -6,6 +6,12 @@ Component::Component()
 {
 }
 
+Component::Component(const Component& other)
+	: mType(other.mType)
+{
+
+}
+
 Component::Component(SPtr<GameObject> owner, ComponentInfo::Type Type, UINT32 id)
 	: GameEntity(id)
 
@@ -74,3 +80,10 @@ bool Component::LateUpdate()
 void Component::OnDestroy()
 {
 }
+
+SPtr<Component> Component::Clone(SPtr<GameObject> copyOwner) const
+{
+	
+	return SPtr<Component>();
+}
+

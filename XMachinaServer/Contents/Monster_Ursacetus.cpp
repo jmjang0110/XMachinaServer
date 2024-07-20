@@ -82,9 +82,9 @@ void Monster_Ursacetus::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 	LOG_MGR->Cout(GetID(), " - Monster Ursacetus Updated\n");
 
 	/* TEST */
-	ColliderSnapShot P_SnapShot = GetOwnerNPCController()->GetOwnerRoom()->GetPlayerController()->GetPlayerTest()->GetComponent<Collider>(ComponentInfo::Type::Collider)->GetSnapShot();
+	//ColliderSnapShot P_SnapShot = GetOwnerNPCController()->GetOwnerRoom()->GetPlayerController()->GetPlayerTest()->GetComponent<Collider>(ComponentInfo::Type::Collider)->GetSnapShot();
 	//SPtr<GamePlayer> gamePlayer = GetOwnerNPCController()->GetOwnerRoom()->GetPlayerController()->GetPlayerTest();// ->GetComponent<Collider>(ComponentInfo::Type::Collider)->GetSnapShot();
-	ColliderSnapShot M_SnapShot = GetCollider()->GetSnapShot();
+	//ColliderSnapShot M_SnapShot = GetCollider()->GetSnapShot();
 
 
 

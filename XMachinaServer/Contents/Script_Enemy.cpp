@@ -27,6 +27,11 @@ Script_Enemy::~Script_Enemy()
 
 }
 
+SPtr<Component> Script_Enemy::Clone(SPtr<GameObject> copyOwner) const
+{
+	return SPtr<Component>();
+}
+
 void Script_Enemy::Activate()
 {
 	Script_EnemyStat::Activate();
@@ -97,7 +102,14 @@ bool Script_Enemy::Hit(float damage, SPtr_GameObject instigator)
 
 
 	if (nullptr != instigator) {
-		mEnemyController->SetTargetObject(instigator);
+		if (instigator->GetType() == GameObjectInfo::Type::GamePlayer) {
+			mEnemyController->SetTargetPlayer(std::dynamic_pointer_cast<GamePlayer>(instigator));
+		}
+		else if (instigator->GetType() == GameObjectInfo::Type::Monster_AdvancedCombat_5
+			|| instigator->GetType() == GameObjectInfo::Type::Monster_Onyscidus
+			|| instigator->GetType() == GameObjectInfo::Type::Monster_Ursacetus) {
+			mEnemyController->SetTargetMonster(std::dynamic_pointer_cast<GameMonster>(instigator));
+		}
 	}
 
 	return res;

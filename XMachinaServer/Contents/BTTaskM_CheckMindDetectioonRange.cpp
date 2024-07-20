@@ -14,14 +14,27 @@ BTNodeState MonsterTask::CheckMindDetectionRange::Evaluate()
 	}
 
 	// 경로 길찾기가 실행중이거나 감지 범위 내에 들어온 경우 다음 노드로 진행
-	if ((GetOwner()->GetTransform()->GetPosition() 
-		- mEnemyController->GetTargetObject()->GetTransform()->GetPosition()).Length() 
-		< mStat->GetStat_DetectionRange()) {
+	Vec3 MyPos = GetOwner()->GetTransform()->GetPosition();
+	Vec3 TargetPos{};
+	if (mEnemyController->IsMindControlled() == false) {
+		TargetPos = mEnemyController->GetTargetPlayer()->GetTransform()->GetSnapShot().GetPosition();
+	}
+	else {
+		TargetPos = mEnemyController->GetTargetMonster()->GetTransform()->GetSnapShot().GetPosition();
+	}
+
+	float dist_My_Target = (MyPos - TargetPos).Length();
+	if (dist_My_Target < mStat->GetStat_DetectionRange()) {
 		mEnemyController->SetState(EnemyInfo::State::Walk);
 		return BTNodeState::Success;
 	}
 	else {
-		mEnemyController->SetTargetObject(nullptr);
+		if (mEnemyController->IsMindControlled() == false) {
+			mEnemyController->SetTargetPlayer(nullptr);
+		}
+		else{
+			mEnemyController->SetTargetMonster(nullptr);
+		}
 	}
 
 	return BTNodeState::Failure;

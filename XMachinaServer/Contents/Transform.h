@@ -58,9 +58,11 @@ public:
 
 public:
 	Transform();
+	Transform(const Transform& other);
 	Transform(SPtr<GameObject> owner, ComponentInfo::Type Type);
 	~Transform();
 
+	virtual SPtr<Component> Clone(SPtr<GameObject> copyOwner) const;
 
 	virtual bool WakeUp() override;
 	virtual bool Start() override;

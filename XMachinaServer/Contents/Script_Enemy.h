@@ -18,6 +18,8 @@ public:
 	///		  virtual function 
 	/// ------------------------------+
 	/* Runtime */
+	virtual SPtr<Component> Clone(SPtr<GameObject> copyOwner) const;
+
 	virtual void Activate();
 	virtual void DeActivate();
 

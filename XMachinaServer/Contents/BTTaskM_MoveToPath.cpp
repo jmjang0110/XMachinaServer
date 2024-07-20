@@ -22,6 +22,23 @@ MonsterTask::MoveToPath::~MoveToPath()
 
 }
 
+bool MonsterTask::MoveToPath::isXInterceptPositive(const Vec3& To, const Vec3& From)
+{
+	// 오브젝트로부터 타겟까지의 벡터
+	Vec3 toTarget = To - From;
+	if (toTarget.x == 0) {
+		return false;
+	}
+
+	double m = To.z / To.x;
+	double c = From.z - m * From.x;
+
+	// x절편은 y = 0일 때, x = -c / m
+	double xIntercept = -c / m;
+
+	return xIntercept > 0;
+}
+
 BTNodeState MonsterTask::MoveToPath::Evaluate()
 {
 	if (mPath->empty())

@@ -49,6 +49,7 @@ bool PlayerController::ExitPlayer(UINT32 sessionID)
 
 	{
 		mSRWLock.LockWrite();
+		mGamePlayers[sessionID]->Exit();
 		mGamePlayers.unsafe_erase(sessionID);
 		mSRWLock.UnlockWrite();
 	}

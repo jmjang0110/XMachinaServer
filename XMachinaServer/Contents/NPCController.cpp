@@ -11,6 +11,11 @@
 #include "Monster_AdvancedCombatDroid_5.h"
 #include "Monster_Ursacetus.h"
 #include "Monster_Onyscidus.h"
+#include "Script_AdvancedCombatDroid_5.h"
+#include "Script_Ursacetus.h"
+#include "Script_Onyscidus.h"
+
+#include "ResourceManager.h"
 
 
 NPCController::NPCController()
@@ -41,6 +46,12 @@ void NPCController::InitMonsters(Coordinate maxSectorIdx)
 
 	int monster_id = 1;
 
+	const std::vector<SPtr<GameObject>>* EnemyPrototypes = RESOURCE_MGR->GetBattleScene()->GetEnemies();
+	for (int i = 0; EnemyPrototypes->size(); ++i) {
+
+	}
+
+	return;
 	// 섹터에 몬스터를 미리 생성시킨다.
 	for (int i = 0; i < maxSectorIdx.z; ++i) {
 		for (int k = 0; k < maxSectorIdx.x; ++k) {
@@ -57,6 +68,9 @@ void NPCController::InitMonsters(Coordinate maxSectorIdx)
 					SPtr<GameMonster> monster = CreateMonster(monster_id, sectorIdx, MonsterType::Ursacetus);
 					monster->AddComponent<Transform>(ComponentInfo::Type::Transform);
 					monster->AddComponent<Collider>(ComponentInfo::Type::Collider);
+
+					//monster->AddScript<Script_Enemy>(ScriptInfo::Type::Enemy);
+					//monster->AddScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
 
 					monster->SetOwnerNPCController(this);
 

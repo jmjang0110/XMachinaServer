@@ -11,9 +11,14 @@
 
 BTNodeState MonsterTask::CheckDetectionRange::Evaluate()
 {
-	if (!mEnemyController->GetTargetObject()) {
-		mEnemyController->SetTargetObject(mTarget);
-
+	bool IsMindControlled = mEnemyController->IsMindControlled();
+	if (IsMindControlled == false) {
+		if (!mEnemyController->GetTargetPlayer())
+			mEnemyController->SetTargetPlayer(mTargetPlayer);
+	}
+	else {
+		if (!mEnemyController->GetTargetMonster())
+			mEnemyController->SetTargetMonster(mTargetMonster);
 	}
 
 	///* 타겟한 플레이어가 은신 상태라면.. */
@@ -28,7 +33,7 @@ BTNodeState MonsterTask::CheckDetectionRange::Evaluate()
 
 	// 경로 길찾기가 실행중이거나 감지 범위 내에 들어온 경우 다음 노드로 진행
 	Vec3 TargetPos;
-	if (mEnemyController->IsMindControlled() == false) {
+	if (IsMindControlled == false) {
 		TargetPos = mEnemyController->GetTargetPlayer()->GetPosition();
 	}
 	else {
@@ -40,7 +45,10 @@ BTNodeState MonsterTask::CheckDetectionRange::Evaluate()
 		return BTNodeState::Success;
 	}
 	else {
-		mEnemyController->SetTargetObject(nullptr);
+		if (IsMindControlled == false)
+			mEnemyController->SetTargetPlayer(nullptr);
+		else
+			mEnemyController->SetTargetMonster(nullptr);
 	}
 
 	return BTNodeState::Failure;

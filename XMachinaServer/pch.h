@@ -57,7 +57,7 @@ using SPtr_GameSession   = std::shared_ptr<class GameSession>;
 using SPtr_GameRoom      = std::shared_ptr<class GameRoom>;
 using SPtr_GamePlayer    = std::shared_ptr<class GamePlayer>;
 using SPtr_GameMonster   = std::shared_ptr<class GameMonster>;
-using SPtr_GameStructure = std::shared_ptr<class GameStructure>;
+using SPtr_GameBuilding = std::shared_ptr<class GameBuilding>;
 using SPtr_GameBullet    = std::shared_ptr<class GameBullet>;
 using SPtr_GameObject    = std::shared_ptr<class GameObject>;
 
@@ -89,3 +89,24 @@ struct Atomic_Vec3
 };
 
 
+template<typename T>
+class SRWL_Data
+{
+private:
+	Lock::SRWLock _lock;
+	T _data;
+
+public:
+	void SetData(T& data) {
+		_lock.LockWrite();
+		T ret = data;
+		_lock.UnlockWrite();
+	}
+
+	T GetData() {
+		_lock.LockRead();
+		T ret = _data;
+		_lock.UnlockRead();
+		return ret;
+	}
+};

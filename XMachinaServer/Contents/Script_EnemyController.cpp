@@ -18,6 +18,11 @@ Script_EnemyController::~Script_EnemyController()
 {
 }
 
+SPtr<Component> Script_EnemyController::Clone(SPtr<GameObject> copyOwner) const
+{
+	return SPtr<Component>();
+}
+
 void Script_EnemyController::Activate()
 {
 	Script::Activate();

@@ -33,10 +33,14 @@ private:
 
 public:
 	Collider();
+	Collider(const Collider& other);
 	Collider(SPtr<GameObject> owner, ComponentInfo::Type Type);
 	~Collider();
 
 public:
+	virtual SPtr<Component> Clone(SPtr<GameObject> copyOwner) const;
+
+
 	virtual void Activate();
 	virtual void DeActivate();
 

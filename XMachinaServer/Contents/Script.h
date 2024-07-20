@@ -9,6 +9,7 @@ namespace ScriptInfo {
 
 		Stat, // Enemy, Player 
 		EnemyController,
+		Enemy,
 		BehaviorTree,
 		Phero,
 		PheroDropper,
@@ -32,6 +33,8 @@ public:
 	virtual ~Script();
 
 public:
+	virtual SPtr<Component> Clone(SPtr<GameObject> copyOwner) const;
+
 	virtual void Activate();
 	virtual void DeActivate();
 

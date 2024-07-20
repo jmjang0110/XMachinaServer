@@ -33,7 +33,7 @@ private:
 
 	std::unordered_map<UINT32, SPtr<GameMonster>>	  mMonsters;
 	std::unordered_map<UINT32, SPtr<GameNPC>>		  mNPCs;
-	std::unordered_map<UINT32, SPtr<GameStructure>>   mStructures; // ±¸Á¶¹° ( ex. ºôµù.. ) 
+	std::unordered_map<UINT32, SPtr<GameBuilding>>   mStructures; // ±¸Á¶¹° ( ex. ºôµù.. ) 
 
 public:
 	Sector();
@@ -78,7 +78,7 @@ public:
 	/// +---------------------------------------------------------
 	///	  C O L L I S I O N 
 	/// ---------------------------------------------------------+
-	float CheckCollisionsRay(const Ray& ray, GameObjectInfo::Type objType) const;
+	float CollideCheckRay_MinimumDist(const Ray& ray, GameObjectInfo::Type targetType) ;
 
 
 

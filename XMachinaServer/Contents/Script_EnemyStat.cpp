@@ -14,6 +14,11 @@ Script_EnemyStat::~Script_EnemyStat()
 {
 }
 
+SPtr<Component> Script_EnemyStat::Clone(SPtr<GameObject> copyOwner) const
+{
+	return SPtr<Component>();
+}
+
 void Script_EnemyStat::Activate()
 {
 	Script::Activate();

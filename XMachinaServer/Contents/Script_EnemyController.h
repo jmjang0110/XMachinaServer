@@ -56,6 +56,8 @@ public:
 	/// +------------------------------
 	///		  virtual function 
 	/// ------------------------------+
+	virtual SPtr<Component> Clone(SPtr<GameObject> copyOwner) const;
+
 	virtual void Activate();
 	virtual void DeActivate();
 
@@ -74,7 +76,7 @@ public:
 	~Script_EnemyController();
 
 public:
-	SPtr_GameObject		GetTargetObject()					{ return mTarget;	   }
+	//SPtr_GameObject		GetTargetObject()					{ return mTarget;	   }
 	SPtr<GamePlayer>    GetTargetPlayer()					{ return mTargetPlayer; }
 	SPtr<GameMonster>	GetTargetMonster()					{ return mTargetMonster;  }
 	SPtr_GameObject		GetPathTargetObject()				{ return mPathTarget;  }
@@ -89,11 +91,11 @@ public:
 	bool IsMindControlled() { return mMindControllded; }
 
 public:
-	void SetTargetObject(SPtr_GameObject target)		{ mTarget = target; }
+	//void SetTargetObject(SPtr_GameObject target)		{ mTarget = target; }
 	void SetPathTargetObject(SPtr<GameObject> target)	{ mPathTarget = target; }
 
 	void SetTargetPlayer(SPtr<GamePlayer> target)		{ mTargetPlayer = target; }
-	void SetMosnterTarget(SPtr<GameMonster> target)		{ mTargetMonster = target; }
+	void SetTargetMonster(SPtr<GameMonster> target)		{ mTargetMonster = target; }
 	
 	void SetOwnerMonster(SPtr<GameMonster> ownerMonster) { mOwnerMonster = ownerMonster; }
 	SPtr<GameMonster> GetOwnerMonster() { return mOwnerMonster; }

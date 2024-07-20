@@ -182,7 +182,8 @@ public:
 
 	virtual void Dispatch(class OverlappedObject* overlapped, UINT32 bytes = 0) override;
 
-	 
+	void Exit();
+
 public:
 	/// +-----------------------------------------------------------
 	///		S E T T E R 

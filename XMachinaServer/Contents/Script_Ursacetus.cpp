@@ -17,6 +17,11 @@ Script_Ursacetus::~Script_Ursacetus()
 {
 }
 
+SPtr<Component> Script_Ursacetus::Clone(SPtr<GameObject> copyOwner) const
+{
+    return SPtr<Component>();
+}
+
 void Script_Ursacetus::Activate()
 {
 }

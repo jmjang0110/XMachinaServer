@@ -10,17 +10,23 @@
 BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 {
 	LOG_MGR->Cout("CheckAttackRange\n");
-
-	if (!mEnemyController->GetTargetObject()) {
-		return BTNodeState::Failure;
+	bool IsMindControlled = mEnemyController->IsMindControlled();
+	if (IsMindControlled == false) {
+		if (!mEnemyController->GetTargetPlayer())
+			return BTNodeState::Failure;
 	}
+	else {
+		if (!mEnemyController->GetTargetMonster())
+			return BTNodeState::Failure;
+	}
+
 
 	if (mEnemyController->GetState() == EnemyInfo::State::Attack) {
 		return BTNodeState::Success;
 	}
 
 	
-	if(mEnemyController->IsMindControlled() == false) {
+	if(IsMindControlled == false) {
 		///* 타겟한 플레이어가 은신 상태라면.. */
 		bool IsCloakingOn = mEnemyController->GetTargetPlayer()->GetActiveSkill(SkillInfo::Type::Cloaking);
 		if (IsCloakingOn == true) {
@@ -35,7 +41,7 @@ BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 	Vec3 Monster_Pos = mEnemyController->GetOwnerMonster()->GetTransform()->GetSnapShot().GetPosition();
 	Vec3  TargetPos{};
 
-	if (mEnemyController->IsMindControlled() == false)
+	if (IsMindControlled == false)
 		TargetPos = mEnemyController->GetTargetPlayer()->GetPosition();
 	else
 		TargetPos = mEnemyController->GetTargetMonster()->GetTransform()->GetSnapShot().GetPosition();

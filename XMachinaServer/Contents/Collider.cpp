@@ -10,6 +10,24 @@ Collider::Collider()
 {
 }
 
+Collider::Collider(const Collider& other)
+    : Component(other)
+{
+    // mBoundingSphereList 복사
+    mBoundingSphereList.resize(other.mBoundingSphereList.size());
+    if (!other.mBoundingSphereList.empty()) {
+        memcpy(mBoundingSphereList.data(), other.mBoundingSphereList.data(),
+            other.mBoundingSphereList.size() * sizeof(MyBoundingSphere));
+    }
+
+    // mBoundingBoxList 복사
+    mBoundingBoxList.resize(other.mBoundingBoxList.size());
+    if (!other.mBoundingBoxList.empty()) {
+        memcpy(mBoundingBoxList.data(), other.mBoundingBoxList.data(),
+            other.mBoundingBoxList.size() * sizeof(MyBoundingOrientedBox));
+    }
+}
+
 Collider::Collider(SPtr<GameObject> owner, ComponentInfo::Type Type)
     : Component(owner, Type, static_cast<UINT32>(Type))
 {
@@ -18,6 +36,11 @@ Collider::Collider(SPtr<GameObject> owner, ComponentInfo::Type Type)
 
 Collider::~Collider()
 {
+}
+
+SPtr<Component> Collider::Clone(SPtr<GameObject> copyOwner) const
+{
+    return SPtr<Component>();
 }
 
 void Collider::Activate()

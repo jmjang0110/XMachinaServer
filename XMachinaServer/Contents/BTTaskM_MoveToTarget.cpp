@@ -11,6 +11,8 @@
 #include "GameObject.h"
 #include "PlayerController.h"
 #include "GameRoom.h"
+#include "NPCController.h"
+
 
 /// +-------------------------------------------------------------------------
 ///	> ▶▶▶ Task Move To Target  
@@ -30,50 +32,115 @@ MonsterTask::MoveToTarget::~MoveToTarget()
 
 }
 
+bool MonsterTask::MoveToTarget::isXInterceptPositive(const Vec3& To, const Vec3& From)
+{
+	// 오브젝트로부터 타겟까지의 벡터
+	Vec3 toTarget = To - From;
+	if (toTarget.x == 0) {
+		return false;
+	}
+
+	double m = To.z / To.x;
+	double c = From.z - m * From.x;
+
+	// x절편은 y = 0일 때, x = -c / m
+	double xIntercept = -c / m;
+
+	return xIntercept > 0;
+}
+
 
 BTNodeState MonsterTask::MoveToTarget::Evaluate()
 {
-	if (!mEnemyController->GetTargetObject()) {
-		return BTNodeState::Failure;
+	bool IsMindControlled = mEnemyController->IsMindControlled();
+
+	if (IsMindControlled == false) {
+		if (!mEnemyController->GetTargetPlayer())
+			return BTNodeState::Failure;
+	}
+	else {
+		if (!mEnemyController->GetTargetMonster())
+			return BTNodeState::Failure;
 	}
 
-	mEnemyController->SetPathTargetObject(mEnemyController->GetTargetObject());
+	if (IsMindControlled == false) {
+		mEnemyController->SetPathTargetObject(std::dynamic_pointer_cast<GameObject>(mEnemyController->GetTargetPlayer()));
+	}
+	else {
+		mEnemyController->SetPathTargetObject(std::dynamic_pointer_cast<GameObject>(mEnemyController->GetTargetMonster()));
+	}
 
 	// 허리 쪽부터 광선을 쏴야 맞는다.
-	Vec3 objectAdjPos = GetOwner()->GetTransform()->GetPosition() + GetOwner()->GetTransform()->GetUp() * 0.5f;
-	Vec3 targetAdjPos = mEnemyController->GetTargetObject()->GetTransform()->GetPosition()
-		+ mEnemyController->GetTargetObject()->GetTransform()->GetUp() * 0.5f;
+	Vec3 MyPos = GetOwner()->GetTransform()->GetPosition() + GetOwner()->GetTransform()->GetUp() * 0.5f;
+	Vec3 TargetPos;
+	Coordinate Target_SectorIdx;
+	Coordinate My_SectorIdx;
+
+
+	if (IsMindControlled == false) {
+		TransformSnapShot snapShot = mEnemyController->GetTargetPlayer()->GetTransform()->GetSnapShot();
+		TargetPos = snapShot.GetPosition() + snapShot.GetUp() * 0.5f;
+
+	}
+	else {
+		TransformSnapShot snapShot = mEnemyController->GetTargetMonster()->GetTransform()->GetSnapShot();
+		TargetPos = snapShot.GetPosition() + snapShot.GetUp() * 0.5f;
+	}
+
 
 	// 오브젝트로부터 타겟까지의 벡터
-	Vec3 toTarget = targetAdjPos - objectAdjPos;
+	Vec3 toTarget = TargetPos - MyPos;
 
 	// 타겟으로부터 오브젝트로 광선을 쏜다.
-	Ray r{ objectAdjPos, XMVector3Normalize(toTarget) };
+	Ray r{ MyPos, XMVector3Normalize(toTarget) };
 
-	// 타겟이 속한 모든 그리드를 검사해야 한다.
-	SPtr_GameObject Target = mEnemyController->GetTargetObject();
+	// 몬스터가 있는 섹터 인덱스
+	/* A */ My_SectorIdx     = SectorController::GetSectorIdxByPosition(GetOwner()->GetTransform()->GetPosition());
+	/* B */ Target_SectorIdx = SectorController::GetSectorIdxByPosition(TargetPos);
+	/* C */ Coordinate Alpha_SectorIdx;
+
+	std::vector<Coordinate> checkSectors{};
+	checkSectors.push_back(My_SectorIdx);
+	checkSectors.push_back(Target_SectorIdx);
+
+	if (My_SectorIdx.z != Target_SectorIdx.z && My_SectorIdx.x != Target_SectorIdx.x) {
+		
+		Coordinate RT_sectorIDx = Coordinate(std::max(My_SectorIdx.x, Target_SectorIdx.x),std::max(My_SectorIdx.z, Target_SectorIdx.z));
+		Coordinate Center       = SectorController::GetSectorStartPos(RT_sectorIDx);
+
+		bool IsMyX_Positive    = (MyPos.x - Center.x) > 0;
+		bool IsXInter_Positive = isXInterceptPositive(TargetPos, GetOwner()->GetTransform()->GetPosition()); // x 절편이 양수인지
+		if (IsMyX_Positive == false /* x : 음수 */) {
+
+			if (IsXInter_Positive == false)
+				Alpha_SectorIdx = Coordinate(My_SectorIdx.x, My_SectorIdx.z + 1);
+			else 
+				Alpha_SectorIdx = Coordinate(My_SectorIdx.x + 1, My_SectorIdx.z);
+		}
+		else { /* x : 양수 */
+
+			if (IsXInter_Positive == false) 
+				Alpha_SectorIdx = Coordinate(My_SectorIdx.x - 1, My_SectorIdx.z);
+			else 
+				Alpha_SectorIdx = Coordinate(My_SectorIdx.x, My_SectorIdx.z + 1);
+		}
+		checkSectors.push_back(Alpha_SectorIdx);
+
+	}
 	
+	// 타겟의 섹터 인덱스
 	// 해당 광선에 맞은 다른 Static 오브젝트의 거리가 타겟까지의 거리보다 가까운 경우 벽에 막혀있는 경우이다.
 
-	Coordinate M_SectorIdx = SectorController::GetSectorIdxByPosition(GetOwner()->GetTransform()->GetPosition());
 
-	if (Target) {
-		GameObjectInfo::Type type = Target->GetType();
-		if (GameObjectInfo::Type::GamePlayer == type) {
-			
-			SPtr<GamePlayer> gamePlayer  = std::dynamic_pointer_cast<GamePlayer>(Target);
-			Vec3			 PlayerPos   = gamePlayer->GetTransform()->GetPosition();
-			Coordinate		 P_SectorIdx = SectorController::GetSectorIdxByPosition(PlayerPos);
-
-			M_SectorIdx;
-			P_SectorIdx;
-
-			// 직선의 방정식 구한다.
-			// 나중에....
+	// 타겟이 속한 모든 그리드를 검사해야 한다.
+	//SPtr_GameObject Target = mEnemyController->GetTargetObject();
+	for (int i = 0; i < checkSectors.size(); ++i) {
+		SectorController* SC = mEnemyController->GetOwnerMonster()->GetOwnerNPCController()->GetOwnerRoom()->GetSectorController();
+		if(SC->CollideCheckRay_MinimumDist(checkSectors[i], r, GameObjectInfo::Type::Building) < toTarget.Length()) { // Ray와 섹터의 빌딩들과 Ray 체크후 가장 짧은 길이로 비교 
 			return BTNodeState::Failure;
-
 		}
 	}
+
 
 	// 한 번이라도 장애물 없이 직선 경로라면 길찾기 경로 초기화
 	while (!mEnemyController->GetPaths()->empty())
@@ -84,9 +151,16 @@ BTNodeState MonsterTask::MoveToTarget::Evaluate()
 
 	// 타겟에 도착하지 않았을 경우에만 이동
 	if (toTarget.Length() > kMinDistance) {
+		if (IsMindControlled == false) {
+			GetOwner()->GetTransform()->RotateTargetAxisY(mEnemyController->GetTargetMonster()->GetTransform()->GetSnapShot().GetPosition(), mStat->GetStat_RotationSpeed());
+			GetOwner()->GetTransform()->Translate(GetOwner()->GetTransform()->GetLook(), mStat->GetStat_MoveSpeed() * DELTA_TIME);
 
-		GetOwner()->GetTransform()->RotateTargetAxisY(mEnemyController->GetTargetObject()->GetTransform()->GetPosition(), mStat->GetStat_RotationSpeed());
-		GetOwner()->GetTransform()->Translate(GetOwner()->GetTransform()->GetLook(), mStat->GetStat_MoveSpeed() * DELTA_TIME);
+		}
+		else {
+			GetOwner()->GetTransform()->RotateTargetAxisY(mEnemyController->GetTargetPlayer()->GetTransform()->GetSnapShot().GetPosition(), mStat->GetStat_RotationSpeed());
+			GetOwner()->GetTransform()->Translate(GetOwner()->GetTransform()->GetLook(), mStat->GetStat_MoveSpeed()* DELTA_TIME);
+
+		}
 	}
 
 	return BTNodeState::Success;

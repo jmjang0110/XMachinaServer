@@ -16,6 +16,11 @@ Script::~Script()
 {
 }
 
+SPtr<Component> Script::Clone(SPtr<GameObject> copyOwner) const
+{
+	return SPtr<Component>();
+}
+
 void Script::Activate()
 {
 	Component::Activate();

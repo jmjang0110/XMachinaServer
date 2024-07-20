@@ -32,6 +32,7 @@ private:
 
 public:
 	GameEntity();
+	GameEntity(const GameEntity& other);
 	GameEntity(int id);
 
 	virtual ~GameEntity();

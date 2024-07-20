@@ -16,6 +16,11 @@ Script_PlayerStat::~Script_PlayerStat()
 {
 }
 
+SPtr<Component> Script_PlayerStat::Clone(SPtr<GameObject> copyOwner) const
+{
+	return SPtr<Component>();
+}
+
 void Script_PlayerStat::Activate()
 {
 	Script::Activate();

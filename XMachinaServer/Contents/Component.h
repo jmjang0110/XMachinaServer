@@ -32,6 +32,7 @@ private:
 
 public:
 	Component();
+	Component(const Component& other);
 	Component(SPtr<GameObject> owner, ComponentInfo::Type Type, UINT32 id);
 	virtual ~Component();
 
@@ -58,5 +59,9 @@ public:
 	bool IsAwake() const { return mIsAwake; }
 	bool IsStart() const { return mIsStart; }
 	bool IsActive() const { return mIsActive; }
+
+	// Clone 함수 선언
+	virtual SPtr<Component> Clone(SPtr<GameObject> copyOwner) const;
+
 };
 

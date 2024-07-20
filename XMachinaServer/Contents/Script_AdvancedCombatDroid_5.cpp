@@ -14,6 +14,11 @@ Script_AdvancedCombatDroid_5::~Script_AdvancedCombatDroid_5()
 {
 }
 
+SPtr<Component> Script_AdvancedCombatDroid_5::Clone(SPtr<GameObject> copyOwner) const
+{
+    return SPtr<Component>();
+}
+
 void Script_AdvancedCombatDroid_5::Activate()
 {
 }

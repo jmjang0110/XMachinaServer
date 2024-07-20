@@ -12,7 +12,7 @@ CollisionManager::~CollisionManager()
 {
 }
 
-bool CollisionManager::CollideCheck(ColliderSnapShot A, ColliderSnapShot B)
+bool CollisionManager::CollideCheck(ColliderSnapShot& A, ColliderSnapShot& B)
 {
 	/* Sphere - Sphere Collide Check */
 	for (auto& a : A.BoundingSphereList) {
@@ -47,4 +47,26 @@ bool CollisionManager::CollideCheck(ColliderSnapShot A, ColliderSnapShot B)
 	}
 
 	return false;
+}
+
+float CollisionManager::CollideCheckRay_MinimumDist(const ColliderSnapShot& A, Ray& R)
+{
+	float minDist = 999.f;
+	float dist    = 100;
+
+	for (int i = 0; i < A.BoundingBoxList.size(); ++i) {
+		bool IsCollide = A.BoundingBoxList[i].Intersects(_VECTOR(R.Position), XMVector3Normalize(_VECTOR(R.Direction)), dist);
+		if (IsCollide) {
+			minDist = min(minDist, dist);
+		}
+	}
+
+	for (int i = 0; i < A.BoundingSphereList.size(); ++i) {
+		bool IsCollide = A.BoundingSphereList[i].Intersects(_VECTOR(R.Position), _VECTOR(R.Direction), dist);
+		if (IsCollide) {
+			minDist = min(minDist, dist);
+		}
+	}
+
+	return minDist;
 }

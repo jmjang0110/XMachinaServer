@@ -374,7 +374,7 @@
     <ClInclude Include="Contents\BTNode.h">
       <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT</Filter>
     </ClInclude>
-    <ClInclude Include="Contents\GameStructure.h">
+    <ClInclude Include="Contents\GameBuilding.h">
       <Filter>Framework\Contents\GameWorld\Structure</Filter>
     </ClInclude>
     <ClInclude Include="Contents\BTTask.h">
@@ -617,7 +617,7 @@
     <ClCompile Include="Contents\BTNode.cpp">
       <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT</Filter>
     </ClCompile>
-    <ClCompile Include="Contents\GameStructure.cpp">
+    <ClCompile Include="Contents\GameBuilding.cpp">
       <Filter>Framework\Contents\GameWorld\Structure</Filter>
     </ClCompile>
     <ClCompile Include="Contents\BTTask.cpp">

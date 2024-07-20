@@ -15,6 +15,7 @@
 
 Coordinate SectorController::Total_SectorSize = {};
 Coordinate SectorController::Each_SectorSize  = {};
+Coordinate SectorController::SectorStartPos   = {};
 
 
 SectorController::SectorController()
@@ -62,56 +63,6 @@ bool SectorController::Init(SPtr_GameRoom owner)
     return true;
 }
 
-void SectorController::UpdateSectorsActivate(Vec3 player_pos, float radius)
-{
-    // 매번 섹터를 Activate할 필요가 있나? 그냥 View List 안에 있는 것만 업데이트 하자
-    // 아래 코드는 일단 냄겨두겠다.. 
-    std::vector<Coordinate> playerSectors{};
-
-    Coordinate curSectorIdx = GetSectorIdx(player_pos); 
-    playerSectors.push_back(curSectorIdx);
-
-    /// ---------------------------------------
-    /// [if(북On/서On)] [ 북 ] [if(북On/동On)]
-    /// [ 서 ]          curidx          [ 동 ]
-    /// [if(서On/남On]] [ 남 ] [if(동On/남On)]   
-    /// ______________________________________
-    Vec3 E                     = player_pos; E.x += radius;
-    Coordinate East_SectorIdx  = GetSectorIdx(E);
-    Vec3 N                     = player_pos; N.y += radius;
-    Coordinate North_SectorIdx = GetSectorIdx(N);
-    Vec3 W                     = player_pos; W.x -= radius;
-    Coordinate West_SectorIdx  = GetSectorIdx(W);
-    Vec3 S                     = player_pos; S.y -= radius;
-    Coordinate South_SectorIdx = GetSectorIdx(S);
-
-    bool E_check = curSectorIdx != East_SectorIdx;
-    bool N_check = curSectorIdx != North_SectorIdx;
-    bool W_check = curSectorIdx != West_SectorIdx;
-    bool S_check = curSectorIdx != South_SectorIdx;
-
-    if (E_check)
-        mSectors[East_SectorIdx.z][East_SectorIdx.x]->Activate();   // Ref ++
-    if (N_check)
-        mSectors[North_SectorIdx.z][North_SectorIdx.x]->Activate(); // Ref ++
-    if (W_check)
-        mSectors[West_SectorIdx.z][West_SectorIdx.x]->Activate();   // Ref ++
-    if (S_check)
-        mSectors[South_SectorIdx.z][South_SectorIdx.x]->Activate(); // Ref ++
-    
-    if (E_check && N_check)
-        mSectors[North_SectorIdx.z][East_SectorIdx.x]->Activate();  // Ref ++
-    if (W_check && N_check)                                         
-        mSectors[North_SectorIdx.z][West_SectorIdx.x]->Activate();  // Ref ++
-    if (W_check && S_check)                                         
-        mSectors[South_SectorIdx.z][West_SectorIdx.x]->Activate();  // Ref ++
-    if (E_check && S_check)                                         
-        mSectors[South_SectorIdx.z][East_SectorIdx.x]->Activate();  // Ref ++
-
-    
-
-
-}
 
 ViewList SectorController::UpdateViewList(GamePlayer* player, Vec3 player_pos, float viewRange_radius)
 {
@@ -213,10 +164,9 @@ bool SectorController::AddMonsterInSector(Coordinate sectorIdx, int monster_id ,
 
 }
 
-float SectorController::CheckCollisionsRay(Coordinate sectorIdx, const Ray& ray) const
+float SectorController::CollideCheckRay_MinimumDist(Coordinate sectorIdx, const Ray& ray,GameObjectInfo::Type targetType) const
 {
-   // return mSectors[sectorIdx.z][sectorIdx.x]->CheckCollisionsRay(ray);
-    return 0.f;
+   return mSectors[sectorIdx.z][sectorIdx.x]->CollideCheckRay_MinimumDist(ray, targetType);
 }
 
 Coordinate SectorController::GetSectorIdxByPosition(Vec3 Pos)
@@ -231,3 +181,9 @@ Coordinate SectorController::GetSectorIdxByPosition(Vec3 Pos)
     return sectorIdx;
 }
 
+Coordinate SectorController::GetSectorStartPos(Coordinate sectorIdx)
+{
+    int startX = SectorController::SectorStartPos.x + sectorIdx.x * SectorController::Each_SectorSize.x;
+    int startZ = SectorController::SectorStartPos.z + sectorIdx.z * SectorController::Each_SectorSize.z;
+    return Coordinate(startX, startZ);
+}

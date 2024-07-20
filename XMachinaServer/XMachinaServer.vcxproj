@@ -181,7 +181,7 @@
     <ClInclude Include="Contents\GamePlayer.h" />
     <ClInclude Include="Contents\GameRoom.h" />
     <ClInclude Include="Contents\GameSession.h" />
-    <ClInclude Include="Contents\GameStructure.h" />
+    <ClInclude Include="Contents\GameBuilding.h" />
     <ClInclude Include="Contents\GameWorld.h" />
     <ClInclude Include="Contents\ObjectSnapShot.h" />
     <ClInclude Include="Contents\TileMap.h" />
@@ -273,7 +273,7 @@
     <ClCompile Include="Contents\GamePlayer.cpp" />
     <ClCompile Include="Contents\GameRoom.cpp" />
     <ClCompile Include="Contents\GameSession.cpp" />
-    <ClCompile Include="Contents\GameStructure.cpp" />
+    <ClCompile Include="Contents\GameBuilding.cpp" />
     <ClCompile Include="Contents\GameWorld.cpp" />
     <ClCompile Include="Contents\BTTaskM_Attack.cpp" />
     <ClCompile Include="Contents\BTTaskM_CheckAttackRange.cpp" />

@@ -14,6 +14,11 @@ Script_PheroDropper::~Script_PheroDropper()
 {
 }
 
+SPtr<Component> Script_PheroDropper::Clone(SPtr<GameObject> copyOwner) const
+{
+	return SPtr<Component>();
+}
+
 void Script_PheroDropper::Activate()
 {
 }

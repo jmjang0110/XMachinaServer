@@ -3,6 +3,11 @@
 #include "Transform.h"
 #include "ServerLib/ServerNetwork.h"
 #include "Framework.h"
+#include "Component.h"
+#include "Script.h"
+#include "Transform.h"
+#include "Collider.h"
+
 
 GameObject::GameObject()
 	: GameEntity()
@@ -102,5 +107,28 @@ bool GameObject::RegisterUpdate(std::chrono::system_clock::duration offset)
 
 	return true;
 
+}
+
+SPtr<GameObject> GameObject::DeepCopy() const
+{
+	SPtr<GameObject> copy = MEMORY->Make_Shared<GameObject>();
+
+	copy->mType = this->mType;
+
+	for (const auto& pair : mComponents)
+	{
+		copy->mComponents[pair.first] = pair.second->Clone(copy); // Assume Component has a Clone() method
+		copy->mComponents[pair.first]->SetOwner(copy);
+
+	}
+
+	for (const auto& pair : mScripts)
+	{
+		copy->mScripts[pair.first] = dynamic_pointer_cast<Script>(pair.second->Clone(copy)); // Assume Script has a Clone() method
+		copy->mScripts[pair.first]->SetOwner(copy);
+
+	}
+
+	return copy;
 }
 

@@ -69,6 +69,13 @@ void GamePlayer::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 {
 }
 
+void GamePlayer::Exit()
+{
+	/* Exit Room Clear Data */
+	mInfo.Vlist.Clear();
+
+}
+
 void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vector<SPtr<GameMonster>> monster)
 {
 	mInfo.VList_Prev = mInfo.Vlist;

@@ -6,12 +6,40 @@
 Transform::Transform()
 {
 }
+// 복사 생성자 구현
+Transform::Transform(const Transform& other)
+	: Component(other),
+	mIndex(other.mIndex),
+	mWorldTransform(other.mWorldTransform),
+	mLocalTransform(other.mLocalTransform),
+	mPrevTransform(other.mPrevTransform),
+	mPosition(other.mPosition),
+	mRight(other.mRight),
+	mUp(other.mUp),
+	mLook(other.mLook),
+	mObject(other.mObject),
+	mUseObjCB(other.mUseObjCB),
+	mObjCBCount(other.mObjCBCount),
+	mObjCBIndices(other.mObjCBIndices),
+	mObjectCB(other.mObjectCB),
+	mParent(other.mParent),
+	mChild(other.mChild),
+	mSibling(other.mSibling)
+{
+
+}
 Transform::Transform(SPtr<GameObject> owner, ComponentInfo::Type Type)
 	: Component(owner, ComponentInfo::Type::Transform, static_cast<UINT32>(ComponentInfo::Type::Transform))
 {
 }
 Transform::~Transform()
 {
+}
+
+
+SPtr<Component> Transform::Clone(SPtr<GameObject> CopyOwner) const
+{
+	return SPtr<Component>();
 }
 bool Transform::WakeUp()
 {
@@ -50,7 +78,7 @@ TransformSnapShot Transform::GetSnapShot()
 void Transform::SwapSnapShotIndex()
 {
 	// [SnapShot Index] Swap!!!!
-	mSnapShotIndex != mSnapShotIndex;
+	mSnapShotIndex = !mSnapShotIndex.load();
 }
 
 void Transform::UpdateTransofrmSnapShot()

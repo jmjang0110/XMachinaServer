@@ -98,8 +98,15 @@ namespace MonsterTask {
 	private:
 		SPtr<Script_EnemyController>  mEnemyController;
 		SPtr<Script_Enemy>			  mStat;
+
+	private:
+		std::vector<Vec3>	mWayPoints{};
+		int					mCurrWayPointIdx{};
+		float				mPatrolSpeed{};
+
 	public:
 		virtual BTNodeState Evaluate() override;
+		void SetWayPoints(std::vector<Vec3>&& wayPoints);
 
 	public:
 		Patrol(SPtr_GameObject owner, std::function<void()> callback = nullptr);
@@ -123,7 +130,8 @@ namespace MonsterTask {
 
 	public:
 		virtual BTNodeState Evaluate() override;
-
+		// x절편이 음수인지 양수인지 확인하는 함수 정의
+		bool isXInterceptPositive(const Vec3& To, const Vec3& From);
 	public:
 		MoveToPath(SPtr_GameObject owner, std::function<void()> callback = nullptr);
 		~MoveToPath();
@@ -141,6 +149,8 @@ namespace MonsterTask {
 
 	public:
 		virtual BTNodeState Evaluate() override;
+		// x절편이 음수인지 양수인지 확인하는 함수 정의
+		bool isXInterceptPositive(const Vec3& To, const Vec3& From);
 
 
 	public:
@@ -159,10 +169,10 @@ namespace MonsterTask {
 		SPtr<Script_Enemy>			  mStat;
 
 
-	private:
+	protected:
 		std::priority_queue<PQNode, std::vector<PQNode>, std::greater<PQNode>> pq;
 
-		std::stack<Vec3>*				 mPath;
+		std::stack<Vec3>*				mPath;
 		Path::Pos						mStart;
 		Path::Pos						mDest;
 
@@ -206,7 +216,7 @@ namespace MonsterTask {
 	/// __________________________________________________________________________
 	/// -------------------------------------------------------------------------+
 
-	class PathPlanningToTarget : public BTTask {
+	class PathPlanningToTarget : public PathPlanning_AStar {
 	private:
 		SPtr<Script_EnemyController>  mEnemyController;
 		SPtr<Script_Enemy>			  mStat;
@@ -268,8 +278,8 @@ namespace MonsterTask {
 		SPtr<Script_EnemyController>  mEnemyController;
 		SPtr<Script_Enemy>			  mStat;
 
-		SPtr<GameObject>			mTarget;
-
+		SPtr<GamePlayer>			mTargetPlayer;
+		SPtr<GameMonster>			mTargetMonster;
 
 	public:
 		virtual BTNodeState Evaluate() override;

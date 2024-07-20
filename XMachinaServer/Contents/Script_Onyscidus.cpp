@@ -14,6 +14,11 @@ Script_Onyscidus::~Script_Onyscidus()
 {
 }
 
+SPtr<Component> Script_Onyscidus::Clone(SPtr<GameObject> copyOwner) const
+{
+	return SPtr<Component>();
+}
+
 void Script_Onyscidus::Activate()
 {
 }

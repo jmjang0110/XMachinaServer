@@ -128,7 +128,6 @@ bool Framework::Init(HINSTANCE& hInst)
 	///	GAME MANAGER : Game Room, Player ... °ü¸®
 	/// -----------------------------------------+
 	RESOURCE_MGR->Init();
-	GAME_WORLD->Init();
 	GAME_MGR->Init();	
 
 
