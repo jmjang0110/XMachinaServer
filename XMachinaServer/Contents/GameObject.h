@@ -7,6 +7,8 @@
 
 
 
+
+
 class GameObject : public GameEntity
 {
 private:
@@ -46,6 +48,14 @@ public:
 	SPtr<Collider> GetCollider() { return GetComponent<Collider>(ComponentInfo::Type::Collider); }
 
 public:
+	// 깊은 복사 함수 선언
+	virtual SPtr<GameObject> Clone() const;
+
+protected:
+	void CloneComponents(SPtr<GameObject>& copy) const;
+	void CloneScripts(SPtr<GameObject>& copy) const;
+
+public:
 	template<typename T>
 	SPtr<T>  GetComponent(ComponentInfo::Type componentTYpe);
 
@@ -59,9 +69,10 @@ public:
 	template<typename T>
 	SPtr<T>  AddScript(ScriptInfo::Type key);
 
-public:
-	// 깊은 복사 함수 선언
-	SPtr<GameObject> DeepCopy() const;
+private:
+	SPtr<Script> AddScript(ScriptInfo::Type key);
+	SPtr<Component> AddComponent(ComponentInfo::Type key);
+
 };
 
 template<typename T>

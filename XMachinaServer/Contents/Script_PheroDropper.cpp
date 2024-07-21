@@ -14,37 +14,50 @@ Script_PheroDropper::~Script_PheroDropper()
 {
 }
 
-SPtr<Component> Script_PheroDropper::Clone(SPtr<GameObject> copyOwner) const
+void Script_PheroDropper::Clone(SPtr<Component> other) 
 {
-	return SPtr<Component>();
+	Script::Clone(other);
+	SPtr<Script_PheroDropper> otherScript = std::static_pointer_cast<Script_PheroDropper>(other);
+
 }
 
 void Script_PheroDropper::Activate()
 {
+	Script::Activate();
+
 }
 
 void Script_PheroDropper::DeActivate()
 {
+	Script::DeActivate();
+
 }
 
 bool Script_PheroDropper::WakeUp()
 {
+	Script::WakeUp();
+
 
 	return true;
 }
 
 bool Script_PheroDropper::Start()
 {
+	Script::Start();
+
 
 	return true;
 }
 
 bool Script_PheroDropper::Update()
 {
+	Script::Update();
 
 	return true;
 }
 
 void Script_PheroDropper::OnDestroy()
 {
+	Script::OnDestroy();
+
 }

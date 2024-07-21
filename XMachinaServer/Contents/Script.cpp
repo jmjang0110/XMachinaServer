@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Script.h"
+#include "GameObject.h"
 
 Script::Script()
 	: Component()
@@ -16,9 +17,13 @@ Script::~Script()
 {
 }
 
-SPtr<Component> Script::Clone(SPtr<GameObject> copyOwner) const
+
+void Script::Clone(SPtr<Component> other) 
 {
-	return SPtr<Component>();
+	Component::Clone(other);
+
+	SPtr<Script> otherScript = std::static_pointer_cast<Script>(other);
+
 }
 
 void Script::Activate()

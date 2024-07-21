@@ -14,9 +14,20 @@ Script_EnemyStat::~Script_EnemyStat()
 {
 }
 
-SPtr<Component> Script_EnemyStat::Clone(SPtr<GameObject> copyOwner) const
+void Script_EnemyStat::Clone(SPtr<Component> other) 
 {
-	return SPtr<Component>();
+	Script::Clone(other);
+	SPtr<Script_EnemyStat> otherScript = std::static_pointer_cast<Script_EnemyStat>(other);
+
+	this->mEnemyLevel			= otherScript->mEnemyLevel			;
+	this->mPheroLevel			= otherScript->mPheroLevel			;
+	this->mMoveSpeed			= otherScript->mMoveSpeed			;
+	this->mRotationSpeed		= otherScript->mRotationSpeed		;
+	this->mAttackRotationSpeed	= otherScript->mAttackRotationSpeed	;
+	this->mDetectionRange		= otherScript->mDetectionRange		;
+	this->mAttackRate			= otherScript->mAttackRate			;
+	this->mAttackRange			= otherScript->mAttackRange			;
+	this->mAttackCoolTime		= otherScript->mAttackCoolTime		;
 }
 
 void Script_EnemyStat::Activate()

@@ -17,9 +17,11 @@ Script_Ursacetus::~Script_Ursacetus()
 {
 }
 
-SPtr<Component> Script_Ursacetus::Clone(SPtr<GameObject> copyOwner) const
+void Script_Ursacetus::Clone(SPtr<Component> other) 
 {
-    return SPtr<Component>();
+    Script_Enemy::Clone(other);
+    SPtr<Script_Ursacetus> otherScript = std::static_pointer_cast<Script_Ursacetus>(other);
+
 }
 
 void Script_Ursacetus::Activate()

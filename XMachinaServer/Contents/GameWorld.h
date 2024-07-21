@@ -13,9 +13,6 @@
 
 /// -------------------------------+
 
-#include "Monster_Ursacetus.h"
-#include "Monster_AdvancedCombatDroid_5.h"
-#include "Monster_Onyscidus.h"
 #include "HeightMapImage.h"
 
 #define GAME_WORLD GameWorld::GetInst()

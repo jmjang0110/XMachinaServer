@@ -16,9 +16,23 @@ Script_PlayerStat::~Script_PlayerStat()
 {
 }
 
-SPtr<Component> Script_PlayerStat::Clone(SPtr<GameObject> copyOwner) const
+void Script_PlayerStat::Clone(SPtr<Component> other) 
 {
-	return SPtr<Component>();
+	Script_Stat::Clone(other);
+	SPtr<Script_PlayerStat> otherScript = std::static_pointer_cast<Script_PlayerStat>(other);
+
+	mRespawn_Position	= otherScript->mRespawn_Position;// 리스폰 지점
+	mScore				= otherScript->mScore;
+
+	 mStartPheroAmount	= otherScript->mStartPheroAmount;
+	 mCurrPheroAmount	= otherScript->mCurrPheroAmount;
+	 mMaxPheroAmount	= otherScript->mMaxPheroAmount;
+	 mPheroRegenRate	= otherScript->mPheroRegenRate;
+						
+	 mCrntWeaponNum		= otherScript->mCrntWeaponNum;
+	 mNextWeaponNum		= otherScript->mNextWeaponNum;
+
+
 }
 
 void Script_PlayerStat::Activate()

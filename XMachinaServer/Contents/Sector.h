@@ -31,14 +31,17 @@ private:
 private:
 	std::atomic<int> mActivateRef = 0;
 
-	std::unordered_map<UINT32, SPtr<GameMonster>>	  mMonsters;
-	std::unordered_map<UINT32, SPtr<GameNPC>>		  mNPCs;
-	std::unordered_map<UINT32, SPtr<GameBuilding>>   mStructures; // 구조물 ( ex. 빌딩.. ) 
+	std::unordered_map<UINT32, SPtr<GameMonster>>		 mMonsters;
+	std::unordered_map<UINT32, SPtr<GameNPC>>			 mNPCs;
+	std::unordered_map<UINT32, SPtr<GameObject>>		 mBuildings; // 구조물 ( ex. 빌딩.. ) 
 
 public:
 	Sector();
 	Sector(UINT32 id, Coordinate sectorIdx); /* NPC 생성 아이디 - (생성되고 소멸될 때 까지 임시 아이디)*/
 	virtual ~Sector();
+
+public:
+	void PrintInfo();
 
 
 public:
@@ -56,10 +59,12 @@ public:
 
 	/* 초기화 - Room/NPCController가 Sector에 Monster를 추가한다. */
 public:
-	void Init(SectorInfo::Type type = SectorInfo::Type::None);
+	void Init(Coordinate Index, SectorInfo::Type type = SectorInfo::Type::None);
 
 	bool AddMonster(UINT32 id, SPtr<GameMonster> monster);
 	bool AddNPC(UINT32 id, SPtr<GameNPC> npc);
+	bool AddBuilding(UINT32 id, SPtr<GameObject> building);
+
 	
 public:
 	/// +---------------------------------------------------------

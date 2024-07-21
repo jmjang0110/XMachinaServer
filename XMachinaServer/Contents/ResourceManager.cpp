@@ -4,6 +4,22 @@
 #include "FileIO.h"
 #include "GameObject.h"
 #include "Collider.h"
+#include "Transform.h"
+#include "SectorController.h"
+
+#include "Script_Building.h"
+
+#include "Script_Enemy.h"
+#include "Script_EnemyController.h"
+
+#include "Script_AdvancedCombatDroid_5.h"
+#include "Script_Ursacetus.h"
+#include "Script_Onyscidus.h"
+
+#include "Script_BehaviorTree.h"
+#include "Script_DefaultEnemyBT.h"
+
+
 
 
 namespace {
@@ -89,34 +105,96 @@ void BattleScene::Load()
 		}
 
 		if (sameObjectCnt > 0) {
-			SPtr<GameObject> object = std::make_shared<GameObject>();
-			object->SetType(objectType);
-			object->SetID(i);
-			
-			Matrix transform = FileIO::ReadVal<Matrix>(file);
+			/// +---------------------------------------------------
+			///	¢º Game Monster 
+			/// ---------------------------------------------------+
+			if (objectType == GameObjectInfo::Type::Monster_Onyscidus ||
+				objectType == GameObjectInfo::Type::Monster_Ursacetus ||
+				objectType == GameObjectInfo::Type::Monster_AdvancedCombat_5)
+			{
+				SPtr<GameMonster> object = std::make_shared<GameMonster>();
+				object->SetType(objectType);
 
-			object->AddComponent<Transform>(ComponentInfo::Type::Transform)->SetLocalTransform(transform);
-			const auto& collider = object->AddComponent<Collider>(ComponentInfo::Type::Collider);
+				if (model) {
+					object->SetName(model->mName);
+					Matrix transformMatrix = FileIO::ReadVal<Matrix>(file);
+					model->mTransform = transformMatrix;
 
-			if (model) {
-				object->SetName(model->mName);
-				model->mTransform = transform;
-				
+					/// +---------------------------------------------------
+					///	¡å Component : Tarnsform 
+					/// ---------------------------------------------------+
+					SPtr<Transform> transform = object->AddComponent<Transform>(ComponentInfo::Type::Transform);
+					transform->SetLocalTransform(transformMatrix);
+					transform->SetPosition(Transform::GetPosition(transformMatrix));
 
-				collider->SetBoundingSphereList(model->mBSList);
-				collider->SetBoundingBoxList(model->mBoxList);
+					/// +---------------------------------------------------
+					///	¡å Component : Collider 
+					/// ---------------------------------------------------+
+					const auto& collider = object->AddComponent<Collider>(ComponentInfo::Type::Collider);
+					collider->SetBoundingSphereList(model->mBSList);
+					collider->SetBoundingBoxList(model->mBoxList);
+
+					UINT32 ID = static_cast<UINT32>(mEnemies.size());
+					object->SetID(ID);
+					object->SetMonsterID(ID);
+
+
+					/// +---------------------------------------------------
+					///	¡å Script  
+					/// ---------------------------------------------------+
+					if (objectType == GameObjectInfo::Type::Monster_Onyscidus) {
+						object->SetMonsterType(MonsterType::Onyscidus);
+						object->AddScript<Script_Onyscidus>(ScriptInfo::Type::Onyscidus);
+					}
+					else if (objectType == GameObjectInfo::Type::Monster_Ursacetus) {
+						object->SetMonsterType(MonsterType::Ursacetus);
+						object->AddScript<Script_Ursacetus>(ScriptInfo::Type::Ursacetus);
+					}
+					else if (objectType == GameObjectInfo::Type::Monster_AdvancedCombat_5) {
+						object->SetMonsterType(MonsterType::AdvancedCombatDroid_5);
+						object->AddScript<Script_AdvancedCombatDroid_5>(ScriptInfo::Type::AdvancedCombatDroid_5);
+					}
+
+					object->AddScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
+					object->AddScript<Script_DefaultEnemyBT>(ScriptInfo::Type::DefaultEnemyBT);
+					
+					mEnemies.push_back(object);
+
+				}
+			}
+			else if(objectType == GameObjectInfo::Type::Building){
+
+				SPtr<GameObject> object = std::make_shared<GameObject>();
+				object->SetType(objectType);
+
+				if (model) {
+					object->SetName(model->mName);
+					Matrix transformMatrix = FileIO::ReadVal<Matrix>(file);
+					model->mTransform = transformMatrix;
+
+					/// +---------------------------------------------------
+					///	¡å Component : Tarnsform 
+					/// ---------------------------------------------------+
+					SPtr<Transform> transform = object->AddComponent<Transform>(ComponentInfo::Type::Transform);
+					transform->SetLocalTransform(transformMatrix);
+					transform->SetPosition(Transform::GetPosition(transformMatrix));
+
+					/// +---------------------------------------------------
+					///	¡å Component : Collider 
+					/// ---------------------------------------------------+
+					const auto& collider = object->AddComponent<Collider>(ComponentInfo::Type::Collider);
+					collider->SetBoundingSphereList(model->mBSList);
+					collider->SetBoundingBoxList(model->mBoxList);
+
+					UINT32 ID = static_cast<UINT32>(mBuildings.size());
+					object->SetID(ID);
+
+					const auto& BuildingScript = object->AddScript<Script_Building>(ScriptInfo::Type::Building);
+					Coordinate SectorIdx       = SectorController::GetSectorIdxByPosition(Transform::GetPosition(transformMatrix));
+					mBuildings.push_back(object);
+				}
 			}
 			
-			switch (objectTag) {
-			case ObjectTag::Building:
-				mBuildings.push_back(object);
-				break;
-			case ObjectTag::Enemy:
-				mEnemies.push_back(object);
-				break;
-			default:
-				break;
-			}
 
 			--sameObjectCnt;
 		}

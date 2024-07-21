@@ -10,9 +10,9 @@ struct TransformSnapShot : public ObjectSnapShot
 	Vec3 GetPosition() { return Vec3(WorldTransform._41, WorldTransform._42, WorldTransform._43); }
 	Vec3 GetRotation() { return Quaternion::ToEuler(Quat::CreateFromRotationMatrix(WorldTransform)); }
 
-	Vec3 GetRight()  { return Vector3::Normalized(Vec3(WorldTransform._11, WorldTransform._12, WorldTransform._13)); }
-	Vec3 GetUp()     { return Vector3::Normalized(Vec3(WorldTransform._21, WorldTransform._22, WorldTransform._23)); }
-	Vec3 GetLook()   { return Vector3::Normalized(Vec3(WorldTransform._31, WorldTransform._32, WorldTransform._33)); }
+	Vec3 GetRight()    { return Vector3::Normalized(Vec3(WorldTransform._11, WorldTransform._12, WorldTransform._13)); }
+	Vec3 GetUp()       { return Vector3::Normalized(Vec3(WorldTransform._21, WorldTransform._22, WorldTransform._23)); }
+	Vec3 GetLook()     { return Vector3::Normalized(Vec3(WorldTransform._31, WorldTransform._32, WorldTransform._33)); }
 };
 
 // position, rotation of an object.
@@ -62,7 +62,7 @@ public:
 	Transform(SPtr<GameObject> owner, ComponentInfo::Type Type);
 	~Transform();
 
-	virtual SPtr<Component> Clone(SPtr<GameObject> copyOwner) const;
+	virtual void Clone(SPtr<Component> other) ;
 
 	virtual bool WakeUp() override;
 	virtual bool Start() override;
@@ -231,5 +231,12 @@ private:
 	// set local transform from axis vectors
 	void UpdateLocalTransform(bool isComputeWorldTransform = true);
 
+
+	public:
+		static Vec3 GetPosition(Matrix& mat); 
+		static Vec3 GetRotation(Matrix& mat); 
+		static Vec3 GetRight(Matrix& mat);	
+		static Vec3 GetUp(Matrix& mat);		
+		static Vec3 GetLook(Matrix& mat);	 
 
 };

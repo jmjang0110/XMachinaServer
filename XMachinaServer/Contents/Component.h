@@ -53,6 +53,7 @@ public:
 
 public:
 	void		SetOwner(SPtr_GameObject owner) { mOwner = owner; }
+	void SetType(ComponentInfo::Type type) { mType = type; }
 	SPtr_GameObject GetOwner() { return mOwner; }
 
 public:
@@ -61,7 +62,7 @@ public:
 	bool IsActive() const { return mIsActive; }
 
 	// Clone 함수 선언
-	virtual SPtr<Component> Clone(SPtr<GameObject> copyOwner) const;
+	virtual void Clone(SPtr<Component> other) ;
 
 };
 

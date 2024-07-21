@@ -127,8 +127,8 @@ bool Framework::Init(HINSTANCE& hInst)
 	/// +-----------------------------------------
 	///	GAME MANAGER : Game Room, Player ... °ü¸®
 	/// -----------------------------------------+
-	RESOURCE_MGR->Init();
-	GAME_MGR->Init();	
+	RESOURCE_MGR->Init();	// Scene, Models ... ( Game Resources ) Load 
+	GAME_MGR->Init();		// Room - PlayerController, SectorController, NPCController ( Init )
 
 
 	LOG_MGR->Cout("[SUCCESS] GAME_MGR INIT\n");

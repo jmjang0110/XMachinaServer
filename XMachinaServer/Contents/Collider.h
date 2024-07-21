@@ -38,7 +38,7 @@ public:
 	~Collider();
 
 public:
-	virtual SPtr<Component> Clone(SPtr<GameObject> copyOwner) const;
+	virtual void Clone(SPtr<Component> CopyT) ;
 
 
 	virtual void Activate();

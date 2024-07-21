@@ -35,9 +35,9 @@ private:
 	/// +-------------------------------------------
 	///	 >> ▶▶▶▶▶ Player Info 
 	/// -------------------------------------------+
-	SPtr_GameObject	mTarget           = {};		// self GameObject
-	Vec3			mRespawn_Position = {};		// 리스폰 지점
-	int				mScore            = {};
+	SPtr<GameObject>	mTarget           = {};		// self GameObject
+	Vec3				mRespawn_Position = {};		// 리스폰 지점
+	int					mScore            = {};
 
 	/// +-------------------------------------------
 	///	 >> Phero
@@ -70,7 +70,7 @@ public:
 	/// +------------------------------
 	///			virtual function 
 	/// ------------------------------+
-	virtual SPtr<Component> Clone(SPtr<GameObject> copyOwner) const;
+	virtual void Clone(SPtr<Component> other) ;
 
 	virtual void Activate();
 	virtual void DeActivate();

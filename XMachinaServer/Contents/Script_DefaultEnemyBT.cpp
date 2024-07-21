@@ -132,9 +132,10 @@ void Script_DefaultEnemyBT::OnDisable()
 
 }
 
-SPtr<Component> Script_DefaultEnemyBT::Clone(SPtr<GameObject> copyOwner) const
+void Script_DefaultEnemyBT::Clone(SPtr<Component> other) 
 {
-	return SPtr<Component>();
+	Script_BehaviorTree::Clone(other);
+
 }
 
 void Script_DefaultEnemyBT::Activate()

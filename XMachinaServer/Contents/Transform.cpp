@@ -37,9 +37,38 @@ Transform::~Transform()
 }
 
 
-SPtr<Component> Transform::Clone(SPtr<GameObject> CopyOwner) const
+void Transform::Clone(SPtr<Component> other) 
 {
-	return SPtr<Component>();
+	Component::Clone(other);
+
+	SPtr<Transform> otherTransform = std::static_pointer_cast<Transform>(other);
+	// Create a new Transform object
+
+	// Copy primitive data members
+	this->mIndex          = otherTransform->mIndex;
+	this->mWorldTransform = otherTransform->mWorldTransform;
+	this->mLocalTransform = otherTransform->mLocalTransform;
+	this->mPrevTransform  = otherTransform->mPrevTransform;
+	this->mPosition       = otherTransform->mPosition;
+	this->mRight          = otherTransform->mRight;
+	this->mUp             = otherTransform->mUp;
+	this->mLook           = otherTransform->mLook;
+	this->mObject         = otherTransform->mObject;  // Note: Depending on what mObject is, you might need a deep copy
+
+	// Copy mutable data members
+	mUseObjCB     = otherTransform->mUseObjCB;
+	mObjCBCount   = otherTransform->mObjCBCount;
+	mObjCBIndices = otherTransform->mObjCBIndices;
+	mObjectCB     = otherTransform->mObjectCB;
+
+	// Set the parent, child, and sibling relationships to nullptr for the new transform
+	mParent  = nullptr;
+	mChild   = nullptr;
+	mSibling = nullptr;
+
+	// Associate the new Transform with the copyOwner
+	SetType(ComponentInfo::Type::Transform);
+
 }
 bool Transform::WakeUp()
 {
@@ -545,6 +574,36 @@ void Transform::UpdateLocalTransform(bool isComputeWorldTransform)
 		ComputeWorldTransform();
 	}
 }
+
+Vec3 Transform::GetPosition(Matrix& mat)
+{
+	return Vec3(mat._41, mat._42, mat._43);
+}
+
+Vec3 Transform::GetRotation(Matrix& mat)
+{
+	return Quaternion::ToEuler(Quat::CreateFromRotationMatrix(mat));
+}
+
+
+Vec3 Transform::GetRight(Matrix& mat)
+{
+	return Vector3::Normalized(Vec3(mat._11, mat._12, mat._13));
+}
+
+Vec3 Transform::GetUp(Matrix& mat)
+{
+	return Vector3::Normalized(Vec3(mat._21, mat._22, mat._23));
+}
+
+
+Vec3 Transform::GetLook(Matrix& mat)
+{
+	return Vector3::Normalized(Vec3(mat._31, mat._32, mat._33));
+}
+
+
+
 
 void Transform::ComputeWorldTransform(const Matrix* parentTransform)
 {

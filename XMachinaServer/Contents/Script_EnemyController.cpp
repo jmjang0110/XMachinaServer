@@ -16,11 +16,14 @@ Script_EnemyController::Script_EnemyController(SPtr<GameObject> owner, ScriptInf
 
 Script_EnemyController::~Script_EnemyController()
 {
+
 }
 
-SPtr<Component> Script_EnemyController::Clone(SPtr<GameObject> copyOwner) const
+void Script_EnemyController::Clone(SPtr<Component> other) 
 {
-	return SPtr<Component>();
+	Script::Clone(other);
+	SPtr<Script_EnemyController> otherScript = std::static_pointer_cast<Script_EnemyController>(other);
+
 }
 
 void Script_EnemyController::Activate()

@@ -23,6 +23,26 @@ Sector::~Sector()
 {
 }
 
+void Sector::PrintInfo()
+{
+	LOG_MGR->Cout("-------------------------------------------------\n");
+	LOG_MGR->Cout("SECTOR ( ", mIndex.x, ", ", mIndex.z, " ) \n");
+
+	if (SectorInfo::Type::Monsters == mType)
+		LOG_MGR->Cout("MONSTERS TYPE\n");
+	
+	if (SectorInfo::Type::Boss == mType)
+		LOG_MGR->Cout("BOSS TYPE\n");
+	
+	if (SectorInfo::Type::None == mType)
+		LOG_MGR->Cout("None TYPE\n");
+	
+	LOG_MGR->Cout("INFO - NPCS : ", mNPCs.size(), " Buildings : ", mBuildings.size(), " Monsters : ", mMonsters.size(), "\n");
+
+
+
+}
+
 void Sector::Activate()
 {
 	if (mActivateRef.load() == 0)
@@ -66,10 +86,10 @@ void Sector::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 {
 }
 
-void Sector::Init(SectorInfo::Type type)
+void Sector::Init(Coordinate Index, SectorInfo::Type type)
 {
-	mType = type;
-
+	mType  = type;
+	mIndex = Index;
 }
 
 bool Sector::AddMonster(UINT32 id, SPtr<GameMonster> monster)
@@ -87,6 +107,16 @@ bool Sector::AddNPC(UINT32 id, SPtr<GameNPC> npc)
 	auto it = mNPCs.find(id);
 	if (it == mNPCs.end()) {
 		mNPCs.insert(std::make_pair(id, npc));
+		return true;
+	}
+	return false;
+}
+
+bool Sector::AddBuilding(UINT32 id, SPtr<GameObject> building)
+{
+	auto it = mBuildings.find(id);
+	if (it == mBuildings.end()) {
+		mBuildings.insert(std::make_pair(id, building));
 		return true;
 	}
 	return false;
@@ -116,8 +146,8 @@ float Sector::CollideCheckRay_MinimumDist(const Ray& ray, GameObjectInfo::Type t
 	float minDist = 999.f;
 	float Result;
 
-	for (int i = 0; i < mStructures.size(); ++i) {
-		const ColliderSnapShot snapShot = mStructures[i]->GetCollider()->GetSnapShot();
+	for (int i = 0; i < mBuildings.size(); ++i) {
+		const ColliderSnapShot snapShot = mBuildings[i]->GetCollider()->GetSnapShot();
 		Ray R = ray;
 
 		Result = COLLISION_MGR->CollideCheckRay_MinimumDist(snapShot, R);

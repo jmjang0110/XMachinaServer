@@ -14,9 +14,14 @@ Script_Phero::~Script_Phero()
 {
 }
 
-SPtr<Component> Script_Phero::Clone(SPtr<GameObject> copyOwner) const
+void Script_Phero::Clone(SPtr<Component> other) 
 {
-    return SPtr<Component>();
+    Script::Clone(other);
+    SPtr<Script_Phero> otherScript = std::static_pointer_cast<Script_Phero>(other);
+
+    this->mAmount   = otherScript->mAmount;
+    this->mLifeTime = otherScript->mLifeTime;
+
 }
 
 void Script_Phero::Activate()

@@ -27,9 +27,11 @@ Script_Enemy::~Script_Enemy()
 
 }
 
-SPtr<Component> Script_Enemy::Clone(SPtr<GameObject> copyOwner) const
+void Script_Enemy::Clone(SPtr<Component> other) 
 {
-	return SPtr<Component>();
+	Script_EnemyStat::Clone(other);
+	SPtr<Script_Enemy> otherScript = std::static_pointer_cast<Script_Enemy>(other);
+
 }
 
 void Script_Enemy::Activate()

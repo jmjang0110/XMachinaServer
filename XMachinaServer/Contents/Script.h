@@ -9,10 +9,17 @@ namespace ScriptInfo {
 
 		Stat, // Enemy, Player 
 		EnemyController,
-		Enemy,
-		BehaviorTree,
+
+		AdvancedCombatDroid_5,
+		Onyscidus,
+		Ursacetus,
+
+		DefaultEnemyBT,
+		
 		Phero,
 		PheroDropper,
+
+		Building,
 
 		End,
 	};
@@ -33,7 +40,7 @@ public:
 	virtual ~Script();
 
 public:
-	virtual SPtr<Component> Clone(SPtr<GameObject> copyOwner) const;
+	virtual void Clone(SPtr<Component> other) ;
 
 	virtual void Activate();
 	virtual void DeActivate();

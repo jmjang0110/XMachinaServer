@@ -16,9 +16,10 @@ Script_BehaviorTree::~Script_BehaviorTree()
 {
 }
 
-SPtr<Component> Script_BehaviorTree::Clone(SPtr<GameObject> copyOwner) const
+void Script_BehaviorTree::Clone(SPtr<Component> other) 
 {
-    return SPtr<Component>();
+    Script::Clone(other);
+
 }
 
 void Script_BehaviorTree::Activate()

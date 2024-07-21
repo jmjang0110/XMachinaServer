@@ -81,9 +81,8 @@ void Component::OnDestroy()
 {
 }
 
-SPtr<Component> Component::Clone(SPtr<GameObject> copyOwner) const
+void Component::Clone(SPtr<Component> other) 
 {
 	
-	return SPtr<Component>();
 }
 

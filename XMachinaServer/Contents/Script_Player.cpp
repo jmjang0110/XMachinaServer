@@ -42,9 +42,14 @@ Script_Player::~Script_Player()
 
 }
 
-SPtr<Component> Script_Player::Clone(SPtr<GameObject> copyOwner) const
+void Script_Player::Clone(SPtr<Component> other) 
 {
-    return SPtr<Component>();
+    Script_PlayerStat::Clone(other);
+    SPtr<Script_Player> otherScript = std::static_pointer_cast<Script_Player>(other);
+
+    for (int i = 0; i < static_cast<int>(SkillInfo::Type::End); ++i) {
+        *(this->mSkills[i]) = *(otherScript->mSkills[i]);
+    }
 }
 
 void Script_Player::Activate()

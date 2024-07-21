@@ -66,4 +66,19 @@ void GameMonster::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 
 }
 
+SPtr<GameMonster> GameMonster::Clone()
+{
+	SPtr<GameMonster> copy = std::make_shared<GameMonster>();
+	
+	copy->SetID(GetID());
+	copy->SetMonsterType(this->GetMonsterType());
+	copy->SetType(this->GetType());
+
+	SPtr<GameObject> targetObj = std::dynamic_pointer_cast<GameObject>(copy);
+	GameObject::CloneComponents(targetObj);
+	GameObject::CloneScripts(targetObj);
+
+	return copy;
+}
+
 

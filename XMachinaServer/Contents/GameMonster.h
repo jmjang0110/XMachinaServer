@@ -52,19 +52,21 @@ public:
 
 	virtual void Dispatch(class OverlappedObject* overlapped, UINT32 bytes = 0) override;
 
-public:
-	void SetID(uint32_t id)				{ mInfo.ID			= id;}
-	void SetType(MonsterType type)		{ mInfo.Type		= type;}
-	void SetAttack(float attack)		{ mInfo.Attack		= attack; }
+	virtual SPtr<GameMonster> Clone();
 
-	void SetHP(float hp)				{ mInfo.lock_HP.LockWrite();		mInfo.HP               = hp;			mInfo.lock_HP.UnlockWrite(); }
-	void SetPosition(Vec3 pos)			{ mInfo.lock_Position.LockWrite();	mInfo.Position         = pos;			mInfo.lock_Position.UnlockWrite(); }
-	void SetRotation(Vec3 rot)			{ mInfo.lock_Rotation.LockWrite();	mInfo.Rotation         = rot;			mInfo.lock_Rotation.UnlockWrite(); }
-	void SetSpineDir(Vec3 spinedir)		{ mInfo.lock_SpineDir.LockWrite();	mInfo.SpineDir         = spinedir;		mInfo.lock_SpineDir.UnlockWrite(); }
+public:
+	void SetMonsterID(uint32_t id)				{ mInfo.ID			= id;}
+	void SetMonsterType(MonsterType type)		{ mInfo.Type		= type;}
+	void SetAttack(float attack)				{ mInfo.Attack		= attack; }
+		
+	void SetHP(float hp)						{ mInfo.lock_HP.LockWrite();		mInfo.HP               = hp;			mInfo.lock_HP.UnlockWrite(); }
+	void SetPosition(Vec3 pos)					{ mInfo.lock_Position.LockWrite();	mInfo.Position         = pos;			mInfo.lock_Position.UnlockWrite(); }
+	void SetRotation(Vec3 rot)					{ mInfo.lock_Rotation.LockWrite();	mInfo.Rotation         = rot;			mInfo.lock_Rotation.UnlockWrite(); }
+	void SetSpineDir(Vec3 spinedir)				{ mInfo.lock_SpineDir.LockWrite();	mInfo.SpineDir         = spinedir;		mInfo.lock_SpineDir.UnlockWrite(); }
 
 	// Get ÇÔ¼öµé
-	uint32_t		GetID()			{	return mInfo.ID;		}
-	MonsterType		GetType()		{	return mInfo.Type;		}
+	uint32_t		GetMonsterID()			{	return mInfo.ID;		}
+	MonsterType		GetMonsterType(){	return mInfo.Type;		}
 	float			GetAttack()		{	return mInfo.Attack;	}
 	float			GetHP()			{ mInfo.lock_HP.LockRead();  float hp = mInfo.HP;	mInfo.lock_HP.UnlockRead(); return hp; }
 	Vec3			GetPosition()	{ mInfo.lock_Position.LockRead(); Vec3 pos = mInfo.Position; mInfo.lock_Position.UnlockRead(); return pos; }

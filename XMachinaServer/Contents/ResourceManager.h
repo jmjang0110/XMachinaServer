@@ -47,7 +47,7 @@ public:
 class BattleScene {
 private:
 	std::vector<SPtr<GameObject>> mBuildings{};
-	std::vector<SPtr<GameObject>> mEnemies{};
+	std::vector<SPtr<GameMonster>> mEnemies{};
 
 public:
 	void Load();
@@ -58,9 +58,10 @@ public:
 	}
 
 	// Getter for mEnemies
-	const std::vector<SPtr<GameObject>>* GetEnemies() const {
+	const std::vector<SPtr<GameMonster>>* GetEnemies() const {
 		return &mEnemies;
 	}
+
 
 };
 

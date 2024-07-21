@@ -12,6 +12,7 @@
 #include "Transform.h"
 #include "PlayerController.h"
 
+#include "Script_Building.h"
 
 Coordinate SectorController::Total_SectorSize = {};
 Coordinate SectorController::Each_SectorSize  = {};
@@ -47,17 +48,32 @@ bool SectorController::Init(SPtr_GameRoom owner)
     SectorController::Total_SectorSize = mTotalSectorSize;
     SectorController::Each_SectorSize  = mSectorSize;
 
-
+    /// +-------------------------------------------------------------
+    ///      SECTORs INIT 
+    /// -------------------------------------------------------------+
     /* Memory Manager는 실시간으로 메모리를 할당할 때 쓴다 (과부하를 줄이기 위해서) 이는 처음 서버가 시작할 때 초기화 되므로 Memory Pool에서의 메모리를 쓸 필요가 없다.*/
     for (UINT8 i = 0; i < SectorInfo::height; ++i) {
         for (UINT8 k = 0; k < SectorInfo::Width; ++k) {
             mSectors[i][k] = new Sector();
-            mSectors[i][k]->Init(SectorInfo::Type::Monsters); // 일단 전부 몬스터가 있는 섹터로 지정 
+            Coordinate Index = Coordinate(k, i);
+            mSectors[i][k]->Init(Index, SectorInfo::Type::Monsters); // 일단 전부 몬스터가 있는 섹터로 지정 
             mSectors[i][k]->SetOwnerSectorController(this);
         }
     }
 
-
+    /// +-------------------------------------------------------------
+    ///      BUILDINGS 
+    /// -------------------------------------------------------------+
+    // Resource 에 있는 Buildings를 섹터에 따라 분리한다. ( 이때 Resource의 포인터만을 저장. ) Buildings는 움직이거나 하면 안됨! 바꾸는건 ResourceMAnager 에서...
+    const std::vector<SPtr_GameObject>* BuildingResources = RESOURCE_MGR->GetBattleScene()->GetBuildings();
+    for (int i = 0; i < BuildingResources->size(); ++i) {
+        
+        SPtr<GameObject> building            = (*BuildingResources)[i]; // 원본 그대로 가져온다. ( 건물은 Read Only )  
+        Vec3             Pos                 = building->GetTransform()->GetPosition();
+        Coordinate       SectorIndex         = SectorController::GetSectorIdxByPosition(Pos);
+        building->GetScript<Script_Building>(ScriptInfo::Type::Building)->SetSectorIdx(SectorIndex);
+        mSectors[SectorIndex.z][SectorIndex.x]->AddBuilding(building->GetID(), building);
+    }
 
 
     return true;

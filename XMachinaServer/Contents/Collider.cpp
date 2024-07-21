@@ -38,9 +38,24 @@ Collider::~Collider()
 {
 }
 
-SPtr<Component> Collider::Clone(SPtr<GameObject> copyOwner) const
+void Collider::Clone(SPtr<Component> other) 
 {
-    return SPtr<Component>();
+    Component::Clone(other);
+
+    // Create a new Collider object
+    SPtr<Collider> collider = std::static_pointer_cast<Collider>(other);
+
+    // Copy the bounding sphere list
+    this->mBoundingSphereList.resize(collider->mBoundingSphereList.size());
+    std::memcpy(collider->mBoundingSphereList.data(), collider->mBoundingSphereList.data(), collider->mBoundingSphereList.size() * sizeof(MyBoundingSphere));
+
+    // Copy the bounding box list
+    this->mBoundingBoxList.resize(collider->mBoundingBoxList.size());
+    std::memcpy(collider->mBoundingBoxList.data(), collider->mBoundingBoxList.data(), collider->mBoundingBoxList.size() * sizeof(MyBoundingOrientedBox));
+
+    // Associate the new Collider with the copyOwner
+    this->SetType(ComponentInfo::Type::Collider);
+
 }
 
 void Collider::Activate()

@@ -14,9 +14,11 @@ Script_Onyscidus::~Script_Onyscidus()
 {
 }
 
-SPtr<Component> Script_Onyscidus::Clone(SPtr<GameObject> copyOwner) const
+void Script_Onyscidus::Clone(SPtr<Component> other) 
 {
-	return SPtr<Component>();
+	Script_Enemy::Clone(other);
+	SPtr<Script_Onyscidus> otherScript = std::static_pointer_cast<Script_Onyscidus>(other);
+
 }
 
 void Script_Onyscidus::Activate()

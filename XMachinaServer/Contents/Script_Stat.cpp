@@ -73,15 +73,21 @@ void Script_Stat::Attack()
 {
 }
 
-SPtr<Component> Script_Stat::Clone(SPtr<GameObject> copyOwner) const
+void Script_Stat::Clone(SPtr<Component> other) 
 {
-	return SPtr<Component>();
+	Script::Clone(other);
+	SPtr<Script_Stat> otherScript = std::static_pointer_cast<Script_Stat>(other);
+
 }
 
 void Script_Stat::Activate()
 {
+	Script::Activate();
+
 }
 
 void Script_Stat::DeActivate()
 {
+	Script::DeActivate();
+
 }
