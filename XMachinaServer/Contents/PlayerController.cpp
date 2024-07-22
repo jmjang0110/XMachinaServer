@@ -4,6 +4,31 @@
 #include "GameSession.h"
 #include "ServerLib/ThreadManager.h"
 
+SPtr<GamePlayer> PlayerController::GetPlayer(UINT32 ID)
+{
+
+	mSRWLock.LockRead();
+
+	auto it = mGamePlayers.find(ID);
+	if (it != mGamePlayers.end())
+		return it->second;
+
+	mSRWLock.UnlockRead();
+
+	return nullptr;
+}
+
+std::vector<std::pair<UINT32, Vec3>> PlayerController::GetPlayersPosition()
+{
+	std::vector<std::pair<UINT32, Vec3>> result;
+	for (auto& iter : mGamePlayers) { 
+		int id   = iter.second->GetID();
+		Vec3 pos = iter.second->GetPosition();
+		result.push_back(std::make_pair(id, pos));
+	}
+	return result;
+}
+
 PlayerController::PlayerController()
 {
 }

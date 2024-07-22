@@ -1,6 +1,11 @@
 #pragma once
 
+struct AnimatorTransition;
 class Model;
+class AnimationClip;
+class AnimatorController;
+class AnimatorLayer;
+class AnimatorStateMachine;
 
 namespace FileIO {
 	// 단일 문자열을 읽어 out으로 반환한다.
@@ -64,4 +69,16 @@ namespace FileIO {
 	}
 
 	sptr<Model> LoadGeometryFromFile(const std::string& filePath);
+
+	// animation //
+	sptr<AnimationClip> LoadAnimationClip(const std::string& filePath);
+	sptr<AnimatorController> LoadAnimatorController(const std::string& filePath);
+	sptr<AnimatorLayer> LoadAnimatorLayer(std::ifstream& file);
+	std::vector<sptr<const AnimatorTransition>> LoadTransitions(std::ifstream& file);
+	sptr<const AnimatorTransition> LoadTransition(std::ifstream& file);
+	void LoadStateTransitions(std::ifstream& file);
+
+	sptr<const AnimationClip> ReadAnimationClip(std::ifstream& file);
+
+	void LoadAvatarMask(std::ifstream& file);
 };

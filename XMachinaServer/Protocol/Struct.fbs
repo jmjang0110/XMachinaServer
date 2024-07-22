@@ -24,6 +24,7 @@ table Player {
 // ------------------------+
 table Phero {
 	id			: uint;
+	level		: ubyte;
 	offset_dist : Position_Vec2;
 }
 

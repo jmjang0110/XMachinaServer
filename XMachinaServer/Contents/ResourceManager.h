@@ -17,12 +17,15 @@
 #define RESOURCE_MGR ResourceManager::GetInst()
 
 class GameObject;
+class AnimationClip;
+class AnimatorController;
 
 enum class ObjectTag { None, Building, Enemy };
 	
 class Model {
 public:
 	Matrix mTransform{};	// local À§Ä¡
+	std::string mAnimatorController{""};
 	std::string mName{};
 	std::vector<MyBoundingSphere> mBSList{};
 	std::vector<MyBoundingOrientedBox> mBoxList{};
@@ -72,10 +75,12 @@ class ResourceManager
 
 
 private:
-	SPtr<HeightMapImage>							mHeightMapImg;
-	SPtr<TileMap>									mTileMap;
-	std::unordered_map<std::string, SPtr<Model>>	mModels{};
-	SPtr<BattleScene>							    mBattleScene{};
+	SPtr<HeightMapImage>										mHeightMapImg;
+	SPtr<TileMap>												mTileMap;
+	std::unordered_map<std::string, SPtr<Model>>				mModels{};
+	std::unordered_map<std::string, SPtr<AnimationClip>>		mAnimationClips{};
+	std::unordered_map<std::string, SPtr<AnimatorController>>	mAnimatorControllers{};
+	SPtr<BattleScene>											mBattleScene{};
 
 public:
 	ResourceManager();
@@ -88,12 +93,17 @@ public:
 	/// +--------------------------------------------------
 	///	¡å Getter
 	/// --------------------------------------------------+
-	SPtr<HeightMapImage> GetHeightMapImage()						  { return mHeightMapImg; }
-	SPtr<TileMap>		 GetTileMap()								  { return mTileMap; }
-	SPtr<Model>			 GetModel(const std::string& modelName) const { return mModels.at(modelName); }
-	SPtr<BattleScene>    GetBattleScene()							  { return mBattleScene; }
+	SPtr<HeightMapImage>		GetHeightMapImage() const								{ return mHeightMapImg; }
+	SPtr<TileMap>				GetTileMap() const										{ return mTileMap; }
+	SPtr<Model>					GetModel(const std::string& modelName) const			{ return mModels.at(modelName); }
+	SPtr<BattleScene>			GetBattleScene() const 									{ return mBattleScene; }
+	SPtr<AnimationClip>			GetAnimationClip(const std::string& name) const			{ return mAnimationClips.at(name); }
+	SPtr<AnimatorController>	GetAnimatorController(const std::string& name) const	{ return mAnimatorControllers.at(name); }
+
 private:
 	void LoadTerrain();
 	void LoadModels();
+	void LoadAnimationClips();
+	void LoadAnimatorControllers();
 };
 

@@ -7,6 +7,7 @@
 #include "Script.h"
 #include "Transform.h"
 #include "Collider.h"
+#include "Animation.h"
 
 /* Script Headers */
 #include "Script_AdvancedCombatDroid_5.h"
@@ -126,6 +127,17 @@ bool GameObject::RegisterUpdate(std::chrono::system_clock::duration offset)
 
 }
 
+void GameObject::SetAnimation(const std::string& controller)
+{
+	if (controller == "") {
+		return;
+	}
+
+	SPtr<Animation> animation = AddComponent<Animation>(ComponentInfo::Type::Animation);
+	animation->Load(controller);
+}
+
+
 SPtr<GameObject> GameObject::Clone() const
 {
 
@@ -225,7 +237,13 @@ SPtr<Component> GameObject::AddComponent(ComponentInfo::Type key)
 		component = AddComponent<Collider>(key);
 	}
 		break;
+	case ComponentInfo::Type::Animation:
+	{
+		component = AddComponent<Animation>(key);
+	}
+	break;
 	default:
+		assert(0);
 		break;
 	}
 

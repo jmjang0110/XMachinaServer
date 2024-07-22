@@ -40,7 +40,7 @@ BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 
 
 	constexpr float minDistance = 1.f;
-	Vec3 Monster_Pos = mEnemyController->GetOwnerMonster()->GetTransform()->GetSnapShot().GetPosition();
+	Vec3 Monster_Pos = mEnemyController->GetOwnerMonster()->GetTransform()->GetPosition();
 	Vec3  TargetPos{};
 
 	if (IsMindControlled == false)
@@ -51,7 +51,7 @@ BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 	float distance = (Monster_Pos - TargetPos).Length();
 	if (distance < mStat->GetStat_AttackRange()) {
 		Vec3	ToTargetDir = Vector3::Normalized(TargetPos - Monster_Pos);
-		float	Angle       = Vector3::Angle(mEnemyController->GetOwnerMonster()->GetTransform()->GetSnapShot().GetLook(), ToTargetDir);
+		float	Angle       = Vector3::Angle(mEnemyController->GetOwnerMonster()->GetTransform()->GetLook(), ToTargetDir);
 		if (minDistance < 1.f || Angle < 80.f) {
 			mEnemyController->SetState(EnemyInfo::State::Attack);
 			return BTNodeState::Success;

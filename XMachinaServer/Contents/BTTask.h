@@ -261,6 +261,7 @@ namespace MonsterTask {
 
 	public:
 		virtual BTNodeState Evaluate() override;
+		void ExecuteCallback_CheckDeath();
 
 	public:
 		CheckDeath(SPtr_GameObject owner, std::function<void()> callback = nullptr);

@@ -15,9 +15,12 @@
 
 BTNodeState MonsterTask::Attack::Evaluate()
 {
+
+	/* Attack Range BTNode 에서 Target 체크하므로 여기서는 할 필요 없음 */
 	LOG_MGR->Cout("Attack \n");
 
-	if (mEnemyController->IsMindControlled())
+	bool IsMindControlled = mEnemyController->IsMindControlled();
+	if (IsMindControlled == true)
 	{
 		/* Mind Control On */
 		Vec3 TargetPos = mEnemyController->GetTargetMonster()->GetTransform()->GetSnapShot().GetPosition();
@@ -35,6 +38,7 @@ BTNodeState MonsterTask::Attack::Evaluate()
 		mStat->UpdatePrevHP();
 		ExecuteCallback();
 	}
+
 	return BTNodeState::Success;
 }
 

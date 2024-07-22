@@ -12,6 +12,9 @@
 
 BTNodeState MonsterTask::Patrol::Evaluate()
 {
+	if (mWayPoints.size() == 0)
+		return BTNodeState::Failure;
+
 	Vec3 wayPoint = mWayPoints[mCurrWayPointIdx];
 
 	const float kMinDistance = 1.f;

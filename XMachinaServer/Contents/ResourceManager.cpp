@@ -26,6 +26,8 @@ namespace {
 	const std::string kTerrainDataPath = "Contents/Resource/Terrain.bin";
 	const std::string kModelDataPath = "Contents/Resource/Models/";
 	const std::string kSceneDataPath = "Contents/Resource/ServerScene.bin";
+	const std::string kAnimationClipDataPath = "Contents/Resource/AnimationClips/";
+	const std::string kAnimatorControllerDataPath = "Contents/Resource/AnimatorControllers/";
 }
 
 DEFINE_SINGLETON(ResourceManager);
@@ -134,6 +136,8 @@ void BattleScene::Load()
 					collider->SetBoundingSphereList(model->mBSList);
 					collider->SetBoundingBoxList(model->mBoxList);
 
+					object->SetAnimation(model->mAnimatorController);
+
 					UINT32 ID = static_cast<UINT32>(mEnemies.size());
 					object->SetID(ID);
 					object->SetMonsterID(ID);
@@ -218,6 +222,8 @@ void ResourceManager::Init()
 {
 	LoadTerrain();
 	LoadModels();
+	LoadAnimationClips();
+	LoadAnimatorControllers();
 
 	mBattleScene = std::make_shared<BattleScene>();
 	mBattleScene->Load();
@@ -243,5 +249,29 @@ void ResourceManager::LoadModels()
 
 		sptr<Model> model = FileIO::LoadGeometryFromFile(kModelDataPath + fileName);
 		mModels[modelName] = model;
+	}
+}
+
+void ResourceManager::LoadAnimationClips()
+{
+	for (const auto& clipFolder : std::filesystem::directory_iterator(kAnimationClipDataPath)) {
+		std::string clipFolderName = clipFolder.path().filename().string();
+
+		for (const auto& file : std::filesystem::directory_iterator(kAnimationClipDataPath + clipFolderName + '/')) {
+			std::string fileName = file.path().filename().string();
+			sptr<AnimationClip> clip = FileIO::LoadAnimationClip(clipFolder.path().string() + '/' + fileName);
+
+			FileIO::RemoveExtension(fileName);
+			const std::string clipName = clipFolderName + '/' + fileName;
+			mAnimationClips[clipName] = clip;
+		}
+	}
+}
+
+void ResourceManager::LoadAnimatorControllers()
+{
+	for (const auto& file : std::filesystem::directory_iterator(kAnimatorControllerDataPath)) {
+		const std::string fileName = file.path().filename().string();
+		mAnimatorControllers[FileIO::RemoveExtension(fileName)] = FileIO::LoadAnimatorController(kAnimatorControllerDataPath + fileName);
 	}
 }

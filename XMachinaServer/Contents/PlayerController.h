@@ -45,6 +45,10 @@ public:
 
 	UINT32			GetPlayersSize() { return mCurrPlayerCnt.load(); }
 	SPtr<GameRoom>  GetOwnerRoom() { return mOwnerRoom; }
+	SPtr<GamePlayer> GetPlayer(UINT32 ID);
+
+	
+	std::vector<std::pair<UINT32, Vec3>> GetPlayersPosition();
 
 public:
 	PlayerController();

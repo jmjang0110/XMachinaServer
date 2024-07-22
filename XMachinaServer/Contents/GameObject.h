@@ -4,9 +4,7 @@
 #include "Script.h"
 #include "Transform.h"
 #include "Collider.h"
-
-
-
+#include "Animation.h"
 
 
 class GameObject : public GameEntity
@@ -15,7 +13,7 @@ private:
 	GameObjectInfo::Type										mType		= GameObjectInfo::Type::None;
 	std::unordered_map<ComponentInfo::Type, SPtr<Component>>	mComponents = {};
 	std::unordered_map<ScriptInfo::Type,    SPtr<Script>>		mScripts    = {};
-
+	SPtr<Animation> mAnimation{};
 
 public:
 	GameObject();
@@ -40,7 +38,7 @@ public:
 	GameObjectInfo::Type GetType() { return mType; }
 	bool RegisterUpdate(std::chrono::system_clock::duration offset = std::chrono::seconds(0)); /// PQCS 를 이옹해 다음에 업데이트 할 것을 등록한다. 
 
-
+	void SetAnimation(const std::string& controller);
 
 public:
 	/* Util */

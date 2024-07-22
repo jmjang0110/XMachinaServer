@@ -8,6 +8,9 @@
 
 #include "BTNode.h"
 #include "BTTask.h"
+#include "Script_AdvancedCombatDroid_5.h"
+#include "Script_Onyscidus.h"
+#include "Script_Ursacetus.h"
 
 BTNode* Script_DefaultEnemyBT::SetupTree()
 {
@@ -28,8 +31,20 @@ BTNode* Script_DefaultEnemyBT::SetupTree()
 	for (const auto& wayPoint : wayPoints)
 		maxDis = std::max(maxDis, Vec3::Distance(baryCenter, wayPoint));
 #pragma endregion
+	SPtr<Script_Enemy> enemy = {};
 
-	SPtr<Script_Enemy> enemy = GetOwner()->GetScript<Script_Enemy>(ScriptInfo::Type::Stat);
+	if (GetOwner()->GetType() == GameObjectInfo::Type::Monster_AdvancedCombat_5) {
+		SPtr<Script_AdvancedCombatDroid_5> script =  GetOwner()->GetScript<Script_AdvancedCombatDroid_5>(ScriptInfo::Type::AdvancedCombatDroid_5);
+		enemy = std::static_pointer_cast<Script_Enemy>(script);
+	}
+	if (GetOwner()->GetType() == GameObjectInfo::Type::Monster_Onyscidus) {
+		SPtr<Script_Onyscidus> script = GetOwner()->GetScript<Script_Onyscidus>(ScriptInfo::Type::Onyscidus);
+		enemy = std::static_pointer_cast<Script_Enemy>(script);
+	}
+	if (GetOwner()->GetType() == GameObjectInfo::Type::Monster_Ursacetus) {
+		SPtr<Script_Ursacetus> script = GetOwner()->GetScript<Script_Ursacetus>(ScriptInfo::Type::Ursacetus);
+		enemy = std::static_pointer_cast<Script_Enemy>(script);
+	}
 
 #pragma region BehaviorTree
 	std::vector<BTNode*> root_selector_Children;
@@ -98,8 +113,9 @@ BTNode* Script_DefaultEnemyBT::SetupTree()
 		root_selector_Children.push_back(SelNode);
 	}
 
-	BTNode* Root = MEMORY->New<BTNode_Selector>(GetOwner(), root_selector_Children);
-	return Root;
+	mRoot = MEMORY->New<BTNode_Selector>(GetOwner(), root_selector_Children);
+	mRoot->SetRoot();
+	return mRoot;
 }
 
 
@@ -170,7 +186,10 @@ bool Script_DefaultEnemyBT::Update()
 {
     Script_BehaviorTree::Update();
 
-    return false;
+	if (mRoot)
+		mRoot->Evaluate();
+
+    return true;
 }
 
 void Script_DefaultEnemyBT::OnDestroy()

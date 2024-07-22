@@ -155,6 +155,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Contents\Animation.h" />
     <ClInclude Include="Contents\AStarPath.h" />
     <ClInclude Include="Contents\BehaviorTree.h" />
     <ClInclude Include="Contents\BTNode.h" />
@@ -247,6 +248,7 @@
     <ClInclude Include="WindowUI\WindowUI.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Contents\Animation.cpp" />
     <ClCompile Include="Contents\AStarPath.cpp" />
     <ClCompile Include="Contents\BehaviorTree.cpp" />
     <ClCompile Include="Contents\BTNode.cpp" />

@@ -24,6 +24,7 @@ void Script_EnemyController::Clone(SPtr<Component> other)
 	Script::Clone(other);
 	SPtr<Script_EnemyController> otherScript = std::static_pointer_cast<Script_EnemyController>(other);
 
+	SetOwnerMonster(std::static_pointer_cast<GameMonster>(GetOwner()));
 }
 
 void Script_EnemyController::Activate()

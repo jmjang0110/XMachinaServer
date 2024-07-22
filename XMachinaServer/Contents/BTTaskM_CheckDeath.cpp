@@ -17,7 +17,6 @@ BTNodeState MonsterTask::CheckDeath::Evaluate()
 
 	mEnemyController->SetState(EnemyInfo::State::Death);
 
-
 	mAccTime += DELTA_TIME;
 
 	ExecuteCallback();
@@ -42,10 +41,16 @@ MonsterTask::CheckDeath::CheckDeath(SPtr_GameObject owner, std::function<void()>
 		mStat = GetOwner()->GetScript<Script_Onyscidus>(ScriptInfo::Type::Onyscidus);
 	else if (owner->GetType() == GameObjectInfo::Type::Monster_Ursacetus)
 		mStat = GetOwner()->GetScript<Script_Ursacetus>(ScriptInfo::Type::Ursacetus);
+
+
 }
 
 MonsterTask::CheckDeath::~CheckDeath()
 {
 	mEnemyController = nullptr;
 
+}
+
+void MonsterTask::CheckDeath::ExecuteCallback_CheckDeath()
+{
 }

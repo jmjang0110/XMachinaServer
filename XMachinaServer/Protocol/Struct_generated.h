@@ -132,10 +132,14 @@ struct Phero FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef PheroBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_ID = 4,
-    VT_OFFSET_DIST = 6
+    VT_LEVEL = 6,
+    VT_OFFSET_DIST = 8
   };
   uint32_t id() const {
     return GetField<uint32_t>(VT_ID, 0);
+  }
+  uint8_t level() const {
+    return GetField<uint8_t>(VT_LEVEL, 0);
   }
   const FBProtocol::Position_Vec2 *offset_dist() const {
     return GetPointer<const FBProtocol::Position_Vec2 *>(VT_OFFSET_DIST);
@@ -143,6 +147,7 @@ struct Phero FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<uint32_t>(verifier, VT_ID, 4) &&
+           VerifyField<uint8_t>(verifier, VT_LEVEL, 1) &&
            VerifyOffset(verifier, VT_OFFSET_DIST) &&
            verifier.VerifyTable(offset_dist()) &&
            verifier.EndTable();
@@ -155,6 +160,9 @@ struct PheroBuilder {
   ::flatbuffers::uoffset_t start_;
   void add_id(uint32_t id) {
     fbb_.AddElement<uint32_t>(Phero::VT_ID, id, 0);
+  }
+  void add_level(uint8_t level) {
+    fbb_.AddElement<uint8_t>(Phero::VT_LEVEL, level, 0);
   }
   void add_offset_dist(::flatbuffers::Offset<FBProtocol::Position_Vec2> offset_dist) {
     fbb_.AddOffset(Phero::VT_OFFSET_DIST, offset_dist);
@@ -173,10 +181,12 @@ struct PheroBuilder {
 inline ::flatbuffers::Offset<Phero> CreatePhero(
     ::flatbuffers::FlatBufferBuilder &_fbb,
     uint32_t id = 0,
+    uint8_t level = 0,
     ::flatbuffers::Offset<FBProtocol::Position_Vec2> offset_dist = 0) {
   PheroBuilder builder_(_fbb);
   builder_.add_offset_dist(offset_dist);
   builder_.add_id(id);
+  builder_.add_level(level);
   return builder_.Finish();
 }
 

@@ -452,6 +452,10 @@
     <ClInclude Include="Contents\Script_Building.h">
       <Filter>Framework\Contents\GameWorld\Entity\Script\Building</Filter>
     </ClInclude>
+    <ClInclude Include="Contents\Script_Bullet.h" />
+    <ClInclude Include="Contents\Animation.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp">
@@ -730,6 +734,10 @@
     </ClCompile>
     <ClCompile Include="Contents\Script_Building.cpp">
       <Filter>Framework\Contents\GameWorld\Entity\Script\Building</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Script_Bullet.cpp" />
+    <ClCompile Include="Contents\Animation.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

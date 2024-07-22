@@ -77,4 +77,4 @@ BTNodeState MonsterTask::MoveToPath::Evaluate()
 		mPath->pop();
 
 	return BTNodeState::Success;
-}
+	}
