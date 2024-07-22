@@ -10,7 +10,16 @@ enum class MonsterType : UINT8
 {
 	Ursacetus,
 	Onyscidus,
-	AdvancedCombatDroid_5
+	AdvancedCombatDroid_5,
+	Anglerox,
+	Arack,
+	Ceratoferox,
+	Gobbler,
+	LightBipedMech,
+	MiningMech,
+	Rapax,
+
+	End,
 
 };
 

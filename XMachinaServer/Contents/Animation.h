@@ -256,5 +256,7 @@ public:
 
 public:
 	void Load(const std::string& controller);
+	SPtr<AnimatorController> GetController() { return mController; }
+
 };
 

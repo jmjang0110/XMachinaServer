@@ -25,6 +25,9 @@ Animation::~Animation()
 void Animation::Clone(SPtr<Component> other)
 {
     Component::Clone(other);
+	SPtr<Animation> other_AnimationComponent = std::static_pointer_cast<Animation>(other);
+
+	mController = MEMORY->Make_Shared<AnimatorController>(*(other_AnimationComponent->GetController().get()));
 
 }
 

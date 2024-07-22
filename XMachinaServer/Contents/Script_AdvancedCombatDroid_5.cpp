@@ -8,6 +8,24 @@ Script_AdvancedCombatDroid_5::Script_AdvancedCombatDroid_5()
 Script_AdvancedCombatDroid_5::Script_AdvancedCombatDroid_5(SPtr<GameObject> owner, ScriptInfo::Type type)
     :Script_Enemy(owner, type)
 {
+    Script_EnemyStat::SetID(owner->GetID());
+    
+    Script_EnemyStat::SetStat_EnemyLevel(1);
+    Script_EnemyStat::SetStat_PheroLevel(1);
+    Script_EnemyStat::SetStat_MoveSpeed(2.5);
+    Script_EnemyStat::SetStat_DetectionRange(1.5);
+    Script_EnemyStat::SetStat_RotationSpeed(150);
+    Script_EnemyStat::SetStat_AttackRotationSpeed(250);
+    Script_EnemyStat::SetStat_AttackRate(30);
+    Script_EnemyStat::SetStat_AttackRange(1.5);
+    Script_EnemyStat::SetStat_AttackCoolTime(0);
+    Script_EnemyStat::SetMaxHP(150);
+    Script_EnemyStat::SetStat_AttackAnimName("HitComboUnarmed");
+    Script_EnemyStat::SetStat_DeathAnimName("DeathFrontCombat");
+    Script_EnemyStat::SetStat_GetHitName("IdleCombat");
+
+
+
 }
 
 Script_AdvancedCombatDroid_5::~Script_AdvancedCombatDroid_5()

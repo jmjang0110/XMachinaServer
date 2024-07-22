@@ -1,8 +1,9 @@
 #pragma once
-#pragma once
+
+
 #include "Script_Enemy.h"
 
-
+class GameObject;
 class Script_Onyscidus : public Script_Enemy
 {
 private:

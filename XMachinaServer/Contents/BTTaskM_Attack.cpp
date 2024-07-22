@@ -58,6 +58,7 @@ MonsterTask::Attack::Attack(SPtr_GameObject owner, std::function<void()> callbac
 
 }
 
+
 MonsterTask::Attack::~Attack()
 {
 	mEnemyController = nullptr;

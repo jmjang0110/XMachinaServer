@@ -1,6 +1,8 @@
 #pragma once
 #include "Script_Enemy.h"
 
+class GameObject;
+
 
 class Script_AdvancedCombatDroid_5 : public Script_Enemy
 {

@@ -21,6 +21,12 @@ private:
 	float		mAttackRate          = {};
 	float		mAttackRange         = {};
 	float		mAttackCoolTime      = {};
+	
+	std::string	mAttackAnimName       = {};
+	std::string mGetHitAnimName      = {};
+	std::string	mDeathAnimName       = {};
+
+
 
 public:
 	Script_EnemyStat();
@@ -67,6 +73,10 @@ public:
 	float GetStat_AttackRange() const { return mAttackRange; }
 	float GetStat_AttackCoolTime() const			 { return mAttackCoolTime; }
 
+	std::string GetStat_AttackAnimName() { return mAttackAnimName; }
+	std::string GetStat_GetHitAnimName() { return mGetHitAnimName; }
+	std::string GetStat_DeathAnimName()  { return mDeathAnimName; }
+
 	// Setters
 	void SetStat_EnemyLevel(int level)			 { mEnemyLevel = level; }
 	void SetStat_PheroLevel(int level)			 { mPheroLevel = level; }
@@ -75,10 +85,14 @@ public:
 	void SetStat_RotationSpeed(float speed)		 { mRotationSpeed = speed; }
 	
 	void SetStat_AttackRotationSpeed(float speed) { mAttackRotationSpeed = speed; }
-	void SetStat_DetectionRange(float range)		 { mDetectionRange = range; }
+	void SetStat_DetectionRange(float range)	  { mDetectionRange = range; }
 	
 	void SetStat_AttackRate(float rate)			 { mAttackRate = rate; }
 	void SetStat_AttackRange(float range)		 { mAttackRange = range; }
 	void SetStat_AttackCoolTime(float time)	     { mAttackCoolTime = time; }
+
+	void SetStat_AttackAnimName(std::string name) { mAttackAnimName = name; }
+	void SetStat_GetHitName(std::string name)	  { mGetHitAnimName = name; }
+	void SetStat_DeathAnimName(std::string name)  { mDeathAnimName = name; }
 };
 
