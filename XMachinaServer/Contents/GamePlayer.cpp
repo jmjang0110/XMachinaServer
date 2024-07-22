@@ -35,6 +35,7 @@ void GamePlayer::Update()
 {
 	GameObject::Update(); // CPkt_PlayerTRnasform 패킷을 받을 때만 Update 
 
+	
 	/* Update View List */
 	mOwnerPC->GetOwnerRoom()->GetSectorController()->UpdateViewList(this, mInfo.Position, mInfo.ViewRangeRadius);
 	

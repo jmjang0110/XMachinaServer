@@ -31,17 +31,17 @@ void Script_AdvancedCombatDroid_5::DeActivate()
 
 bool Script_AdvancedCombatDroid_5::WakeUp()
 {
-    return false;
+    return true;
 }
 
 bool Script_AdvancedCombatDroid_5::Start()
 {
-    return false;
+    return true;
 }
 
 bool Script_AdvancedCombatDroid_5::Update()
 {
-    return false;
+    return true;
 }
 
 void Script_AdvancedCombatDroid_5::OnDestroy()

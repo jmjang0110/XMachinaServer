@@ -136,6 +136,8 @@ void Script_DefaultEnemyBT::Clone(SPtr<Component> other)
 {
 	Script_BehaviorTree::Clone(other);
 
+	SetupTree();
+
 }
 
 void Script_DefaultEnemyBT::Activate()

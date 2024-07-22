@@ -2,16 +2,19 @@
 
 #include "Script_PlayerStat.h"
 #include "Skill.h"
+#include "GameBullet.h"
+
 
 
 class GamePlayer;
 class Script_Player : public Script_PlayerStat
 {
 private:
-	Skill* mSkills[static_cast<UINT8>(SkillInfo::Type::End)]{};
+	Skill* mSkills[static_cast<UINT8>(SkillInfo::Type::End)] = {};
+	SPtr<GameBullet> mBullets[PlayerInfo::BulletsMax]        = {};
 
 
-public:
+public:  
 	Script_Player();
 	Script_Player(SPtr<GamePlayer> owner, ScriptInfo::Type type);
 	~Script_Player();

@@ -64,6 +64,8 @@ public:
 	void SetRotation(Vec3 rot)					{ mInfo.lock_Rotation.LockWrite();	mInfo.Rotation         = rot;			mInfo.lock_Rotation.UnlockWrite(); }
 	void SetSpineDir(Vec3 spinedir)				{ mInfo.lock_SpineDir.LockWrite();	mInfo.SpineDir         = spinedir;		mInfo.lock_SpineDir.UnlockWrite(); }
 
+	void SetSectorIndex(Coordinate sectorIdx);
+
 	// Get 함수들
 	uint32_t		GetMonsterID()			{	return mInfo.ID;		}
 	MonsterType		GetMonsterType(){	return mInfo.Type;		}
@@ -77,6 +79,9 @@ public:
 	void			DecreaseRef()								{ mActivate_Ref.fetch_sub(1); if (mActivate_Ref.load() < 0) mActivate_Ref = 0; }
 
 	MonsterSnapShot GetSnapShot() { mLock_SnapShot.LockWrite(); MonsterSnapShot snapShot = mInfo; mLock_SnapShot.UnlockWrite(); return snapShot; }
+
+	void UpdateSnapShot(); // 최신 상태로 스냅샷 업데이트 
+
 
 public:
 	GameMonster();

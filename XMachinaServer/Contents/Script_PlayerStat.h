@@ -26,6 +26,8 @@ namespace PlayerInfo
 		const float RunSpeed       = 5.f;
 		const float SprintSpeed    = 8.f;
 	}
+
+	constexpr int BulletsMax = 30;
 }
 
 class Script_PlayerStat : public Script_Stat

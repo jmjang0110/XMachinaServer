@@ -118,10 +118,8 @@ void Collider::SwapSnapShotIndex()
 
 void Collider::UpdateColliderSnapShot()
 {
-    auto& myBoundingSphereList = mColliderSnapShot[mSnapShotIndex].BoundingBoxList;
-    auto& myBoundingBoxList = mColliderSnapShot[mSnapShotIndex].BoundingBoxList;
-    myBoundingSphereList.resize(mBoundingSphereList.size());
-    myBoundingBoxList.resize(mBoundingBoxList.size());
+    mColliderSnapShot[mSnapShotIndex].BoundingSphereList.resize(mBoundingSphereList.size());
+    mColliderSnapShot[mSnapShotIndex].BoundingBoxList.resize(mBoundingBoxList.size());
 
     std::memcpy(mColliderSnapShot[mSnapShotIndex].BoundingSphereList.data(), mBoundingSphereList.data(), sizeof(MyBoundingSphere) * mBoundingSphereList.size());
     std::memcpy(mColliderSnapShot[mSnapShotIndex].BoundingBoxList.data(), mBoundingBoxList.data(), sizeof(MyBoundingOrientedBox) * mBoundingBoxList.size());

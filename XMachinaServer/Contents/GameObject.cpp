@@ -23,6 +23,7 @@
 #include "Script_PlayerStat.h"
 #include "Script_Stat.h"
 #include "Script_Ursacetus.h"
+#include "Script_Bullet.h"
 
 
 GameObject::GameObject()
@@ -195,6 +196,9 @@ SPtr<Script> GameObject::AddScript(ScriptInfo::Type key)
 		break;
 	case ScriptInfo::Type::Building:
 		script = AddScript<Script_Building>(key);
+		break;
+	case ScriptInfo::Type::Bullet:
+		script = AddScript<Script_Bullet>(key);
 		break;
 	default:
 		break;

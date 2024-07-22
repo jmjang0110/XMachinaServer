@@ -2,6 +2,15 @@
 #include "GameMonster.h"
 
 
+void GameMonster::UpdateSnapShot()
+{
+	mInfo.ID         = GetID();
+	mInfo.HP         = 100; // test
+	mInfo.Attack     = 100;
+	mInfo.Position   = GetTransform()->GetPosition();
+	//mInfo.Rotation = GetTransform()->GetRotation();
+}
+
 GameMonster::GameMonster()
 	: GameObject(-1)
 {
@@ -21,7 +30,9 @@ void GameMonster::Update()
 {
 	GameObject::Update();
 
-	
+	LOG_MGR->Cout("Monster Update : ", static_cast<UINT8>(GetMonsterType()), "\n");
+
+
 }
 
 void GameMonster::WakeUp()
@@ -62,8 +73,12 @@ void GameMonster::DeActivate()
 
 void GameMonster::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 {
+	MEMORY->Delete(overlapped);
 
-
+	Update();
+	
+	if (GetActivate_RefCnt() > 0)
+		GameObject::RegisterUpdate();
 }
 
 SPtr<GameMonster> GameMonster::Clone()
@@ -79,6 +94,11 @@ SPtr<GameMonster> GameMonster::Clone()
 	GameObject::CloneScripts(targetObj);
 
 	return copy;
+}
+
+void GameMonster::SetSectorIndex(Coordinate sectorIdx)
+{
+	mSectorIndex = sectorIdx;
 }
 
 

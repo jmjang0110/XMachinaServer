@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -185,6 +185,7 @@
     <ClInclude Include="Contents\GameWorld.h" />
     <ClInclude Include="Contents\ObjectSnapShot.h" />
     <ClInclude Include="Contents\Script_Building.h" />
+    <ClInclude Include="Contents\Script_Bullet.h" />
     <ClInclude Include="Contents\TileMap.h" />
     <ClInclude Include="Contents\HeightMapImage.h" />
     <ClInclude Include="Contents\Key.h" />
@@ -288,6 +289,7 @@
     <ClCompile Include="Contents\BTTaskM_Patrol.cpp" />
     <ClCompile Include="Contents\ObjectSnapShot.cpp" />
     <ClCompile Include="Contents\Script_Building.cpp" />
+    <ClCompile Include="Contents\Script_Bullet.cpp" />
     <ClCompile Include="Contents\TileMap.cpp" />
     <ClCompile Include="Contents\HeightMapImage.cpp" />
     <ClCompile Include="Contents\Key.cpp" />
