@@ -17,6 +17,8 @@
 #include "Script_Onyscidus.h"
 #include "Script_Ursacetus.h"
 
+#include "ServerLib/ThreadManager.h"
+
 /// +-------------------------------------------------------------------------
 ///	> ▶▶▶ Task Move To Target  
 /// __________________________________________________________________________
@@ -160,16 +162,21 @@ BTNodeState MonsterTask::MoveToTarget::Evaluate()
 	// 타겟에 도착하지 않았을 경우에만 이동
 	if (toTarget.Length() > kMinDistance) {
 		if (IsMindControlled == false) {
-			GetOwner()->GetTransform()->RotateTargetAxisY(mEnemyController->GetTargetMonster()->GetTransform()->GetSnapShot().GetPosition(), mStat->GetStat_RotationSpeed());
+			GetOwner()->GetTransform()->RotateTargetAxisY(mEnemyController->GetTargetPlayer()->GetTransform()->GetSnapShot().GetPosition(), mStat->GetStat_RotationSpeed());
 			GetOwner()->GetTransform()->Translate(GetOwner()->GetTransform()->GetLook(), mStat->GetStat_MoveSpeed() * DELTA_TIME);
 
 		}
 		else {
-			GetOwner()->GetTransform()->RotateTargetAxisY(mEnemyController->GetTargetPlayer()->GetTransform()->GetSnapShot().GetPosition(), mStat->GetStat_RotationSpeed());
+			GetOwner()->GetTransform()->RotateTargetAxisY(mEnemyController->GetTargetMonster()->GetTransform()->GetSnapShot().GetPosition(), mStat->GetStat_RotationSpeed());
 			GetOwner()->GetTransform()->Translate(GetOwner()->GetTransform()->GetLook(), mStat->GetStat_MoveSpeed()* DELTA_TIME);
 
 		}
 	}
+
+	Vec3 pos = GetOwner()->GetTransform()->GetPosition();
+	LOG_MGR->Cout("[ ", GetOwner()->GetID(), " ] : ", pos.x, " ", pos.y, " ", pos.z, "\n");
+
+
 
 	return BTNodeState::Success;
 }

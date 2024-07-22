@@ -3,6 +3,7 @@
 #include "Script_AdvancedCombatDroid_5.h"
 #include "Script_Onyscidus.h"
 #include "Script_Ursacetus.h"
+#include "ServerLib/ThreadManager.h"
 
 /// +-------------------------------------------------------------------------
 ///	> ¢º¢º¢º Task Check Death  
@@ -10,7 +11,7 @@
 
 BTNodeState MonsterTask::CheckDeath::Evaluate()
 {
-	LOG_MGR->Cout("CheckDeath\n");
+	//LOG_MGR->Cout("CheckDeath\n");
 
 	if (!mStat->IsDead())
 		return BTNodeState::Failure;

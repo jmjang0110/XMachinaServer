@@ -109,7 +109,7 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 			MonsterSnapShot snapShot = it.second->GetSnapShot();
 			RemoveMonsters.push_back(snapShot);
 
-			LOG_MGR->Cout(it.second, " : DeActivate\n");
+			LOG_MGR->Cout("[ ", it.first, " ] : ", it.second, " : DeActivate\n");
 		}
 	}
 

@@ -23,25 +23,23 @@ namespace TileMapInfo
 
 class TileMap
 {
-private:
-	SectorController* mOwner = nullptr;
 
 private:
-	int											 mIndex   = {};
+	int												mIndex   = {};
 	std::vector<std::vector<TileMapInfo::TileType>> mTiles   = {};
 
 public:
-	float										 mTileMapStartPoint = 0;				// leftmost coord of the entire TileMap
-	int											 mTileMapXLength    = 1000;			// length of x for one TileMap
-	int											 mTileMapZLength    = 1000;			// length of z for one TileMap
+	float											mTileMapStartPoint = 0;				// leftmost coord of the entire TileMap
+	int												mTileMapXLength    = 1000;			// length of x for one TileMap
+	int												mTileMapZLength    = 500;			// length of z for one TileMap
 
-	static constexpr float						 mkTileHeight	 = 0.5f;
-	static constexpr float						 mkTileWidth	 = 0.5f;
-	static int									 mTileRows;
-	static int									 mTileCols;
+	static constexpr float							mkTileHeight	  = 0.5f;
+	static constexpr float							mkTileWidth		  = 0.5f;
+	static int										mTileRows;
+	static int										mTileCols;
 
 public:
-	TileMap(SectorController*  owner, int index, int width, int height, const BoundingBox& bb);
+	TileMap();
 	virtual ~TileMap() = default;
 
 	int GetIndex() const						{ return mIndex; }

@@ -23,7 +23,6 @@ struct TimerEvent {
 
 static float g_ElapsedTime = 0.f;
 
-#define DELTA_TIME TimeManager::GetInst()->GetTimeElapsed()
 struct Timer {
 	constexpr static ULONG kMaxSampleCnt = 50;		// Maximum frame time sample count
 
@@ -47,6 +46,7 @@ struct Timer {
 
 	bool			IsStopped{};					// 일시정지 되었는가?
 };
+
 
 class TimeManager
 {

@@ -52,7 +52,7 @@ void BTNode::Attach(BTNode* node)
 
 BTNodeState BTNode_Sequence::Evaluate()
 {
-	LOG_MGR->Cout("BTNode_Sequence \n");
+	//LOG_MGR->Cout("BTNode_Sequence \n");
 
 	bool isRunning = false;
 
@@ -69,6 +69,8 @@ BTNodeState BTNode_Sequence::Evaluate()
 		{
 		case BTNodeState::Failure:
 			return BTNodeState::Failure;
+		case BTNodeState::Success:
+			continue;
 		case BTNodeState::Running:
 			isRunning = true;
 			continue;
@@ -89,7 +91,7 @@ BTNodeState BTNode_Sequence::Evaluate()
 /// __________________________________________________________________________
 BTNodeState BTNode_Selector::Evaluate()
 {
-	LOG_MGR->Cout("BTNode_Selector \n");
+	//LOG_MGR->Cout("BTNode_Selector \n");
 
 	if (!mRoot->mWaitQueue.empty()) {
 		if (mRoot->mWaitQueue.front()->Evaluate() != BTNodeState::Wait)
@@ -112,7 +114,7 @@ BTNodeState BTNode_Selector::Evaluate()
 			return BTNodeState::Success;
 
 		default:
-			break;
+			continue;
 		}
 	}
 	return BTNodeState::Failure;

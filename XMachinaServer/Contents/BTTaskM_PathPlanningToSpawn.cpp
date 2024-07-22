@@ -46,6 +46,9 @@ MonsterTask::PathPlanningToSapwn::PathPlanningToSapwn(SPtr_GameObject owner, std
 		mStat = GetOwner()->GetScript<Script_Onyscidus>(ScriptInfo::Type::Onyscidus);
 	else if (owner->GetType() == GameObjectInfo::Type::Monster_Ursacetus)
 		mStat = GetOwner()->GetScript<Script_Ursacetus>(ScriptInfo::Type::Ursacetus);
+
+	mSpawnPos = owner->GetTransform()->GetPosition();
+
 }
 
 MonsterTask::PathPlanningToSapwn::~PathPlanningToSapwn()

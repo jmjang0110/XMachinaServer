@@ -2,6 +2,8 @@
 #include "Transform.h"
 #include "TimeManager.h"
 
+#include "ServerLib/ThreadManager.h"
+
 #pragma region Getter
 Transform::Transform()
 {

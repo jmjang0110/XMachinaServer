@@ -4,6 +4,8 @@
 #include "Script_Enemy.h"
 #include "Script_EnemyController.h"
 #include "GameObject.h"
+#include "Animation.h"
+
 
 
 enum class BTTaskType : UINT16 {
@@ -128,6 +130,8 @@ namespace MonsterTask {
 		float						  mReturnSpeed{};
 		std::stack<Vec3>*			  mPath;
 
+		const AnimatorParameter*			  mReturnParam{};
+
 	public:
 		virtual BTNodeState Evaluate() override;
 		// x절편이 음수인지 양수인지 확인하는 함수 정의
@@ -186,7 +190,6 @@ namespace MonsterTask {
 
 	public:
 		PathPlanning_AStar(SPtr_GameObject owner, BTTaskType type, std::function<void()> callback = nullptr);
-
 		PathPlanning_AStar(SPtr_GameObject owner, std::function<void()> callback = nullptr);
 		~PathPlanning_AStar();
 	};

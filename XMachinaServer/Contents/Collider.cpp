@@ -144,12 +144,20 @@ void Collider::SetBoundingSphereList(const std::vector<MyBoundingSphere>& sphere
 {
     mBoundingSphereList.resize(sphereList.size());
     std::memcpy(mBoundingSphereList.data(), sphereList.data(), sizeof(MyBoundingSphere) * sphereList.size());
+
+    for (auto& bs : mBoundingSphereList) {
+        bs.Transform(GetOwner()->GetTransform()->GetWorldTransform());
+    }
 }
 
 void Collider::SetBoundingBoxList(const std::vector<MyBoundingOrientedBox>& boxList)
 {
     mBoundingBoxList.resize(boxList.size());
     std::memcpy(mBoundingBoxList.data(), boxList.data(), sizeof(MyBoundingOrientedBox) * boxList.size());
+
+    for (auto& box : mBoundingBoxList) {
+        box.Transform(GetOwner()->GetTransform()->GetWorldTransform());
+    }
 }
 
 void Collider::OnEnable()

@@ -196,6 +196,9 @@ void BattleScene::Load()
 					const auto& BuildingScript = object->AddScript<Script_Building>(ScriptInfo::Type::Building);
 					Coordinate SectorIdx       = SectorController::GetSectorIdxByPosition(Transform::GetPosition(transformMatrix));
 					mBuildings.push_back(object);
+
+					RESOURCE_MGR->GetTileMap()->UpdateTiles(TileMapInfo::TileType::Static, mBuildings[i].get());
+
 				}
 			}
 			
@@ -220,6 +223,8 @@ ResourceManager::~ResourceManager()
 
 void ResourceManager::Init()
 {
+	mTileMap = std::make_shared<TileMap>();
+
 	LoadTerrain();
 	LoadModels();
 	LoadAnimationClips();

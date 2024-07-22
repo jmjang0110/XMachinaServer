@@ -64,6 +64,8 @@ namespace TLS {
 
 /* TLS - Thread Local Storage */
 #define TLS_MGR TlsMgr::GetInst()
+#define DELTA_TIME TLS_MGR->Get_TlsInfoData()->TimeMgr.GetTimeElapsed()
+
 using TlsMgr = class ThreadLocalStorageManager;
 class ThreadLocalStorageManager 
 {

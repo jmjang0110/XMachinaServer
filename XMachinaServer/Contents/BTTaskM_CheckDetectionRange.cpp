@@ -49,7 +49,7 @@ BTNodeState MonsterTask::CheckDetectionRange::Evaluate()
 					}
 				}
 
-				LOG_MGR->Cout("Closest Player ID : ", closestPlayerID);
+				//LOG_MGR->Cout("Closest Player ID : ", closestPlayerID);
 				mEnemyController->SetTargetPlayer(PC->GetPlayer(closestPlayerID));
 				mTargetPlayer = PC->GetPlayer(closestPlayerID);
 			}

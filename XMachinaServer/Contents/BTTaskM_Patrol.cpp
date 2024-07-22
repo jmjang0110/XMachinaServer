@@ -6,6 +6,8 @@
 #include "Script_AdvancedCombatDroid_5.h"
 #include "Script_Onyscidus.h"
 #include "Script_Ursacetus.h"
+#include "ServerLib/ThreadManager.h"
+
 /// +-------------------------------------------------------------------------
 ///	> ¢º¢º¢º Task Patrol 
 /// __________________________________________________________________________

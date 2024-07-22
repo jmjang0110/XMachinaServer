@@ -146,14 +146,13 @@ float Sector::CollideCheckRay_MinimumDist(const Ray& ray, GameObjectInfo::Type t
 	float minDist = 999.f;
 	float Result;
 
-	for (int i = 0; i < mBuildings.size(); ++i) {
-		const ColliderSnapShot snapShot = mBuildings[i]->GetCollider()->GetSnapShot();
+	for (auto& [ID, object] : mBuildings) {
+		const ColliderSnapShot snapShot = mBuildings[ID]->GetCollider()->GetSnapShot();
 		Ray R = ray;
-
 		Result = COLLISION_MGR->CollideCheckRay_MinimumDist(snapShot, R);
 		minDist = min(Result, minDist);
+
 	}
-	
 	return minDist;
 }
 

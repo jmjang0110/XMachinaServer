@@ -63,6 +63,10 @@ public:
 
 	void SetBoundingSphereList(const std::vector<MyBoundingSphere>& sphereList);
 	void SetBoundingBoxList(const std::vector<MyBoundingOrientedBox>& boxList);
+
+	std::vector<MyBoundingSphere>& GetBoundingSphereList() { return mBoundingSphereList; }
+	std::vector<MyBoundingOrientedBox>& GetBoundingBoxList() { return mBoundingBoxList; }
+
 };
 
 

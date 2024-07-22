@@ -82,7 +82,7 @@ BTNode* Script_DefaultEnemyBT::SetupTree()
 			std::vector<BTNode*> selector_Children;
 			BTNode* n1 = MEMORY->New<MonsterTask::MoveToTarget>(GetOwner());		 selector_Children.push_back(n1);
 			BTNode* n2 = MEMORY->New<MonsterTask::PathPlanningToTarget>(GetOwner()); selector_Children.push_back(n2);
-			SelNode = MEMORY->New<BTNode_Sequence>(GetOwner(), selector_Children);
+			SelNode = MEMORY->New<BTNode_Selector>(GetOwner(), selector_Children);
 			sequence_children.push_back(SelNode);
 		}
 
@@ -109,7 +109,7 @@ BTNode* Script_DefaultEnemyBT::SetupTree()
 		}
 		BTNode* n3 = MEMORY->New<MonsterTask::PathPlanningToSapwn>(GetOwner());	selector_Children.push_back(n3);
 
-		SelNode = MEMORY->New<BTNode_Sequence>(GetOwner(), selector_Children);
+		SelNode = MEMORY->New<BTNode_Selector>(GetOwner(), selector_Children);
 		root_selector_Children.push_back(SelNode);
 	}
 

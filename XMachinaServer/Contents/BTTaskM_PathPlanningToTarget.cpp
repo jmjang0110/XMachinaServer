@@ -22,8 +22,12 @@ BTNodeState MonsterTask::PathPlanningToTarget::Evaluate()
 
 		// 시작 지점과 목적지 위치 값을 타일 고유 인덱스로 변환
 		
-		Path::Pos start = RESOURCE_MGR->GetTileMap()->GetTileUniqueIndexFromPos(GetOwner()->GetTransform()->GetPosition());
-		Path::Pos dest  = RESOURCE_MGR->GetTileMap()->GetTileUniqueIndexFromPos(mEnemyController->GetPathTargetObject()->GetTransform()->GetSnapShot().GetPosition());
+		SPtr<TileMap> tileMap = RESOURCE_MGR->GetTileMap();
+
+		Vec3 d = mEnemyController->GetPathTargetObject()->GetTransform()->GetSnapShot().GetPosition();
+
+		Path::Pos start = tileMap->GetTileUniqueIndexFromPos(GetOwner()->GetTransform()->GetPosition());
+		Path::Pos dest  = tileMap->GetTileUniqueIndexFromPos(d);
 
 		// 경로 계획에 실패했다면 Failure를 호출하여 다음 노드로 넘어감
 		if (PathPlanningAStar(start, dest)) {
@@ -45,6 +49,9 @@ MonsterTask::PathPlanningToTarget::PathPlanningToTarget(SPtr_GameObject owner, s
 		mStat = GetOwner()->GetScript<Script_Onyscidus>(ScriptInfo::Type::Onyscidus);
 	else if (owner->GetType() == GameObjectInfo::Type::Monster_Ursacetus)
 		mStat = GetOwner()->GetScript<Script_Ursacetus>(ScriptInfo::Type::Ursacetus);
+
+	MonsterTask::PathPlanning_AStar::mPath = mEnemyController->GetPaths();
+
 }
 
 MonsterTask::PathPlanningToTarget::~PathPlanningToTarget()

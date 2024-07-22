@@ -44,6 +44,7 @@ public:
 	/* Util */
 	SPtr<Transform> GetTransform() { return GetComponent<Transform>(ComponentInfo::Type::Transform); }
 	SPtr<Collider> GetCollider() { return GetComponent<Collider>(ComponentInfo::Type::Collider); }
+	SPtr<Animation> GetAnimation() { return GetComponent<Animation>(ComponentInfo::Type::Animation); }
 
 public:
 	// 깊은 복사 함수 선언

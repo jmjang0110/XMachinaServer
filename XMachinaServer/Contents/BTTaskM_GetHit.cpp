@@ -12,7 +12,7 @@
 
 BTNodeState MonsterTask::GetHit::Evaluate()
 {
-	LOG_MGR->Cout("GetHit \n");
+	//LOG_MGR->Cout("GetHit \n");
 
 	if (mEnemyController->IsMindControlled() == false) {
 		if (!mEnemyController->GetTargetPlayer())

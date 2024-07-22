@@ -4,7 +4,7 @@
 #include "GameObject.h"
 #include "GamePlayer.h"
 #include "GameMonster.h"
-
+#include "Animation.h"
 
 /// +-------------------------------
 ///		     Script_EnemyController 
@@ -51,6 +51,8 @@ private:
 
 	/* Min Control On */
 	SPtr<GameMonster>   mTargetMonster = {};
+
+	
 
 public:
 	/// +------------------------------

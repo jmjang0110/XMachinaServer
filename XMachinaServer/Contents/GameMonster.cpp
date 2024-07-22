@@ -30,7 +30,7 @@ void GameMonster::Update()
 {
 	GameObject::Update();
 
-	LOG_MGR->Cout("Monster Update : ", static_cast<UINT8>(GetMonsterType()), "\n");
+	//LOG_MGR->Cout("Monster Update : ", static_cast<UINT8>(GetMonsterType()), "\n");
 
 
 }

@@ -379,6 +379,8 @@ bool FBsPacketFactory::Process_CPkt_Player_Transform(SPtr_Session session, const
 	gameSession->GetPlayer()->GetTransform()->SetLocalRotation(Quaternion::ToQuaternion(rot));
 	gameSession->GetPlayer()->Update();
 
+	LOG_MGR->Cout("PLAYER : ", pos.x, " ", pos.y, " ", pos.z, "\n");
+
 	/* Boradcast Player's Transform Update */
 	SPtr_SendPktBuf SendPkt = FBS_FACTORY->SPkt_Player_Transform(id, move_state, latency, velocity, movedir, pos, rot, spine_look, animparam_h, animparam_v);
 	GAME_MGR->BroadcastRoom(gameSession->GetPlayerSnapShot().RoomID, SendPkt, id);

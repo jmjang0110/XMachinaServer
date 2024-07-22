@@ -11,7 +11,7 @@
 /// __________________________________________________________________________
 BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 {
-	LOG_MGR->Cout("CheckAttackRange\n");
+	//LOG_MGR->Cout("CheckAttackRange\n");
 	bool IsMindControlled = mEnemyController->IsMindControlled();
 	if (IsMindControlled == false) {
 		if (!mEnemyController->GetTargetPlayer())

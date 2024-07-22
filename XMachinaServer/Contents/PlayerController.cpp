@@ -10,11 +10,12 @@ SPtr<GamePlayer> PlayerController::GetPlayer(UINT32 ID)
 	mSRWLock.LockRead();
 
 	auto it = mGamePlayers.find(ID);
-	if (it != mGamePlayers.end())
+	if (it != mGamePlayers.end()) {
+		mSRWLock.UnlockRead();
 		return it->second;
+	}
 
 	mSRWLock.UnlockRead();
-
 	return nullptr;
 }
 

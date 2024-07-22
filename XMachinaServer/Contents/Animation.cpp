@@ -2,6 +2,7 @@
 #include "Animation.h"
 
 #include "ResourceManager.h"
+#include "ServerLib/ThreadManager.h"
 
 Animation::Animation()
 {

@@ -13,7 +13,7 @@ GameSession::GameSession()
 }
 
 GameSession::~GameSession()
-{
+{ 
 	if (mPlayer)
 		mPlayer->DecRef_OwnerGameSession();
 }
