@@ -34,6 +34,9 @@ Script_Rapax::~Script_Rapax()
 
 void Script_Rapax::Clone(SPtr<Component> other)
 {
+    Script_Enemy::Clone(other);
+    SPtr<Script_Rapax> otherScript = std::static_pointer_cast<Script_Rapax>(other);
+
 }
 
 void Script_Rapax::Activate()

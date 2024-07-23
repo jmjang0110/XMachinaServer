@@ -20,7 +20,7 @@ Script_AdvancedCombatDroid_5::Script_AdvancedCombatDroid_5(SPtr<GameObject> owne
     Script_EnemyStat::SetStat_AttackRange(1.5);
     Script_EnemyStat::SetStat_AttackCoolTime(0);
     Script_EnemyStat::SetMaxHP(150);
-    Script_EnemyStat::SetStat_AttackAnimName("HitComboUnarmed");
+    Script_EnemyStat::SetStat_AttackAnimName("2HitComboUnarmed");
     Script_EnemyStat::SetStat_DeathAnimName("DeathFrontCombat");
     Script_EnemyStat::SetStat_GetHitName("IdleCombat");
 

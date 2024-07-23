@@ -27,13 +27,8 @@ MonsterTask::MoveToTarget::MoveToTarget(SPtr_GameObject owner, std::function<voi
 	: BTTask(owner, BTTaskType::MonT_MoveToTarget, callback)
 {
 	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
+	mStat = GetStat(owner->GetType());
 
-	if (owner->GetType() == GameObjectInfo::Type::Monster_AdvancedCombat_5)
-		mStat = GetOwner()->GetScript<Script_AdvancedCombatDroid_5>(ScriptInfo::Type::AdvancedCombatDroid_5);
-	else if (owner->GetType() == GameObjectInfo::Type::Monster_Onyscidus)
-		mStat = GetOwner()->GetScript<Script_Onyscidus>(ScriptInfo::Type::Onyscidus);
-	else if (owner->GetType() == GameObjectInfo::Type::Monster_Ursacetus)
-		mStat = GetOwner()->GetScript<Script_Ursacetus>(ScriptInfo::Type::Ursacetus);
 }
 
 MonsterTask::MoveToTarget::~MoveToTarget()
@@ -162,9 +157,9 @@ BTNodeState MonsterTask::MoveToTarget::Evaluate()
 	// 타겟에 도착하지 않았을 경우에만 이동
 	if (toTarget.Length() > kMinDistance) {
 		if (IsMindControlled == false) {
-			GetOwner()->GetTransform()->RotateTargetAxisY(mEnemyController->GetTargetPlayer()->GetTransform()->GetSnapShot().GetPosition(), mStat->GetStat_RotationSpeed());
-			GetOwner()->GetTransform()->Translate(GetOwner()->GetTransform()->GetLook(), mStat->GetStat_MoveSpeed() * DELTA_TIME);
-
+			//GetOwner()->GetTransform()->RotateTargetAxisY(mEnemyController->GetTargetPlayer()->GetTransform()->GetSnapShot().GetPosition(), mStat->GetStat_RotationSpeed());
+			//GetOwner()->GetTransform()->Translate(GetOwner()->GetTransform()->GetLook(), mStat->GetStat_MoveSpeed() * DELTA_TIME);
+			int a = 3;
 		}
 		else {
 			GetOwner()->GetTransform()->RotateTargetAxisY(mEnemyController->GetTargetMonster()->GetTransform()->GetSnapShot().GetPosition(), mStat->GetStat_RotationSpeed());

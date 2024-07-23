@@ -14,6 +14,7 @@ public:
 
 public:
 	float GetFrameTime(int frame) const { return mKeyFrameTimes[frame]; }
+	int GetMaxFrameRate() const { return static_cast<int>(mKeyFrameTimes.size()) - 1; }
 };
 
 struct MotionCallback {
@@ -48,6 +49,8 @@ private:
 
 	std::string mName{};
 	std::map<float, MotionCallback> mCallbacks;
+	sptr<MotionCallback> mCallbackStop;
+	sptr<MotionCallback> mCallbackChange;
 
 public:
 	AnimatorMotion(const AnimatorMotionInfo& info);
@@ -67,6 +70,13 @@ public:
 
 	bool IsEndAnimation() const;
 	bool IsReverse() const { return mIsReverse == -1 ? true : false; }
+
+	void AddStartCallback(const std::function<void()>& callback);
+	void AddEndCallback(const std::function<void()>& callback);
+	void AddStopCallback(const std::function<void()>& callback);
+	void DelStopCallback();
+	void AddChangeCallback(const std::function<void()>& callback);
+	void DelChabgeCallback();
 
 	void AddCallback(const std::function<void()>& callback, int frame);
 	void DelCallback(int frame);
@@ -113,6 +123,8 @@ public:
 	const std::string& GetName() const { return mName; }
 	sptr<AnimatorMotion> GetState(const std::string& name) const;
 	sptr<AnimatorStateMachine> GetStateMachine(const std::string& name) const;
+	const AnimatorLayer* GetLayer() const { return mLayer.get(); }
+
 
 public:
 	sptr<AnimatorMotion> Entry() const;
@@ -120,6 +132,9 @@ public:
 
 	void AddState(rsptr<AnimatorMotion> state);
 	void AddStateMachine(rsptr<AnimatorStateMachine> stateMachine);
+
+	sptr<AnimatorMotion> FindMotionByName(const std::string& motionName) const;
+
 };
 //
 
@@ -143,6 +158,12 @@ public:
 public:
 	sptr<AnimatorMotion> CheckTransition(const AnimatorController* controller);
 	void ChangeState(rsptr<AnimatorMotion> state);
+
+	sptr<AnimatorMotion> FindMotionByName(const std::string& motionName) const;
+	sptr<AnimatorMotion> GetCrntMotion() const { return mCrntState; }
+
+	std::string GetName() { return mName; }
+
 };
 //
 
@@ -168,6 +189,7 @@ class AnimatorController {
 	static constexpr bool is_valid_param_type = (std::is_same<T, bool>::value || std::is_same<T, int>::value || std::is_same<T, float>::value);
 
 private:
+	std::string mName{};
 	std::unordered_map<std::string, AnimatorParameter> mParameters{};
 
 	std::vector<sptr<AnimatorLayer>> mLayers;
@@ -228,9 +250,15 @@ public:
 		CheckTransition();
 	}
 
+	void SetName(const std::string& name) { mName = name; }
+
 public:
 	void InitLayers();
 	void CheckTransition() const;
+
+	sptr<AnimatorMotion> FindMotionByName(const std::string& motionName, const std::string& layerName = "Base Layer") const;
+	sptr<AnimatorLayer>  FindLayerByName(const std::string& layerName) const;
+
 };
 //
 

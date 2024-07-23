@@ -15,6 +15,14 @@
 #include "Script_AdvancedCombatDroid_5.h"
 #include "Script_Ursacetus.h"
 #include "Script_Onyscidus.h"
+#include "Script_Arack.h"
+#include "Script_Aranobot.h"
+#include "Script_Ceratoferox.h"
+#include "Script_Gobbler.h"
+#include "Script_LightBipedMech.h"
+#include "Script_Rapax.h"
+#include "Script_Anglerox.h"
+#include "Script_MiningMech.h"
 
 #include "Script_BehaviorTree.h"
 #include "Script_DefaultEnemyBT.h"
@@ -81,10 +89,31 @@ void BattleScene::Load()
 				objectTag = ObjectTag::Enemy;
 				if (modelName == "Onyscidus")
 					objectType = GameObjectInfo::Type::Monster_Onyscidus;
-				else if (modelName == "Ursacetus;")
+				else if (modelName == "Ursacetus")
 					objectType = GameObjectInfo::Type::Monster_Ursacetus;
-				else if (modelName == "AdvancedCombat_5")
+				else if (modelName == "AdvancedCombatDroid")
 					objectType = GameObjectInfo::Type::Monster_AdvancedCombat_5;
+				else if (modelName == "Anglerox")
+					objectType = GameObjectInfo::Type::Monster_Anglerox;
+				else if (modelName == "Arack")
+					objectType = GameObjectInfo::Type::Monster_Arack;
+				else if (modelName == "Ceratoferox")
+					objectType = GameObjectInfo::Type::Monster_Ceratoferox;
+				else if (modelName == "Gobbler")
+					objectType = GameObjectInfo::Type::Monster_Gobbler;
+				else if (modelName == "LightBipedMech")
+					objectType = GameObjectInfo::Type::Monster_LightBipedMech;
+				else if (modelName == "MiningMech")
+					objectType = GameObjectInfo::Type::Monster_MiningMech;
+				else if (modelName == "Rapax")
+					objectType = GameObjectInfo::Type::Monster_Rapax;
+				else if (modelName == "Aranobot")
+					objectType = GameObjectInfo::Type::Monster_Aranobot;
+				else
+					assert(0);
+
+
+
 			}
 			else if(tag == "Building" || tag == "Dissolve_Building") {
 				objectTag = ObjectTag::Building;
@@ -92,6 +121,7 @@ void BattleScene::Load()
 			}
 			else {
 				objectTag = ObjectTag::None;
+				objectType = GameObjectInfo::Type::None;
 				LOG_MGR->Cout("[MDH_Warning] untagged(", tag, ") : ", modelName, "\n");
 			}
 
@@ -112,7 +142,15 @@ void BattleScene::Load()
 			/// ---------------------------------------------------+
 			if (objectType == GameObjectInfo::Type::Monster_Onyscidus ||
 				objectType == GameObjectInfo::Type::Monster_Ursacetus ||
-				objectType == GameObjectInfo::Type::Monster_AdvancedCombat_5)
+				objectType == GameObjectInfo::Type::Monster_AdvancedCombat_5 ||
+				objectType == GameObjectInfo::Type::Monster_Anglerox ||
+				objectType == GameObjectInfo::Type::Monster_Arack ||
+				objectType == GameObjectInfo::Type::Monster_Ceratoferox || 
+				objectType == GameObjectInfo::Type::Monster_Gobbler ||
+				objectType == GameObjectInfo::Type::Monster_LightBipedMech ||
+				objectType == GameObjectInfo::Type::Monster_MiningMech ||
+				objectType == GameObjectInfo::Type::Monster_Rapax ||
+				objectType == GameObjectInfo::Type::Monster_Aranobot )
 			{
 				SPtr<GameMonster> object = std::make_shared<GameMonster>();
 				object->SetType(objectType);
@@ -146,17 +184,74 @@ void BattleScene::Load()
 					/// +---------------------------------------------------
 					///	¡å Script  
 					/// ---------------------------------------------------+
-					if (objectType == GameObjectInfo::Type::Monster_Onyscidus) {
-						object->SetMonsterType(MonsterType::Onyscidus);
-						object->AddScript<Script_Onyscidus>(ScriptInfo::Type::Onyscidus);
-					}
-					else if (objectType == GameObjectInfo::Type::Monster_Ursacetus) {
+					switch (objectType)
+					{
+					case GameObjectInfo::Type::Monster_Ursacetus: {
 						object->SetMonsterType(MonsterType::Ursacetus);
-						object->AddScript<Script_Ursacetus>(ScriptInfo::Type::Ursacetus);
+						object->AddScript<Script_Onyscidus>(ScriptInfo::Type::Ursacetus);
+
 					}
-					else if (objectType == GameObjectInfo::Type::Monster_AdvancedCombat_5) {
+						break;
+					case GameObjectInfo::Type::Monster_Onyscidus: {
+						object->SetMonsterType(MonsterType::Onyscidus);
+						object->AddScript<Script_Ursacetus>(ScriptInfo::Type::Onyscidus);
+
+					}
+						break;
+					case GameObjectInfo::Type::Monster_AdvancedCombat_5: {
 						object->SetMonsterType(MonsterType::AdvancedCombatDroid_5);
 						object->AddScript<Script_AdvancedCombatDroid_5>(ScriptInfo::Type::AdvancedCombatDroid_5);
+
+					}
+						break;
+					case GameObjectInfo::Type::Monster_Anglerox: {
+						object->SetMonsterType(MonsterType::Anglerox);
+						object->AddScript<Script_Anglerox>(ScriptInfo::Type::Anglerox);
+
+					}
+						break;
+					case GameObjectInfo::Type::Monster_Arack: {
+						object->SetMonsterType(MonsterType::Arack);
+						object->AddScript<Script_Arack>(ScriptInfo::Type::Arack);
+
+					}
+						break;
+					case GameObjectInfo::Type::Monster_Ceratoferox: {
+						object->SetMonsterType(MonsterType::Ceratoferox);
+						object->AddScript<Script_Ceratoferox>(ScriptInfo::Type::Ceratoferox);
+
+					}
+						break;
+					case GameObjectInfo::Type::Monster_Gobbler: {
+						object->SetMonsterType(MonsterType::Gobbler);
+						object->AddScript<Script_Gobbler>(ScriptInfo::Type::Gobbler);
+
+					}
+						break;
+					case GameObjectInfo::Type::Monster_LightBipedMech: {
+						object->SetMonsterType(MonsterType::LightBipedMech);
+						object->AddScript<Script_LightBipedMech>(ScriptInfo::Type::LightBipedMech);
+
+					}
+						break;
+					case GameObjectInfo::Type::Monster_MiningMech: {
+						object->SetMonsterType(MonsterType::MiningMech);
+						object->AddScript<Script_AdvancedCombatDroid_5>(ScriptInfo::Type::MiningMech);
+
+					}
+						break;
+					case GameObjectInfo::Type::Monster_Rapax: {
+						object->SetMonsterType(MonsterType::Rapax);
+						object->AddScript<Script_Rapax>(ScriptInfo::Type::Rapax);
+
+					}
+						break;
+					case GameObjectInfo::Type::Monster_Aranobot: {
+						object->SetMonsterType(MonsterType::Aranobot);
+						object->AddScript<Script_Aranobot>(ScriptInfo::Type::Aranabot);
+
+					}
+						break;
 					}
 
 					object->AddScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);

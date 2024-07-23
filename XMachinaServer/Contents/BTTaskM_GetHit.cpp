@@ -45,13 +45,8 @@ MonsterTask::GetHit::GetHit(SPtr_GameObject owner, std::function<void()> callbac
 {
 
 	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
+	mStat = GetStat(owner->GetType());
 
-	if (owner->GetType() == GameObjectInfo::Type::Monster_AdvancedCombat_5)
-		mStat = GetOwner()->GetScript<Script_AdvancedCombatDroid_5>(ScriptInfo::Type::AdvancedCombatDroid_5);
-	else if (owner->GetType() == GameObjectInfo::Type::Monster_Onyscidus)
-		mStat = GetOwner()->GetScript<Script_Onyscidus>(ScriptInfo::Type::Onyscidus);
-	else if (owner->GetType() == GameObjectInfo::Type::Monster_Ursacetus)
-		mStat = GetOwner()->GetScript<Script_Ursacetus>(ScriptInfo::Type::Ursacetus);	
 	
 	mPrevHp          = mStat->GetCrntHp();
 	mKnockBack       = 0.05f;

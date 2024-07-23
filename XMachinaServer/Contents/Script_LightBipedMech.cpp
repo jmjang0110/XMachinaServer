@@ -34,6 +34,9 @@ Script_LightBipedMech::~Script_LightBipedMech()
 
 void Script_LightBipedMech::Clone(SPtr<Component> other)
 {
+    Script_Enemy::Clone(other);
+    SPtr<Script_LightBipedMech> otherScript = std::static_pointer_cast<Script_LightBipedMech>(other);
+
 }
 
 void Script_LightBipedMech::Activate()

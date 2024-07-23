@@ -115,26 +115,29 @@ namespace FBsProtocolID
     constexpr UINT16 CPkt_Player_Weapon         = 1018;
     constexpr UINT16 SPkt_Player_Weapon         = 1019;
 
+    constexpr UINT16 CPkt_Player_AimRotation    = 1020;
+    constexpr UINT16 SPkt_Player_AimRotation    = 1021;
+
     /// +-----------------------------------------------------------------------
     ///  MONSTER PACKET HEADER PROTOCOL TYPE
     /// -----------------------------------------------------------------------+
-    constexpr UINT16 CPkt_NewMonster            = 1020;
-    constexpr UINT16 SPkt_NewMonster            = 1021;
+    constexpr UINT16 CPkt_NewMonster            = 1022;
+    constexpr UINT16 SPkt_NewMonster            = 1023;
 
-    constexpr UINT16 CPkt_DeadMonster           = 1022;
-    constexpr UINT16 SPkt_DeadMonster           = 1023;
+    constexpr UINT16 CPkt_DeadMonster           = 1024;
+    constexpr UINT16 SPkt_DeadMonster           = 1025;
 
-    constexpr UINT16 CPkt_RemoveMonster         = 1024;
-    constexpr UINT16 SPkt_RemoveMonster         = 1025;
+    constexpr UINT16 CPkt_RemoveMonster         = 1026;
+    constexpr UINT16 SPkt_RemoveMonster         = 1027;
 
-    constexpr UINT16 CPkt_Monster_Transform     = 1026;
-    constexpr UINT16 SPkt_Monster_Transform     = 1027;
+    constexpr UINT16 CPkt_Monster_Transform     = 1028;
+    constexpr UINT16 SPkt_Monster_Transform     = 1029;
 
-    constexpr UINT16 CPkt_Monster_HP            = 1028;
-    constexpr UINT16 SPkt_Monster_HP            = 1029;
+    constexpr UINT16 CPkt_Monster_HP            = 1030;
+    constexpr UINT16 SPkt_Monster_HP            = 1031;
 
-    constexpr UINT16 CPkt_Monster_State         = 1030;
-    constexpr UINT16 SPkt_Monster_State         = 1031;
+    constexpr UINT16 CPkt_Monster_State         = 1032;
+    constexpr UINT16 SPkt_Monster_State         = 1033;
 
     /// +-----------------------------------------------------------------------
     ///  PHERO PACKET HEADER PROTOCOL TYPE

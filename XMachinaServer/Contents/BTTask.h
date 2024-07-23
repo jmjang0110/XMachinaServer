@@ -41,6 +41,8 @@ public:
 
 public:
 	BTTaskType GetType() { return mType; }
+	SPtr<Script_Enemy> GetStat(GameObjectInfo::Type enemyType);
+
 
 public:
 	BTTask(SPtr_GameObject owner, BTTaskType type, std::function<void()> callback = nullptr);
@@ -243,6 +245,8 @@ namespace MonsterTask {
 		SPtr<Script_Enemy>			  mStat;
 	public:
 		virtual BTNodeState Evaluate() override;
+		void AttackEndCallback();
+
 
 	public:
 		CheckAttackRange(SPtr_GameObject owner, std::function<void()> callback = nullptr);

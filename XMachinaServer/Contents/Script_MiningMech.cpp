@@ -34,6 +34,9 @@ Script_MiningMech::~Script_MiningMech()
 
 void Script_MiningMech::Clone(SPtr<Component> other)
 {
+    Script_Enemy::Clone(other);
+    SPtr<Script_MiningMech> otherScript = std::static_pointer_cast<Script_MiningMech>(other);
+
 }
 
 void Script_MiningMech::Activate()

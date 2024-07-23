@@ -164,6 +164,22 @@ table SPkt_Player_Transform
 
 }
 
+// +------------------------
+//	   PALYER Aim  Rotation
+// ------------------------+
+
+table CPkt_Player_AimRotation
+{
+	aim_rotation			: float; // Y rotation Euler
+}
+
+table SPkt_Player_AimRotation
+{
+	player_id				: uint;	// 8 bytes
+
+	aim_rotation		    : float; // Y rotation Euler
+}
+
 
 // +------------------------
 //	   PALYER ANIMATION 

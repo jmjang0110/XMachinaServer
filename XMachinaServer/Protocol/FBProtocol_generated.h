@@ -67,6 +67,12 @@ struct CPkt_Player_TransformBuilder;
 struct SPkt_Player_Transform;
 struct SPkt_Player_TransformBuilder;
 
+struct CPkt_Player_AimRotation;
+struct CPkt_Player_AimRotationBuilder;
+
+struct SPkt_Player_AimRotation;
+struct SPkt_Player_AimRotationBuilder;
+
 struct CPkt_Player_Animation;
 struct CPkt_Player_AnimationBuilder;
 
@@ -992,6 +998,98 @@ inline ::flatbuffers::Offset<SPkt_Player_Transform> CreateSPkt_Player_Transform(
   builder_.add_velocity(velocity);
   builder_.add_player_id(player_id);
   builder_.add_move_state(move_state);
+  return builder_.Finish();
+}
+
+struct CPkt_Player_AimRotation FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
+  typedef CPkt_Player_AimRotationBuilder Builder;
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
+    VT_AIM_ROTATION = 4
+  };
+  float aim_rotation() const {
+    return GetField<float>(VT_AIM_ROTATION, 0.0f);
+  }
+  bool Verify(::flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<float>(verifier, VT_AIM_ROTATION, 4) &&
+           verifier.EndTable();
+  }
+};
+
+struct CPkt_Player_AimRotationBuilder {
+  typedef CPkt_Player_AimRotation Table;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_aim_rotation(float aim_rotation) {
+    fbb_.AddElement<float>(CPkt_Player_AimRotation::VT_AIM_ROTATION, aim_rotation, 0.0f);
+  }
+  explicit CPkt_Player_AimRotationBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  ::flatbuffers::Offset<CPkt_Player_AimRotation> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = ::flatbuffers::Offset<CPkt_Player_AimRotation>(end);
+    return o;
+  }
+};
+
+inline ::flatbuffers::Offset<CPkt_Player_AimRotation> CreateCPkt_Player_AimRotation(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    float aim_rotation = 0.0f) {
+  CPkt_Player_AimRotationBuilder builder_(_fbb);
+  builder_.add_aim_rotation(aim_rotation);
+  return builder_.Finish();
+}
+
+struct SPkt_Player_AimRotation FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
+  typedef SPkt_Player_AimRotationBuilder Builder;
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
+    VT_PLAYER_ID = 4,
+    VT_AIM_ROTATION = 6
+  };
+  uint32_t player_id() const {
+    return GetField<uint32_t>(VT_PLAYER_ID, 0);
+  }
+  float aim_rotation() const {
+    return GetField<float>(VT_AIM_ROTATION, 0.0f);
+  }
+  bool Verify(::flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<uint32_t>(verifier, VT_PLAYER_ID, 4) &&
+           VerifyField<float>(verifier, VT_AIM_ROTATION, 4) &&
+           verifier.EndTable();
+  }
+};
+
+struct SPkt_Player_AimRotationBuilder {
+  typedef SPkt_Player_AimRotation Table;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_player_id(uint32_t player_id) {
+    fbb_.AddElement<uint32_t>(SPkt_Player_AimRotation::VT_PLAYER_ID, player_id, 0);
+  }
+  void add_aim_rotation(float aim_rotation) {
+    fbb_.AddElement<float>(SPkt_Player_AimRotation::VT_AIM_ROTATION, aim_rotation, 0.0f);
+  }
+  explicit SPkt_Player_AimRotationBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  ::flatbuffers::Offset<SPkt_Player_AimRotation> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = ::flatbuffers::Offset<SPkt_Player_AimRotation>(end);
+    return o;
+  }
+};
+
+inline ::flatbuffers::Offset<SPkt_Player_AimRotation> CreateSPkt_Player_AimRotation(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    uint32_t player_id = 0,
+    float aim_rotation = 0.0f) {
+  SPkt_Player_AimRotationBuilder builder_(_fbb);
+  builder_.add_aim_rotation(aim_rotation);
+  builder_.add_player_id(player_id);
   return builder_.Finish();
 }
 

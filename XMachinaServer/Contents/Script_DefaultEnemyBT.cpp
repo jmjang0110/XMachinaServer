@@ -8,9 +8,19 @@
 
 #include "BTNode.h"
 #include "BTTask.h"
+
 #include "Script_AdvancedCombatDroid_5.h"
-#include "Script_Onyscidus.h"
 #include "Script_Ursacetus.h"
+#include "Script_Onyscidus.h"
+#include "Script_Arack.h"
+#include "Script_Aranobot.h"
+#include "Script_Ceratoferox.h"
+#include "Script_Gobbler.h"
+#include "Script_LightBipedMech.h"
+#include "Script_Rapax.h"
+#include "Script_Anglerox.h"
+#include "Script_MiningMech.h"
+
 
 BTNode* Script_DefaultEnemyBT::SetupTree()
 {
@@ -31,20 +41,7 @@ BTNode* Script_DefaultEnemyBT::SetupTree()
 	for (const auto& wayPoint : wayPoints)
 		maxDis = std::max(maxDis, Vec3::Distance(baryCenter, wayPoint));
 #pragma endregion
-	SPtr<Script_Enemy> enemy = {};
-
-	if (GetOwner()->GetType() == GameObjectInfo::Type::Monster_AdvancedCombat_5) {
-		SPtr<Script_AdvancedCombatDroid_5> script =  GetOwner()->GetScript<Script_AdvancedCombatDroid_5>(ScriptInfo::Type::AdvancedCombatDroid_5);
-		enemy = std::static_pointer_cast<Script_Enemy>(script);
-	}
-	if (GetOwner()->GetType() == GameObjectInfo::Type::Monster_Onyscidus) {
-		SPtr<Script_Onyscidus> script = GetOwner()->GetScript<Script_Onyscidus>(ScriptInfo::Type::Onyscidus);
-		enemy = std::static_pointer_cast<Script_Enemy>(script);
-	}
-	if (GetOwner()->GetType() == GameObjectInfo::Type::Monster_Ursacetus) {
-		SPtr<Script_Ursacetus> script = GetOwner()->GetScript<Script_Ursacetus>(ScriptInfo::Type::Ursacetus);
-		enemy = std::static_pointer_cast<Script_Enemy>(script);
-	}
+	SPtr<Script_Enemy> enemy = GetScriptEnemy(GetOwner()->GetType());
 
 #pragma region BehaviorTree
 	std::vector<BTNode*> root_selector_Children;
@@ -91,31 +88,100 @@ BTNode* Script_DefaultEnemyBT::SetupTree()
 	}
 
 	/* CheckAttackRange */
-	BTNode* node3 = MEMORY->New<MonsterTask::MoveToPath>(GetOwner()); root_selector_Children.push_back(node3);
-	{
-		BTNode* SelNode{};
+	//BTNode* node3 = MEMORY->New<MonsterTask::MoveToPath>(GetOwner()); root_selector_Children.push_back(node3);
+	//{
+	//	BTNode* SelNode{};
 
-		std::vector<BTNode*> selector_Children;
-		{
-			/* Sequence - CheckAttackRange, Attack */
-			BTNode* SeqNode{};
+	//	std::vector<BTNode*> selector_Children;
+	//	{
+	//		/* Sequence - CheckAttackRange, Attack */
+	//		BTNode* SeqNode{};
+	//		
+	//		std::vector<BTNode*> sequence_children;
+	//		BTNode* n1 = MEMORY->New<MonsterTask::CheckPatrolRange>(GetOwner()); sequence_children.push_back(n1);
+	//		BTNode* n2 = MEMORY->New<MonsterTask::Patrol>(GetOwner());			 sequence_children.push_back(n2);
 
-			std::vector<BTNode*> sequence_children;
-			BTNode* n1 = MEMORY->New<MonsterTask::CheckPatrolRange>(GetOwner()); sequence_children.push_back(n1);
-			BTNode* n2 = MEMORY->New<MonsterTask::Patrol>(GetOwner());			 sequence_children.push_back(n2);
+	//		SeqNode = MEMORY->New<BTNode_Sequence>(GetOwner(), sequence_children);
+	//		selector_Children.push_back(SeqNode);
+	//	}
+	//	BTNode* n3 = MEMORY->New<MonsterTask::PathPlanningToSapwn>(GetOwner());	selector_Children.push_back(n3);
 
-			SeqNode = MEMORY->New<BTNode_Sequence>(GetOwner(), sequence_children);
-			selector_Children.push_back(SeqNode);
-		}
-		BTNode* n3 = MEMORY->New<MonsterTask::PathPlanningToSapwn>(GetOwner());	selector_Children.push_back(n3);
-
-		SelNode = MEMORY->New<BTNode_Selector>(GetOwner(), selector_Children);
-		root_selector_Children.push_back(SelNode);
-	}
+	//	SelNode = MEMORY->New<BTNode_Selector>(GetOwner(), selector_Children);
+	//	root_selector_Children.push_back(SelNode);
+	//}
 
 	mRoot = MEMORY->New<BTNode_Selector>(GetOwner(), root_selector_Children);
 	mRoot->SetRoot();
 	return mRoot;
+}
+
+SPtr<Script_Enemy> Script_DefaultEnemyBT::GetScriptEnemy(GameObjectInfo::Type objtype)
+{
+	SPtr<Script_Enemy> enemy = {};
+
+	switch (objtype)
+	{
+
+	case GameObjectInfo::Type::Monster_Ursacetus: {
+		SPtr<Script_Ursacetus> script = GetOwner()->GetScript<Script_Ursacetus>(ScriptInfo::Type::Ursacetus);
+		enemy = std::static_pointer_cast<Script_Enemy>(script);
+	}
+		break;
+	case GameObjectInfo::Type::Monster_Onyscidus: {
+		SPtr<Script_Onyscidus> script = GetOwner()->GetScript<Script_Onyscidus>(ScriptInfo::Type::Onyscidus);
+		enemy = std::static_pointer_cast<Script_Enemy>(script);
+	}
+		break;
+	case GameObjectInfo::Type::Monster_AdvancedCombat_5: {
+		SPtr<Script_AdvancedCombatDroid_5> script = GetOwner()->GetScript<Script_AdvancedCombatDroid_5>(ScriptInfo::Type::AdvancedCombatDroid_5);
+		enemy = std::static_pointer_cast<Script_Enemy>(script);
+	}
+		break;
+	case GameObjectInfo::Type::Monster_Anglerox: {
+		SPtr<Script_Anglerox> script = GetOwner()->GetScript<Script_Anglerox>(ScriptInfo::Type::Anglerox);
+		enemy = std::static_pointer_cast<Script_Enemy>(script);
+	}
+		break;
+	case GameObjectInfo::Type::Monster_Arack: {
+		SPtr<Script_Arack> script = GetOwner()->GetScript<Script_Arack>(ScriptInfo::Type::Arack);
+		enemy = std::static_pointer_cast<Script_Enemy>(script);
+	}
+		break;
+	case GameObjectInfo::Type::Monster_Ceratoferox: {
+		SPtr<Script_Ceratoferox> script = GetOwner()->GetScript<Script_Ceratoferox>(ScriptInfo::Type::Ceratoferox);
+		enemy = std::static_pointer_cast<Script_Enemy>(script);
+	}
+		break;
+	case GameObjectInfo::Type::Monster_Gobbler: {
+		SPtr<Script_Gobbler> script = GetOwner()->GetScript<Script_Gobbler>(ScriptInfo::Type::Gobbler);
+		enemy = std::static_pointer_cast<Script_Enemy>(script);
+	}
+		break;
+	case GameObjectInfo::Type::Monster_LightBipedMech: {
+		SPtr<Script_LightBipedMech> script = GetOwner()->GetScript<Script_LightBipedMech>(ScriptInfo::Type::LightBipedMech);
+		enemy = std::static_pointer_cast<Script_Enemy>(script);
+	}
+		break;
+	case GameObjectInfo::Type::Monster_MiningMech: {
+		SPtr<Script_MiningMech> script = GetOwner()->GetScript<Script_MiningMech>(ScriptInfo::Type::MiningMech);
+		enemy = std::static_pointer_cast<Script_Enemy>(script);
+	}
+		break;
+	case GameObjectInfo::Type::Monster_Rapax: {
+		SPtr<Script_Rapax> script = GetOwner()->GetScript<Script_Rapax>(ScriptInfo::Type::Rapax);
+		enemy = std::static_pointer_cast<Script_Enemy>(script);
+	}
+		break;
+	case GameObjectInfo::Type::Monster_Aranobot: {
+		SPtr<Script_Aranobot> script = GetOwner()->GetScript<Script_Aranobot>(ScriptInfo::Type::Aranabot);
+		enemy = std::static_pointer_cast<Script_Enemy>(script);
+	}
+		break;
+	default:
+		break;
+	}
+
+	return enemy;
 }
 
 

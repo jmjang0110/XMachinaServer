@@ -20,11 +20,17 @@
 
 BTNodeState MonsterTask::CheckDetectionRange::Evaluate()
 {
+	//Vec3 pos = GetOwner()->GetTransform()->GetPosition();
+
+	//if (GetOwner()->GetID() == 7) {
+	//	LOG_MGR->Cout("[ ", GetOwner()->GetID(), " ] : ", pos.x, " ", pos.y, " ", pos.z, "\n");
+	//}
+
+
 	bool IsMindControlled = mEnemyController->IsMindControlled();
 	if (IsMindControlled == false) {
 		if (!mEnemyController->GetTargetPlayer()) {
 			// Target Player 가 없다면 
-			if (!mEnemyController->GetTargetPlayer()) {
 				// Target 을 찾는다. 
 				Vec3 EnemyPos = GetOwner()->GetTransform()->GetPosition();
 				PlayerController* PC = mEnemyController->GetOwnerMonster()->GetOwnerNPCController()->GetOwnerRoom()->GetPlayerController();
@@ -52,7 +58,6 @@ BTNodeState MonsterTask::CheckDetectionRange::Evaluate()
 				//LOG_MGR->Cout("Closest Player ID : ", closestPlayerID);
 				mEnemyController->SetTargetPlayer(PC->GetPlayer(closestPlayerID));
 				mTargetPlayer = PC->GetPlayer(closestPlayerID);
-			}
 		}
 
 
@@ -84,6 +89,8 @@ BTNodeState MonsterTask::CheckDetectionRange::Evaluate()
 		TargetPos = mEnemyController->GetTargetMonster()->GetTransform()->GetSnapShot().GetPosition();
 	}
 
+	const Vec3 OwnerPos = GetOwner()->GetTransform()->GetPosition();
+	const float Length = (OwnerPos - TargetPos).Length();
 	if ((GetOwner()->GetTransform()->GetPosition() - TargetPos).Length() < mStat->GetStat_DetectionRange()) {
 		mEnemyController->SetState(EnemyInfo::State::Walk);
 		return BTNodeState::Success;
@@ -105,13 +112,8 @@ MonsterTask::CheckDetectionRange::CheckDetectionRange(SPtr_GameObject owner, std
 
 {
 	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
+	mStat = GetStat(owner->GetType());
 
-	if (owner->GetType() == GameObjectInfo::Type::Monster_AdvancedCombat_5)
-		mStat = GetOwner()->GetScript<Script_AdvancedCombatDroid_5>(ScriptInfo::Type::AdvancedCombatDroid_5);
-	else if (owner->GetType() == GameObjectInfo::Type::Monster_Onyscidus)
-		mStat = GetOwner()->GetScript<Script_Onyscidus>(ScriptInfo::Type::Onyscidus);
-	else if (owner->GetType() == GameObjectInfo::Type::Monster_Ursacetus)
-		mStat = GetOwner()->GetScript<Script_Ursacetus>(ScriptInfo::Type::Ursacetus);
 }
 
 MonsterTask::CheckDetectionRange::~CheckDetectionRange()

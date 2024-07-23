@@ -187,6 +187,7 @@
     <ClInclude Include="Contents\ObjectSnapShot.h" />
     <ClInclude Include="Contents\Script_Anglerox.h" />
     <ClInclude Include="Contents\Script_Arack.h" />
+    <ClInclude Include="Contents\Script_Aranobot.h" />
     <ClInclude Include="Contents\Script_Building.h" />
     <ClInclude Include="Contents\Script_Bullet.h" />
     <ClInclude Include="Contents\Script_Ceratoferox.h" />
@@ -299,6 +300,7 @@
     <ClCompile Include="Contents\ObjectSnapShot.cpp" />
     <ClCompile Include="Contents\Script_Anglerox.cpp" />
     <ClCompile Include="Contents\Script_Arack.cpp" />
+    <ClCompile Include="Contents\Script_Aranobot.cpp" />
     <ClCompile Include="Contents\Script_Building.cpp" />
     <ClCompile Include="Contents\Script_Bullet.cpp" />
     <ClCompile Include="Contents\Script_Ceratoferox.cpp" />

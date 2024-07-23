@@ -55,6 +55,7 @@ bool Animation::LateUpdate()
 void Animation::Load(const std::string& controller)
 {
 	mController = std::make_shared<AnimatorController>(*RESOURCE_MGR->GetAnimatorController(controller));
+	mController->SetName(controller);
 }
 
 AnimatorController::AnimatorController(const std::unordered_map<std::string, AnimatorParameter>& parameters, std::vector<sptr<AnimatorLayer>> layers)
@@ -66,7 +67,8 @@ AnimatorController::AnimatorController(const std::unordered_map<std::string, Ani
 
 AnimatorController::AnimatorController(const AnimatorController& other)
 	:
-	mParameters(other.mParameters)
+	mParameters(other.mParameters),
+	mName(other.mName)
 {
 	// layers 복사 하기
 	mLayers.reserve(other.mLayers.size());
@@ -82,6 +84,22 @@ void AnimatorController::CheckTransition() const
     for (auto& layer : mLayers) {
         layer->CheckTransition(this);
     }
+}
+
+sptr<AnimatorMotion> AnimatorController::FindMotionByName(const std::string& motionName, const std::string& layerName) const
+{
+	return FindLayerByName(layerName)->FindMotionByName(motionName);
+}
+
+sptr<AnimatorLayer> AnimatorController::FindLayerByName(const std::string& layerName) const
+{
+	for (auto& layer : mLayers) {
+		if (layer->GetName() == layerName) {
+			return layer;
+		}
+	}
+
+	throw std::runtime_error("there's no layer name in controller");
 }
 
 AnimatorMotion::AnimatorMotion(const AnimatorMotionInfo& info)
@@ -162,6 +180,42 @@ bool AnimatorMotion::IsEndAnimation() const
 	return (mCrntLength >= mMaxLength) || (mCrntLength <= 0);
 }
 
+void AnimatorMotion::AddStartCallback(const std::function<void()>& callback)
+{
+	AddCallback(callback, 0);
+
+}
+
+void AnimatorMotion::AddEndCallback(const std::function<void()>& callback)
+{
+	AddCallback(callback, mClip->GetMaxFrameRate());
+
+}
+
+void AnimatorMotion::AddStopCallback(const std::function<void()>& callback)
+{
+	mCallbackStop = std::make_shared<MotionCallback>(callback);
+
+}
+
+void AnimatorMotion::DelStopCallback()
+{
+	mCallbackStop = nullptr;
+
+}
+
+void AnimatorMotion::AddChangeCallback(const std::function<void()>& callback)
+{
+	mCallbackChange = std::make_shared<MotionCallback>(callback);
+
+}
+
+void AnimatorMotion::DelChabgeCallback()
+{
+	mCallbackChange = nullptr;
+
+}
+
 void AnimatorMotion::AddCallback(const std::function<void()>& callback, int frame)
 {
 	mCallbacks.insert(std::make_pair(GetFrameTime(frame), MotionCallback{ callback }));
@@ -212,6 +266,11 @@ void AnimatorLayer::ChangeState(rsptr<AnimatorMotion> state)
 
 	mCrntState->Reset();
 	mCrntState = state;
+}
+
+sptr<AnimatorMotion> AnimatorLayer::FindMotionByName(const std::string& motionName) const
+{
+	return mRootStateMachine->FindMotionByName(motionName);
 }
 
 AnimatorStateMachine::AnimatorStateMachine(const std::string& name, const std::vector<sptr<const AnimatorTransition>>& entryTransitions)
@@ -291,6 +350,24 @@ void AnimatorStateMachine::AddState(rsptr<AnimatorMotion> state)
 void AnimatorStateMachine::AddStateMachine(rsptr<AnimatorStateMachine> stateMachine)
 {
 	mStateMachines.insert(std::make_pair(stateMachine->GetName(), stateMachine));
+}
+
+sptr<AnimatorMotion> AnimatorStateMachine::FindMotionByName(const std::string& motionName) const
+{
+	for (auto& state : mStates) {
+		auto& motion = state.second;
+		if (motion->GetName() == motionName) {
+			return motion;
+		}
+	}
+
+	for (auto& stateMachine : mStateMachines) {
+		if (auto motion = stateMachine.second->FindMotionByName(motionName)) {
+			return motion;
+		}
+	}
+
+	return nullptr;
 }
 
 std::string AnimatorTransition::CheckTransition(const AnimatorController* controller) const

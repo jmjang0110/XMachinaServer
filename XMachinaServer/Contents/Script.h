@@ -13,6 +13,15 @@ namespace ScriptInfo {
 		AdvancedCombatDroid_5,
 		Onyscidus,
 		Ursacetus,
+		Anglerox,
+		Arack,
+		Aranabot,
+		Ceratoferox,
+		Gobbler,
+		LightBipedMech,
+		MiningMech,
+		Rapax,
+
 
 		DefaultEnemyBT,
 		

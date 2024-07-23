@@ -3,9 +3,18 @@
 #include "Skill.h"
 #include "Script_Player.h"
 #include "GameMonster.h"
+
 #include "Script_AdvancedCombatDroid_5.h"
-#include "Script_Onyscidus.h"
 #include "Script_Ursacetus.h"
+#include "Script_Onyscidus.h"
+#include "Script_Arack.h"
+#include "Script_Aranobot.h"
+#include "Script_Ceratoferox.h"
+#include "Script_Gobbler.h"
+#include "Script_LightBipedMech.h"
+#include "Script_Rapax.h"
+#include "Script_Anglerox.h"
+#include "Script_MiningMech.h"
 /// +-------------------------------------------------------------------------
 ///	> ¢º¢º¢º Task Check Attack Range 
 /// __________________________________________________________________________
@@ -65,18 +74,29 @@ MonsterTask::CheckAttackRange::CheckAttackRange(SPtr_GameObject owner, std::func
 	: BTTask(owner, BTTaskType::MonT_CheckAttackRange, callback)
 
 {
+	const auto& o1 = GetOwner();
 	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
+	mStat = GetStat(GetOwner()->GetType());
 
-	if (owner->GetType() == GameObjectInfo::Type::Monster_AdvancedCombat_5)
-		mStat = GetOwner()->GetScript<Script_AdvancedCombatDroid_5>(ScriptInfo::Type::AdvancedCombatDroid_5);
-	else if (owner->GetType() == GameObjectInfo::Type::Monster_Onyscidus)
-		mStat = GetOwner()->GetScript<Script_Onyscidus>(ScriptInfo::Type::Onyscidus);
-	else if (owner->GetType() == GameObjectInfo::Type::Monster_Ursacetus)
-		mStat = GetOwner()->GetScript<Script_Ursacetus>(ScriptInfo::Type::Ursacetus);
+
+	const auto& motion = GetOwner()->GetAnimation()->GetController()->FindMotionByName(mStat->GetStat_AttackAnimName());
+	if (motion) {
+		motion->AddEndCallback(std::bind(&CheckAttackRange::AttackEndCallback, this));
+	}
+	else {
+		LOG_MGR->Cout("[ERROR] Couldn't find attack motion : ", GetOwner()->GetName(), " - ",  mStat->GetStat_AttackAnimName(), "\n");
+	}
 }
 
 MonsterTask::CheckAttackRange::~CheckAttackRange()
 {
 	mEnemyController = nullptr;
+
+}
+
+void MonsterTask::CheckAttackRange::AttackEndCallback()
+{
+	GetOwner()->GetAnimation()->GetController()->SetValue("Attack", false);
+	mEnemyController->SetState(EnemyInfo::State::Idle);
 
 }

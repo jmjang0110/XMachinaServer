@@ -379,7 +379,6 @@ bool FBsPacketFactory::Process_CPkt_Player_Transform(SPtr_Session session, const
 	gameSession->GetPlayer()->GetTransform()->SetLocalRotation(Quaternion::ToQuaternion(rot));
 	gameSession->GetPlayer()->Update();
 
-	LOG_MGR->Cout("PLAYER : ", pos.x, " ", pos.y, " ", pos.z, "\n");
 
 	/* Boradcast Player's Transform Update */
 	SPtr_SendPktBuf SendPkt = FBS_FACTORY->SPkt_Player_Transform(id, move_state, latency, velocity, movedir, pos, rot, spine_look, animparam_h, animparam_v);
@@ -428,6 +427,25 @@ bool FBsPacketFactory::Process_CPkt_Player_Weapon(SPtr_Session session, const FB
 	FBProtocol::WEAPON_TYPE weaponType = pkt.weapon_type();
 
 	return false;
+}
+
+bool FBsPacketFactory::Process_CPkt_Player_AimRotation(SPtr_Session session, const FBProtocol::CPkt_Player_AimRotation& pkt)
+{
+	///>�ܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡ�
+	///> table CPkt_Player_AimRotation
+	///> {
+	///> 	aim_rotation			: float; // Y rotation Euler
+	///> }
+	///>�ܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡ�
+
+	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
+
+	float aim_rotation = pkt.aim_rotation();
+	auto spkt          = FBS_FACTORY->SPkt_Player_AimRotation(session->GetID(), aim_rotation);
+
+	GAME_MGR->BroadcastRoom(gameSession->GetPlayerSnapShot().RoomID, spkt, gameSession->GetID());
+
+	return true;
 }
 
 
@@ -814,6 +832,17 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_Player_Weapon(uint32_t player_id, FBProto
 	auto serverPacket = FBProtocol::CreateSPkt_Player_Weapon(builder, player_id, weapon_type);
 	builder.Finish(serverPacket);
 	SPtr_SendPktBuf sendBuffer = SEND_FACTORY->CreatePacket(builder.GetBufferPointer(), static_cast<uint16_t>(builder.GetSize()), FBsProtocolID::SPkt_Player_Weapon);
+	return sendBuffer;
+}
+
+SPtr_SendPktBuf FBsPacketFactory::SPkt_Player_AimRotation(uint32_t player_id, float aim_rotation)
+{
+
+	flatbuffers::FlatBufferBuilder builder{};
+
+	auto serverPacket = FBProtocol::CreateSPkt_Player_AimRotation(builder, player_id, aim_rotation);
+	builder.Finish(serverPacket);
+	SPtr_SendPktBuf sendBuffer = SEND_FACTORY->CreatePacket(builder.GetBufferPointer(), static_cast<uint16_t>(builder.GetSize()), FBsProtocolID::SPkt_Player_AimRotation);
 	return sendBuffer;
 }
 

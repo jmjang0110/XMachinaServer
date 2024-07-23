@@ -10,21 +10,30 @@
 #include "Animation.h"
 
 /* Script Headers */
-#include "Script_AdvancedCombatDroid_5.h"
 #include  "Script_BehaviorTree.h"
 #include "Script_Building.h"
 #include "Script_DefaultEnemyBT.h"
 #include "Script_Enemy.h"
 #include "Script_EnemyController.h"
 #include "Script_EnemyStat.h"
-#include "Script_Onyscidus.h"
 #include "Script_Phero.h"
 #include "Script_PheroDropper.h"
 #include "Script_Player.h"
 #include "Script_PlayerStat.h"
 #include "Script_Stat.h"
-#include "Script_Ursacetus.h"
 #include "Script_Bullet.h"
+
+#include "Script_AdvancedCombatDroid_5.h"
+#include "Script_Ursacetus.h"
+#include "Script_Onyscidus.h"
+#include "Script_Arack.h"
+#include "Script_Aranobot.h"
+#include "Script_Ceratoferox.h"
+#include "Script_Gobbler.h"
+#include "Script_LightBipedMech.h"
+#include "Script_Rapax.h"
+#include "Script_Anglerox.h"
+#include "Script_MiningMech.h"
 
 
 GameObject::GameObject()
@@ -135,6 +144,10 @@ void GameObject::SetAnimation(const std::string& controller)
 
 	SPtr<Animation> animation = AddComponent<Animation>(ComponentInfo::Type::Animation);
 	animation->Load(controller);
+
+	if (GetType() == GameObjectInfo::Type::Monster_Arack && controller == "Ceratoferox") {
+		LOG_MGR->Cout(static_cast<int>(GetType()), " - ", controller, "\n");
+	}
 }
 
 
@@ -165,11 +178,14 @@ void GameObject::CloneComponents(SPtr<GameObject>& copy) const
 
 void GameObject::CloneScripts(SPtr<GameObject>& copy) const
 {
-	for (const auto& pair : mScripts)
+	auto keys = mScripts | std::views::keys;
+	std::vector<ScriptInfo::Type> sortedKeys(keys.begin(), keys.end());
+	std::ranges::sort(sortedKeys);
+	for (auto key : sortedKeys)
 	{
-		SPtr<Script> script = copy->AddScript(pair.first);
+		SPtr<Script> script = copy->AddScript(key);
 		script->SetOwner(copy);
-		script->Clone(pair.second);
+		script->Clone(mScripts.at(key));
 	}
 
 }
@@ -196,6 +212,30 @@ SPtr<Script> GameObject::AddScript(ScriptInfo::Type key)
 		break;
 	case ScriptInfo::Type::Ursacetus:
 		script = AddScript<Script_Ursacetus>(key);
+		break;
+	case ScriptInfo::Type::Anglerox:
+		script = AddScript<Script_Anglerox>(key);
+		break;
+	case ScriptInfo::Type::Arack:
+		script = AddScript<Script_Arack>(key);
+		break;
+	case ScriptInfo::Type::Aranabot:
+		script = AddScript<Script_Aranobot>(key);
+		break;
+	case ScriptInfo::Type::Ceratoferox:
+		script = AddScript<Script_Ceratoferox>(key);
+		break;
+	case ScriptInfo::Type::Gobbler:
+		script = AddScript<Script_Gobbler>(key);
+		break;
+	case ScriptInfo::Type::LightBipedMech:
+		script = AddScript<Script_LightBipedMech>(key);
+		break;
+	case ScriptInfo::Type::MiningMech:
+		script = AddScript<Script_MiningMech>(key);
+		break;
+	case ScriptInfo::Type::Rapax:
+		script = AddScript<Script_Rapax>(key);
 		break;
 	case ScriptInfo::Type::DefaultEnemyBT:
 		script = AddScript<Script_DefaultEnemyBT>(key);

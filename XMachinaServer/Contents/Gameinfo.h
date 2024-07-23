@@ -14,10 +14,11 @@ namespace GameObjectInfo
 		Monster_Anglerox,
 		Monster_Arack,
 		Monster_Ceratoferox,
-		Monster_Globbler,
+		Monster_Gobbler,
 		Monster_LightBipedMech,
 		Monster_MiningMech,
 		Monster_Rapax,
+		Monster_Aranobot,
 
 		Building,
 

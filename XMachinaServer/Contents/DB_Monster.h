@@ -18,6 +18,7 @@ enum class MonsterType : UINT8
 	LightBipedMech,
 	MiningMech,
 	Rapax,
+	Aranobot,
 
 	End,
 

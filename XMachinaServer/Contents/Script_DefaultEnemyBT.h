@@ -3,6 +3,8 @@
 #include "Script_BehaviorTree.h"
 #include "BTNode.h"
 
+class Script_Enemy;
+
 class Script_DefaultEnemyBT : public Script_BehaviorTree
 {
 private:
@@ -33,6 +35,9 @@ public:
 
 protected:
 	virtual BTNode* SetupTree() override;
+
+	SPtr<Script_Enemy> GetScriptEnemy(GameObjectInfo::Type objtype);
+
 
 public:
 	template<typename... Args>

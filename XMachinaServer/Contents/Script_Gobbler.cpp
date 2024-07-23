@@ -33,6 +33,9 @@ Script_Gobbler::~Script_Gobbler()
 
 void Script_Gobbler::Clone(SPtr<Component> other)
 {
+    Script_Enemy::Clone(other);
+    SPtr<Script_Gobbler> otherScript = std::static_pointer_cast<Script_Gobbler>(other);
+
 }
 
 void Script_Gobbler::Activate()

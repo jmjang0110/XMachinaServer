@@ -33,6 +33,9 @@ Script_Arack::~Script_Arack()
 
 void Script_Arack::Clone(SPtr<Component> other)
 {
+    Script_Enemy::Clone(other);
+    SPtr<Script_Arack> otherScript = std::static_pointer_cast<Script_Arack>(other);
+
 }
 
 void Script_Arack::Activate()

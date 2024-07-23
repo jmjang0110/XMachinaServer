@@ -479,6 +479,9 @@
     <ClInclude Include="Contents\Script_Bullet.h">
       <Filter>Framework\Contents\GameWorld\Entity\Script</Filter>
     </ClInclude>
+    <ClInclude Include="Contents\Script_Aranobot.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Enemy\Monster</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp">
@@ -784,6 +787,9 @@
     </ClCompile>
     <ClCompile Include="Contents\Script_Bullet.cpp">
       <Filter>Framework\Contents\GameWorld\Entity\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Script_Aranobot.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Enemy\Monster</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

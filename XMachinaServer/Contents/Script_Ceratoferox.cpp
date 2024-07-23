@@ -34,6 +34,9 @@ Script_Ceratoferox::~Script_Ceratoferox()
 
 void Script_Ceratoferox::Clone(SPtr<Component> other)
 {
+    Script_Enemy::Clone(other);
+    SPtr<Script_Ceratoferox> otherScript = std::static_pointer_cast<Script_Ceratoferox>(other);
+
 }
 
 void Script_Ceratoferox::Activate()
