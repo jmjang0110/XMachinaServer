@@ -67,12 +67,20 @@ void GameObject::Update()
 		}
 	}
 
+	if (mComponents.end() != mComponents.find(ComponentInfo::Type::Animation))
+		mComponents.at(ComponentInfo::Type::Animation)->Animate();
+	
+
 	for (auto& pair : mComponents) {
 		if (pair.second) {  // Check if the shared pointer is not null
 			pair.second->LateUpdate();
 		}
 	}
 
+}
+
+void GameObject::Animate()
+{
 }
 
 void GameObject::WakeUp()

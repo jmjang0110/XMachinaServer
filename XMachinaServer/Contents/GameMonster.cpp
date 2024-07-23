@@ -11,15 +11,22 @@ void GameMonster::UpdateSnapShot()
 	//mInfo.Rotation = GetTransform()->GetRotation();
 }
 
+void GameMonster::On_ExitFromViewList()
+{
+	LOG_MGR->Cout(GetID(), " - On Exit From view List ");
+}
+
 GameMonster::GameMonster()
 	: GameObject(-1)
 {
+
 }
 
 GameMonster::GameMonster(UINT32 id, Coordinate sectorIdx)
 	: GameObject(id)
 {
 	mSectorIndex = sectorIdx;
+
 }
 
 GameMonster::~GameMonster()
@@ -53,6 +60,10 @@ void GameMonster::Activate()
 
 	mActivate_Ref.fetch_add(1);
 
+	if (mInfo.owner == nullptr)
+	{
+		mInfo.owner = std::dynamic_pointer_cast<GameMonster>(shared_from_this());
+	}
 	if (mActivate_Ref.load() == 1) {
 		TimerEvent t;
 		t.Type        = TimerEventType::Update_GameObject;
@@ -79,6 +90,12 @@ void GameMonster::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 	
 	if (GetActivate_RefCnt() > 0)
 		GameObject::RegisterUpdate();
+	else
+	{
+		if (mInfo.owner) {
+			mInfo.owner->On_ExitFromViewList();
+		}
+	}
 }
 
 SPtr<GameMonster> GameMonster::Clone()

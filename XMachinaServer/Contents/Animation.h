@@ -7,12 +7,14 @@ class AnimationClip {
 public:
 	std::string mName;
 
+	float mLength{};
 	std::vector<float> mKeyFrameTimes{};
 
 public:
-	AnimationClip(const std::string& name) { mName = name; }
+	AnimationClip(const std::string& name, float length) { mName = name; mLength = length; }
 
 public:
+	float GetLength() const { return mLength; }
 	float GetFrameTime(int frame) const { return mKeyFrameTimes[frame]; }
 	int GetMaxFrameRate() const { return static_cast<int>(mKeyFrameTimes.size()) - 1; }
 };
@@ -30,7 +32,6 @@ struct MotionCallback {
 
 struct AnimatorMotionInfo {
 	SPtr<const AnimationClip> Clip{};
-	float Length{};
 	float Speed{};
 };
 
@@ -44,8 +45,6 @@ private:
 	float 	mOriginSpeed{};
 	float 	mCrntLength{};
 	float	mMaxLength{};
-
-	int mIsReverse{};
 
 	std::string mName{};
 	std::map<float, MotionCallback> mCallbacks;
@@ -66,10 +65,7 @@ public:
 	void ResetCallbacks();
 	void ResetOriginSpeed(float speed) { mSpeed = speed; mOriginSpeed = speed; }
 
-	void Reverse(bool val) { mIsReverse = (val == true) ? -1 : 1; }
-
 	bool IsEndAnimation() const;
-	bool IsReverse() const { return mIsReverse == -1 ? true : false; }
 
 	void AddStartCallback(const std::function<void()>& callback);
 	void AddEndCallback(const std::function<void()>& callback);
@@ -163,6 +159,7 @@ public:
 	sptr<AnimatorMotion> GetCrntMotion() const { return mCrntState; }
 
 	std::string GetName() { return mName; }
+	void Animate();
 
 };
 //
@@ -251,6 +248,7 @@ public:
 	}
 
 	void SetName(const std::string& name) { mName = name; }
+	void Animate();
 
 public:
 	void InitLayers();
@@ -280,6 +278,7 @@ public:
 	virtual bool WakeUp() override;
 	virtual bool Start() override;
 	virtual bool Update() override;
+	virtual bool Animate() override;
 	virtual bool LateUpdate() override;
 
 public:

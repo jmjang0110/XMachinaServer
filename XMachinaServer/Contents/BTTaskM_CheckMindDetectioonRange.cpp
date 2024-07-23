@@ -13,6 +13,7 @@ BTNodeState MonsterTask::CheckMindDetectionRange::Evaluate()
 	// 가장 가까운 적을 타겟으로 설정
 	if (!SetTargetNearestEnemy()) {
 		mEnemyController->SetState(EnemyInfo::State::Walk);
+		GetOwner()->GetAnimation()->GetController()->SetValue("Walk", true);
 		return BTNodeState::Running;
 	}
 
@@ -29,6 +30,7 @@ BTNodeState MonsterTask::CheckMindDetectionRange::Evaluate()
 	float dist_My_Target = (MyPos - TargetPos).Length();
 	if (dist_My_Target < mStat->GetStat_DetectionRange()) {
 		mEnemyController->SetState(EnemyInfo::State::Walk);
+		GetOwner()->GetAnimation()->GetController()->SetValue("Walk", true);
 		return BTNodeState::Success;
 	}
 	else {

@@ -63,6 +63,9 @@ BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 		float	Angle       = Vector3::Angle(mEnemyController->GetOwnerMonster()->GetTransform()->GetLook(), ToTargetDir);
 		if (minDistance < 1.f || Angle < 80.f) {
 			mEnemyController->SetState(EnemyInfo::State::Attack);
+			mEnemyController->RemoveAllAnimation();
+			GetOwner()->GetAnimation()->GetController()->SetValue("Attack", true);
+
 			return BTNodeState::Success;
 		}
 	}
@@ -98,5 +101,4 @@ void MonsterTask::CheckAttackRange::AttackEndCallback()
 {
 	GetOwner()->GetAnimation()->GetController()->SetValue("Attack", false);
 	mEnemyController->SetState(EnemyInfo::State::Idle);
-
 }

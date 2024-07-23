@@ -44,12 +44,23 @@ bool Animation::Start()
 
 bool Animation::Update()
 {
-    return false;
+	Component::Update();
+
+    return true;
 }
 
 bool Animation::LateUpdate()
 {
+	Component::LateUpdate();
+
     return false;
+}
+
+bool Animation::Animate()
+{
+	mController->Animate();
+
+	return true;
 }
 
 void Animation::Load(const std::string& controller)
@@ -79,6 +90,21 @@ AnimatorController::AnimatorController(const AnimatorController& other)
 	CheckTransition();
 }
 
+void AnimatorController::InitLayers()
+{
+}
+
+void AnimatorController::Animate()
+{
+	CheckTransition();
+
+	LOG_MGR->Cout("Animate : ", mName, " ");
+	for (auto& layer : mLayers) {
+		layer->Animate();
+	}
+	LOG_MGR->Cout("\n");
+}
+
 void AnimatorController::CheckTransition() const
 {
     for (auto& layer : mLayers) {
@@ -88,7 +114,12 @@ void AnimatorController::CheckTransition() const
 
 sptr<AnimatorMotion> AnimatorController::FindMotionByName(const std::string& motionName, const std::string& layerName) const
 {
-	return FindLayerByName(layerName)->FindMotionByName(motionName);
+	const auto& result = FindLayerByName(layerName)->FindMotionByName(motionName);
+	if (!result) {
+		LOG_MGR->Cout("[WARNING] Couldn't Find Motion : ", motionName, " (", mName, ")\n");
+	}
+
+	return result;
 }
 
 sptr<AnimatorLayer> AnimatorController::FindLayerByName(const std::string& layerName) const
@@ -109,7 +140,7 @@ AnimatorMotion::AnimatorMotion(const AnimatorMotionInfo& info)
 	mOriginSpeed(info.Speed),
 	mSpeed(info.Speed),
 	mCrntLength(0),
-	mMaxLength(info.Length)
+	mMaxLength(info.Clip->mLength)
 {
 }
 
@@ -126,7 +157,8 @@ AnimatorMotion::AnimatorMotion(const AnimatorMotion& other)
 
 bool AnimatorMotion::Animate()
 {
-	mCrntLength += (mSpeed * mIsReverse) * DELTA_TIME;
+	LOG_MGR->Cout("[Animation : ", mName, "] (", DELTA_TIME, ")");
+	mCrntLength += mSpeed * DELTA_TIME;
 
 	for (auto& [time, callback] : mCallbacks | std::ranges::views::reverse) {
 		if (mCrntLength >= time) {
@@ -143,27 +175,19 @@ bool AnimatorMotion::Animate()
 	}
 
 	return false;
-
-    return false;
 }
 
 void AnimatorMotion::Reset()
 {
 	mCrntLength = 0.f;
 	mSpeed = mOriginSpeed;
-	mIsReverse = 1;
 
 	ResetCallbacks();
 }
 
 void AnimatorMotion::ResetLength()
 {
-	if (IsReverse()) {
-		mCrntLength = mMaxLength;
-	}
-	else {
-		mCrntLength = 0.f;
-	}
+	mCrntLength = 0.f;
 
 	ResetCallbacks();
 }
@@ -263,6 +287,9 @@ void AnimatorLayer::ChangeState(rsptr<AnimatorMotion> state)
 	if (!state) {
 		return;
 	}
+	if (mCrntState == state) {
+		return;
+	}
 
 	mCrntState->Reset();
 	mCrntState = state;
@@ -271,6 +298,12 @@ void AnimatorLayer::ChangeState(rsptr<AnimatorMotion> state)
 sptr<AnimatorMotion> AnimatorLayer::FindMotionByName(const std::string& motionName) const
 {
 	return mRootStateMachine->FindMotionByName(motionName);
+}
+
+void AnimatorLayer::Animate()
+{
+	mCrntState->Animate();
+
 }
 
 AnimatorStateMachine::AnimatorStateMachine(const std::string& name, const std::vector<sptr<const AnimatorTransition>>& entryTransitions)

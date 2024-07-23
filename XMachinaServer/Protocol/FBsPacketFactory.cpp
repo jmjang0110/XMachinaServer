@@ -94,6 +94,13 @@ bool FBsPacketFactory::ProcessFBsPacket(SPtr_Session session, BYTE* packetBuf, U
 		Process_CPkt_Player_Weapon(session, *packet);
 		break;
 	}
+	case FBsProtocolID::CPkt_Player_AimRotation:
+	{
+		const FBProtocol::CPkt_Player_AimRotation* packet = flatbuffers::GetRoot<FBProtocol::CPkt_Player_AimRotation>(DataPtr);
+		if (!packet) return false;
+		Process_CPkt_Player_AimRotation(session, *packet);
+		break;
+	}
 	case FBsProtocolID::CPkt_NewMonster:
 	{
 		const FBProtocol::CPkt_NewMonster* packet = flatbuffers::GetRoot<FBProtocol::CPkt_NewMonster>(DataPtr);
@@ -176,7 +183,7 @@ bool FBsPacketFactory::Process_CPkt_LogIn(SPtr_Session session, const FBProtocol
 
 	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
 
-	gameSession->GetPlayer()->SetPosition(Vec3(25, 0, 260));
+	gameSession->GetPlayer()->SetPosition(Vec3(65, 0, 240));
 
 	LOG_MGR->SetColor(TextColor::BrightBlue);
 	LOG_MGR->Cout("LOG IN SESSION ID : ", gameSession->GetID());
@@ -445,6 +452,7 @@ bool FBsPacketFactory::Process_CPkt_Player_AimRotation(SPtr_Session session, con
 
 	GAME_MGR->BroadcastRoom(gameSession->GetPlayerSnapShot().RoomID, spkt, gameSession->GetID());
 
+//	LOG_MGR->Cout(session->GetID(), " : AIM : ", aim_rotation, '\n');
 	return true;
 }
 

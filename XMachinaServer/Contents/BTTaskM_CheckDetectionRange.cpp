@@ -20,13 +20,6 @@
 
 BTNodeState MonsterTask::CheckDetectionRange::Evaluate()
 {
-	//Vec3 pos = GetOwner()->GetTransform()->GetPosition();
-
-	//if (GetOwner()->GetID() == 7) {
-	//	LOG_MGR->Cout("[ ", GetOwner()->GetID(), " ] : ", pos.x, " ", pos.y, " ", pos.z, "\n");
-	//}
-
-
 	bool IsMindControlled = mEnemyController->IsMindControlled();
 	if (IsMindControlled == false) {
 		if (!mEnemyController->GetTargetPlayer()) {
@@ -93,6 +86,7 @@ BTNodeState MonsterTask::CheckDetectionRange::Evaluate()
 	const float Length = (OwnerPos - TargetPos).Length();
 	if ((GetOwner()->GetTransform()->GetPosition() - TargetPos).Length() < mStat->GetStat_DetectionRange()) {
 		mEnemyController->SetState(EnemyInfo::State::Walk);
+		GetOwner()->GetAnimation()->GetController()->SetValue("Walk", true);
 		return BTNodeState::Success;
 	}
 	else {

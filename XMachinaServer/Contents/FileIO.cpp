@@ -204,7 +204,7 @@ sptr<AnimationClip> FileIO::LoadAnimationClip(const std::string& filePath)
     const int boneCnt = FileIO::ReadVal<int>(file);
     const int keyFrameCnt = static_cast<int>(ceil(length * frameRate));
 
-    sptr<AnimationClip> clip = std::make_shared<AnimationClip>(clipName);
+    sptr<AnimationClip> clip = std::make_shared<AnimationClip>(clipName, length);
 
     clip->mKeyFrameTimes.resize(keyFrameCnt);
     for (int i = 0; i < keyFrameCnt; ++i) {

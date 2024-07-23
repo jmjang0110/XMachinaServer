@@ -21,8 +21,8 @@ Script_Gobbler::Script_Gobbler(SPtr<GameObject> owner, ScriptInfo::Type type)
     Script_EnemyStat::SetStat_AttackCoolTime(0);
     Script_EnemyStat::SetMaxHP(500);
     Script_EnemyStat::SetStat_AttackAnimName("RamAttack");
-    Script_EnemyStat::SetStat_DeathAnimName("Death");
-    Script_EnemyStat::SetStat_GetHitName("Blocked");
+    Script_EnemyStat::SetStat_DeathAnimName("Roar");
+    Script_EnemyStat::SetStat_GetHitName("GetHitFront");
 
 
 

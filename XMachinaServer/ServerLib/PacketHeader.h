@@ -142,17 +142,17 @@ namespace FBsProtocolID
     /// +-----------------------------------------------------------------------
     ///  PHERO PACKET HEADER PROTOCOL TYPE
     /// -----------------------------------------------------------------------+
-    constexpr UINT16 CPkt_GetPhero              = 1032;
-    constexpr UINT16 SPkt_GetPhero              = 1033;
+    constexpr UINT16 CPkt_GetPhero              = 1034;
+    constexpr UINT16 SPkt_GetPhero              = 1035;
 
     /// +-----------------------------------------------------------------------
     ///  BULLET PACKET HEADER PROTOCOL TYPE
     /// -----------------------------------------------------------------------+
-    constexpr UINT16 CPkt_Bullet_OnShoot        = 1034;
-    constexpr UINT16 SPkt_Bullet_OnShoot        = 1035;
+    constexpr UINT16 CPkt_Bullet_OnShoot        = 1036;
+    constexpr UINT16 SPkt_Bullet_OnShoot        = 1037;
 
-    constexpr UINT16 CPkt_Bullet_OnCollision    = 1036;
-    constexpr UINT16 SPkt_Bullet_OnCollision    = 1037;
+    constexpr UINT16 CPkt_Bullet_OnCollision    = 1038;
+    constexpr UINT16 SPkt_Bullet_OnCollision    = 1039;
 };
 
 

@@ -22,7 +22,6 @@ MonsterTask::MoveToPath::MoveToPath(SPtr_GameObject owner, std::function<void()>
 	mPath = mEnemyController->GetPaths();
 
 	mReturnParam = GetOwner()->GetAnimation()->GetController()->GetParam("Return");
-
 }
 
 MonsterTask::MoveToPath::~MoveToPath()
@@ -75,6 +74,8 @@ BTNodeState MonsterTask::MoveToPath::Evaluate()
 	GetOwner()->GetTransform()->Translate(XMVector3Normalize(nextPos), speed * DELTA_TIME);
 
 	Vec3 pos = GetOwner()->GetTransform()->GetPosition();
+	mEnemyController->GetOwnerMonster()->SetPosition(pos); /* Snap Shot - Pos */
+
 	LOG_MGR->Cout("[ ", GetOwner()->GetID(), " ] : ", pos.x, " ", pos.y, " ", pos.z, "\n");
 
 	// 다음 경로에 도착 시 해당 경로 삭제
@@ -83,4 +84,4 @@ BTNodeState MonsterTask::MoveToPath::Evaluate()
 		mPath->pop();
 
 	return BTNodeState::Success;
-	}
+}

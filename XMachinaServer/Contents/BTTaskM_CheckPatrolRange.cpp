@@ -10,7 +10,28 @@
 
 BTNodeState MonsterTask::CheckPatrolRange::Evaluate()
 {
-	return BTNodeState::Running;
+	mEnemyController->SetState(EnemyInfo::State::Walk);
+	//GetOwner()->GetAnimation()->GetController()->SetValue("Walk", true);
+
+	constexpr float adjRange = 0.2f;
+	float dis = Vec3::Distance(mBaryCenter, GetOwner()->GetTransform()->GetPosition().xz());
+	if (dis <= mPatrolRange + adjRange) {
+		GetOwner()->GetAnimation()->GetController()->SetValue("Return", true);
+		return BTNodeState::Running;
+	}
+
+	return BTNodeState::Failure;
+}
+
+MonsterTask::CheckPatrolRange::CheckPatrolRange(SPtr_GameObject owner, const Vec3& baryCenter, float patrolRange)
+	: BTTask(owner, BTTaskType::MonT_CheckPatrolRange)
+{
+	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
+	mStat = GetStat(owner->GetType());
+
+	mBaryCenter = baryCenter;
+	mPatrolRange = patrolRange;
+
 }
 
 MonsterTask::CheckPatrolRange::CheckPatrolRange(SPtr_GameObject owner, std::function<void()> callback)

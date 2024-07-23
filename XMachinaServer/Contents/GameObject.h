@@ -23,6 +23,7 @@ public:
 public:
 	virtual void WakeUp();
 	virtual void Update();
+	virtual void Animate();
 	virtual void Start();
 
 

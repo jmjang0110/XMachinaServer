@@ -20,6 +20,8 @@ BTNodeState MonsterTask::PathPlanningToSapwn::Evaluate()
 
 	// 경로가 비었다면 경로 재 탐색
 	if (mEnemyController->GetPaths()->empty()) {
+		GetOwner()->GetAnimation()->GetController()->SetValue("Return", true);
+
 
 		// 시작 지점과 목적지 위치 값을 타일 고유 인덱스로 변환
 		Path::Pos start = RESOURCE_MGR->GetTileMap()->GetTileUniqueIndexFromPos(GetOwner()->GetTransform()->GetPosition());

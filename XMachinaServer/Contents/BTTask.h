@@ -86,6 +86,7 @@ namespace MonsterTask {
 
 	public:
 		virtual BTNodeState Evaluate() override;
+		void GetHitEndCallback();
 
 		 
 	public:
@@ -107,7 +108,7 @@ namespace MonsterTask {
 		std::vector<Vec3>	mWayPoints{};
 		int					mCurrWayPointIdx{};
 		float				mPatrolSpeed{};
-
+		
 	public:
 		virtual BTNodeState Evaluate() override;
 		void SetWayPoints(std::vector<Vec3>&& wayPoints);
@@ -132,8 +133,7 @@ namespace MonsterTask {
 		float						  mReturnSpeed{};
 		std::stack<Vec3>*			  mPath;
 
-		const AnimatorParameter*			  mReturnParam{};
-
+		const AnimatorParameter*	   mReturnParam{};
 	public:
 		virtual BTNodeState Evaluate() override;
 		// x절편이 음수인지 양수인지 확인하는 함수 정의
@@ -336,6 +336,7 @@ namespace MonsterTask {
 		virtual BTNodeState Evaluate() override;
 
 	public:
+		CheckPatrolRange(SPtr_GameObject owner, const Vec3& baryCenter, float patrolRange);
 		CheckPatrolRange(SPtr_GameObject owner, std::function<void()> callback = nullptr);
 		~CheckPatrolRange();
 	};

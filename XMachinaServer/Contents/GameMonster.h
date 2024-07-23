@@ -19,6 +19,7 @@ class NPCController;
 
 struct MonsterSnapShot : public ObjectSnapShot
 {
+	SPtr<GameMonster>   owner = nullptr;
 	MonsterType			Type;		/*	몬스터 종류	*/
 	
 	/* Stat Script 로 빼자... */
@@ -67,6 +68,7 @@ public:
 	void SetSectorIndex(Coordinate sectorIdx);
 
 	// Get 함수들
+	SPtr<GameMonster> GetSnapShotOwner() { mInfo.owner; }
 	uint32_t		GetMonsterID()			{	return mInfo.ID;		}
 	MonsterType		GetMonsterType(){	return mInfo.Type;		}
 	float			GetAttack()		{	return mInfo.Attack;	}
@@ -81,6 +83,8 @@ public:
 	MonsterSnapShot GetSnapShot() { mLock_SnapShot.LockWrite(); MonsterSnapShot snapShot = mInfo; mLock_SnapShot.UnlockWrite(); return snapShot; }
 
 	void UpdateSnapShot(); // 최신 상태로 스냅샷 업데이트 
+
+	void On_ExitFromViewList();
 
 
 public:

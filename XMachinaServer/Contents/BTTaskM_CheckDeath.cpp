@@ -8,19 +8,20 @@
 /// +-------------------------------------------------------------------------
 ///	> ¢º¢º¢º Task Check Death  
 /// __________________________________________________________________________
-
+ 
 BTNodeState MonsterTask::CheckDeath::Evaluate()
 {
 	//LOG_MGR->Cout("CheckDeath\n");
 
 	if (mEnemyController->GetState() == EnemyInfo::State::Attack) {
-		std::cout << "ATTACKING" << std::endl;
+		//std::cout << "ATTACKING" << std::endl;
 	}
 
 	if (!mStat->IsDead())
 		return BTNodeState::Failure;
 
 	mEnemyController->SetState(EnemyInfo::State::Death);
+	GetOwner()->GetAnimation()->GetController()->SetValue("Death", true);
 
 	mAccTime += DELTA_TIME;
 

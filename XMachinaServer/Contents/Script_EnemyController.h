@@ -102,5 +102,7 @@ public:
 	void SetOwnerMonster(SPtr<GameMonster> ownerMonster) { mOwnerMonster = ownerMonster; }
 	SPtr<GameMonster> GetOwnerMonster() { return mOwnerMonster; }
 
+	void RemoveAllAnimation();
+
 };
 

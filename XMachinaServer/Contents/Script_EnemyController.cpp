@@ -19,6 +19,16 @@ Script_EnemyController::~Script_EnemyController()
 
 }
 
+void Script_EnemyController::RemoveAllAnimation()
+{
+
+	GetOwner()->GetAnimation()->GetController()->SetValue("Walk", false);
+	GetOwner()->GetAnimation()->GetController()->SetValue("Attack", false);
+	GetOwner()->GetAnimation()->GetController()->SetValue("Return", false);
+	GetOwner()->GetAnimation()->GetController()->SetValue("GetHit", false);
+
+}
+
 void Script_EnemyController::Clone(SPtr<Component> other) 
 {
 	Script::Clone(other);

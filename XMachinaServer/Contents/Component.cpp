@@ -72,6 +72,12 @@ bool Component::Update()
 	return true;
 }
 
+bool Component::Animate()
+{
+
+	return true;
+}
+
 bool Component::LateUpdate()
 {
 	return false;
