@@ -5,11 +5,13 @@
 class Script_Phero : public Script
 {
 private:
-	int		mLevel    = {};
-	float	mLifeTime = {};
-	float	mAmount   = {};
+	std::string mPheroState = {}; // ex) "123" : Phero Level : 1, OffsetDistIndex = 23 ( PheroDropInfo::Offsets[23] )
+private:
+	int		mLevel      = {};
+	float	mLifeTime   = {};
+	float	mAmount     = {};
 
-	Vec3	mOffsetDist = {};
+	int mOffsetDistIndex = {};
 
 public:
 	Script_Phero();
@@ -29,9 +31,17 @@ public:
 	virtual bool Start();
 	virtual bool Update();
 	virtual void OnDestroy();
-public:
-	void SetOffsetDist(Vec3 dist) { mOffsetDist = dist; }
 
+public:
+	void Init(int level, float lifeTime, float amount);
+	void Init();
+
+	void SetLevel(int level) { mLevel = level; }
+
+public:
+	void SetOffsetDistIndex(int index) { mOffsetDistIndex = index; }
+	std::string& GetPheroStateString() { return mPheroState; }
+	void setPheroStateString(std::string state) { mPheroState = state; }
 
 
 };

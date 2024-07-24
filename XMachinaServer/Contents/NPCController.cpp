@@ -54,7 +54,7 @@ void NPCController::InitMonsters(Coordinate maxSectorIdx)
 	monster->SetOwnerNPCController(this);
 	int ID = 7777; // test 
 	monster->SetID(ID);
-	monster->SetMonsterType(MonsterType::Ursacetus);
+	monster->SetMonsterType(FBProtocol::MONSTER_TYPE_ADVANCED_COMBAT_DROIR_5);
 	
 	sc->AddMonsterInSector(sI, ID, monster);
 	AddMonster(ID, monster);

@@ -26,6 +26,7 @@
 
 #include "Script_BehaviorTree.h"
 #include "Script_DefaultEnemyBT.h"
+#include "Script_PheroDropper.h"
 
 
 
@@ -187,67 +188,67 @@ void BattleScene::Load()
 					switch (objectType)
 					{
 					case GameObjectInfo::Type::Monster_Ursacetus: {
-						object->SetMonsterType(MonsterType::Ursacetus);
+						object->SetMonsterType(FBProtocol::MONSTER_TYPE_URSACETUS);
 						object->AddScript<Script_Onyscidus>(ScriptInfo::Type::Ursacetus);
 
 					}
 						break;
 					case GameObjectInfo::Type::Monster_Onyscidus: {
-						object->SetMonsterType(MonsterType::Onyscidus);
+						object->SetMonsterType(FBProtocol::MONSTER_TYPE_ONYSCIDUS);
 						object->AddScript<Script_Ursacetus>(ScriptInfo::Type::Onyscidus);
 
 					}
 						break;
 					case GameObjectInfo::Type::Monster_AdvancedCombat_5: {
-						object->SetMonsterType(MonsterType::AdvancedCombatDroid_5);
+						object->SetMonsterType(FBProtocol::MONSTER_TYPE_ADVANCED_COMBAT_DROIR_5);
 						object->AddScript<Script_AdvancedCombatDroid_5>(ScriptInfo::Type::AdvancedCombatDroid_5);
 
 					}
 						break;
 					case GameObjectInfo::Type::Monster_Anglerox: {
-						object->SetMonsterType(MonsterType::Anglerox);
+						object->SetMonsterType(FBProtocol::MONSTER_TYPE_ANGLEROX);
 						object->AddScript<Script_Anglerox>(ScriptInfo::Type::Anglerox);
 
 					}
 						break;
 					case GameObjectInfo::Type::Monster_Arack: {
-						object->SetMonsterType(MonsterType::Arack);
+						object->SetMonsterType(FBProtocol::MONSTER_TYPE_ARACK);
 						object->AddScript<Script_Arack>(ScriptInfo::Type::Arack);
 
 					}
 						break;
 					case GameObjectInfo::Type::Monster_Ceratoferox: {
-						object->SetMonsterType(MonsterType::Ceratoferox);
+						object->SetMonsterType(FBProtocol::MONSTER_TYPE_CERATOFEROX);
 						object->AddScript<Script_Ceratoferox>(ScriptInfo::Type::Ceratoferox);
 
 					}
 						break;
 					case GameObjectInfo::Type::Monster_Gobbler: {
-						object->SetMonsterType(MonsterType::Gobbler);
+						object->SetMonsterType(FBProtocol::MONSTER_TYPE_GOBBLER);
 						object->AddScript<Script_Gobbler>(ScriptInfo::Type::Gobbler);
 
 					}
 						break;
 					case GameObjectInfo::Type::Monster_LightBipedMech: {
-						object->SetMonsterType(MonsterType::LightBipedMech);
+						object->SetMonsterType(FBProtocol::MONSTER_TYPE_LIGHTBIPEDMECH);
 						object->AddScript<Script_LightBipedMech>(ScriptInfo::Type::LightBipedMech);
 
 					}
 						break;
 					case GameObjectInfo::Type::Monster_MiningMech: {
-						object->SetMonsterType(MonsterType::MiningMech);
+						object->SetMonsterType(FBProtocol::MONSTER_TYPE_MININGMECH);
 						object->AddScript<Script_AdvancedCombatDroid_5>(ScriptInfo::Type::MiningMech);
 
 					}
 						break;
 					case GameObjectInfo::Type::Monster_Rapax: {
-						object->SetMonsterType(MonsterType::Rapax);
+						object->SetMonsterType(FBProtocol::MONSTER_TYPE_RAPAX);
 						object->AddScript<Script_Rapax>(ScriptInfo::Type::Rapax);
 
 					}
 						break;
 					case GameObjectInfo::Type::Monster_Aranobot: {
-						object->SetMonsterType(MonsterType::Aranobot);
+						object->SetMonsterType(FBProtocol::MONSTER_TYPE_ARANOBOT);
 						object->AddScript<Script_Aranobot>(ScriptInfo::Type::Aranabot);
 
 					}
@@ -256,7 +257,9 @@ void BattleScene::Load()
 
 					object->AddScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
 					object->AddScript<Script_DefaultEnemyBT>(ScriptInfo::Type::DefaultEnemyBT);
-					
+					const auto& pherodropper = object->AddScript<Script_PheroDropper>(ScriptInfo::Type::PheroDropper);
+					pherodropper->Init();
+
 					mEnemies.push_back(object);
 
 				}

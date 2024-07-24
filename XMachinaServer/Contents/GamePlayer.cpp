@@ -8,8 +8,10 @@
 #include "PlayerController.h"
 #include "SectorController.h"
 #include "NPCController.h"
+#include "GameBullet.h"
 
 #include "Sector.h"
+#include "Script_Bullet.h"
 
 GamePlayer::GamePlayer()
 	: GameObject(-1)
@@ -24,6 +26,18 @@ GamePlayer::GamePlayer(UINT32 sessionID, SPtr_GameSession owner)
 
 	mInfo.ID       = sessionID;
 	mInfo.Owner    = owner;
+	
+	/// +-------------------------------------------------------------------------------
+	///		CREATE GAME BULLETS
+	/// -------------------------------------------------------------------------------+
+	for (int i = 0; i < GameObjectInfo::maxBulletsNum; ++i) {
+		SPtr<GameBullet> bullet = MEMORY->Make_Shared<GameBullet>(i, std::dynamic_pointer_cast<GamePlayer>(shared_from_this()));
+		bullet->AddComponent<Transform>(ComponentInfo::Type::Transform);
+		bullet->AddComponent<Collider>(ComponentInfo::Type::Collider); // 충돌체크 그냥 거리 차이 구할 거임 
+		bullet->AddScript<Script_Bullet>(ScriptInfo::Type::Bullet);
+
+		mInfo.Bullets[i] = bullet;	
+	}
 }
 
 GamePlayer::~GamePlayer()

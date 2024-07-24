@@ -872,7 +872,7 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_NewMonster(std::vector<MonsterSnapShot>& 
 	/// > 		type	:  ubyte; // UINT8
 	/// > 		pos		:  Position_Vec2;
 	/// > 
-	/// > 		pheros	: [Phero] ;
+	/// > 		pheros	: string ;
 	/// > 
 	/// > }
 	/// > �ۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡ�
@@ -892,7 +892,8 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_NewMonster(std::vector<MonsterSnapShot>& 
 	/// ------------------------------------------------------------------------------------------+
 	for (MonsterSnapShot& p : new_monsters) {
 		auto pos     = FBProtocol::CreatePosition_Vec2(builder, p.Position.x, p.Position.z);
-		auto Monster = FBProtocol::CreateMonster(builder, p.ID, static_cast<uint8_t>(p.Type), pos); 
+		auto pheros  = builder.CreateString(p.Pheros);
+		auto Monster = FBProtocol::CreateMonster(builder, p.ID, p.Type, pos, pheros); 
 		MonsterSnapShots_Vector.push_back(Monster);
 	}
 

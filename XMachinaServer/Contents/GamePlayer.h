@@ -3,6 +3,8 @@
 #include "Enum_generated.h"
 #include "GameObject.h"
 #include "GameMonster.h"
+#include "GameBullet.h"
+
 #include "ObjectSnapShot.h"
 #include "Skill.h"
 #include "DB_Weapon.h"
@@ -122,6 +124,9 @@ struct PlayerSnapShot : public ObjectSnapShot
 	///		Item 
 	/// -----------------------------------------------------------+
 	WeaponInfo::WeaponName WeaponName = {}; Lock::SRWLock Lock_Weapon;
+	std::array<SPtr<GameBullet>, GameObjectInfo::maxBulletsNum> Bullets;
+	int bulletIndex = 0;
+
 
 	/// +-----------------------------------------------------------
 	///		latency 

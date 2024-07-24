@@ -6,7 +6,7 @@
 #include "Transform.h"
 #include "Collider.h"
 #include "Gameinfo.h"
-
+#include "GameMonster.h"
 
 #include "Script_Phero.h"
 
@@ -52,29 +52,14 @@ Script_PheroDropper::Script_PheroDropper()
 Script_PheroDropper::Script_PheroDropper(SPtr<GameObject> owner, ScriptInfo::Type type)
 	: Script(owner, type, static_cast<UINT32>(type))
 {
-	for (int i = 0; i < 30; ++i) {
-		mOffsetdistIndexList.push_back(i);
-	}
-	Shuffle_OdffsetDistIndexList();
 
-	int rand = std::rand() % 15;
-	mPheros.resize(rand);
-	for (int i = 0; i < rand; ++i) {
-		GameObject* phero = new GameObject;
-		phero->AddComponent<Transform>(ComponentInfo::Type::Transform);
-		phero->AddComponent<Collider>(ComponentInfo::Type::Collider);
-		auto script = phero->AddScript<Script_Phero>(ScriptInfo::Type::Phero);
-
-		//Vec3 a = PheroDropInfo::Offsets[0];
-
-		//script->SetOffsetDist(PheroDropInfo::Offsets[mOffsetdistIndexList[i]]);
-		
-		mPheros.push_back(phero);
-	}
 }
 
 Script_PheroDropper::~Script_PheroDropper()
 {
+
+	mPheros.clear();
+
 }
 
 void Script_PheroDropper::Clone(SPtr<Component> other) 
@@ -82,6 +67,12 @@ void Script_PheroDropper::Clone(SPtr<Component> other)
 	Script::Clone(other);
 	SPtr<Script_PheroDropper> otherScript = std::static_pointer_cast<Script_PheroDropper>(other);
 
+	for (int i = 0; i < otherScript->getPheros().size(); ++i) {
+		SPtr<GameObject> phero = otherScript->getPheros()[i]->Clone();
+
+		mPheros.push_back(phero);
+
+	}
 }
 
 void Script_PheroDropper::Activate()
@@ -125,12 +116,72 @@ void Script_PheroDropper::OnDestroy()
 
 }
 
-void Script_PheroDropper::Shuffle_OdffsetDistIndexList()
+void Script_PheroDropper::Init()
 {
+	std::vector<int> OffsetIndexList{};
+
+	for (int i = 0; i < 30; ++i) {
+		OffsetIndexList.push_back(i);
+	}
 	// 랜덤 엔진 생성
 	std::random_device rd; // 하드웨어 난수 생성기
 	std::mt19937 g(rd()); // 랜덤 엔진
 
 	// 벡터의 요소를 무작위로 섞기
-	std::shuffle(mOffsetdistIndexList.begin(), mOffsetdistIndexList.end(), g);
+	std::shuffle(OffsetIndexList.begin(), OffsetIndexList.end(), g);
+
+	std::string AllPherosState = {};
+	int rand = 5 + std::rand() % (15 - 5);
+	mPheros.reserve(rand);
+	for (int i = 0; i < rand; ++i) {
+		/// +---------------------------------------------------------------
+		///							CREATE PHERO 
+		/// ---------------------------------------------------------------+
+		std::shared_ptr<GameObject> phero = std::make_shared<GameObject>(i);
+		phero->AddComponent<Transform>(ComponentInfo::Type::Transform);
+		phero->AddComponent<Collider>(ComponentInfo::Type::Collider);
+
+		auto script = phero->AddScript<Script_Phero>(ScriptInfo::Type::Phero);
+		script->SetOffsetDistIndex(OffsetIndexList[i]);
+
+		int level = 1 + std::rand() % 2;
+		script->SetLevel(level);
+		script->Init();
+		AllPherosState += script->GetPheroStateString();
+		mPheros.push_back(phero);
+	}
+
+	auto type = GetOwner()->GetType();
+	if (type == GameObjectInfo::Type::Monster_Onyscidus || 
+		type == GameObjectInfo::Type::Monster_AdvancedCombat_5 || 
+		type == GameObjectInfo::Type::Monster_Anglerox || 
+		type == GameObjectInfo::Type::Monster_Arack || 
+		type == GameObjectInfo::Type::Monster_Aranobot || 
+		type == GameObjectInfo::Type::Monster_Ceratoferox || 
+		type == GameObjectInfo::Type::Monster_Gobbler || 
+		type == GameObjectInfo::Type::Monster_LightBipedMech || 
+		type == GameObjectInfo::Type::Monster_MiningMech || 
+		type == GameObjectInfo::Type::Monster_Onyscidus || 
+		type == GameObjectInfo::Type::Monster_Rapax || 
+		type == GameObjectInfo::Type::Monster_Ursacetus
+		) 
+	{
+		SPtr<GameMonster> monster = std::dynamic_pointer_cast<GameMonster>(GetOwner());
+		monster->SetPheros(AllPherosState);
+	}
+
+}
+
+void Script_PheroDropper::OnCollisionWithPlayer(int PlayerID)
+{
+}
+
+int Script_PheroDropper::CalculatePercentage(int totalNumber, double percentage)
+{
+	return std::round(totalNumber * (percentage / 100.0));
+}
+
+void Script_PheroDropper::Shuffle_OdffsetDistIndexList()
+{
+
 }

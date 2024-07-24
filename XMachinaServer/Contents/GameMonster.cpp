@@ -102,13 +102,19 @@ SPtr<GameMonster> GameMonster::Clone()
 {
 	SPtr<GameMonster> copy = std::make_shared<GameMonster>();
 	
+	copy.get()->mInfo       = mInfo;
+	copy.get()->mInfo.owner = copy;
+	copy.get()->mInfo.ID = mInfo.ID;
+	
 	copy->SetID(GetID());
-	copy->SetMonsterType(this->GetMonsterType());
 	copy->SetType(this->GetType());
 
 	SPtr<GameObject> targetObj = std::dynamic_pointer_cast<GameObject>(copy);
 	GameObject::CloneComponents(targetObj);
 	GameObject::CloneScripts(targetObj);
+
+	copy->SetPheros(mInfo.Pheros);
+	
 
 	return copy;
 }

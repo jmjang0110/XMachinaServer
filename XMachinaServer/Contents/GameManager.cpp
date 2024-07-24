@@ -24,12 +24,19 @@ void GameManager::Init()
 {
 	mRoomMaxCnt = MAX_SESSION_NUM / static_cast<UINT32>(RoomInfo::MaxSessionSize);
 
+
+	auto start = std::chrono::high_resolution_clock::now();
+
 	for (UINT32 i = 0; i < mRoomMaxCnt; ++i) {
 		SPtr_GameRoom room = std::make_shared<GameRoom>();
 		room->Init(i);
 		mRooms.push_back(room);
 	}
 
+
+	auto end = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> duration = end - start;
+	std::cout << "GameManager - Room Init " << duration.count() << " seconds" << std::endl;
 
 }
 

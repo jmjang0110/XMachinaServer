@@ -207,8 +207,8 @@ struct Monster FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   const FBProtocol::Position_Vec2 *pos() const {
     return GetPointer<const FBProtocol::Position_Vec2 *>(VT_POS);
   }
-  const ::flatbuffers::Vector<::flatbuffers::Offset<FBProtocol::Phero>> *pheros() const {
-    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<FBProtocol::Phero>> *>(VT_PHEROS);
+  const ::flatbuffers::String *pheros() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_PHEROS);
   }
   bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
@@ -217,8 +217,7 @@ struct Monster FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
            VerifyOffset(verifier, VT_POS) &&
            verifier.VerifyTable(pos()) &&
            VerifyOffset(verifier, VT_PHEROS) &&
-           verifier.VerifyVector(pheros()) &&
-           verifier.VerifyVectorOfTables(pheros()) &&
+           verifier.VerifyString(pheros()) &&
            verifier.EndTable();
   }
 };
@@ -236,7 +235,7 @@ struct MonsterBuilder {
   void add_pos(::flatbuffers::Offset<FBProtocol::Position_Vec2> pos) {
     fbb_.AddOffset(Monster::VT_POS, pos);
   }
-  void add_pheros(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<FBProtocol::Phero>>> pheros) {
+  void add_pheros(::flatbuffers::Offset<::flatbuffers::String> pheros) {
     fbb_.AddOffset(Monster::VT_PHEROS, pheros);
   }
   explicit MonsterBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
@@ -255,7 +254,7 @@ inline ::flatbuffers::Offset<Monster> CreateMonster(
     uint32_t id = 0,
     uint8_t type = 0,
     ::flatbuffers::Offset<FBProtocol::Position_Vec2> pos = 0,
-    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<FBProtocol::Phero>>> pheros = 0) {
+    ::flatbuffers::Offset<::flatbuffers::String> pheros = 0) {
   MonsterBuilder builder_(_fbb);
   builder_.add_pheros(pheros);
   builder_.add_pos(pos);
@@ -269,8 +268,8 @@ inline ::flatbuffers::Offset<Monster> CreateMonsterDirect(
     uint32_t id = 0,
     uint8_t type = 0,
     ::flatbuffers::Offset<FBProtocol::Position_Vec2> pos = 0,
-    const std::vector<::flatbuffers::Offset<FBProtocol::Phero>> *pheros = nullptr) {
-  auto pheros__ = pheros ? _fbb.CreateVector<::flatbuffers::Offset<FBProtocol::Phero>>(*pheros) : 0;
+    const char *pheros = nullptr) {
+  auto pheros__ = pheros ? _fbb.CreateString(pheros) : 0;
   return FBProtocol::CreateMonster(
       _fbb,
       id,

@@ -1901,8 +1901,16 @@ inline ::flatbuffers::Offset<SPkt_GetPhero> CreateSPkt_GetPhero(
 /// -------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 struct CPkt_Bullet_OnShoot FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef CPkt_Bullet_OnShootBuilder Builder;
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
+    VT_RAY = 4
+  };
+  const FBProtocol::Vector3 *ray() const {
+    return GetPointer<const FBProtocol::Vector3 *>(VT_RAY);
+  }
   bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
+           VerifyOffset(verifier, VT_RAY) &&
+           verifier.VerifyTable(ray()) &&
            verifier.EndTable();
   }
 };
@@ -1911,6 +1919,9 @@ struct CPkt_Bullet_OnShootBuilder {
   typedef CPkt_Bullet_OnShoot Table;
   ::flatbuffers::FlatBufferBuilder &fbb_;
   ::flatbuffers::uoffset_t start_;
+  void add_ray(::flatbuffers::Offset<FBProtocol::Vector3> ray) {
+    fbb_.AddOffset(CPkt_Bullet_OnShoot::VT_RAY, ray);
+  }
   explicit CPkt_Bullet_OnShootBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
@@ -1923,8 +1934,10 @@ struct CPkt_Bullet_OnShootBuilder {
 };
 
 inline ::flatbuffers::Offset<CPkt_Bullet_OnShoot> CreateCPkt_Bullet_OnShoot(
-    ::flatbuffers::FlatBufferBuilder &_fbb) {
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<FBProtocol::Vector3> ray = 0) {
   CPkt_Bullet_OnShootBuilder builder_(_fbb);
+  builder_.add_ray(ray);
   return builder_.Finish();
 }
 

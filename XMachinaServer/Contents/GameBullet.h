@@ -26,6 +26,10 @@ struct  BulletSnapShot : public ObjectSnapShot
 
 class GameBullet : public GameObject	
 {
+
+private:
+	SPtr<GamePlayer> mOwnerPlayer = nullptr;
+
 private:
 	BulletSnapShot mInfo;
 
@@ -35,7 +39,7 @@ private:
 public:
 	GameBullet();
 	GameBullet(UINT32 sessionID);
-	GameBullet(UINT32 sessionID, SPtr_GameSession owner);
+	GameBullet(UINT32 sessionID, SPtr<GamePlayer> owner);
 	~GameBullet();
 public:
 	virtual void Update() override;

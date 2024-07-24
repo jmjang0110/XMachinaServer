@@ -11,9 +11,11 @@ GameBullet::GameBullet(UINT32 sessionID)
 {
 }
 
-GameBullet::GameBullet(UINT32 sessionID, SPtr_GameSession owner)
+GameBullet::GameBullet(UINT32 sessionID, SPtr<GamePlayer> owner)
 	: GameObject(sessionID)
 {
+	mOwnerPlayer = owner;
+
 }
 
 GameBullet::~GameBullet()
