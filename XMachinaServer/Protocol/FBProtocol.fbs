@@ -337,7 +337,7 @@ table SPkt_GetPhero
 
 table CPkt_Bullet_OnShoot
 {
-
+	ray : Vector3
 }
 
 table SPkt_Bullet_OnShoot

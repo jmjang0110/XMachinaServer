@@ -2,6 +2,7 @@
 
 #include "Script_BehaviorTree.h"
 #include "BTNode.h"
+#include "Gameinfo.h"
 
 class Script_Enemy;
 

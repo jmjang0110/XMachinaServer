@@ -10,6 +10,10 @@
 #include "Script_Phero.h"
 #include "Script_PheroDropper.h"
 
+#include "Component.h"
+#include "Transform.h"
+
+
 
 Script_Enemy::Script_Enemy()
 {
@@ -18,7 +22,6 @@ Script_Enemy::Script_Enemy()
 Script_Enemy::Script_Enemy(SPtr<GameObject> owner, ScriptInfo::Type type)
 	: Script_EnemyStat(owner, type)
 {
-
 }
 
 Script_Enemy::~Script_Enemy()

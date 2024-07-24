@@ -12,6 +12,7 @@ namespace ComponentInfo {
 		Transform,
 		Collider,
 		Animation,
+		Rigidbody,
 
 		Script,
 		End,

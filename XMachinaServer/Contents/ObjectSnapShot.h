@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GameInfo.h"
+#include "Gameinfo.h"
 
 struct ObjectSnapShot
 {

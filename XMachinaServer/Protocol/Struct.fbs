@@ -37,6 +37,6 @@ table Monster{
 	type		:  ubyte; // UINT8
 	pos			:  Position_Vec2;
 
-	pheros		: [Phero];
+	pheros		:  [Phero];
 	
 }

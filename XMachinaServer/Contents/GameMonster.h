@@ -3,6 +3,7 @@
 #include "GameObject.h"
 #include "DB_Monster.h"
 #include "ObjectSnapShot.h"
+#include "GamePhero.h"
 
 /// +-------------------------------
 ///		     Game Monster
@@ -34,14 +35,14 @@ struct MonsterSnapShot : public ObjectSnapShot
 class GameMonster : public GameObject
 {
 private:
-	NPCController* mOwnerNC;
+	NPCController*	mOwnerNC;
 
-	Coordinate  mSectorIndex;   // 어느 섹터에 속해있는가?
-	Lock::SRWLock mLock_SnapShot;
+	Coordinate		mSectorIndex;   // 어느 섹터에 속해있는가?
+	Lock::SRWLock	mLock_SnapShot;
 	MonsterSnapShot mInfo;			// 몬스터 정보 
 	
 	std::atomic_int mActivate_Ref = 0;
-
+	std::vector<GamePhero*> mPheros;
 
 public:
 	virtual void Update() override;
@@ -68,16 +69,16 @@ public:
 	void SetSectorIndex(Coordinate sectorIdx);
 
 	// Get 함수들
-	SPtr<GameMonster> GetSnapShotOwner() { mInfo.owner; }
-	uint32_t		GetMonsterID()			{	return mInfo.ID;		}
-	MonsterType		GetMonsterType(){	return mInfo.Type;		}
-	float			GetAttack()		{	return mInfo.Attack;	}
-	float			GetHP()			{ mInfo.lock_HP.LockRead();  float hp = mInfo.HP;	mInfo.lock_HP.UnlockRead(); return hp; }
-	Vec3			GetPosition()	{ mInfo.lock_Position.LockRead(); Vec3 pos = mInfo.Position; mInfo.lock_Position.UnlockRead(); return pos; }
+	SPtr<GameMonster>	GetSnapShotOwner()		{	 mInfo.owner; }
+	uint32_t			GetMonsterID()			{	return mInfo.ID;		}
+	MonsterType			GetMonsterType()		{	return mInfo.Type;		}
+	float				GetAttack()				{	return mInfo.Attack;	}
+	float				GetHP()					{ mInfo.lock_HP.LockRead();  float hp = mInfo.HP;	mInfo.lock_HP.UnlockRead(); return hp; }
+	Vec3				GetPosition()			{ mInfo.lock_Position.LockRead(); Vec3 pos = mInfo.Position; mInfo.lock_Position.UnlockRead(); return pos; }
 
-	void			SetOwnerNPCController(NPCController* nc)	{ mOwnerNC = nc; }
-	NPCController*	GetOwnerNPCController()						{ return mOwnerNC; }
-	int				GetActivate_RefCnt()						{ return mActivate_Ref.load(); }
+	void				SetOwnerNPCController(NPCController* nc)	{ mOwnerNC = nc; }
+	NPCController*		GetOwnerNPCController()						{ return mOwnerNC; }
+	int					GetActivate_RefCnt()						{ return mActivate_Ref.load(); }
 	void			DecreaseRef()								{ mActivate_Ref.fetch_sub(1); if (mActivate_Ref.load() < 0) mActivate_Ref = 0; }
 
 	MonsterSnapShot GetSnapShot() { mLock_SnapShot.LockWrite(); MonsterSnapShot snapShot = mInfo; mLock_SnapShot.UnlockWrite(); return snapShot; }

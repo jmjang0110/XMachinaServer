@@ -6,8 +6,14 @@ namespace GameObjectInfo
 	enum class Type : UINT16 {
 		None,
 
+		/// +------------------------
+		///		 GAME PLAYER 
+		/// ------------------------+
 		GamePlayer,
 
+		/// +------------------------
+		///		 MONSTER TYPE 
+		/// ------------------------+
 		Monster_Ursacetus,
 		Monster_Onyscidus,
 		Monster_AdvancedCombat_5,
@@ -20,16 +26,20 @@ namespace GameObjectInfo
 		Monster_Rapax,
 		Monster_Aranobot,
 
+		/// +------------------------
+		///		 BUILDING 
+		/// ------------------------+
 		Building,
 
-
+		/// +------------------------
+		///		 COLLIDER TYPE 
+		/// ------------------------+
 		BoxCollider,
 		SphereCollider,
 		ObjectCollider,
 		END,
 	};
 }
-
 
 
 

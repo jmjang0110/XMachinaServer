@@ -8,6 +8,7 @@ Script_Phero::Script_Phero()
 Script_Phero::Script_Phero(SPtr<GameObject> owner, ScriptInfo::Type type)
     : Script(owner, type, static_cast<UINT32>(type))
 {
+
 }
 
 Script_Phero::~Script_Phero()
@@ -55,3 +56,4 @@ bool Script_Phero::Update()
 void Script_Phero::OnDestroy()
 {
 }
+

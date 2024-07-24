@@ -2,11 +2,15 @@
 #include "Script.h"
 
 
-
+namespace PheroDropInfo {
+	extern std::vector<Vec3> Offsets;  // 전역 변수 선언
+}
+class GameObject;
 class Script_PheroDropper : public Script
 {
 private:
-
+    std::vector<GameObject*> mPheros{};
+    std::vector<int> mOffsetdistIndexList{};
 
 public:
 	Script_PheroDropper();
@@ -26,6 +30,10 @@ public:
 	virtual bool Start();
 	virtual bool Update();
 	virtual void OnDestroy();
+
+private:
+
+    void Shuffle_OdffsetDistIndexList();
 
 
 

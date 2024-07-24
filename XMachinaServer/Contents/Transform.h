@@ -3,6 +3,9 @@
 #include "GameInfo.h"
 #include "ObjectSnapShot.h"
 
+/// +-----------------------------------------------------
+///					TRANSFORM SNAPSHOT 
+/// -----------------------------------------------------+
 struct TransformSnapShot : public ObjectSnapShot
 {
 	Matrix	WorldTransform;

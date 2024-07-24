@@ -38,5 +38,6 @@ public:
 
 public:
 	Skill* GetSkill(SkillInfo::Type skill_type) { return mSkills[static_cast<UINT8>(skill_type)]; }
+
 };
 

@@ -208,6 +208,9 @@ void Framework::Launch()
 	LOG_MGR->Cout("---------------------------------+\n");
 	LOG_MGR->SetColor(TextColor::Default);
 
+	// Seed the random number generator
+	std::srand(static_cast<unsigned>(std::time(0)));
+
 	int CoreNum = 4/* Network Threads */;
 	std::cout << "Core : " << CoreNum << std::endl;
 	std::atomic<bool> stop(false);

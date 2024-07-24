@@ -5,8 +5,11 @@
 class Script_Phero : public Script
 {
 private:
+	int		mLevel    = {};
 	float	mLifeTime = {};
 	float	mAmount   = {};
+
+	Vec3	mOffsetDist = {};
 
 public:
 	Script_Phero();
@@ -26,6 +29,10 @@ public:
 	virtual bool Start();
 	virtual bool Update();
 	virtual void OnDestroy();
+public:
+	void SetOffsetDist(Vec3 dist) { mOffsetDist = dist; }
+
+
 
 };
 

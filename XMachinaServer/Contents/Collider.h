@@ -15,7 +15,9 @@ namespace ColliderInfo
 	enum class Type{ None, Box, Sphere, End, };
 }
 
-
+/// +-----------------------------------------------------
+///					COLLIDER SNAPSHOT 
+/// -----------------------------------------------------+
 struct ColliderSnapShot : public ObjectSnapShot
 {
 	std::vector<MyBoundingSphere>		BoundingSphereList{};
