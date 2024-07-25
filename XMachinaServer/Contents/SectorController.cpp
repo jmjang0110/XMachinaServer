@@ -94,7 +94,7 @@ ViewList SectorController::UpdateViewList(GamePlayer* player, Vec3 player_pos, f
     if (East_SectorIdx == Coordinate())
         East_SectorIdx = curSectorIdx;
 
-    Vec3 N = player_pos; N.y += viewRange_radius;
+    Vec3 N = player_pos; N.z += viewRange_radius;
     Coordinate North_SectorIdx = GetSectorIdx(N);
     if (North_SectorIdx == Coordinate())
         North_SectorIdx = curSectorIdx;
@@ -104,7 +104,7 @@ ViewList SectorController::UpdateViewList(GamePlayer* player, Vec3 player_pos, f
     if (West_SectorIdx == Coordinate())
         West_SectorIdx = curSectorIdx;
 
-    Vec3 S = player_pos; S.y -= viewRange_radius;
+    Vec3 S = player_pos; S.z -= viewRange_radius;
     Coordinate South_SectorIdx = GetSectorIdx(S);
     if (South_SectorIdx == Coordinate())
         South_SectorIdx = curSectorIdx;
@@ -139,7 +139,7 @@ ViewList SectorController::UpdateViewList(GamePlayer* player, Vec3 player_pos, f
             continue;
 
         // 해당 섹터에서 Monster 와 Player 들을 확인한다.
-        //LOG_MGR->Cout("Sector Size : ", mSectorSize.z, mSectorSize.x , "  -- SECTORS IDX : ", " z :", sectors[i].z, " x : ", sectors[i].x, '\n');
+        LOG_MGR->Cout(player->GetID(), " player : -- SECTORS IDX : ", " z :", sectors[i].z, " x : ", sectors[i].x, '\n');
         std::vector<SPtr<GameMonster>> VL_Monsters = mSectors[sectors[i].z][sectors[i].x]->GetMonstersInViewRange(player_pos, viewRange_radius);
         std::vector<SPtr<GamePlayer>>  VL_Players  = mOwnerRoom->GetPlayerController()->GetPlayersInViewRange(player_pos, viewRange_radius);
 
@@ -150,6 +150,8 @@ ViewList SectorController::UpdateViewList(GamePlayer* player, Vec3 player_pos, f
             AllView_Players.push_back(VL_Players[i]);
         }
     }
+      LOG_MGR->Cout("--------------------------------------------\n");
+
 
     player->UpdateViewList(AllView_Players, AllView_Monsters);
 

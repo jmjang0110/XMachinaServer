@@ -1029,6 +1029,17 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_Monster_State(uint32_t monster_id, FBProt
 
 }
 
+SPtr_SendPktBuf FBsPacketFactory::SPkt_Monster_Target(uint32_t monster_id, uint32_t target_player_id, uint32_t target_monster_id)
+{
+	flatbuffers::FlatBufferBuilder builder{};
+
+
+	auto serverPacket = FBProtocol::CreateSPkt_MonsterTarget(builder, monster_id, target_player_id, target_monster_id);
+	builder.Finish(serverPacket);
+	SPtr_SendPktBuf sendBuffer = SEND_FACTORY->CreatePacket(builder.GetBufferPointer(), static_cast<uint16_t>(builder.GetSize()), FBsProtocolID::SPkt_Monster_Target);
+	return sendBuffer;
+}
+
 SPtr_SendPktBuf FBsPacketFactory::SPkt_GetPhero(uint32_t phero_id, uint32_t player_id)
 {
 	flatbuffers::FlatBufferBuilder builder{};

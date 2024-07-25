@@ -2,6 +2,8 @@
 #include "GameRoom.h"
 #include "GamePlayer.h"
 #include "GameSession.h"
+#include "GameMonster.h"
+
 
 #include "FBsPacketFactory.h"
 
@@ -18,6 +20,11 @@
 #include "FBsPacketFactory.h"
 #include "GameManager.h"
 #include "PlayerController.h"
+
+#include "Script_DefaultEnemyBT.h"
+#include "Script_EnemyController.h"
+
+
 
 
 GamePlayer::GamePlayer()
@@ -122,6 +129,7 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 	mInfo.VList_Prev = mInfo.Vlist;
 	std::vector<MonsterSnapShot> NewMonsters;
 	std::vector<MonsterSnapShot> RemoveMonsters;
+	std::vector<SPtr<GameMonster>> NewMonsters_Objects;
 
 	for (int i = 0; i < players.size(); ++i) {
 		mInfo.Vlist.TryInsertPlayer(players[i]->GetID(), players[i]);
@@ -133,6 +141,7 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 			// »õ·Î µé¾î¿È 
 			MonsterSnapShot snapShot = monster[i]->GetSnapShot();
 			NewMonsters.push_back(snapShot);
+			NewMonsters_Objects.push_back(monster[i]);
 
 			LOG_MGR->Cout("[ ", snapShot.ID , " ] : NewMonsters \n");
 
@@ -165,6 +174,14 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 		const auto& NewMonster_serverPacket = FBS_FACTORY->SPkt_NewMonster(NewMonsters);
 		GetSessionOwner()->Send(NewMonster_serverPacket);
 
+		for (int i = 0; i < NewMonsters_Objects.size(); ++i) {
+
+			auto script                          = NewMonsters_Objects[i]->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
+			FBProtocol::MONSTER_BT_TYPE btType   = script->GetMonsterBTType();
+			const auto& MonsterType_serverPacket = FBS_FACTORY->SPkt_Monster_State(NewMonsters_Objects[i]->GetID(), btType);
+			GetSessionOwner()->Send(MonsterType_serverPacket);
+
+		}
 		LOG_MGR->Cout("SEND NEW MONSTER \n");
 
 	}

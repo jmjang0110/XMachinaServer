@@ -189,13 +189,13 @@ void BattleScene::Load()
 					{
 					case GameObjectInfo::Type::Monster_Ursacetus: {
 						object->SetMonsterType(FBProtocol::MONSTER_TYPE_URSACETUS);
-						object->AddScript<Script_Onyscidus>(ScriptInfo::Type::Ursacetus);
+						object->AddScript<Script_Ursacetus>(ScriptInfo::Type::Ursacetus);
 
 					}
 						break;
 					case GameObjectInfo::Type::Monster_Onyscidus: {
 						object->SetMonsterType(FBProtocol::MONSTER_TYPE_ONYSCIDUS);
-						object->AddScript<Script_Ursacetus>(ScriptInfo::Type::Onyscidus);
+						object->AddScript<Script_Onyscidus>(ScriptInfo::Type::Onyscidus);
 
 					}
 						break;

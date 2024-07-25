@@ -91,6 +91,7 @@ public:
 	SPtr_SendPktBuf SPkt_Monster_Transform(uint32_t monster_id, Vec3 pos, Vec3 rot);
 	SPtr_SendPktBuf SPkt_Monster_HP(uint32_t monster_id, float hp);
 	SPtr_SendPktBuf SPkt_Monster_State(uint32_t monster_id, FBProtocol::MONSTER_BT_TYPE montser_bt_type);
+	SPtr_SendPktBuf SPkt_Monster_Target(uint32_t monster_id, uint32_t target_player_id, uint32_t target_monster_id);
 
 	/* PHERO */
 	SPtr_SendPktBuf SPkt_GetPhero(uint32_t phero_id, uint32_t player_id);

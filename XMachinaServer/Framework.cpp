@@ -226,7 +226,7 @@ void Framework::Launch()
 			//double prev = 0;
 			while (!stop.load())
 			{
-				TLS_MGR->Get_TlsInfoData()->TimeMgr.Tick(0.f);
+				TLS_MGR->Get_TlsInfoData()->TimeMgr.Tick(120.f);
 				mServer->WorkerThread(msTimeOut);
 
 				//time += TLS_MGR->Get_TlsInfoData()->TimeMgr.GetTimeElapsed();

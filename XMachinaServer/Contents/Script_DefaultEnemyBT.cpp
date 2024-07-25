@@ -263,6 +263,7 @@ bool Script_DefaultEnemyBT::Update()
 		if (PrevType != CurrType) {
 			/* Send Packet */
 			std::dynamic_pointer_cast<GameMonster>(GetOwner())->Broadcast_SPkt_Mosnter_State(CurrType);
+			mRoot->GetEnemyController()->SetBTType(CurrType);
 		}
 
 		mRoot->GetEnemyController()->UpdateMonsterCurrBTType();

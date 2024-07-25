@@ -127,7 +127,9 @@ bool MonsterTask::PathPlanning_AStar::PathPlanningAStar(Path::Pos start, Path::P
 
 			mDistance[nextPos] = g + h;
 			pq.push({ g + h, g, nextPos });
-			mParent[nextPos] = curNode.Pos;
+			mParent.insert(std::make_pair(nextPos, curNode.Pos));
+			//mParent[nextPos] = curNode.Pos;
+
 		}
 	}
 

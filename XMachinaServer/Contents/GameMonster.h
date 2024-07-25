@@ -103,6 +103,8 @@ public:
 
 	void Broadcast_SPkt_Monster_Transform();
 	void Broadcast_SPkt_Mosnter_State(FBProtocol::MONSTER_BT_TYPE monster_bt_type);
+	
+	void Send_SPkt_Mosnter_State(FBProtocol::MONSTER_BT_TYPE monser_bt_type);
 
 
 public:

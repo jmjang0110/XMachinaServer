@@ -52,6 +52,10 @@ void GameMonster::Broadcast_SPkt_Mosnter_State(FBProtocol::MONSTER_BT_TYPE monst
 	GAME_MGR->BroadcastRoom(GetOwnerNPCController()->GetOwnerRoom()->GetID(), spkt);
 }
 
+void GameMonster::Send_SPkt_Mosnter_State(FBProtocol::MONSTER_BT_TYPE monser_bt_type)
+{
+}
+
 GameMonster::GameMonster()
 	: GameObject(-1)
 {
@@ -78,6 +82,10 @@ void GameMonster::Update()
 	if (mTimer >= 0.1f) {
 		/* Send Transform Packet */
 		Broadcast_SPkt_Monster_Transform();
+
+		Vec3 pos = GetTransform()->GetPosition();
+
+		//LOG_MGR->Cout(GetName(), " : ", GetID(), " : ", pos.x , " ", pos.y, " ", pos.z, "\n");
 
 		// 타이머 초기화
 		mTimer = 0.0f;

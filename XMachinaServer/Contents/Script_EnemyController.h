@@ -55,6 +55,7 @@ private:
 
 	FBProtocol::MONSTER_BT_TYPE mCurrBTType;
 	FBProtocol::MONSTER_BT_TYPE mPrevBTType;
+	FBProtocol::MONSTER_BT_TYPE mBTType; Lock::SRWLock mLock_BTType;
 
 
 public:
@@ -96,7 +97,7 @@ public:
 	std::stack<Vec3>*			GetPaths()					{ return &mPaths; }
 	FBProtocol::MONSTER_BT_TYPE GetMonsterCurrBTType()		{ return mCurrBTType; }
 	FBProtocol::MONSTER_BT_TYPE GetMontserPrevBTType()		{ return mPrevBTType; }
-	
+	FBProtocol::MONSTER_BT_TYPE GetMonsterBTType() { mLock_BTType.LockRead(); FBProtocol::MONSTER_BT_TYPE btType = mBTType; mLock_BTType.UnlockRead(); return btType; }
 	/// +---------------------------------------------------
 	///						S E T T E R 
 	/// ---------------------------------------------------+
@@ -109,7 +110,7 @@ public:
 	void SetTargetMonster(SPtr<GameMonster> target)				{ mTargetMonster = target; }
 	void SetOwnerMonster(SPtr<GameMonster> ownerMonster)		{ mOwnerMonster  = ownerMonster; }
 
-	
+	void SetBTType(FBProtocol::MONSTER_BT_TYPE btType) { mLock_BTType.LockWrite(); mBTType = btType; mLock_BTType.UnlockWrite(); }
 
 	/// +---------------------------------------------------
 	///						MIND CONTROL 
