@@ -30,7 +30,7 @@ public:
 	GamePhero();
 	GamePhero(UINT32 id);
 	virtual ~GamePhero();
-
+	 
 public:
 	virtual void Update() override;
 	virtual void WakeUp() override;
@@ -46,7 +46,7 @@ public:
 public:
 	void SetPosition(Vec3 pos) { mInfo.Lock_Position.LockWrite();	mInfo.Position = pos;			mInfo.Lock_Position.UnlockWrite(); }
 	Vec3 GetPosition() { mInfo.Lock_Position.LockRead(); Vec3 pos = mInfo.Position; mInfo.Lock_Position.UnlockRead(); return pos; }
-	int					GetActivate_RefCnt() { return mActivate_Ref.load(); }
+	int	 GetActivate_RefCnt() { return mActivate_Ref.load(); }
 
 
 };

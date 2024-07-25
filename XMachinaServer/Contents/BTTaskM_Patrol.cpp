@@ -30,14 +30,16 @@ BTNodeState MonsterTask::Patrol::Evaluate()
 		mCurrWayPointIdx = (mCurrWayPointIdx + 1) % mWayPoints.size();
 	}
 
+	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_PATROL);
 	return BTNodeState::Running;
+
 }
 
 MonsterTask::Patrol::Patrol(SPtr_GameObject owner, std::function<void()> callback)
 	: BTTask(owner, BTTaskType::MonT_Patrol, callback)
 {
 	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
-	mStat = GetStat(owner->GetType());
+	mStat            = GetStat(owner->GetType());
 
 	mPatrolSpeed     = mStat->GetStat_MoveSpeed() * 0.5f;
 }

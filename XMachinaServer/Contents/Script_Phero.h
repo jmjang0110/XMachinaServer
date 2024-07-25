@@ -11,7 +11,9 @@ private:
 	float	mLifeTime   = {};
 	float	mAmount     = {};
 
-	int mOffsetDistIndex = {};
+	int		mOffsetDistIndex = {};
+
+	std::atomic<int> mTargetPlayer = -1;
 
 public:
 	Script_Phero();
@@ -43,6 +45,9 @@ public:
 	std::string& GetPheroStateString() { return mPheroState; }
 	void setPheroStateString(std::string state) { mPheroState = state; }
 
+public:
+	int GetTargetPlayerID() { int targetID = mTargetPlayer.load(); return targetID; }
+	void SetTargetPlayerID(int id) { if (mTargetPlayer.load() != -1) mTargetPlayer.store(id); }
 
 };
 

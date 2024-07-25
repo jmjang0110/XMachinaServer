@@ -24,6 +24,7 @@ Script_AdvancedCombatDroid_5::Script_AdvancedCombatDroid_5(SPtr<GameObject> owne
     Script_EnemyStat::SetStat_DeathAnimName("DeathFrontCombat");
     Script_EnemyStat::SetStat_GetHitName("IdleCombat");
 
+   owner->SetName("AdvancedCombatDroid_5");
 
 
 }

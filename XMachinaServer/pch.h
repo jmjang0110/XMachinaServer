@@ -62,7 +62,7 @@ using SPtr_GameBullet    = std::shared_ptr<class GameBullet>;
 using SPtr_GameObject    = std::shared_ptr<class GameObject>;
 
 
-constexpr UINT32 MAX_SESSION_NUM = 500;
+constexpr UINT32 MAX_SESSION_NUM = 50;
 
 /* ÁÂÇ¥ */
 struct Coordinate

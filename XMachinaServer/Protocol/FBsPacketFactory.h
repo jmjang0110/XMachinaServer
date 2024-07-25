@@ -90,14 +90,14 @@ public:
 	SPtr_SendPktBuf SPkt_RemoveMonster(uint32_t monster_id);
 	SPtr_SendPktBuf SPkt_Monster_Transform(uint32_t monster_id, Vec3 pos, Vec3 rot);
 	SPtr_SendPktBuf SPkt_Monster_HP(uint32_t monster_id, float hp);
-	SPtr_SendPktBuf SPkt_Monster_State(uint32_t monster_id, FBProtocol::MONSTER_STATE_TYPE state);
+	SPtr_SendPktBuf SPkt_Monster_State(uint32_t monster_id, FBProtocol::MONSTER_BT_TYPE montser_bt_type);
 
 	/* PHERO */
 	SPtr_SendPktBuf SPkt_GetPhero(uint32_t phero_id, uint32_t player_id);
 
 	/* BULLET */
-	SPtr_SendPktBuf SPkt_Bullet_OnShoot(uint32_t player_id, uint32_t gun_id, uint32_t bullet_id, Vec3 ray);
-	SPtr_SendPktBuf SPkt_Bullet_OnCollision(uint32_t player_id, uint32_t gun_id, uint32_t bullet_id);
+	SPtr_SendPktBuf SPkt_Bullet_OnShoot(uint32_t player_id, FBProtocol::WEAPON_TYPE  gun_id, uint32_t bullet_id, Vec3 ray);
+	SPtr_SendPktBuf SPkt_Bullet_OnCollision(uint32_t player_id, FBProtocol::WEAPON_TYPE gun_id, uint32_t bullet_id);
 
 private:
 	static Vec3 GetVector3(const FBProtocol::Vector3* vec3);

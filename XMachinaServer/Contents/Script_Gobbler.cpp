@@ -24,6 +24,7 @@ Script_Gobbler::Script_Gobbler(SPtr<GameObject> owner, ScriptInfo::Type type)
     Script_EnemyStat::SetStat_DeathAnimName("Roar");
     Script_EnemyStat::SetStat_GetHitName("GetHitFront");
 
+    owner->SetName("Gobbler");
 
 
 }

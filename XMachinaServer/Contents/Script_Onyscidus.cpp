@@ -21,6 +21,10 @@ Script_Onyscidus::Script_Onyscidus(SPtr<GameObject> owner, ScriptInfo::Type type
     Script_EnemyStat::SetStat_AttackAnimName("2HitComboClawsAttack");
     Script_EnemyStat::SetStat_DeathAnimName("Death");
     Script_EnemyStat::SetStat_GetHitName("BlockIdle");
+
+    owner->SetName("Onyscidus");
+
+
 }
 
 Script_Onyscidus::~Script_Onyscidus()

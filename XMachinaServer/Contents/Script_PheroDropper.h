@@ -5,6 +5,7 @@
 namespace PheroDropInfo {
 	extern std::vector<Vec3> Offsets;  // 전역 변수 선언
 }
+
 class GameObject;
 class Script_PheroDropper : public Script
 {
@@ -37,14 +38,11 @@ public:
 	void OnCollisionWithPlayer(int PlayerID);
 
 	int CalculatePercentage(int totalNumber, double percentage);
+	const std::vector<SPtr<GameObject>>& GetPheros()  {return mPheros;}
 
 private:
 
     void Shuffle_OdffsetDistIndexList();
-	// mPheros 벡터를 반환하는 getter 함수
-	const std::vector<SPtr<GameObject>>& getPheros() const {
-		return mPheros;
-	}
 
 
 };

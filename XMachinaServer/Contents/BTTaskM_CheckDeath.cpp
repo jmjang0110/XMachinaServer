@@ -31,6 +31,7 @@ BTNodeState MonsterTask::CheckDeath::Evaluate()
 		GetOwner()->DeActivate();
 	}
 
+	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_DEATH);
 	return BTNodeState::Success;
 }
 

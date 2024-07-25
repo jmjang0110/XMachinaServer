@@ -172,10 +172,10 @@ BTNodeState MonsterTask::MoveToTarget::Evaluate()
 	}
 
 	Vec3 pos = GetOwner()->GetTransform()->GetPosition();
-	LOG_MGR->Cout("[ ", GetOwner()->GetID(), " ] : ", pos.x, " ", pos.y, " ", pos.z, "\n");
+	//LOG_MGR->Cout("[ ", GetOwner()->GetID(), " ] : ", pos.x, " ", pos.y, " ", pos.z, "\n");
 
 
-
+	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_MOVE_TO_TARGET);;
 	return BTNodeState::Success;
 }
 

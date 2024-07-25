@@ -25,6 +25,7 @@ Script_LightBipedMech::Script_LightBipedMech(SPtr<GameObject> owner, ScriptInfo:
     Script_EnemyStat::SetStat_GetHitName("IdleActive");
 
 
+    owner->SetName("LightBipedMech");
 
 }
 

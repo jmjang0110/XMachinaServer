@@ -64,6 +64,7 @@ void NPCController::InitMonsters(Coordinate maxSectorIdx)
 
 	const std::vector<SPtr<GameMonster>>* EnemyPrototypes = RESOURCE_MGR->GetBattleScene()->GetEnemies();
 	for (int i = 0; i < EnemyPrototypes->size(); ++i) {
+
 		SPtr<GameMonster> enemy = (*EnemyPrototypes)[i]->Clone(); // 복사본을 만든다 ( 원본은 건들이지 않는다. )
 		enemy->SetOwnerNPCController(this);
 		AddMonster(enemy->GetID(), enemy);

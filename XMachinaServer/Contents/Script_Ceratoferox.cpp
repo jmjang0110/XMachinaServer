@@ -25,6 +25,7 @@ Script_Ceratoferox::Script_Ceratoferox(SPtr<GameObject> owner, ScriptInfo::Type 
     Script_EnemyStat::SetStat_GetHitName("Death");
 
 
+    owner->SetName("Ceratoferox");
 
 }
 

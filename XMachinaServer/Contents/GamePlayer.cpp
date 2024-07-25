@@ -12,6 +12,13 @@
 
 #include "Sector.h"
 #include "Script_Bullet.h"
+#include "CollisionManager.h"
+#include "Script_Phero.h"
+
+#include "FBsPacketFactory.h"
+#include "GameManager.h"
+#include "PlayerController.h"
+
 
 GamePlayer::GamePlayer()
 	: GameObject(-1)
@@ -26,18 +33,7 @@ GamePlayer::GamePlayer(UINT32 sessionID, SPtr_GameSession owner)
 
 	mInfo.ID       = sessionID;
 	mInfo.Owner    = owner;
-	
-	/// +-------------------------------------------------------------------------------
-	///		CREATE GAME BULLETS
-	/// -------------------------------------------------------------------------------+
-	for (int i = 0; i < GameObjectInfo::maxBulletsNum; ++i) {
-		SPtr<GameBullet> bullet = MEMORY->Make_Shared<GameBullet>(i, std::dynamic_pointer_cast<GamePlayer>(shared_from_this()));
-		bullet->AddComponent<Transform>(ComponentInfo::Type::Transform);
-		bullet->AddComponent<Collider>(ComponentInfo::Type::Collider); // 충돌체크 그냥 거리 차이 구할 거임 
-		bullet->AddScript<Script_Bullet>(ScriptInfo::Type::Bullet);
 
-		mInfo.Bullets[i] = bullet;	
-	}
 }
 
 GamePlayer::~GamePlayer()
@@ -54,6 +50,8 @@ void GamePlayer::Update()
 	mOwnerPC->GetOwnerRoom()->GetSectorController()->UpdateViewList(this, mInfo.Position, mInfo.ViewRangeRadius);
 	
 	//LOG_MGR->Cout("POS : ", GetTransform()->GetWorldTransform()._41, " ", GetTransform()->GetWorldTransform()._42, " ", GetTransform()->GetWorldTransform()._43 ," \n");
+
+
 }
 
 void GamePlayer::WakeUp()
@@ -65,6 +63,20 @@ void GamePlayer::WakeUp()
 void GamePlayer::Start()
 {
 	GameObject::Start();
+
+	/// +-------------------------------------------------------------------------------
+	///		CREATE GAME BULLETS
+	/// -------------------------------------------------------------------------------+
+	for (int i = 0; i < GameObjectInfo::maxBulletsNum; ++i) {
+		auto owner = std::dynamic_pointer_cast<GamePlayer>(shared_from_this());
+		SPtr<GameBullet> bullet = MEMORY->Make_Shared<GameBullet>(i, owner);
+		bullet->AddComponent<Transform>(ComponentInfo::Type::Transform);
+		bullet->AddComponent<Collider>(ComponentInfo::Type::Collider); // 충돌체크 그냥 거리 차이 구할 거임 
+		bullet->AddScript<Script_Bullet>(ScriptInfo::Type::Bullet);
+
+		mInfo.Bullets[i] = bullet;
+		mInfo.mPossibleBulletIndex.push(i);
+	}
 
 }
 
@@ -91,6 +103,20 @@ void GamePlayer::Exit()
 
 }
 
+int GamePlayer::OnShoot()
+{
+	int possibleIndex = -1;
+	if (mInfo.mPossibleBulletIndex.try_pop(possibleIndex)) {
+		
+		if (0 <= possibleIndex && possibleIndex < GameObjectInfo::maxBulletsNum) {
+			mInfo.Bullets[possibleIndex]->RegisterUpdate(); // PQCS 
+			return possibleIndex;
+		}
+	}
+
+	return -1;
+}
+
 void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vector<SPtr<GameMonster>> monster)
 {
 	mInfo.VList_Prev = mInfo.Vlist;
@@ -107,6 +133,9 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 			// 새로 들어옴 
 			MonsterSnapShot snapShot = monster[i]->GetSnapShot();
 			NewMonsters.push_back(snapShot);
+
+			LOG_MGR->Cout("[ ", snapShot.ID , " ] : NewMonsters \n");
+
 		}
 	}
 
@@ -135,12 +164,73 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 	if (NewMonsters.size() > 0) {
 		const auto& NewMonster_serverPacket = FBS_FACTORY->SPkt_NewMonster(NewMonsters);
 		GetSessionOwner()->Send(NewMonster_serverPacket);
+
+		LOG_MGR->Cout("SEND NEW MONSTER \n");
+
 	}
 	
 	/* Send Remove Monster Packet */
 	for (int i = 0; i < RemoveMonsters.size(); ++i) {
 		const auto& RemoveMonster_serverPacket = FBS_FACTORY->SPkt_RemoveMonster(RemoveMonsters[i].ID);
 		GetSessionOwner()->Send(RemoveMonster_serverPacket);
+	}
+}
+
+void GamePlayer::CollideCheckWithBullets()
+{
+	
+
+}
+
+void GamePlayer::CollideCheckWithMonsters()
+{
+	ColliderSnapShot SNS_Player = GetCollider()->GetSnapShot();
+
+	for (auto& iter : mInfo.Vlist.VL_Monsters) {
+		if (iter.second->IsActive() == false)
+			continue;
+
+		// 살아있는 상태 
+		if (iter.second->GetHP() > 0.f)
+		{
+			//iter.second->GetMotionState() // 공격 상태라면 
+			ColliderSnapShot SNS_Monster = iter.second->GetCollider()->GetSnapShot();
+			bool IsCollide = COLLISION_MGR->CollideCheck(SNS_Player, SNS_Monster);
+			if (IsCollide) {
+				// 플레이어의 HP 를 내린다 
+
+			}
+
+		}
+		// 죽은 상태 
+		else {
+			// 몬스터의 Phero와 충돌체크  
+			const std::vector<SPtr<GameObject>>& pheros = iter.second->GetAllPheros();
+
+			for (int i = 0; i < pheros.size(); ++i) {
+				ColliderSnapShot SNS_Phero = pheros[i]->GetCollider()->GetSnapShot();
+				bool IsCollide = COLLISION_MGR->CollideCheck(SNS_Phero, SNS_Player);
+				if (IsCollide) {
+					const auto& phero_scirpt = pheros[i]->GetScript<Script_Phero>(ScriptInfo::Type::Phero);
+					int targetid = phero_scirpt->GetTargetPlayerID();
+
+				/*	if (phero_script->GetState() == 이동중)
+						coninue;*/
+
+					if (targetid = -1) {
+						phero_scirpt->SetTargetPlayerID(GetID());
+						// 플레이어의 페로수치를  올린다. 
+
+						auto pkt = FBS_FACTORY->SPkt_GetPhero(pheros[i]->GetID(), GetID());
+						GAME_MGR->BroadcastRoom(mOwnerPC->GetOwnerRoom()->GetID(), pkt, GetID());
+					}
+				}
+
+			}
+		}
+
+
+		
 	}
 }
 

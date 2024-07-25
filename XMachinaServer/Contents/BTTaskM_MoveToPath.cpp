@@ -76,12 +76,16 @@ BTNodeState MonsterTask::MoveToPath::Evaluate()
 	Vec3 pos = GetOwner()->GetTransform()->GetPosition();
 	mEnemyController->GetOwnerMonster()->SetPosition(pos); /* Snap Shot - Pos */
 
-	LOG_MGR->Cout("[ ", GetOwner()->GetID(), " ] : ", pos.x, " ", pos.y, " ", pos.z, "\n");
+	//LOG_MGR->Cout("[ ", GetOwner()->GetID(), " ] : ", pos.x, " ", pos.y, " ", pos.z, "\n");
 
 	// 다음 경로에 도착 시 해당 경로 삭제
 	const float kMinDistance = 0.1f;
-	if (nextPos.Length() < kMinDistance)
+	if (nextPos.Length() < kMinDistance) {
 		mPath->pop();
+	}
+
+
+	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_MOVE_TO_PATH);
 
 	return BTNodeState::Success;
 }

@@ -52,7 +52,10 @@ private:
 	/* Min Control On */
 	SPtr<GameMonster>   mTargetMonster = {};
 
-	
+
+	FBProtocol::MONSTER_BT_TYPE mCurrBTType;
+	FBProtocol::MONSTER_BT_TYPE mPrevBTType;
+
 
 public:
 	/// +------------------------------
@@ -68,9 +71,6 @@ public:
 	virtual bool Update()	override;
 	virtual void OnDestroy() override;
 
-public:
-	void Reset();
-	void ForceSetTarget(SPtr_GameObject target) { mTarget = target; }
 
 public:
 	Script_EnemyController();
@@ -78,31 +78,45 @@ public:
 	~Script_EnemyController();
 
 public:
-	//SPtr_GameObject		GetTargetObject()					{ return mTarget;	   }
-	SPtr<GamePlayer>    GetTargetPlayer()					{ return mTargetPlayer; }
-	SPtr<GameMonster>	GetTargetMonster()					{ return mTargetMonster;  }
-	SPtr_GameObject		GetPathTargetObject()				{ return mPathTarget;  }
-
-	EnemyInfo::State	GetState()							{ return mState; }
-	void				SetState(EnemyInfo::State state)	{ mState = state; }
-	std::stack<Vec3>*	GetPaths()							{ return &mPaths; }
-
-	void OnMindControl() { mMindControllded  = true; }
-	void OffMindControl() { mMindControllded = false; }
-
-	bool IsMindControlled() { return mMindControllded; }
+	void Reset();
+	void RemoveAllAnimation();
+	void ForceSetTarget(SPtr_GameObject target) { mTarget = target; }
 
 public:
-	//void SetTargetObject(SPtr_GameObject target)		{ mTarget = target; }
-	void SetPathTargetObject(SPtr<GameObject> target)	{ mPathTarget = target; }
+	/// +---------------------------------------------------
+	///						G E T T E R  
+	/// ---------------------------------------------------+
+	SPtr<GameMonster>			GetOwnerMonster()			{ return mOwnerMonster; }
 
-	void SetTargetPlayer(SPtr<GamePlayer> target)		{ mTargetPlayer = target; }
-	void SetTargetMonster(SPtr<GameMonster> target)		{ mTargetMonster = target; }
+	SPtr<GamePlayer>			GetTargetPlayer()			{ return mTargetPlayer; }
+	SPtr<GameMonster>			GetTargetMonster()			{ return mTargetMonster;  }
+	SPtr_GameObject				GetPathTargetObject()		{ return mPathTarget;  }
+
+	EnemyInfo::State			GetState()					{ return mState; }
+	std::stack<Vec3>*			GetPaths()					{ return &mPaths; }
+	FBProtocol::MONSTER_BT_TYPE GetMonsterCurrBTType()		{ return mCurrBTType; }
+	FBProtocol::MONSTER_BT_TYPE GetMontserPrevBTType()		{ return mPrevBTType; }
 	
-	void SetOwnerMonster(SPtr<GameMonster> ownerMonster) { mOwnerMonster = ownerMonster; }
-	SPtr<GameMonster> GetOwnerMonster() { return mOwnerMonster; }
+	/// +---------------------------------------------------
+	///						S E T T E R 
+	/// ---------------------------------------------------+
+	void SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE type) { mCurrBTType    = type; }
+	void UpdateMonsterCurrBTType()								{ mPrevBTType    = mCurrBTType; }
+	void SetState(EnemyInfo::State state)						{ mState         = state; }
 
-	void RemoveAllAnimation();
+	void SetPathTargetObject(SPtr<GameObject> target)			{ mPathTarget    = target; }
+	void SetTargetPlayer(SPtr<GamePlayer> target)				{ mTargetPlayer  = target; }
+	void SetTargetMonster(SPtr<GameMonster> target)				{ mTargetMonster = target; }
+	void SetOwnerMonster(SPtr<GameMonster> ownerMonster)		{ mOwnerMonster  = ownerMonster; }
+
+	
+
+	/// +---------------------------------------------------
+	///						MIND CONTROL 
+	/// ---------------------------------------------------+
+	void OnMindControl()	{ mMindControllded  = true; }
+	void OffMindControl()	{ mMindControllded  = false; }
+	bool IsMindControlled() { return mMindControllded; }
 
 };
 

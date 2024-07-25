@@ -35,6 +35,7 @@ void GameRoom::PQCS(OverlappedObject* over)
 /// -------------------------------------------------------------------+
 void GameRoom::Init(int roomid)
 {
+	SetID(roomid);
 	SetRoomID(roomid);
 
 	mPC = new PlayerController;

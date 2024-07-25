@@ -222,16 +222,17 @@ void Framework::Launch()
 		THREAD_MGR->RunThread("Worker Threads : 4 (CoreNum - 1(Timer))" + std::to_string(i), [&]() {
 
 			UINT32 msTimeOut = 0;
-			float time = 0;
-			float prev = 0;
+			//double time = 0;
+			//double prev = 0;
 			while (!stop.load())
 			{
-				TLS_MGR->Get_TlsInfoData()->TimeMgr.Tick(60.f);
-				time += TLS_MGR->Get_TlsInfoData()->TimeMgr.GetTimeElapsed();
+				TLS_MGR->Get_TlsInfoData()->TimeMgr.Tick(0.f);
 				mServer->WorkerThread(msTimeOut);
 
+				//time += TLS_MGR->Get_TlsInfoData()->TimeMgr.GetTimeElapsed();
+
 				//if ((int)time != (int)prev) {
-				//	LOG_MGR->Cout("[", TLS_MGR->Get_TlsInfoData()->id,"] : ", TLS_MGR->Get_TlsInfoData()->TimeMgr.GetTimeElapsed(), "\n");
+				//	LOG_MGR->Cout("[", TLS_MGR->Get_TlsInfoData()->id,"] : ", time, "\n");
 				//	prev = time;
 				//}
 			}

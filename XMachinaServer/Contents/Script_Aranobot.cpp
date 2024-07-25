@@ -24,6 +24,10 @@ Script_Aranobot::Script_Aranobot(SPtr<GameObject> owner, ScriptInfo::Type type)
     Script_EnemyStat::SetStat_AttackAnimName("GetHitFront");
     Script_EnemyStat::SetStat_DeathAnimName("Death");
     Script_EnemyStat::SetStat_GetHitName("GetHitLeft");
+
+    owner->SetName("Aranobot");
+
+
 }
 
 Script_Aranobot::~Script_Aranobot()

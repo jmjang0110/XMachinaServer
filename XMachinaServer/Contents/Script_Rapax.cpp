@@ -25,6 +25,7 @@ Script_Rapax::Script_Rapax(SPtr<GameObject> owner, ScriptInfo::Type type)
     Script_EnemyStat::SetStat_GetHitName("GetHitFront");
 
 
+    owner->SetName("Rapax");
 
 }
 

@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Script_DefaultEnemyBT.h"
 #include "Script_Enemy.h"
+#include "Script_EnemyController.h"
+
 
 #include "GameObject.h"
 #include "Component.h"
@@ -245,15 +247,26 @@ bool Script_DefaultEnemyBT::Start()
 {
     Script_BehaviorTree::Start();
 
-    return false;
+    return true;
 }
 
 bool Script_DefaultEnemyBT::Update()
 {
     Script_BehaviorTree::Update();
 
-	if (mRoot)
+	if (mRoot) {
 		mRoot->Evaluate();
+
+		FBProtocol::MONSTER_BT_TYPE PrevType = mRoot->GetEnemyController()->GetMontserPrevBTType();
+		FBProtocol::MONSTER_BT_TYPE CurrType = mRoot->GetEnemyController()->GetMonsterCurrBTType();
+
+		if (PrevType != CurrType) {
+			/* Send Packet */
+			std::dynamic_pointer_cast<GameMonster>(GetOwner())->Broadcast_SPkt_Mosnter_State(CurrType);
+		}
+
+		mRoot->GetEnemyController()->UpdateMonsterCurrBTType();
+	}
 
     return true;
 }

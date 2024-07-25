@@ -49,6 +49,7 @@ bool PlayerController::EnterPlayer(SPtr_GamePlayer player)
 		mGamePlayers[player->GetID()] = player;
 		player->setRoomID(mRoomID);
 		player->SetOwnerPlayerController(this);
+		player->Start();
 
 		mSRWLock.UnlockWrite();
 	}

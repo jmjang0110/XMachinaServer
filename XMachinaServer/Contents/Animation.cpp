@@ -98,11 +98,11 @@ void AnimatorController::Animate()
 {
 	CheckTransition();
 
-	LOG_MGR->Cout("Animate : ", mName, " ");
+	//LOG_MGR->Cout("Animate : ", mName, " ");
 	for (auto& layer : mLayers) {
 		layer->Animate();
 	}
-	LOG_MGR->Cout("\n");
+
 }
 
 void AnimatorController::CheckTransition() const
@@ -157,7 +157,7 @@ AnimatorMotion::AnimatorMotion(const AnimatorMotion& other)
 
 bool AnimatorMotion::Animate()
 {
-	LOG_MGR->Cout("[Animation : ", mName, "] (", DELTA_TIME, ")");
+	// LOG_MGR->Cout("[Animation : ", mName, "] (", DELTA_TIME, ")");
 	mCrntLength += mSpeed * DELTA_TIME;
 
 	for (auto& [time, callback] : mCallbacks | std::ranges::views::reverse) {

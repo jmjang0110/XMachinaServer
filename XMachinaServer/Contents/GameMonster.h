@@ -49,6 +49,8 @@ private:
 	
 	std::atomic_int mActivate_Ref = 0;
 
+	double mTimer = 0.f;
+
 public:
 	virtual void Update() override;
 	virtual void WakeUp() override;
@@ -83,6 +85,10 @@ public:
 	Vec3						GetPosition()				{ mInfo.lock_Position.LockRead(); Vec3 pos = mInfo.Position; mInfo.lock_Position.UnlockRead(); return pos; }
 
 	std::string					GetPheros()					{ return mInfo.Pheros; }
+	// mPheros 벡터를 반환하는 getter 함수
+	const std::vector<SPtr<GameObject>>& GetAllPheros() ;
+
+
 
 	void						SetOwnerNPCController(NPCController* nc)	{ mOwnerNC = nc; }
 	NPCController*				GetOwnerNPCController()						{ return mOwnerNC; }
@@ -94,6 +100,9 @@ public:
 	void UpdateSnapShot(); // 최신 상태로 스냅샷 업데이트 
 
 	void On_ExitFromViewList();
+
+	void Broadcast_SPkt_Monster_Transform();
+	void Broadcast_SPkt_Mosnter_State(FBProtocol::MONSTER_BT_TYPE monster_bt_type);
 
 
 public:

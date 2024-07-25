@@ -1,5 +1,6 @@
 #pragma once
 
+class Script_EnemyController;
 
 enum class BTNodeState {
 	Running = 0,
@@ -15,13 +16,17 @@ enum class BTNodeState {
 class BTNode
 {
 public:
-	SPtr_GameObject			mOwner          = {};
+	SPtr_GameObject					mOwner          = {};
 
-	BTNode*					mRoot           = {};
-	BTNode*					mParent         = {};
+	BTNode*							mRoot           = {};
+	BTNode*							mParent         = {};
 
-	std::queue<BTNode*>		mWaitQueue  = {};
-	std::vector<BTNode*>	mChildren   = {};
+	std::queue<BTNode*>				mWaitQueue  = {};
+	std::vector<BTNode*>			mChildren   = {};
+
+public:
+	SPtr<Script_EnemyController>	mEnemyController;
+
 
 public:
 	BTNode(SPtr_GameObject owner);
@@ -32,9 +37,10 @@ public:
 	virtual BTNodeState Evaluate() { return BTNodeState::Failure; }
 	void SetRoot();
 
-	SPtr_GameObject GetOwner() { return mOwner; }
-	BTNode*			GetRoot() { return mRoot; }
-	BTNode*			GetParent() { return mParent; }
+	SPtr_GameObject GetOwner()							{ return mOwner;			}
+	BTNode*			GetRoot()							{ return mRoot;				}
+	BTNode*			GetParent()							{ return mParent;			}
+	SPtr<Script_EnemyController> GetEnemyController()	{ return mEnemyController;	}
 
 public:
 	void SetOwner(SPtr_GameObject owner) { mOwner = owner; }

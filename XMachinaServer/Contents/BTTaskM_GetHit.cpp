@@ -40,6 +40,8 @@ BTNodeState MonsterTask::GetHit::Evaluate()
 	if (GetOwner()->GetAnimation()->GetController()->GetParam("GetHit")->val.b == false)
 		return BTNodeState::Failure;
 
+
+	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_GETHIT);
 	return BTNodeState::Success;
 }
 

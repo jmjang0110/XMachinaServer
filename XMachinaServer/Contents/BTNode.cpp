@@ -1,5 +1,9 @@
 #include "pch.h"
 #include "BTNode.h"
+#include "GameObject.h"
+#include "Script_EnemyController.h"
+
+
 
 BTNode::BTNode(SPtr_GameObject owner)
 {
@@ -13,6 +17,9 @@ BTNode::BTNode(SPtr_GameObject owner, std::vector<BTNode*>& children)
 	for (auto& child : children) {
 		Attach(child);
 	}
+
+	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
+
 }
 
 BTNode::~BTNode()

@@ -17,7 +17,7 @@ BTNodeState MonsterTask::Attack::Evaluate()
 {
 
 	/* Attack Range BTNode 에서 Target 체크하므로 여기서는 할 필요 없음 */
-	//LOG_MGR->Cout("Attack \n");
+	LOG_MGR->Cout("[", mEnemyController->GetOwner()->GetName(), "] : Attack \n");
 
 	bool IsMindControlled = mEnemyController->IsMindControlled();
 	if (IsMindControlled == true)
@@ -39,6 +39,7 @@ BTNodeState MonsterTask::Attack::Evaluate()
 		ExecuteCallback();
 	}
 
+	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK);
 	return BTNodeState::Success;
 }
 

@@ -24,6 +24,7 @@ Script_Anglerox::Script_Anglerox(SPtr<GameObject> owner, ScriptInfo::Type type)
     Script_EnemyStat::SetStat_DeathAnimName("Death");
     Script_EnemyStat::SetStat_GetHitName("GetHitFront");
 
+    owner->SetName("Anglerox");
 
 
 }

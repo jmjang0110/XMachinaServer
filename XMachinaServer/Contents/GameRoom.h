@@ -32,7 +32,7 @@ public:
 	/// +-------------------------------------------------------------------
 	///	¢º¢º¢º Room
 	/// -------------------------------------------------------------------+
-	void SetRoomID(int id) { mID = id; }
+	void SetRoomID(int id) {  mID = id; }
 	void Init(int roomid);
 	bool IsPossibleToEnter(); 
 
@@ -64,5 +64,6 @@ public:
 	PlayerController*	 GetPlayerController()		{ return mPC; }
 	NPCController*		 GetNPCController()			{ return mNC; }
 	SectorController*	 GetSectorController()		{ return mSC; }
+
 };
 

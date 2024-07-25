@@ -24,7 +24,48 @@ GameBullet::~GameBullet()
 
 void GameBullet::Update()
 {
+	FBProtocol::WEAPON_TYPE weaponType = GetWeaponType();
 
+
+	// Ray Check Or Simultaion 
+	switch (weaponType)
+	{
+	case FBProtocol::WEAPON_TYPE_H_LOOK:{
+
+	}
+		break;
+	case FBProtocol::WEAPON_TYPE_DBMS: {
+
+	}
+		break;
+	case FBProtocol::WEAPON_TYPE_STUART:{
+
+		}
+		break;
+	case FBProtocol::WEAPON_TYPE_DESCRIPTOR:{
+
+		}
+		break;
+	case FBProtocol::WEAPON_TYPE_T_12:{
+
+		}
+		break;
+	case FBProtocol::WEAPON_TYPE_PIPELINE:{
+
+		}
+		break;
+	case FBProtocol::WEAPON_TYPE_BURNOUT:{
+
+		}
+		break;
+	case FBProtocol::WEAPON_TYPE_DIRECT_DRAIN:{
+
+		}
+		break;
+	default:
+		assert(0);
+		break;
+	};
 }
 
 void GameBullet::WakeUp()
@@ -46,11 +87,7 @@ void GameBullet::Activate()
 		mInfo.BulletOwner = std::dynamic_pointer_cast<GameBullet>(shared_from_this());
 	}
 	if (mActivate_Ref.load() == 1) {
-		TimerEvent t;
-		t.Type        = TimerEventType::Update_GameObject;
-		t.WakeUp_Time = std::chrono::system_clock::now() + std::chrono::seconds(0); // 지금 당장 시작 
-		t.Owner       = shared_from_this();
-		TIME_MGR->PushTimerEvent(t);
+		GameObject::RegisterUpdate();
 	}
 }
 

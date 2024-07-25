@@ -201,8 +201,8 @@ struct Monster FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   uint32_t id() const {
     return GetField<uint32_t>(VT_ID, 0);
   }
-  uint8_t type() const {
-    return GetField<uint8_t>(VT_TYPE, 0);
+  FBProtocol::MONSTER_TYPE type() const {
+    return static_cast<FBProtocol::MONSTER_TYPE>(GetField<uint8_t>(VT_TYPE, 0));
   }
   const FBProtocol::Position_Vec2 *pos() const {
     return GetPointer<const FBProtocol::Position_Vec2 *>(VT_POS);
@@ -229,8 +229,8 @@ struct MonsterBuilder {
   void add_id(uint32_t id) {
     fbb_.AddElement<uint32_t>(Monster::VT_ID, id, 0);
   }
-  void add_type(uint8_t type) {
-    fbb_.AddElement<uint8_t>(Monster::VT_TYPE, type, 0);
+  void add_type(FBProtocol::MONSTER_TYPE type) {
+    fbb_.AddElement<uint8_t>(Monster::VT_TYPE, static_cast<uint8_t>(type), 0);
   }
   void add_pos(::flatbuffers::Offset<FBProtocol::Position_Vec2> pos) {
     fbb_.AddOffset(Monster::VT_POS, pos);
@@ -252,7 +252,7 @@ struct MonsterBuilder {
 inline ::flatbuffers::Offset<Monster> CreateMonster(
     ::flatbuffers::FlatBufferBuilder &_fbb,
     uint32_t id = 0,
-    uint8_t type = 0,
+    FBProtocol::MONSTER_TYPE type = FBProtocol::MONSTER_TYPE_ADVANCED_COMBAT_DROIR_5,
     ::flatbuffers::Offset<FBProtocol::Position_Vec2> pos = 0,
     ::flatbuffers::Offset<::flatbuffers::String> pheros = 0) {
   MonsterBuilder builder_(_fbb);
@@ -266,7 +266,7 @@ inline ::flatbuffers::Offset<Monster> CreateMonster(
 inline ::flatbuffers::Offset<Monster> CreateMonsterDirect(
     ::flatbuffers::FlatBufferBuilder &_fbb,
     uint32_t id = 0,
-    uint8_t type = 0,
+    FBProtocol::MONSTER_TYPE type = FBProtocol::MONSTER_TYPE_ADVANCED_COMBAT_DROIR_5,
     ::flatbuffers::Offset<FBProtocol::Position_Vec2> pos = 0,
     const char *pheros = nullptr) {
   auto pheros__ = pheros ? _fbb.CreateString(pheros) : 0;

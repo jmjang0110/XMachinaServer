@@ -380,16 +380,17 @@ bool FBsPacketFactory::Process_CPkt_Player_Transform(SPtr_Session session, const
 	float					animparam_h = pkt.animparam_h();
 	float					animparam_v = pkt.animparam_v();
 
+	/* Boradcast Player's Transform Update */
+	SPtr_SendPktBuf SendPkt = FBS_FACTORY->SPkt_Player_Transform(id, move_state, latency, velocity, movedir, pos, rot, spine_look, animparam_h, animparam_v);
+	GAME_MGR->BroadcastRoom(gameSession->GetPlayerSnapShot().RoomID, SendPkt, id);
+
+
 	/* Player Info Update */
 	gameSession->GetPlayer()->SetPosition(pos);
 	gameSession->GetPlayer()->GetTransform()->SetPosition(pos);
 	gameSession->GetPlayer()->GetTransform()->SetLocalRotation(Quaternion::ToQuaternion(rot));
 	gameSession->GetPlayer()->Update();
 
-
-	/* Boradcast Player's Transform Update */
-	SPtr_SendPktBuf SendPkt = FBS_FACTORY->SPkt_Player_Transform(id, move_state, latency, velocity, movedir, pos, rot, spine_look, animparam_h, animparam_v);
-	GAME_MGR->BroadcastRoom(gameSession->GetPlayerSnapShot().RoomID, SendPkt, id);
 
 	return true;
 }
@@ -417,7 +418,7 @@ bool FBsPacketFactory::Process_CPkt_Player_Animation(SPtr_Session session, const
 
 	/* 클라이언트의 패킷을 그대로 다시 보낸다. */
 	auto spkt = FBS_FACTORY->SPkt_Player_Animation(ObjectID, animation_upper_idx, animation_lower_idx, animation_param_h, animation_param_v);
-	GAME_MGR->BroadcastRoom(gameSession->GetPlayerSnapShot().RoomID, spkt, gameSession->GetID());
+	GAME_MGR->BroadcastRoom(gameSession->GetPlayer()->GetRoomID(), spkt, ObjectID);
 
 	return true;
 }
@@ -450,7 +451,7 @@ bool FBsPacketFactory::Process_CPkt_Player_AimRotation(SPtr_Session session, con
 	float aim_rotation = pkt.aim_rotation();
 	auto spkt          = FBS_FACTORY->SPkt_Player_AimRotation(session->GetID(), aim_rotation);
 
-	GAME_MGR->BroadcastRoom(gameSession->GetPlayerSnapShot().RoomID, spkt, gameSession->GetID());
+	GAME_MGR->BroadcastRoom(gameSession->GetPlayer()->GetRoomID(), spkt, gameSession->GetID());
 
 //	LOG_MGR->Cout(session->GetID(), " : AIM : ", aim_rotation, '\n');
 	return true;
@@ -539,6 +540,25 @@ bool FBsPacketFactory::Process_CPkt_Bullet_OnShoot(SPtr_Session session, const F
 	/// >
 	/// >}
 	/// >●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
+	
+	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
+
+	
+
+	int  player_id   = gameSession->GetID(); // 플레이어 아이디
+	auto gun_id      = gameSession->GetPlayer()->GetCurrWeapon();
+	Vec3 ray         = GetVector3(pkt.ray());
+	int  bullet_id   = gameSession->GetPlayer()->OnShoot(); // PQCS -> Bullet Update Start ( Worker Thread  에게 업데이트를 떠넘긴다 ) 
+	
+	// Shot 불가능 
+	if (bullet_id == -1) {
+		return false;
+	}
+
+	/// 플레이어가 Shot 했다는 것을 플레이어들에게 알린다. 
+	auto spkt = FBS_FACTORY->SPkt_Bullet_OnShoot(player_id, gun_id, bullet_id, ray);
+	GAME_MGR->BroadcastRoom(gameSession->GetPlayer()->GetRoomID(), spkt, player_id);
+
 	return false;
 }
 
@@ -966,6 +986,7 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_Monster_Transform(uint32_t monster_id, Ve
 
 SPtr_SendPktBuf FBsPacketFactory::SPkt_Monster_HP(uint32_t monster_id, float hp)
 {
+
 	/// > ○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○
 	/// > table SPkt_Monster_HP
 	/// > {
@@ -986,12 +1007,13 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_Monster_HP(uint32_t monster_id, float hp)
 	return sendBuffer;
 }
 
-SPtr_SendPktBuf FBsPacketFactory::SPkt_Monster_State(uint32_t monster_id, FBProtocol::MONSTER_STATE_TYPE state)
+SPtr_SendPktBuf FBsPacketFactory::SPkt_Monster_State(uint32_t monster_id, FBProtocol::MONSTER_BT_TYPE state)
 {
+
 	///> ○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○
 	///> table SPkt_Monster_State
 	///> {
-	///> 	monster_id: int;					// 4 bytes
+	///> 	monster_id: int;			// 4 bytes
 	///> 	state: MONSTER_STATE_TYPE;	// 1 byte
 	///> 
 	///> }
@@ -999,10 +1021,10 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_Monster_State(uint32_t monster_id, FBProt
 
 	flatbuffers::FlatBufferBuilder builder{};
 
-
 	auto serverPacket = FBProtocol::CreateSPkt_Monster_State(builder, monster_id, state);
 	builder.Finish(serverPacket);
 	SPtr_SendPktBuf sendBuffer = SEND_FACTORY->CreatePacket(builder.GetBufferPointer(), static_cast<uint16_t>(builder.GetSize()), FBsProtocolID::SPkt_Monster_State);
+	
 	return sendBuffer;
 
 }
@@ -1024,8 +1046,9 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_GetPhero(uint32_t phero_id, uint32_t play
 ///	◈ SEND [ BULLET ] PACKET ◈
 /// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------★
 
-SPtr_SendPktBuf FBsPacketFactory::SPkt_Bullet_OnShoot(uint32_t player_id, uint32_t gun_id, uint32_t bullet_id, Vec3 ray)
+SPtr_SendPktBuf FBsPacketFactory::SPkt_Bullet_OnShoot(uint32_t player_id, FBProtocol::WEAPON_TYPE gun_id, uint32_t bullet_id, Vec3 ray)
 {
+
 	/// > ○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○
 	/// > table SPkt_Bullet_OnShoot
 	/// > {
@@ -1047,7 +1070,7 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_Bullet_OnShoot(uint32_t player_id, uint32
 	return sendBuffer;
 }
 
-SPtr_SendPktBuf FBsPacketFactory::SPkt_Bullet_OnCollision(uint32_t player_id, uint32_t gun_id, uint32_t bullet_id)
+SPtr_SendPktBuf FBsPacketFactory::SPkt_Bullet_OnCollision(uint32_t player_id, FBProtocol::WEAPON_TYPE gun_id, uint32_t bullet_id)
 {
 	///> ○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○
 	///> table SPkt_Bullet_OnCollision

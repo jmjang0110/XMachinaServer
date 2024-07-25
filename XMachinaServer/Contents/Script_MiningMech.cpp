@@ -25,6 +25,7 @@ Script_MiningMech::Script_MiningMech(SPtr<GameObject> owner, ScriptInfo::Type ty
     Script_EnemyStat::SetStat_GetHitName("Blocked");
 
 
+    owner->SetName("MiningMech");
 
 }
 

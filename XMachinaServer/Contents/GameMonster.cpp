@@ -1,6 +1,25 @@
 #include "pch.h"
 #include "GameMonster.h"
+#include "GameObject.h"
+#include "NPCController.h"
+#include "GameObject.h"
+#include "Collider.h"
+#include "Transform.h"
+#include "GamePlayer.h"
+#include "CollisionManager.h"
+#include "PlayerController.h"
+#include "Script_PheroDropper.h"
+#include "FBsPacketFactory.h"
+#include "GameManager.h"
+#include "TimeManager.h"
+#include "ServerLib/ThreadManager.h"
 
+const std::vector<SPtr<GameObject>>& GameMonster::GetAllPheros()
+{
+	const auto& script = GetScript<Script_PheroDropper>(ScriptInfo::Type::PheroDropper);
+	const std::vector<SPtr<GameObject>>& pheros = script->GetPheros();
+	return pheros;
+}
 
 void GameMonster::UpdateSnapShot()
 {
@@ -14,6 +33,23 @@ void GameMonster::UpdateSnapShot()
 void GameMonster::On_ExitFromViewList()
 {
 	LOG_MGR->Cout(GetID(), " - On Exit From view List ");
+}
+
+void GameMonster::Broadcast_SPkt_Monster_Transform()
+{	
+	// Transform 패킷 보내기 
+	Vec3 Pos  = GetTransform()->GetPosition();
+	Vec3 Rot  = Quaternion::ToEuler(GetTransform()->GetRotation());
+	auto spkt = FBS_FACTORY->SPkt_Monster_Transform(GetID(), Pos, Rot);
+
+	GAME_MGR->BroadcastRoom(GetOwnerNPCController()->GetOwnerRoom()->GetID(), spkt);
+}
+
+void GameMonster::Broadcast_SPkt_Mosnter_State(FBProtocol::MONSTER_BT_TYPE monster_bt_type)
+{
+	auto spkt = FBS_FACTORY->SPkt_Monster_State(GetID(), monster_bt_type);
+
+	GAME_MGR->BroadcastRoom(GetOwnerNPCController()->GetOwnerRoom()->GetID(), spkt);
 }
 
 GameMonster::GameMonster()
@@ -35,11 +71,17 @@ GameMonster::~GameMonster()
 
 void GameMonster::Update()
 {
-	GameObject::Update();
+	GameObject::Update(); // Component, SCript Update
 
-	//LOG_MGR->Cout("Monster Update : ", static_cast<UINT8>(GetMonsterType()), "\n");
+	mTimer += DELTA_TIME;
+	// 0.5초마다 패킷 전송
+	if (mTimer >= 0.1f) {
+		/* Send Transform Packet */
+		Broadcast_SPkt_Monster_Transform();
 
-
+		// 타이머 초기화
+		mTimer = 0.0f;
+	}
 }
 
 void GameMonster::WakeUp()
