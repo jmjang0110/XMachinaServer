@@ -256,12 +256,38 @@ bool Script_DefaultEnemyBT::Update()
 
 	if (mRoot) {
 		mRoot->Evaluate();
+		
 
 		FBProtocol::MONSTER_BT_TYPE PrevType = mRoot->GetEnemyController()->GetMontserPrevBTType();
 		FBProtocol::MONSTER_BT_TYPE CurrType = mRoot->GetEnemyController()->GetMonsterCurrBTType();
 
 		if (PrevType != CurrType) {
 			/* Send Packet */
+			switch (CurrType)
+			{
+			case FBProtocol::MONSTER_BT_TYPE_DEATH:
+				LOG_MGR->Cout("MONSTER_BT_TYPE_DEATH\n");
+				break;
+			case FBProtocol::MONSTER_BT_TYPE_ATTACK:
+				LOG_MGR->Cout("MONSTER_BT_TYPE_ATTACK\n");
+				break;
+			case FBProtocol::MONSTER_BT_TYPE_GETHIT:
+				LOG_MGR->Cout("MONSTER_BT_TYPE_GETHIT\n");
+				break;
+			case FBProtocol::MONSTER_BT_TYPE_MOVE_TO_TARGET:
+				LOG_MGR->Cout("MONSTER_BT_TYPE_MOVE_TO_TARGET\n");
+				break;
+			case FBProtocol::MONSTER_BT_TYPE_MOVE_TO_PATH:
+				LOG_MGR->Cout("MONSTER_BT_TYPE_MOVE_TO_PATH\n");
+				break;
+			case FBProtocol::MONSTER_BT_TYPE_PATROL:
+				LOG_MGR->Cout("MONSTER_BT_TYPE_PATROL\n");
+				break;
+
+			default:
+				break;
+			}
+
 			std::dynamic_pointer_cast<GameMonster>(GetOwner())->Broadcast_SPkt_Mosnter_State(CurrType);
 			mRoot->GetEnemyController()->SetBTType(CurrType);
 		}

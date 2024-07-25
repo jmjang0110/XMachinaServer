@@ -17,7 +17,7 @@ Script_Ursacetus::Script_Ursacetus(SPtr<GameObject> owner, ScriptInfo::Type type
     Script_EnemyStat::SetStat_RotationSpeed(150);
     Script_EnemyStat::SetStat_AttackRotationSpeed(10);
     Script_EnemyStat::SetStat_AttackRate(200);
-    Script_EnemyStat::SetStat_AttackRange(7.5);
+    Script_EnemyStat::SetStat_AttackRange(4.5);
     Script_EnemyStat::SetStat_AttackCoolTime(0);
     Script_EnemyStat::SetMaxHP(1000);
     Script_EnemyStat::SetStat_AttackAnimName("2HandsSmashAttack");

@@ -139,7 +139,7 @@ ViewList SectorController::UpdateViewList(GamePlayer* player, Vec3 player_pos, f
             continue;
 
         // 해당 섹터에서 Monster 와 Player 들을 확인한다.
-        LOG_MGR->Cout(player->GetID(), " player : -- SECTORS IDX : ", " z :", sectors[i].z, " x : ", sectors[i].x, '\n');
+        //LOG_MGR->Cout(player->GetID(), " player : -- SECTORS IDX : ", " z :", sectors[i].z, " x : ", sectors[i].x, '\n');
         std::vector<SPtr<GameMonster>> VL_Monsters = mSectors[sectors[i].z][sectors[i].x]->GetMonstersInViewRange(player_pos, viewRange_radius);
         std::vector<SPtr<GamePlayer>>  VL_Players  = mOwnerRoom->GetPlayerController()->GetPlayersInViewRange(player_pos, viewRange_radius);
 
@@ -150,7 +150,7 @@ ViewList SectorController::UpdateViewList(GamePlayer* player, Vec3 player_pos, f
             AllView_Players.push_back(VL_Players[i]);
         }
     }
-      LOG_MGR->Cout("--------------------------------------------\n");
+     // LOG_MGR->Cout("--------------------------------------------\n");
 
 
     player->UpdateViewList(AllView_Players, AllView_Monsters);

@@ -47,7 +47,7 @@ private:
 	std::stack<Vec3>	mPaths      = {};
 
 	/* Mind Control Off */
-	SPtr<GamePlayer>	mTargetPlayer = {};
+	SPtr<GamePlayer>	mTargetPlayer = {}; Lock::SRWLock mLock_TargetPlayer;
 
 	/* Min Control On */
 	SPtr<GameMonster>   mTargetMonster = {};
@@ -89,7 +89,7 @@ public:
 	/// ---------------------------------------------------+
 	SPtr<GameMonster>			GetOwnerMonster()			{ return mOwnerMonster; }
 
-	SPtr<GamePlayer>			GetTargetPlayer()			{ return mTargetPlayer; }
+	SPtr<GamePlayer>			GetTargetPlayer() { mLock_TargetPlayer.LockRead(); SPtr<GamePlayer> player = mTargetPlayer; mLock_TargetPlayer.UnlockRead();  return player; }
 	SPtr<GameMonster>			GetTargetMonster()			{ return mTargetMonster;  }
 	SPtr_GameObject				GetPathTargetObject()		{ return mPathTarget;  }
 
@@ -106,7 +106,7 @@ public:
 	void SetState(EnemyInfo::State state)						{ mState         = state; }
 
 	void SetPathTargetObject(SPtr<GameObject> target)			{ mPathTarget    = target; }
-	void SetTargetPlayer(SPtr<GamePlayer> target)				{ mTargetPlayer  = target; }
+	void SetTargetPlayer(SPtr<GamePlayer> target) { mLock_TargetPlayer.LockWrite(); mTargetPlayer = target; mLock_TargetPlayer.UnlockWrite(); }
 	void SetTargetMonster(SPtr<GameMonster> target)				{ mTargetMonster = target; }
 	void SetOwnerMonster(SPtr<GameMonster> ownerMonster)		{ mOwnerMonster  = ownerMonster; }
 

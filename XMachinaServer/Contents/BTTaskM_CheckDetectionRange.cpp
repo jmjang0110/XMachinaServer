@@ -13,6 +13,10 @@
 #include "PlayerController.h"
 #include "SectorController.h"
 #include "GameRoom.h"
+#include "GameManager.h"
+
+#include "FBsPacketFactory.h"
+
 
 /// +-------------------------------------------------------------------------
 ///	> ¢º¢º¢º Task Check Detection Range 
@@ -51,7 +55,16 @@ BTNodeState MonsterTask::CheckDetectionRange::Evaluate()
 				//LOG_MGR->Cout("Closest Player ID : ", closestPlayerID);
 				mEnemyController->SetTargetPlayer(PC->GetPlayer(closestPlayerID));
 				mTargetPlayer = PC->GetPlayer(closestPlayerID);
+				mEnemyController->SetTargetPlayer(mTargetPlayer);
 
+
+				int monster_id = mEnemyController->GetOwnerMonster()->GetID();
+				int target_monster_id = -1;
+				int target_player_id = mTargetPlayer->GetID();
+
+				// SEND PACKET 
+				auto pkt = FBS_FACTORY->SPkt_Monster_Target(monster_id, target_player_id, target_monster_id);
+				GAME_MGR->BroadcastRoom(mEnemyController->GetOwnerMonster()->GetOwnerNPCController()->GetOwnerRoom()->GetID(), pkt);
 
 		}
 

@@ -176,10 +176,22 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 
 		for (int i = 0; i < NewMonsters_Objects.size(); ++i) {
 
+			/* MONSTER STATE */
 			auto script                          = NewMonsters_Objects[i]->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
 			FBProtocol::MONSTER_BT_TYPE btType   = script->GetMonsterBTType();
 			const auto& MonsterType_serverPacket = FBS_FACTORY->SPkt_Monster_State(NewMonsters_Objects[i]->GetID(), btType);
 			GetSessionOwner()->Send(MonsterType_serverPacket);
+
+
+			/* TARGET PACKET */
+			SPtr<GamePlayer> targetplayer = script->GetTargetPlayer();
+			if (targetplayer) {
+				int targetplayer_id = targetplayer->GetID();
+				int monster_id = NewMonsters_Objects[i]->GetID();
+				const auto& pkt = FBS_FACTORY->SPkt_Monster_Target(monster_id, targetplayer_id, -1);
+				GetSessionOwner()->Send(pkt);
+
+			}
 
 		}
 		LOG_MGR->Cout("SEND NEW MONSTER \n");

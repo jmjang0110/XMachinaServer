@@ -160,7 +160,8 @@ BTNodeState MonsterTask::MoveToTarget::Evaluate()
 
 		if (IsMindControlled == false) {
 			GetOwner()->GetTransform()->RotateTargetAxisY(mEnemyController->GetTargetPlayer()->GetTransform()->GetSnapShot().GetPosition(), mStat->GetStat_RotationSpeed());
-			GetOwner()->GetTransform()->Translate(GetOwner()->GetTransform()->GetLook(), mStat->GetStat_MoveSpeed() * DELTA_TIME);
+			float moveSpeed = mStat->GetStat_MoveSpeed();
+			GetOwner()->GetTransform()->Translate(GetOwner()->GetTransform()->GetLook(), moveSpeed * DELTA_TIME);
 		}
 		else {
 			GetOwner()->GetTransform()->RotateTargetAxisY(mEnemyController->GetTargetMonster()->GetTransform()->GetSnapShot().GetPosition(), mStat->GetStat_RotationSpeed());

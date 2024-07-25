@@ -1029,7 +1029,7 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_Monster_State(uint32_t monster_id, FBProt
 
 }
 
-SPtr_SendPktBuf FBsPacketFactory::SPkt_Monster_Target(uint32_t monster_id, uint32_t target_player_id, uint32_t target_monster_id)
+SPtr_SendPktBuf FBsPacketFactory::SPkt_Monster_Target(uint32_t monster_id, int32_t target_player_id, int32_t target_monster_id)
 {
 	flatbuffers::FlatBufferBuilder builder{};
 
