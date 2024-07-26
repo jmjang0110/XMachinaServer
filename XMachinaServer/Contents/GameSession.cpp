@@ -7,6 +7,7 @@
 #include "GameManager.h"
 #include "GamePlayer.h"
 
+#include "Script_Player.h"
 
 GameSession::GameSession() 
 {
@@ -23,6 +24,8 @@ void GameSession::OnConnected()
 	mPlayer = MEMORY->Make_Shared<GamePlayer>(this->GetID(), std::static_pointer_cast<GameSession>(shared_from_this()));
 	mPlayer->AddComponent<Transform>(ComponentInfo::Type::Transform);
 	mPlayer->AddComponent<Collider>(ComponentInfo::Type::Collider);
+	mPlayer->AddScript<Script_Player>(ScriptInfo::Type::Stat);
+
 
 	GAME_MGR->EnterInRoom(mPlayer); // WRITE Lock 
 }

@@ -24,6 +24,7 @@ private:
 	float mCrntHP       = {};
 	float mPrevHP       = {};
 
+	float mPhero		= {};
 	bool  mIsDead       = {};
 
 public:
@@ -65,7 +66,7 @@ public:
 	bool	IsDead() const { return mIsDead; }
 	float	GetCrntHp() const { return mCrntHP; }
 	float	GetMaxHp() const { return mMaxHP; }
-
+	float GetPhero() const { return mPhero; }
 public:
 	bool UpdatePrevHP() { bool res = mPrevHP == mCrntHP; mPrevHP = mCrntHP; return res; }
 

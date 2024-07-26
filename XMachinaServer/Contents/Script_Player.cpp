@@ -33,7 +33,32 @@ Script_Player::Script_Player(SPtr<GamePlayer> owner, ScriptInfo::Type type)
     }
 
 }
+Script_Player::Script_Player(SPtr<GameObject> owner, ScriptInfo::Type type)
+    : Script_PlayerStat(owner, type)
+{
+    for (int i = 0; i < static_cast<UINT8>(SkillInfo::Type::End); ++i) {
+        if (mSkills[i] == nullptr) {
+            SkillInfo::Type t = static_cast<SkillInfo::Type>(i);
 
+            switch (t)
+            {
+            case SkillInfo::Type::Cloaking:
+                mSkills[i] = new Skill(std::dynamic_pointer_cast<GamePlayer>(GetOwner()), t, 3.f, 0.f /* ¹«ÇÑ */);
+                break;
+            case SkillInfo::Type::MindControl:
+                mSkills[i] = new Skill(std::dynamic_pointer_cast<GamePlayer>(GetOwner()), t, 10.f, 30.f);
+                break;
+            case SkillInfo::Type::IRDetector:
+                mSkills[i] = new Skill(std::dynamic_pointer_cast<GamePlayer>(GetOwner()), t, 2.f, 10.f);
+                break;
+            case SkillInfo::Type::Shield:
+                mSkills[i] = new Skill(std::dynamic_pointer_cast<GamePlayer>(GetOwner()), t, 2.f, 4.5f);
+                break;
+            }
+        }
+    }
+
+}
 Script_Player::~Script_Player()
 {
     for (int i = 0; i < static_cast<UINT8>(SkillInfo::Type::End); ++i) {

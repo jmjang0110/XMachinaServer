@@ -10,6 +10,7 @@
 #include "Contents/GameManager.h"
 #include "Contents/Skill.h"
 #include "Contents/Collider.h"
+#include "Contents/Script_Player.h"
 
 DEFINE_SINGLETON(FBsPacketFactory);
 
@@ -101,6 +102,14 @@ bool FBsPacketFactory::ProcessFBsPacket(SPtr_Session session, BYTE* packetBuf, U
 		Process_CPkt_Player_AimRotation(session, *packet);
 		break;
 	}
+	case FBsProtocolID::CPkt_PlayerOnSkill:
+	{
+		const FBProtocol::CPkt_PlayerOnSkill* packet = flatbuffers::GetRoot<FBProtocol::CPkt_PlayerOnSkill>(DataPtr);
+		if (!packet) return false;
+		Process_CPkt_PlayerOnSkill(session, *packet);
+		break;
+	}
+	break;
 	case FBsProtocolID::CPkt_NewMonster:
 	{
 		const FBProtocol::CPkt_NewMonster* packet = flatbuffers::GetRoot<FBProtocol::CPkt_NewMonster>(DataPtr);
@@ -341,8 +350,18 @@ bool FBsPacketFactory::Process_CPkt_PlayerOnSkill(SPtr_Session session, const FB
 	///> 
 	///> }
 	///> ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
-	FBProtocol::PLAYER_SKILL_TYPE type =  pkt.skill_type();
-	SkillInfo::Type skillType          = static_cast<SkillInfo::Type>(type);
+	FBProtocol::PLAYER_SKILL_TYPE	type				=  pkt.skill_type();
+	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
+	auto playerScript = gameSession->GetPlayer()->GetScript<Script_Player>(ScriptInfo::Type::Stat);
+	float PheroAmount = playerScript->GetPhero();
+
+	/// +---------------------------------------------------------------------------------------
+	/// SEND NEW PLAYER PKT TO SESSIONS IN ROOM ( SESSION->GET ROOM ID ) - EXCEPT ME ( SESSION )
+	/// ---------------------------------------------------------------------------------------+
+	auto spkt = FBS_FACTORY->SPkt_PlayerOnSkill(session->GetID(), type, PheroAmount);
+	GAME_MGR->BroadcastRoom(gameSession->GetPlayerSnapShot().RoomID, spkt, gameSession->GetID());
+
+	LOG_MGR->Cout(session->GetID(), "SKILLON", static_cast<int>(type), "\n");
 
 	return false;
 }
@@ -434,6 +453,10 @@ bool FBsPacketFactory::Process_CPkt_Player_Weapon(SPtr_Session session, const FB
 	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
 
 	FBProtocol::WEAPON_TYPE weaponType = pkt.weapon_type();
+
+	LOG_MGR->Cout("WEAPONTYPE : ", static_cast<int>(weaponType));
+
+
 	auto spkt = FBS_FACTORY->SPkt_Player_Weapon(session->GetID(), weaponType);
 	GAME_MGR->BroadcastRoom(gameSession->GetPlayer()->GetRoomID(), spkt, session->GetID());
 
@@ -456,7 +479,7 @@ bool FBsPacketFactory::Process_CPkt_Player_AimRotation(SPtr_Session session, con
 
 	GAME_MGR->BroadcastRoom(gameSession->GetPlayer()->GetRoomID(), spkt, gameSession->GetID());
 
-//	LOG_MGR->Cout(session->GetID(), " : AIM : ", aim_rotation, '\n');
+	LOG_MGR->Cout(session->GetID(), " : AIM : ", aim_rotation, '\n');
 	return true;
 }
 
@@ -553,7 +576,7 @@ bool FBsPacketFactory::Process_CPkt_Bullet_OnShoot(SPtr_Session session, const F
 	Vec3 ray         = GetVector3(pkt.ray());
 	int  bullet_id   = gameSession->GetPlayer()->OnShoot(); // PQCS -> Bullet Update Start ( Worker Thread  에게 업데이트를 떠넘긴다 ) 
 	
-	//LOG_MGR->Cout("[", player_id, "]RAY : ", ray.x, " ", ray.y, " ", ray.z, "\n");
+	LOG_MGR->Cout("[", player_id, "]RAY : ", ray.x, " ", ray.y, " ", ray.z, "\n");
 
 
 	// Shot 불가능 
@@ -774,7 +797,17 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_RemovePlayer(uint32_t removeSessionID)
 
 SPtr_SendPktBuf FBsPacketFactory::SPkt_PlayerOnSkill(uint32_t player_id, FBProtocol::PLAYER_SKILL_TYPE skill_type, float phero_amount)
 {
-	return SPtr_SendPktBuf();
+	flatbuffers::FlatBufferBuilder builder{};
+
+	int32_t id = player_id;
+	auto ServerPacket = FBProtocol::CreateSPkt_PlayerOnSkill(builder, id, skill_type);
+	builder.Finish(ServerPacket);
+
+	const uint8_t* bufferPointer = builder.GetBufferPointer();
+	const uint16_t SerializeddataSize = static_cast<uint16_t>(builder.GetSize());;
+	SPtr_SendPktBuf sendBuffer = SEND_FACTORY->CreatePacket(bufferPointer, SerializeddataSize, FBsProtocolID::SPkt_PlayerOnSkill);
+
+	return sendBuffer;
 }
 
 SPtr_SendPktBuf FBsPacketFactory::SPkt_Player_Transform(uint32_t player_id, int32_t move_state, long long latency
