@@ -22,6 +22,9 @@
 #include "Script_Rapax.h"
 #include "Script_Anglerox.h"
 #include "Script_MiningMech.h"
+#include "FBsPacketFactory.h"
+#include "GameManager.h"
+#include "NPCController.h"
 
 
 BTNode* Script_DefaultEnemyBT::SetupTree()
@@ -285,11 +288,33 @@ bool Script_DefaultEnemyBT::Update()
 				break;
 
 			default:
+				LOG_MGR->Cout("MONSTER BT TYPE ..XXXX \n");
 				break;
 			}
 
 			std::dynamic_pointer_cast<GameMonster>(GetOwner())->Broadcast_SPkt_Mosnter_State(CurrType);
 			mRoot->GetEnemyController()->SetBTType(CurrType);
+
+			if (mRoot->GetEnemyController()->GetTargetPlayer()) {
+				int monster_id			= mRoot->GetEnemyController()->GetOwnerMonster()->GetID();
+				int target_monster_id	= -1;
+				int target_player_id	= mRoot->GetEnemyController()->GetTargetPlayer()->GetID();
+
+
+				auto pkt = FBS_FACTORY->SPkt_Monster_Target(monster_id, target_player_id, target_monster_id);
+				GAME_MGR->BroadcastRoom(mRoot->GetEnemyController()->GetOwnerMonster()->GetOwnerNPCController()->GetOwnerRoom()->GetID(), pkt);
+			}
+			else {
+				int monster_id = mRoot->GetEnemyController()->GetOwnerMonster()->GetID();
+				int target_monster_id = -1;
+				int target_player_id = 0;
+
+
+				auto pkt = FBS_FACTORY->SPkt_Monster_Target(monster_id, target_player_id, target_monster_id);
+				GAME_MGR->BroadcastRoom(mRoot->GetEnemyController()->GetOwnerMonster()->GetOwnerNPCController()->GetOwnerRoom()->GetID(), pkt);
+			}
+
+
 		}
 
 		mRoot->GetEnemyController()->UpdateMonsterCurrBTType();

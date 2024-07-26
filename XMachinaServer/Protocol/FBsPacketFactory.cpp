@@ -431,10 +431,13 @@ bool FBsPacketFactory::Process_CPkt_Player_Weapon(SPtr_Session session, const FB
 	///> 	weapon_type: WEAPON_TYPE;	// 1 byte
 	///> }
 	///>●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
+	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
 
 	FBProtocol::WEAPON_TYPE weaponType = pkt.weapon_type();
+	auto spkt = FBS_FACTORY->SPkt_Player_Weapon(session->GetID(), weaponType);
+	GAME_MGR->BroadcastRoom(gameSession->GetPlayer()->GetRoomID(), spkt, session->GetID());
 
-	return false;
+	return true;
 }
 
 bool FBsPacketFactory::Process_CPkt_Player_AimRotation(SPtr_Session session, const FBProtocol::CPkt_Player_AimRotation& pkt)
@@ -550,6 +553,9 @@ bool FBsPacketFactory::Process_CPkt_Bullet_OnShoot(SPtr_Session session, const F
 	Vec3 ray         = GetVector3(pkt.ray());
 	int  bullet_id   = gameSession->GetPlayer()->OnShoot(); // PQCS -> Bullet Update Start ( Worker Thread  에게 업데이트를 떠넘긴다 ) 
 	
+	//LOG_MGR->Cout("[", player_id, "]RAY : ", ray.x, " ", ray.y, " ", ray.z, "\n");
+
+
 	// Shot 불가능 
 	if (bullet_id == -1) {
 		return false;

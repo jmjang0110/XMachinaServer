@@ -24,6 +24,7 @@
 
 BTNodeState MonsterTask::CheckDetectionRange::Evaluate()
 {
+
 	bool IsMindControlled = mEnemyController->IsMindControlled();
 	if (IsMindControlled == false) {
 		if (!mEnemyController->GetTargetPlayer()) {
@@ -32,7 +33,8 @@ BTNodeState MonsterTask::CheckDetectionRange::Evaluate()
 				Vec3 EnemyPos = GetOwner()->GetTransform()->GetPosition();
 				PlayerController* PC = mEnemyController->GetOwnerMonster()->GetOwnerNPCController()->GetOwnerRoom()->GetPlayerController();
 				std::vector<std::pair<UINT32, Vec3>> playerPos = PC->GetPlayersPosition();
-				
+		
+
 				UINT32 closestPlayerID =  -1;
 				float minDistance      = std::numeric_limits<float>::max();
 
@@ -52,22 +54,10 @@ BTNodeState MonsterTask::CheckDetectionRange::Evaluate()
 					}
 				}
 
-				//LOG_MGR->Cout("Closest Player ID : ", closestPlayerID);
-				mEnemyController->SetTargetPlayer(PC->GetPlayer(closestPlayerID));
-				mTargetPlayer = PC->GetPlayer(closestPlayerID);
+
+				mTargetPlayer =  PC->GetPlayer(closestPlayerID);
 				mEnemyController->SetTargetPlayer(mTargetPlayer);
-
-
-				int monster_id = mEnemyController->GetOwnerMonster()->GetID();
-				int target_monster_id = -1;
-				int target_player_id = mTargetPlayer->GetID();
-
-				// SEND PACKET 
-				auto pkt = FBS_FACTORY->SPkt_Monster_Target(monster_id, target_player_id, target_monster_id);
-				GAME_MGR->BroadcastRoom(mEnemyController->GetOwnerMonster()->GetOwnerNPCController()->GetOwnerRoom()->GetID(), pkt);
-
 		}
-
 
 	}
 	else {
@@ -102,6 +92,20 @@ BTNodeState MonsterTask::CheckDetectionRange::Evaluate()
 	if ((GetOwner()->GetTransform()->GetPosition() - TargetPos).Length() < mStat->GetStat_DetectionRange()) {
 		mEnemyController->SetState(EnemyInfo::State::Walk);
 		GetOwner()->GetAnimation()->GetController()->SetValue("Walk", true);
+
+		// SEND PACKET 
+		if (mTargetPlayer) {
+			//LOG_MGR->Cout("Closest Player ID : ", closestPlayerID);
+			mEnemyController->SetTargetPlayer(mTargetPlayer);
+			int monster_id = mEnemyController->GetOwnerMonster()->GetID();
+			int target_monster_id = -1;
+			int target_player_id = mTargetPlayer->GetID();
+
+
+			auto pkt = FBS_FACTORY->SPkt_Monster_Target(monster_id, target_player_id, target_monster_id);
+			GAME_MGR->BroadcastRoom(mEnemyController->GetOwnerMonster()->GetOwnerNPCController()->GetOwnerRoom()->GetID(), pkt);
+		}
+
 		return BTNodeState::Success;
 	}
 	else {
@@ -109,7 +113,17 @@ BTNodeState MonsterTask::CheckDetectionRange::Evaluate()
 			mEnemyController->SetTargetPlayer(nullptr);
 		else
 			mEnemyController->SetTargetMonster(nullptr);
+
+		int monster_id = mEnemyController->GetOwnerMonster()->GetID();
+		int target_monster_id = -1;
+		int target_player_id = 0;
+
+
+		auto pkt = FBS_FACTORY->SPkt_Monster_Target(monster_id, target_player_id, target_monster_id);
+		GAME_MGR->BroadcastRoom(mEnemyController->GetOwnerMonster()->GetOwnerNPCController()->GetOwnerRoom()->GetID(), pkt);
+
 	}
+
 
 	return BTNodeState::Failure;
 }
