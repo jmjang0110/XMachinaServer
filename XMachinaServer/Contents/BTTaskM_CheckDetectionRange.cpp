@@ -20,33 +20,59 @@
 #include "FBsPacketFactory.h"
 
 
+
 /// +-------------------------------------------------------------------------
 ///	> ▶▶▶ Task Check Detection Range 
 /// __________________________________________________________________________
 
 BTNodeState MonsterTask::CheckDetectionRange::Evaluate()
 {
+	// [BSH] : 이 부분에서 계속 업데이트를 하며 타겟을 없애기 때문에 문제가 생김. 타겟은 행동트리에서만 바꿀 것.
+	SPtr<GamePlayer> target = nullptr;
 	if (!mEnemyController->GetTarget()) {
-
-		// 1. Find Target Player 
-		SPtr<GamePlayer> target = FindDetectionPlayer();
-		if (target) {
-			// 2. Check Is Player On Cloacking Skill ( IF Cloacking On -- Pass... )
-			if (true == target->GetActiveSkill(SkillInfo::Type::Cloaking)) {
-				mEnemyController->SetTarget(nullptr);
-				return BTNodeState::Failure;
-			}
-			else {
-				mEnemyController->SetTarget(target);
-				mEnemyController->SetState(EnemyInfo::State::Walk);
-				GetOwner()->GetAnimation()->GetController()->SetValue("walk", true);
-				return BTNodeState::Success;
-			}
+		target = FindDetectionPlayer();
+		if (nullptr == target){
+			return BTNodeState::Failure;
+		}
+		else {
+			mEnemyController->SetTarget(target);
 		}
 	}
+	else {
+		// TODO : must use??? 
+		target = std::dynamic_pointer_cast<GamePlayer>(mEnemyController->GetTarget());
+	}
 
+	if (true == target->GetActiveSkill(SkillInfo::Type::Cloaking)) {
+		mEnemyController->SetTarget(nullptr);
+		return BTNodeState::Failure;
+	}
 
-	return BTNodeState::Failure;
+	mEnemyController->SetState(EnemyInfo::State::Walk);
+	GetOwner()->GetAnimation()->GetController()->SetValue("walk", true);
+	return BTNodeState::Success;
+
+//	if (!mEnemyController->GetTarget()) {
+//
+//		// 1. Find Target Player 
+//		SPtr<GamePlayer> target = FindDetectionPlayer();
+//		if (target) {
+//			// 2. Check Is Player On Cloacking Skill ( IF Cloacking On -- Pass... )
+//			if (true == target->GetActiveSkill(SkillInfo::Type::Cloaking)) {
+//				mEnemyController->SetTarget(nullptr);
+//				return BTNodeState::Failure;
+//			}
+//			else {
+//				mEnemyController->SetTarget(target);
+//				mEnemyController->SetState(EnemyInfo::State::Walk);
+//				GetOwner()->GetAnimation()->GetController()->SetValue("walk", true);
+//				return BTNodeState::Success;
+//			}
+//		}
+//	}
+//
+//
+//	return BTNodeState::Failure;
 }
 
 

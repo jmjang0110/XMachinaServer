@@ -308,7 +308,11 @@ bool Script_DefaultEnemyBT::Update()
 			mRoot->GetEnemyController()->SetBTType(CurrType);
 
 			bool IsMindControlled = mRoot->GetEnemyController()->IsMindControlled();
-			int monster_id        = -1;
+
+			// [BSH] : 타겟이 어떤 몬스터의 것인지에 대한 몬스터 아이디도 보내야함.
+			int monster_id		  = GetOwner()->GetID();
+			// int monster_id     = -1;
+
 			int target_monster_id = -1;
 			int target_player_id  = -1;
 			SPtr<GameObject> target = mRoot->GetEnemyController()->GetTarget();

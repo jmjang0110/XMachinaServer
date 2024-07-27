@@ -171,8 +171,10 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 	/// ------------------------------------------------------------------------------------------------------+
 	/* Send New Mosnter Packet */
 	if (NewMonsters.size() > 0) {
-		const auto& NewMonster_serverPacket = FBS_FACTORY->SPkt_NewMonster(NewMonsters);
-		GetSessionOwner()->Send(NewMonster_serverPacket);
+		auto NewMonster_serverPacket = FBS_FACTORY->SPkt_NewMonster(NewMonsters);
+		GAME_MGR->BroadcastRoom(mOwnerPC->GetOwnerRoom()->GetID(), NewMonster_serverPacket);
+		//const auto& NewMonster_serverPacket = FBS_FACTORY->SPkt_NewMonster(NewMonsters);
+		//GetSessionOwner()->Send(NewMonster_serverPacket);
 
 		for (int i = 0; i < NewMonsters_Objects.size(); ++i) {
 
@@ -185,15 +187,32 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 
 			/* TARGET PACKET */
 			SPtr<GameObject> target = script->GetTarget();
-			if (target) {
-				int targetplayer_id = target->GetID();
-				if (target->GetType() == GameObjectInfo::Type::GamePlayer) {
-					int monster_id = NewMonsters_Objects[i]->GetID();
-					const auto& pkt = FBS_FACTORY->SPkt_Monster_Target(monster_id, targetplayer_id, -1);
-					GetSessionOwner()->Send(pkt);
-				}
 
+			int targetplayer_id{};
+			if (!target) {
+				targetplayer_id = -1;
 			}
+			else {
+				targetplayer_id = target->GetID();
+			}
+			
+			int monster_id = NewMonsters_Objects[i]->GetID();
+
+			auto pkt = FBS_FACTORY->SPkt_Monster_Target(monster_id, targetplayer_id, -1);
+			GAME_MGR->BroadcastRoom(mOwnerPC->GetOwnerRoom()->GetID(), pkt);
+
+			//if (target) {
+			//	int targetplayer_id = target->GetID();
+			//	if (target->GetType() == GameObjectInfo::Type::GamePlayer) {
+			//		int monster_id = NewMonsters_Objects[i]->GetID();
+			//		//const auto& pkt = FBS_FACTORY->SPkt_Monster_Target(monster_id, targetplayer_id, -1);
+			//		//GetSessionOwner()->Send(pkt);
+
+			//		auto pkt = FBS_FACTORY->SPkt_Monster_Target(monster_id, targetplayer_id, -1);
+			//		GAME_MGR->BroadcastRoom(mOwnerPC->GetOwnerRoom()->GetID(), pkt);
+			//	}
+
+			//}
 
 		}
 		LOG_MGR->Cout("SEND NEW MONSTER \n");
