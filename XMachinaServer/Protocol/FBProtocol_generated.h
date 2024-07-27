@@ -1010,14 +1010,19 @@ inline ::flatbuffers::Offset<SPkt_Player_Transform> CreateSPkt_Player_Transform(
 struct CPkt_Player_AimRotation FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef CPkt_Player_AimRotationBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
-    VT_AIM_ROTATION = 4
+    VT_AIM_ROTATION = 4,
+    VT_SPINE_ANGLE = 6
   };
   float aim_rotation() const {
     return GetField<float>(VT_AIM_ROTATION, 0.0f);
   }
+  float spine_angle() const {
+    return GetField<float>(VT_SPINE_ANGLE, 0.0f);
+  }
   bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<float>(verifier, VT_AIM_ROTATION, 4) &&
+           VerifyField<float>(verifier, VT_SPINE_ANGLE, 4) &&
            verifier.EndTable();
   }
 };
@@ -1028,6 +1033,9 @@ struct CPkt_Player_AimRotationBuilder {
   ::flatbuffers::uoffset_t start_;
   void add_aim_rotation(float aim_rotation) {
     fbb_.AddElement<float>(CPkt_Player_AimRotation::VT_AIM_ROTATION, aim_rotation, 0.0f);
+  }
+  void add_spine_angle(float spine_angle) {
+    fbb_.AddElement<float>(CPkt_Player_AimRotation::VT_SPINE_ANGLE, spine_angle, 0.0f);
   }
   explicit CPkt_Player_AimRotationBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
@@ -1042,8 +1050,10 @@ struct CPkt_Player_AimRotationBuilder {
 
 inline ::flatbuffers::Offset<CPkt_Player_AimRotation> CreateCPkt_Player_AimRotation(
     ::flatbuffers::FlatBufferBuilder &_fbb,
-    float aim_rotation = 0.0f) {
+    float aim_rotation = 0.0f,
+    float spine_angle = 0.0f) {
   CPkt_Player_AimRotationBuilder builder_(_fbb);
+  builder_.add_spine_angle(spine_angle);
   builder_.add_aim_rotation(aim_rotation);
   return builder_.Finish();
 }
@@ -1052,7 +1062,8 @@ struct SPkt_Player_AimRotation FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::
   typedef SPkt_Player_AimRotationBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_PLAYER_ID = 4,
-    VT_AIM_ROTATION = 6
+    VT_AIM_ROTATION = 6,
+    VT_SPINE_ANGLE = 8
   };
   uint32_t player_id() const {
     return GetField<uint32_t>(VT_PLAYER_ID, 0);
@@ -1060,10 +1071,14 @@ struct SPkt_Player_AimRotation FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::
   float aim_rotation() const {
     return GetField<float>(VT_AIM_ROTATION, 0.0f);
   }
+  float spine_angle() const {
+    return GetField<float>(VT_SPINE_ANGLE, 0.0f);
+  }
   bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<uint32_t>(verifier, VT_PLAYER_ID, 4) &&
            VerifyField<float>(verifier, VT_AIM_ROTATION, 4) &&
+           VerifyField<float>(verifier, VT_SPINE_ANGLE, 4) &&
            verifier.EndTable();
   }
 };
@@ -1077,6 +1092,9 @@ struct SPkt_Player_AimRotationBuilder {
   }
   void add_aim_rotation(float aim_rotation) {
     fbb_.AddElement<float>(SPkt_Player_AimRotation::VT_AIM_ROTATION, aim_rotation, 0.0f);
+  }
+  void add_spine_angle(float spine_angle) {
+    fbb_.AddElement<float>(SPkt_Player_AimRotation::VT_SPINE_ANGLE, spine_angle, 0.0f);
   }
   explicit SPkt_Player_AimRotationBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
@@ -1092,8 +1110,10 @@ struct SPkt_Player_AimRotationBuilder {
 inline ::flatbuffers::Offset<SPkt_Player_AimRotation> CreateSPkt_Player_AimRotation(
     ::flatbuffers::FlatBufferBuilder &_fbb,
     uint32_t player_id = 0,
-    float aim_rotation = 0.0f) {
+    float aim_rotation = 0.0f,
+    float spine_angle = 0.0f) {
   SPkt_Player_AimRotationBuilder builder_(_fbb);
+  builder_.add_spine_angle(spine_angle);
   builder_.add_aim_rotation(aim_rotation);
   builder_.add_player_id(player_id);
   return builder_.Finish();

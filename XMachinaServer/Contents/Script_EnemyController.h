@@ -38,23 +38,20 @@ class Script_EnemyController : public Script
 {
 private:
 	SPtr<GameMonster>	mOwnerMonster;
+
 private:
-	bool				mMindControllded = false;
-	EnemyInfo::State	mState  = EnemyInfo::State::Idle;
+	bool				mMindControllded	= false;
+	EnemyInfo::State	mState				= EnemyInfo::State::Idle;
 
-	SPtr_GameObject		mTarget     = {}; 
-	SPtr_GameObject		mPathTarget = {};
-	std::stack<Vec3>	mPaths      = {};
-
-	/* Mind Control Off */
-	SPtr<GamePlayer>	mTargetPlayer = {};
-
-	/* Min Control On */
-	SPtr<GameMonster>   mTargetMonster = {};
+	SPtr<GameObject>	mTarget				= {}; 
+	SPtr_GameObject		mPathTarget			= {};
+	std::stack<Vec3>	mPaths				= {};
 
 
 	FBProtocol::MONSTER_BT_TYPE mCurrBTType;
 	FBProtocol::MONSTER_BT_TYPE mPrevBTType;
+	
+	/* Lock */
 	FBProtocol::MONSTER_BT_TYPE mBTType; Lock::SRWLock mLock_BTType;
 
 
@@ -89,8 +86,7 @@ public:
 	/// ---------------------------------------------------+
 	SPtr<GameMonster>			GetOwnerMonster()			{ return mOwnerMonster; }
 
-	SPtr<GamePlayer>			GetTargetPlayer()			{ return mTargetPlayer; }
-	SPtr<GameMonster>			GetTargetMonster()			{ return mTargetMonster;  }
+	SPtr<GameObject>			GetTarget()					{ return mTarget; }
 	SPtr_GameObject				GetPathTargetObject()		{ return mPathTarget;  }
 
 	EnemyInfo::State			GetState()					{ return mState; }
@@ -106,10 +102,8 @@ public:
 	void SetState(EnemyInfo::State state)						{ mState         = state; }
 
 	void SetPathTargetObject(SPtr<GameObject> target)			{ mPathTarget    = target; }
-	void SetTargetPlayer(SPtr<GamePlayer> target)				{ mTargetPlayer  = target; }
-	void SetTargetMonster(SPtr<GameMonster> target)				{ mTargetMonster = target; }
 	void SetOwnerMonster(SPtr<GameMonster> ownerMonster)		{ mOwnerMonster  = ownerMonster; }
-
+	void SetTarget(SPtr<GameObject> target)						{ mTarget = target; }
 	void SetBTType(FBProtocol::MONSTER_BT_TYPE btType) { mLock_BTType.LockWrite(); mBTType = btType; mLock_BTType.UnlockWrite(); }
 
 	/// +---------------------------------------------------

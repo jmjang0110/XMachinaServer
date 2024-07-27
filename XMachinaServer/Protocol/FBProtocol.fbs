@@ -170,7 +170,9 @@ table SPkt_Player_Transform
 
 table CPkt_Player_AimRotation
 {
+
 	aim_rotation			: float; // Y rotation Euler
+	spine_angle				: float; // Spine Angle;
 }
 
 table SPkt_Player_AimRotation
@@ -178,6 +180,8 @@ table SPkt_Player_AimRotation
 	player_id				: uint;	// 8 bytes
 
 	aim_rotation		    : float; // Y rotation Euler
+	spine_angle				: float; // Spine Angle;
+
 }
 
 

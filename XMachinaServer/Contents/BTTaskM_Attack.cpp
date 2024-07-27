@@ -1,4 +1,6 @@
 #include "pch.h"
+#include "BTTaskM_Attack.h"
+
 #include "BTTask.h"
 #include "Transform.h"
 #include "GameObject.h"
@@ -16,28 +18,15 @@
 BTNodeState MonsterTask::Attack::Evaluate()
 {
 
-	/* Attack Range BTNode 에서 Target 체크하므로 여기서는 할 필요 없음 */
-	//LOG_MGR->Cout("[", mEnemyController->GetOwner()->GetName(), "] : Attack \n");
+	// ※ Attack Range BTNode 에서 Target 체크하므로 여기서는 할 필요 없음 
 
-	bool IsMindControlled = mEnemyController->IsMindControlled();
-	if (IsMindControlled == true)
-	{
-		/* Mind Control On */
-		Vec3 TargetPos = mEnemyController->GetTargetMonster()->GetTransform()->GetSnapShot().GetPosition();
-		GetOwner()->GetTransform()->RotateTargetAxisY(TargetPos, mStat->GetStat_AttackRotationSpeed());
-		mStat->UpdatePrevHP();
-		ExecuteCallback();
-
-	}
-	else 
-	{
-		/* Mind Control Off */
-
-		Vec3 TargetPos = mEnemyController->GetTargetPlayer()->GetPosition();
-		GetOwner()->GetTransform()->RotateTargetAxisY(TargetPos, mStat->GetStat_AttackRotationSpeed());
-		mStat->UpdatePrevHP();
-		ExecuteCallback();
-	}
+	SPtr<GamePlayer> target = std::dynamic_pointer_cast<GamePlayer>(mEnemyController->GetTarget());
+	Vec3 TargetPos          = target->GetPosition(); /* Lock */
+	
+	// 1. Target Player 를 향해 회전한다.
+	GetOwner()->GetTransform()->RotateTargetAxisY(TargetPos, mStat->GetStat_AttackRotationSpeed());
+	mStat->UpdatePrevHP();
+	ExecuteCallback();
 
 	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK);
 	return BTNodeState::Success;
@@ -45,12 +34,8 @@ BTNodeState MonsterTask::Attack::Evaluate()
 
 
 MonsterTask::Attack::Attack(SPtr_GameObject owner, std::function<void()> callback)
-	: BTTask(owner, BTTaskType::MonT_Attack, callback)
+	: MonsterBTTask(owner, BTTaskType::MonT_Attack, callback)
 {
-
-	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
-	mStat = GetStat(owner->GetType());
-
 }
 
 

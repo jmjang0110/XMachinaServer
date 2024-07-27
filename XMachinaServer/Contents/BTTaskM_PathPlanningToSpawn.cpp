@@ -1,4 +1,6 @@
 #include "pch.h"
+#include "BTTaskM_PathPlanningToSpawn.h"
+
 #include "BTTask.h"
 #include "Transform.h"
 #include "GameObject.h"

@@ -1,4 +1,6 @@
 #include "pch.h"
+#include "BTTaskM_Patrol.h"
+
 #include "BTTask.h"
 #include "Script_EnemyController.h"
 #include "Script_EnemyStat.h"
@@ -36,7 +38,7 @@ BTNodeState MonsterTask::Patrol::Evaluate()
 }
 
 MonsterTask::Patrol::Patrol(SPtr_GameObject owner, std::function<void()> callback)
-	: BTTask(owner, BTTaskType::MonT_Patrol, callback)
+	: MonsterBTTask(owner, BTTaskType::MonT_Patrol, callback)
 {
 	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
 	mStat            = GetStat(owner->GetType());
@@ -46,7 +48,6 @@ MonsterTask::Patrol::Patrol(SPtr_GameObject owner, std::function<void()> callbac
 
 MonsterTask::Patrol::~Patrol()
 {
-	mEnemyController = nullptr;
 
 }
 

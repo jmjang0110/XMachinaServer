@@ -191,6 +191,27 @@
     <Filter Include="Framework\Contents\GameWorld\GameObject\Phero">
       <UniqueIdentifier>{88edc669-0a5b-44aa-9e53-2ea1b23ded43}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask\Attack">
+      <UniqueIdentifier>{a99e0c0c-0ca7-4737-ba2f-af0fd61dedea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask\Death">
+      <UniqueIdentifier>{16384f9a-767f-412d-8592-663e192cfe8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask\Check Detection Range">
+      <UniqueIdentifier>{a90d8b26-1544-4048-86ee-301f6ef2a133}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask\Patrol">
+      <UniqueIdentifier>{566d5572-6d8c-44a5-88c7-07a8a84b1182}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask\GetHit">
+      <UniqueIdentifier>{8e31fd4d-b45f-4c39-8118-140c09c07e09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask\MoveTo">
+      <UniqueIdentifier>{d8142dfa-5773-499b-bd8f-1cb0291e17c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask\Path Plan">
+      <UniqueIdentifier>{2d6de911-e496-48bb-bc3a-92b7e83ae395}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework.h">
@@ -494,6 +515,48 @@
     <ClInclude Include="Contents\GamePhero.h">
       <Filter>Framework\Contents\GameWorld\GameObject\Phero</Filter>
     </ClInclude>
+    <ClInclude Include="Contents\BTTaskM_Attack.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\BTTaskM_CheckAttackRange.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\BTTaskM_CheckDeath.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask\Death</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\BTTaskM_CheckDetectionRange.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask\Check Detection Range</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\BTTaskM_CheckMindDetectionRange.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask\Check Detection Range</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\BTTaskM_CheckPatrolRange.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask\Patrol</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\BTTaskM_Patrol.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask\Patrol</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\BTTaskM_GetHit.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask\GetHit</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\BTTaskM_MoveToPath.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask\MoveTo</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\BTTaskM_MoveToTarget.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask\MoveTo</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\BTTaskM_PathPlanning_AStar.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask\Path Plan</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\BTTaskM_PathPlanningToSpawn.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask\Path Plan</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\BTTaskM_PathPlanningToTarget.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask\Path Plan</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\BTTaskM_MoveToMindControlInvoker.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask\MoveTo</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp">
@@ -710,45 +773,6 @@
     <ClCompile Include="Contents\TileMap.cpp">
       <Filter>Framework\Contents\GameWorld\GameObject\Sector\TileMap</Filter>
     </ClCompile>
-    <ClCompile Include="Contents\BTTaskM_Attack.cpp">
-      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask</Filter>
-    </ClCompile>
-    <ClCompile Include="Contents\BTTaskM_GetHit.cpp">
-      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask</Filter>
-    </ClCompile>
-    <ClCompile Include="Contents\BTTaskM_Patrol.cpp">
-      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask</Filter>
-    </ClCompile>
-    <ClCompile Include="Contents\BTTaskM_MoveToPath.cpp">
-      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask</Filter>
-    </ClCompile>
-    <ClCompile Include="Contents\BTTaskM_MoveToTarget.cpp">
-      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask</Filter>
-    </ClCompile>
-    <ClCompile Include="Contents\BTTaskM_PathPlanning_AStar.cpp">
-      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask</Filter>
-    </ClCompile>
-    <ClCompile Include="Contents\BTTaskM_PathPlanningToSpawn.cpp">
-      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask</Filter>
-    </ClCompile>
-    <ClCompile Include="Contents\BTTaskM_PathPlanningToTarget.cpp">
-      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask</Filter>
-    </ClCompile>
-    <ClCompile Include="Contents\BTTaskM_CheckAttackRange.cpp">
-      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask</Filter>
-    </ClCompile>
-    <ClCompile Include="Contents\BTTaskM_CheckDeath.cpp">
-      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask</Filter>
-    </ClCompile>
-    <ClCompile Include="Contents\BTTaskM_CheckDetectionRange.cpp">
-      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask</Filter>
-    </ClCompile>
-    <ClCompile Include="Contents\BTTaskM_CheckPatrolRange.cpp">
-      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask</Filter>
-    </ClCompile>
-    <ClCompile Include="Contents\BTTaskM_CheckMindDetectioonRange.cpp">
-      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask</Filter>
-    </ClCompile>
     <ClCompile Include="Contents\CollisionManager.cpp">
       <Filter>Framework\Contents\GameWorld\Manager</Filter>
     </ClCompile>
@@ -808,6 +832,48 @@
     </ClCompile>
     <ClCompile Include="Contents\GamePhero.cpp">
       <Filter>Framework\Contents\GameWorld\GameObject\Phero</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\BTTaskM_Attack.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\BTTaskM_CheckAttackRange.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\BTTaskM_CheckDeath.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask\Death</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\BTTaskM_CheckDetectionRange.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask\Check Detection Range</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\BTTaskM_CheckMindDetectionRange.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask\Check Detection Range</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\BTTaskM_CheckPatrolRange.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask\Patrol</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\BTTaskM_Patrol.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask\Patrol</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\BTTaskM_GetHit.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask\GetHit</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\BTTaskM_MoveToPath.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask\MoveTo</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\BTTaskM_MoveToTarget.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask\MoveTo</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\BTTaskM_PathPlanning_AStar.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask\Path Plan</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\BTTaskM_PathPlanningToSpawn.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask\Path Plan</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\BTTaskM_PathPlanningToTarget.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask\Path Plan</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\BTTaskM_MoveToMindControlInvoker.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask\MoveTo</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

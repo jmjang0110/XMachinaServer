@@ -1,4 +1,6 @@
 #include "pch.h"
+#include "BTTaskM_MoveToPath.h"
+
 #include "BTTask.h"
 #include "Script_AdvancedCombatDroid_5.h"
 #include "Script_Onyscidus.h"
@@ -12,10 +14,8 @@
 /// __________________________________________________________________________
 
 MonsterTask::MoveToPath::MoveToPath(SPtr_GameObject owner, std::function<void()> callback)
-	: BTTask(owner, BTTaskType::MonT_MoveToPath, callback)
+	: MonsterBTTask(owner, BTTaskType::MonT_MoveToPath, callback)
 {
-	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
-	mStat = GetStat(owner->GetType());
 
 	mMoveSpeed = mStat->GetStat_MoveSpeed();
 	mReturnSpeed = 1.7f * mMoveSpeed;
@@ -55,8 +55,8 @@ BTNodeState MonsterTask::MoveToPath::Evaluate()
 	GetOwner()->GetAnimation()->GetController()->SetValue("Walk", true);
 
 	// 다음 경로까지의 벡터
-	Vec3 a = GetOwner()->GetTransform()->GetPosition();
-	Vec3 nextPos = (mPath->top() - a).xz();
+	Vec3 pos = GetOwner()->GetTransform()->GetPosition();
+	Vec3 nextPos = (mPath->top() - pos).xz();
 
 	// 현재 복귀 상태라면 스피드를 올린다.
 	float speed{};
@@ -73,10 +73,7 @@ BTNodeState MonsterTask::MoveToPath::Evaluate()
 	GetOwner()->GetTransform()->RotateTargetAxisY(mPath->top(), mStat->GetStat_RotationSpeed());
 	GetOwner()->GetTransform()->Translate(XMVector3Normalize(nextPos), speed * DELTA_TIME);
 
-	Vec3 pos = GetOwner()->GetTransform()->GetPosition();
 	mEnemyController->GetOwnerMonster()->SetPosition(pos); /* Snap Shot - Pos */
-
-	//LOG_MGR->Cout("[ ", GetOwner()->GetID(), " ] : ", pos.x, " ", pos.y, " ", pos.z, "\n");
 
 	// 다음 경로에 도착 시 해당 경로 삭제
 	const float kMinDistance = 0.1f;
@@ -86,6 +83,5 @@ BTNodeState MonsterTask::MoveToPath::Evaluate()
 
 
 	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_MOVE_TO_PATH);
-
 	return BTNodeState::Success;
 }

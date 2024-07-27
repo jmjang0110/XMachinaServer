@@ -449,6 +449,7 @@ bool FBsPacketFactory::Process_CPkt_Player_AimRotation(SPtr_Session session, con
 	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
 
 	float aim_rotation = pkt.aim_rotation();
+	float spine_angel  = pkt.spine_angle();
 	auto spkt          = FBS_FACTORY->SPkt_Player_AimRotation(session->GetID(), aim_rotation);
 
 	GAME_MGR->BroadcastRoom(gameSession->GetPlayer()->GetRoomID(), spkt, gameSession->GetID());
@@ -863,12 +864,12 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_Player_Weapon(uint32_t player_id, FBProto
 	return sendBuffer;
 }
 
-SPtr_SendPktBuf FBsPacketFactory::SPkt_Player_AimRotation(uint32_t player_id, float aim_rotation)
+SPtr_SendPktBuf FBsPacketFactory::SPkt_Player_AimRotation(uint32_t player_id, float aim_rotation, float spine_angle)
 {
 
 	flatbuffers::FlatBufferBuilder builder{};
 
-	auto serverPacket = FBProtocol::CreateSPkt_Player_AimRotation(builder, player_id, aim_rotation);
+	auto serverPacket = FBProtocol::CreateSPkt_Player_AimRotation(builder, player_id, aim_rotation, spine_angle);
 	builder.Finish(serverPacket);
 	SPtr_SendPktBuf sendBuffer = SEND_FACTORY->CreatePacket(builder.GetBufferPointer(), static_cast<uint16_t>(builder.GetSize()), FBsProtocolID::SPkt_Player_AimRotation);
 	return sendBuffer;

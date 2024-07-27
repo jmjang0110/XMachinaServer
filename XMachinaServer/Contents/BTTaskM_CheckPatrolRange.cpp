@@ -1,4 +1,6 @@
 #include "pch.h"
+#include "BTTaskM_CheckPatrolRange.h"
+
 #include "BTTask.h"
 #include "Script_AdvancedCombatDroid_5.h"
 #include "Script_Onyscidus.h"
@@ -24,7 +26,7 @@ BTNodeState MonsterTask::CheckPatrolRange::Evaluate()
 }
 
 MonsterTask::CheckPatrolRange::CheckPatrolRange(SPtr_GameObject owner, const Vec3& baryCenter, float patrolRange)
-	: BTTask(owner, BTTaskType::MonT_CheckPatrolRange)
+	: MonsterBTTask(owner, BTTaskType::MonT_CheckPatrolRange)
 {
 	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
 	mStat = GetStat(owner->GetType());
@@ -35,7 +37,7 @@ MonsterTask::CheckPatrolRange::CheckPatrolRange(SPtr_GameObject owner, const Vec
 }
 
 MonsterTask::CheckPatrolRange::CheckPatrolRange(SPtr_GameObject owner, std::function<void()> callback)
-	: BTTask(owner, BTTaskType::MonT_CheckPatrolRange, callback)
+	: MonsterBTTask(owner, BTTaskType::MonT_CheckPatrolRange, callback)
 {
 	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
 	mStat = GetStat(owner->GetType());

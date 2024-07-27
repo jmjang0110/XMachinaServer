@@ -41,7 +41,8 @@ enum MONSTER_TYPE : ubyte {
 	MININGMECH,
 	ONYSCIDUS,
 	URSACETUS,
-	RAPAX
+	RAPAX,
+	END
 
 }
 
@@ -54,7 +55,9 @@ enum MONSTER_BT_TYPE : ubyte {
 	GETHIT,
 	MOVE_TO_TARGET,
 	MOVE_TO_PATH,
-	PATROL
+	MOVE_TO_MIND_TARGET,
+	PATROL,
+	END
 }
 
 
@@ -68,7 +71,8 @@ enum PLAYER_MOTION_STATE_TYPE : ubyte {
 	SIT,
 	WALK,
 	RUN,
-	SPRINT
+	SPRINT,
+	END
 }
 
 

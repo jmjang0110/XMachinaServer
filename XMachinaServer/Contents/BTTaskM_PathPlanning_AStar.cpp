@@ -1,4 +1,6 @@
 #include "pch.h"
+#include "BTTaskM_PathPlanning_AStar.h"
+
 #include "BTTask.h"
 #include "Transform.h"
 #include "GameObject.h"
@@ -14,11 +16,9 @@
 
 
 MonsterTask::PathPlanning_AStar::PathPlanning_AStar(SPtr_GameObject owner, BTTaskType type, std::function<void()> callback)
-	: BTTask(owner, type, callback)
+	: MonsterBTTask(owner, type, callback)
 
 {
-	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
-	mStat = GetStat(owner->GetType());
 
 
 	MonsterTask::PathPlanning_AStar::mPath = mEnemyController->GetPaths();
@@ -26,10 +26,8 @@ MonsterTask::PathPlanning_AStar::PathPlanning_AStar(SPtr_GameObject owner, BTTas
 }
 
 MonsterTask::PathPlanning_AStar::PathPlanning_AStar(SPtr_GameObject owner, std::function<void()> callback)
-	: BTTask(owner, BTTaskType::MonT_PathPlanningASatr, callback)
+	: MonsterBTTask(owner, BTTaskType::MonT_PathPlanningASatr, callback)
 {
-	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
-	mStat = GetStat(owner->GetType());
 
 
 	MonsterTask::PathPlanning_AStar::mPath = mEnemyController->GetPaths();

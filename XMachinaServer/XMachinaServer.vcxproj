@@ -160,6 +160,20 @@
     <ClInclude Include="Contents\BehaviorTree.h" />
     <ClInclude Include="Contents\BTNode.h" />
     <ClInclude Include="Contents\BTTask.h" />
+    <ClInclude Include="Contents\BTTaskM_Attack.h" />
+    <ClInclude Include="Contents\BTTaskM_CheckAttackRange.h" />
+    <ClInclude Include="Contents\BTTaskM_CheckDeath.h" />
+    <ClInclude Include="Contents\BTTaskM_CheckDetectionRange.h" />
+    <ClInclude Include="Contents\BTTaskM_CheckMindDetectionRange.h" />
+    <ClInclude Include="Contents\BTTaskM_CheckPatrolRange.h" />
+    <ClInclude Include="Contents\BTTaskM_GetHit.h" />
+    <ClInclude Include="Contents\BTTaskM_MoveToMindControlInvoker.h" />
+    <ClInclude Include="Contents\BTTaskM_MoveToPath.h" />
+    <ClInclude Include="Contents\BTTaskM_MoveToTarget.h" />
+    <ClInclude Include="Contents\BTTaskM_PathPlanningToSpawn.h" />
+    <ClInclude Include="Contents\BTTaskM_PathPlanningToTarget.h" />
+    <ClInclude Include="Contents\BTTaskM_PathPlanning_AStar.h" />
+    <ClInclude Include="Contents\BTTaskM_Patrol.h" />
     <ClInclude Include="Contents\Collider.h" />
     <ClInclude Include="Contents\CollisionManager.h" />
     <ClInclude Include="Contents\Component.h" />
@@ -263,6 +277,7 @@
     <ClCompile Include="Contents\BehaviorTree.cpp" />
     <ClCompile Include="Contents\BTNode.cpp" />
     <ClCompile Include="Contents\BTTask.cpp" />
+    <ClCompile Include="Contents\BTTaskM_MoveToMindControlInvoker.cpp" />
     <ClCompile Include="Contents\Collider.cpp" />
     <ClCompile Include="Contents\CollisionManager.cpp" />
     <ClCompile Include="Contents\Component.cpp" />
@@ -291,7 +306,7 @@
     <ClCompile Include="Contents\BTTaskM_CheckAttackRange.cpp" />
     <ClCompile Include="Contents\BTTaskM_CheckDeath.cpp" />
     <ClCompile Include="Contents\BTTaskM_CheckDetectionRange.cpp" />
-    <ClCompile Include="Contents\BTTaskM_CheckMindDetectioonRange.cpp" />
+    <ClCompile Include="Contents\BTTaskM_CheckMindDetectionRange.cpp" />
     <ClCompile Include="Contents\BTTaskM_CheckPatrolRange.cpp" />
     <ClCompile Include="Contents\BTTaskM_GetHit.cpp" />
     <ClCompile Include="Contents\BTTaskM_MoveToPath.cpp" />

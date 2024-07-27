@@ -1,4 +1,6 @@
 #include "pch.h"
+#include "BTTaskM_CheckDeath.h"
+
 #include "BTTask.h"
 #include "Script_AdvancedCombatDroid_5.h"
 #include "Script_Onyscidus.h"
@@ -11,20 +13,16 @@
  
 BTNodeState MonsterTask::CheckDeath::Evaluate()
 {
-	//LOG_MGR->Cout("CheckDeath\n");
-
-	if (mEnemyController->GetState() == EnemyInfo::State::Attack) {
-		//std::cout << "ATTACKING" << std::endl;
-	}
-
 	if (!mStat->IsDead())
 		return BTNodeState::Failure;
 
 	mEnemyController->SetState(EnemyInfo::State::Death);
-	GetOwner()->GetAnimation()->GetController()->SetValue("Death", true);
 
 	mAccTime += DELTA_TIME;
 
+	mEnemyController->RemoveAllAnimation();
+	GetOwner()->GetAnimation()->GetController()->SetValue("Death", true);
+	
 	ExecuteCallback();
 
 	if (mAccTime >= mRemoveTime) {
@@ -32,11 +30,12 @@ BTNodeState MonsterTask::CheckDeath::Evaluate()
 	}
 
 	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_DEATH);
+	
 	return BTNodeState::Success;
 }
 
 MonsterTask::CheckDeath::CheckDeath(SPtr_GameObject owner, std::function<void()> callback)
-	: BTTask(owner, BTTaskType::MonT_CheckDeath, callback)
+	: MonsterBTTask(owner, BTTaskType::MonT_CheckDeath, callback)
 
 {
 

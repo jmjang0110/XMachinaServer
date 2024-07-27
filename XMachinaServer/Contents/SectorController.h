@@ -31,7 +31,7 @@ class Sector;
 
 /* Height map (W : 1000, H : 500 )*/
 namespace SectorInfo {
-	constexpr UINT8 Width  = 10;
+	constexpr UINT8 Width = 20;
 	constexpr UINT8 height = 10;
 
 	enum class Type
@@ -75,6 +75,7 @@ public:
 
 	
 	ViewList UpdateViewList(GamePlayer* player, Vec3 player_pos, float viewRange_radius);
+	ViewList GetViewList(Vec3 pos, float viewRange_radius);
 
 
 	/// +------------------------------------------------------------

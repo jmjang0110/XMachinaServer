@@ -3,6 +3,18 @@
 #include "Script_Enemy.h"
 #include "Script_EnemyController.h"
 
+#include "BTTaskM_CheckDeath.h"
+#include "BTTaskM_CheckAttackRange.h"
+#include "BTTaskM_Attack.h"
+#include "BTTaskM_CheckDetectionRange.h"
+#include "BTTaskM_CheckPatrolRange.h"
+#include "BTTaskM_GetHit.h"
+#include "BTTaskM_MoveToPath.h"
+#include "BTTaskM_MoveToTarget.h"
+#include "BTTaskM_PathPlanningToSpawn.h"
+#include "BTTaskM_PathPlanning_AStar.h"
+#include "BTTaskM_PathPlanningToTarget.h"
+#include "BTTaskM_Patrol.h"
 
 #include "GameObject.h"
 #include "Component.h"

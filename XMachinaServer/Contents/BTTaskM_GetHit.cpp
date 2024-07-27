@@ -1,4 +1,6 @@
 #include "pch.h"
+#include "BTTaskM_GetHit.h"
+
 #include "BTTask.h"
 
 #include "Script_AdvancedCombatDroid_5.h"
@@ -14,32 +16,21 @@ BTNodeState MonsterTask::GetHit::Evaluate()
 {
 	//LOG_MGR->Cout("GetHit \n");
 
-	if (mEnemyController->IsMindControlled() == false) {
-		if (!mEnemyController->GetTargetPlayer())
-			return BTNodeState::Failure;
-	}
-	else {
-		if (!mEnemyController->GetTargetMonster())
-			return BTNodeState::Failure;
-	}
 
-	const float crntHp = mStat->GetCrntHp();
+	if (!mEnemyController->GetTarget())
+		return  BTNodeState::Failure;
+
+	const float crntHP = mStat->GetCrntHp();
 	if (!mStat->UpdatePrevHP()) {
 		mEnemyController->SetState(EnemyInfo::State::GetHit);
 		GetOwner()->GetAnimation()->GetController()->SetValue("GetHit", true);
 
-		Vec3 TargetLook{};
-		if (mEnemyController->IsMindControlled() == false)
-			TargetLook = mEnemyController->GetTargetPlayer()->GetTransform()->GetSnapShot().GetLook();
-		else
-			TargetLook = mEnemyController->GetTargetMonster()->GetTransform()->GetSnapShot().GetLook();
-
-		GetOwner()->GetTransform()->Translate(TargetLook, mKnockBack);
+		Vec3 moveDir = mEnemyController->GetTarget()->GetTransform()->GetLook();
+		GetOwner()->GetTransform()->Translate(moveDir, mKnockBack);
 	}
 
 	if (GetOwner()->GetAnimation()->GetController()->GetParam("GetHit")->val.b == false)
 		return BTNodeState::Failure;
-
 
 	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_GETHIT);
 	return BTNodeState::Success;
@@ -47,7 +38,7 @@ BTNodeState MonsterTask::GetHit::Evaluate()
 
 
 MonsterTask::GetHit::GetHit(SPtr_GameObject owner, std::function<void()> callback)
-	: BTTask(owner, BTTaskType::MonT_GetHit, callback)
+	: MonsterBTTask(owner, BTTaskType::MonT_GetHit, callback)
 {
 
 	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
@@ -70,5 +61,6 @@ MonsterTask::GetHit::~GetHit()
 void MonsterTask::GetHit::GetHitEndCallback()
 {
 	GetOwner()->GetAnimation()->GetController()->SetValue("GetHit", false);
+	mEnemyController->SetState(EnemyInfo::State::Idle);
 
 }

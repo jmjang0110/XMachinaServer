@@ -159,6 +159,73 @@ ViewList SectorController::UpdateViewList(GamePlayer* player, Vec3 player_pos, f
     return vList;
 }
 
+ViewList SectorController::GetViewList(Vec3 pos, float viewRange_radius)
+{
+    ViewList vList;
+
+    // 확인해야할 Sector를 구한다.
+    std::vector<Coordinate> sectors{};
+    Coordinate curSectorIdx = GetSectorIdx(pos);
+    sectors.push_back(curSectorIdx);
+
+    Vec3 E = pos; E.x += viewRange_radius;
+    Coordinate East_SectorIdx = GetSectorIdx(E);
+    if (East_SectorIdx == Coordinate())
+        East_SectorIdx = curSectorIdx;
+
+    Vec3 N = pos; N.z += viewRange_radius;
+    Coordinate North_SectorIdx = GetSectorIdx(N);
+    if (North_SectorIdx == Coordinate())
+        North_SectorIdx = curSectorIdx;
+
+    Vec3 W = pos; W.x -= viewRange_radius;
+    Coordinate West_SectorIdx = GetSectorIdx(W);
+    if (West_SectorIdx == Coordinate())
+        West_SectorIdx = curSectorIdx;
+
+    Vec3 S = pos; S.z -= viewRange_radius;
+    Coordinate South_SectorIdx = GetSectorIdx(S);
+    if (South_SectorIdx == Coordinate())
+        South_SectorIdx = curSectorIdx;
+
+    /// ---------------------------------------
+    /// [if(북On/서On)] [ 북 ] [if(북On/동On)]
+    /// [ 서 ]          curidx          [ 동 ]
+    /// [if(서On/남On]] [ 남 ] [if(동On/남On)]   
+    /// ______________________________________
+
+    bool E_check = curSectorIdx != East_SectorIdx;
+    bool N_check = curSectorIdx != North_SectorIdx;
+    bool W_check = curSectorIdx != West_SectorIdx;
+    bool S_check = curSectorIdx != South_SectorIdx;
+
+    if (E_check)              sectors.push_back(East_SectorIdx);
+    if (N_check)              sectors.push_back(North_SectorIdx);
+    if (W_check)              sectors.push_back(West_SectorIdx);
+    if (S_check)              sectors.push_back(South_SectorIdx);
+    if (E_check && N_check)   sectors.push_back(Coordinate(East_SectorIdx.x, North_SectorIdx.z));
+    if (W_check && N_check)   sectors.push_back(Coordinate(West_SectorIdx.x, North_SectorIdx.z));
+    if (W_check && S_check)   sectors.push_back(Coordinate(West_SectorIdx.x, South_SectorIdx.z));
+    if (E_check && S_check)   sectors.push_back(Coordinate(East_SectorIdx.x, South_SectorIdx.z));
+
+    for (int i = 0; i < sectors.size(); ++i) {
+        if (sectors[i].x == -1)
+            continue;
+
+        std::vector<SPtr<GameMonster>> VL_Monsters = mSectors[sectors[i].z][sectors[i].x]->GetMonstersInViewRange(pos, viewRange_radius);
+        std::vector<SPtr<GamePlayer>>  VL_Players = mOwnerRoom->GetPlayerController()->GetPlayersInViewRange(pos, viewRange_radius);
+
+        for (int i = 0; i < VL_Monsters.size(); ++i) {
+            vList.TryInsertMonster(VL_Monsters[i]->GetID(), VL_Monsters[i]);
+        }
+        for (int i = 0; i < VL_Players.size(); ++i) {
+            vList.TryInsertPlayer(VL_Players[i]->GetID(), VL_Players[i]);
+        }
+    }
+
+    return vList;
+}
+
 Coordinate SectorController::GetSectorIdx(Vec3 Pos)
 {
     if (Pos.x < 0 || Pos.x >= mTotalSectorSize.x|| Pos.z < 0 || Pos.z >= mTotalSectorSize.z) {

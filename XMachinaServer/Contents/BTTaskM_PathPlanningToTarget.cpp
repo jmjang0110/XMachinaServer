@@ -1,4 +1,6 @@
 #include "pch.h"
+#include "BTTaskM_PathPlanningToTarget.h"
+
 #include "BTTask.h"
 #include "ResourceManager.h"
 #include "TileMap.h"
@@ -42,8 +44,6 @@ BTNodeState MonsterTask::PathPlanningToTarget::Evaluate()
 MonsterTask::PathPlanningToTarget::PathPlanningToTarget(SPtr_GameObject owner, std::function<void()> callback)
 	: PathPlanning_AStar(owner, BTTaskType::MonT_PathPlanningToTarget, callback)
 {
-	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
-	mStat = GetStat(owner->GetType());
 
 	MonsterTask::PathPlanning_AStar::mPath = mEnemyController->GetPaths();
 

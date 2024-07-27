@@ -1,8 +1,12 @@
 #include "pch.h"
+#include "BTTaskM_CheckAttackRange.h"
+
 #include "BTTask.h"
 #include "Skill.h"
 #include "Script_Player.h"
 #include "GameMonster.h"
+#include "GamePlayer.h"
+
 
 #include "Script_AdvancedCombatDroid_5.h"
 #include "Script_Ursacetus.h"
@@ -20,48 +24,39 @@
 /// __________________________________________________________________________
 BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 {
-	//LOG_MGR->Cout("CheckAttackRange\n");
-	bool IsMindControlled = mEnemyController->IsMindControlled();
-	if (IsMindControlled == false) {
-		if (!mEnemyController->GetTargetPlayer())
-			return BTNodeState::Failure;
-	}
-	else {
-		if (!mEnemyController->GetTargetMonster())
-			return BTNodeState::Failure;
+	// 1. Target Object가 없다면 Check attack (X)
+	if (!mEnemyController->GetTarget()) {
+		return BTNodeState::Failure;
 	}
 
-
+	// 2. Attack 상태라면 CheckAttack Range를 할 필요가 없이 바로 Attack  
 	if (mEnemyController->GetState() == EnemyInfo::State::Attack) {
 		return BTNodeState::Success;
 	}
 
 	
-	if(IsMindControlled == false) {
-		///* 타겟한 플레이어가 은신 상태라면.. */
-		bool IsCloakingOn = mEnemyController->GetTargetPlayer()->GetActiveSkill(SkillInfo::Type::Cloaking);
-		if (IsCloakingOn == true) {
-			mEnemyController->SetTargetPlayer(nullptr);
-			return BTNodeState::Failure;
-		}
+	// 3. Target Player 가 Cloacking 상태라면 Attack (X)
+	SPtr<GamePlayer> target = std::dynamic_pointer_cast<GamePlayer>(mEnemyController->GetTarget());
+	bool IsCloakingOn = target->GetActiveSkill(SkillInfo::Type::Cloaking);
+	if (IsCloakingOn == true) {
+		mEnemyController->SetTarget(nullptr);
+		return BTNodeState::Failure;
 	}
 
-
-
+	
+	// 4. Target Player 가 일정 범위에 들어오면 Attack 으로.. 
 	constexpr float minDistance = 1.f;
-	Vec3 Monster_Pos = mEnemyController->GetOwnerMonster()->GetTransform()->GetPosition();
-	Vec3  TargetPos{};
+	Vec3	Pos		  = GetOwner()->GetTransform()->GetPosition();
+	Vec3	TargetPos = target->GetPosition();
+	float	distance  = (Pos - TargetPos).Length();
 
-	if (IsMindControlled == false)
-		TargetPos = mEnemyController->GetTargetPlayer()->GetPosition();
-	else
-		TargetPos = mEnemyController->GetTargetMonster()->GetTransform()->GetSnapShot().GetPosition();
-
-	float distance = (Monster_Pos - TargetPos).Length();
 	if (distance < mStat->GetStat_AttackRange()) {
-		Vec3	ToTargetDir = Vector3::Normalized(TargetPos - Monster_Pos);
-		float	Angle       = Vector3::Angle(mEnemyController->GetOwnerMonster()->GetTransform()->GetLook(), ToTargetDir);
-		if (minDistance < 1.f || Angle < 80.f) {
+		Vec3	ToTargetDir = Vector3::Normalized(TargetPos - Pos);
+		float	Angle       = Vector3::Angle(GetOwner()->GetTransform()->GetLook(), ToTargetDir);
+		
+		// 너무 가까우면 계속 돈다 그래서 적당히 가까우면 Attack State 로 바꾼다.
+		if (distance < minDistance || Angle < 80.f) {
+		
 			mEnemyController->SetState(EnemyInfo::State::Attack);
 			mEnemyController->RemoveAllAnimation();
 			GetOwner()->GetAnimation()->GetController()->SetValue("Attack", true);
@@ -74,7 +69,7 @@ BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 }
 
 MonsterTask::CheckAttackRange::CheckAttackRange(SPtr_GameObject owner, std::function<void()> callback)
-	: BTTask(owner, BTTaskType::MonT_CheckAttackRange, callback)
+	: MonsterBTTask(owner, BTTaskType::MonT_CheckAttackRange, callback)
 
 {
 	const auto& o1 = GetOwner();

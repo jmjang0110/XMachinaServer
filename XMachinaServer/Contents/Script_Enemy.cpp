@@ -107,22 +107,24 @@ bool Script_Enemy::Hit(float damage, SPtr_GameObject instigator)
 
 
 	if (nullptr != instigator) {
-		if (instigator->GetType() == GameObjectInfo::Type::GamePlayer) {
-			mEnemyController->SetTargetPlayer(std::dynamic_pointer_cast<GamePlayer>(instigator));
-		}
-		else if (instigator->GetType() == GameObjectInfo::Type::Monster_AdvancedCombat_5
-			|| instigator->GetType() == GameObjectInfo::Type::Monster_Anglerox
-			|| instigator->GetType() == GameObjectInfo::Type::Monster_Arack
-			|| instigator->GetType() == GameObjectInfo::Type::Monster_Aranobot
-			|| instigator->GetType() == GameObjectInfo::Type::Monster_Ceratoferox
-			|| instigator->GetType() == GameObjectInfo::Type::Monster_Gobbler
-			|| instigator->GetType() == GameObjectInfo::Type::Monster_LightBipedMech
-			|| instigator->GetType() == GameObjectInfo::Type::Monster_MiningMech
-			|| instigator->GetType() == GameObjectInfo::Type::Monster_Rapax
-			|| instigator->GetType() == GameObjectInfo::Type::Monster_Onyscidus
-			|| instigator->GetType() == GameObjectInfo::Type::Monster_Ursacetus) {
-			mEnemyController->SetTargetMonster(std::dynamic_pointer_cast<GameMonster>(instigator));
-		}
+		mEnemyController->SetTarget(instigator);
+
+		//if (instigator->GetType() == GameObjectInfo::Type::GamePlayer) {
+		//	mEnemyController->SetTargetPlayer(std::dynamic_pointer_cast<GamePlayer>(instigator));
+		//}
+		//else if (instigator->GetType() == GameObjectInfo::Type::Monster_AdvancedCombat_5
+		//	|| instigator->GetType() == GameObjectInfo::Type::Monster_Anglerox
+		//	|| instigator->GetType() == GameObjectInfo::Type::Monster_Arack
+		//	|| instigator->GetType() == GameObjectInfo::Type::Monster_Aranobot
+		//	|| instigator->GetType() == GameObjectInfo::Type::Monster_Ceratoferox
+		//	|| instigator->GetType() == GameObjectInfo::Type::Monster_Gobbler
+		//	|| instigator->GetType() == GameObjectInfo::Type::Monster_LightBipedMech
+		//	|| instigator->GetType() == GameObjectInfo::Type::Monster_MiningMech
+		//	|| instigator->GetType() == GameObjectInfo::Type::Monster_Rapax
+		//	|| instigator->GetType() == GameObjectInfo::Type::Monster_Onyscidus
+		//	|| instigator->GetType() == GameObjectInfo::Type::Monster_Ursacetus) {
+		//	mEnemyController->SetTargetMonster(std::dynamic_pointer_cast<GameMonster>(instigator));
+		//}
 	}
 
 	return res;

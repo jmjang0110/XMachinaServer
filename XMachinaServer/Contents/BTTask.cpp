@@ -15,7 +15,9 @@
 
 /* Script */
 
-
+/// +----------------------------------------------------------------------------------
+///		BT TASK 
+/// ----------------------------------------------------------------------------------+
 
 BTNodeState BTTask::Evaluate()
 {
@@ -72,3 +74,19 @@ BTTask::~BTTask()
 {
 }
 
+/// +----------------------------------------------------------------------------------
+///		BT TASK 
+/// ----------------------------------------------------------------------------------+
+
+MonsterBTTask::MonsterBTTask(SPtr_GameObject owner, BTTaskType type, std::function<void()> callback)
+	: BTTask(owner, type , callback)
+{
+	mEnemyController	= GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
+	mStat				= GetStat(owner->GetType());
+}
+
+MonsterBTTask::~MonsterBTTask()
+{
+	mEnemyController = nullptr;
+	mStat            = nullptr;
+}
