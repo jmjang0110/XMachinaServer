@@ -27,7 +27,9 @@
 
 BTNodeState MonsterTask::CheckDetectionRange::Evaluate()
 {
-	// [BSH] : 이 부분에서 계속 업데이트를 하며 타겟을 없애기 때문에 문제가 생김. 타겟은 행동트리에서만 바꿀 것.
+	// [BSH] : 주변 타겟이 있다면 성공을 반환해야 하는데 이 전에는 타겟이 있는 경우 바로 실패를 반환한다.
+	// 따라서 Attack이 계속 실행되지 않고 1회만 실행된다.
+	// 때문에 타겟이 있는 경우 해당 타겟을 컨트롤러에서 가져와서 스킬을 검사하고 성공을 반환해야 한다.
 	SPtr<GamePlayer> target = nullptr;
 	if (!mEnemyController->GetTarget()) {
 		target = FindDetectionPlayer();
