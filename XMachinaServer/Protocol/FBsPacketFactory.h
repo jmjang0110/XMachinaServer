@@ -82,7 +82,7 @@ public:
 	SPtr_SendPktBuf SPkt_Player_Transform(uint32_t player_id, int32_t move_state, long long latency, float velocity, Vec3 movedir, Vec3 pos, Vec3 rot, Vec3 spine_look, float animparam_h, float animparam_v);
 	SPtr_SendPktBuf SPkt_Player_Animation(uint32_t player_id, int anim_upper_idx, int anim_lower_idx, float anim_param_h, float anim_param_v);
 	SPtr_SendPktBuf SPkt_Player_Weapon(uint32_t player_id, FBProtocol::WEAPON_TYPE weapon_type);
-	SPtr_SendPktBuf SPkt_Player_AimRotation(uint32_t player_id, float aim_rotation);
+	SPtr_SendPktBuf SPkt_Player_AimRotation(uint32_t player_id, float aim_rotation, float spine_angle);
 
 	/* MONSTER */
 	SPtr_SendPktBuf SPkt_NewMonster(std::vector<MonsterSnapShot>& new_monsters);

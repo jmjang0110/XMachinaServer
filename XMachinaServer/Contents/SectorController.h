@@ -53,7 +53,7 @@ private:
 	std::unordered_map<UINT32, SPtr<GamePlayer>> mPlayers;
 	Lock::SRWLock								 mPlayers_SRWLock;
 
-	std::array<std::array<Sector*, SectorInfo::height>, SectorInfo::Width> mSectors;
+	std::array<std::array<Sector*, SectorInfo::Width>, SectorInfo::height> mSectors;
 
 	Coordinate									mTotalSectorSize = {}; // Sector 전체 크기  ( Image )
 	Coordinate									mSectorSize      = {}; // 각 Sector 크기	  

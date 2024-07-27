@@ -475,8 +475,8 @@ bool FBsPacketFactory::Process_CPkt_Player_AimRotation(SPtr_Session session, con
 	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
 
 	float aim_rotation = pkt.aim_rotation();
-	float spine_angel  = pkt.spine_angle();
-	auto spkt          = FBS_FACTORY->SPkt_Player_AimRotation(session->GetID(), aim_rotation);
+	float spine_angle  = pkt.spine_angle();
+	auto spkt          = FBS_FACTORY->SPkt_Player_AimRotation(session->GetID(), aim_rotation, spine_angle);
 
 	GAME_MGR->BroadcastRoom(gameSession->GetPlayer()->GetRoomID(), spkt, gameSession->GetID());
 
@@ -581,9 +581,9 @@ bool FBsPacketFactory::Process_CPkt_Bullet_OnShoot(SPtr_Session session, const F
 
 
 	// Shot 불가능 
-	if (bullet_id == -1) {
-		return false;
-	}
+	//if (bullet_id == -1) {
+	//	return false;
+	//}
 
 	/// 플레이어가 Shot 했다는 것을 플레이어들에게 알린다. 
 	auto spkt = FBS_FACTORY->SPkt_Bullet_OnShoot(player_id, gun_id, bullet_id, ray);

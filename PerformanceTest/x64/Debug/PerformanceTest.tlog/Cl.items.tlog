@@ -1,7 +1,7 @@
-C:\Github\XMachinaServer\PerformanceTest\main.cpp;C:\Github\XMachinaServer\PerformanceTest\x64\Debug\main.obj
-C:\Github\XMachinaServer\PerformanceTest\MemoryTest\BlockMemoryPool.cpp;C:\Github\XMachinaServer\PerformanceTest\x64\Debug\BlockMemoryPool.obj
-C:\Github\XMachinaServer\PerformanceTest\MemoryTest\MemoryManager.cpp;C:\Github\XMachinaServer\PerformanceTest\x64\Debug\MemoryManager.obj
-C:\Github\XMachinaServer\PerformanceTest\MemoryTest\SListMemoryPool.cpp;C:\Github\XMachinaServer\PerformanceTest\x64\Debug\SListMemoryPool.obj
-C:\Github\XMachinaServer\PerformanceTest\pch.cpp;C:\Github\XMachinaServer\PerformanceTest\x64\Debug\pch.obj
-C:\Github\XMachinaServer\PerformanceTest\SpinLock.cpp;C:\Github\XMachinaServer\PerformanceTest\x64\Debug\SpinLock.obj
-C:\Github\XMachinaServer\PerformanceTest\ThreadManager.cpp;C:\Github\XMachinaServer\PerformanceTest\x64\Debug\ThreadManager.obj
+C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\main.cpp;C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\x64\Debug\main.obj
+C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\MemoryTest\BlockMemoryPool.cpp;C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\x64\Debug\BlockMemoryPool.obj
+C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\MemoryTest\MemoryManager.cpp;C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\x64\Debug\MemoryManager.obj
+C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\MemoryTest\SListMemoryPool.cpp;C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\x64\Debug\SListMemoryPool.obj
+C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\pch.cpp;C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\x64\Debug\pch.obj
+C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\SpinLock.cpp;C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\x64\Debug\SpinLock.obj
+C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\ThreadManager.cpp;C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\x64\Debug\ThreadManager.obj

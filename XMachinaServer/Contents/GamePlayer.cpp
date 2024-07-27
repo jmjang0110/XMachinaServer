@@ -184,12 +184,14 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 
 
 			/* TARGET PACKET */
-			SPtr<GamePlayer> targetplayer = script->GetTargetPlayer();
-			if (targetplayer) {
-				int targetplayer_id = targetplayer->GetID();
-				int monster_id = NewMonsters_Objects[i]->GetID();
-				const auto& pkt = FBS_FACTORY->SPkt_Monster_Target(monster_id, targetplayer_id, -1);
-				GetSessionOwner()->Send(pkt);
+			SPtr<GameObject> target = script->GetTarget();
+			if (target) {
+				int targetplayer_id = target->GetID();
+				if (target->GetType() == GameObjectInfo::Type::GamePlayer) {
+					int monster_id = NewMonsters_Objects[i]->GetID();
+					const auto& pkt = FBS_FACTORY->SPkt_Monster_Target(monster_id, targetplayer_id, -1);
+					GetSessionOwner()->Send(pkt);
+				}
 
 			}
 
