@@ -10,7 +10,6 @@ class Script_DefaultEnemyBT : public Script_BehaviorTree
 {
 private:
 	BTNode*					mRoot;
-	Script_EnemyController* mEnemyController;
 
 
 public:

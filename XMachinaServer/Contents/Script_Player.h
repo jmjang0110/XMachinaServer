@@ -17,6 +17,7 @@ private:
 public:  
 	Script_Player();
 	Script_Player(SPtr<GamePlayer> owner, ScriptInfo::Type type);
+	Script_Player(SPtr<GameObject> owner, ScriptInfo::Type type);
 	~Script_Player();
 
 

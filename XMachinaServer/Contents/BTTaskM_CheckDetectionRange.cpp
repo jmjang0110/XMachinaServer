@@ -15,6 +15,10 @@
 #include "PlayerController.h"
 #include "SectorController.h"
 #include "GameRoom.h"
+#include "GameManager.h"
+
+#include "FBsPacketFactory.h"
+
 
 /// +-------------------------------------------------------------------------
 ///	> ¢º¢º¢º Task Check Detection Range 
@@ -40,6 +44,7 @@ BTNodeState MonsterTask::CheckDetectionRange::Evaluate()
 			}
 		}
 	}
+
 
 	return BTNodeState::Failure;
 }

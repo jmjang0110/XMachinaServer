@@ -72,7 +72,7 @@ void NPCController::InitMonsters(Coordinate maxSectorIdx)
 		sc->AddMonsterInSector(SectorIndex, enemy->GetID(), enemy);
 		
 		enemy->UpdateSnapShot();
-
+		//break;
 	}
 
 	return;

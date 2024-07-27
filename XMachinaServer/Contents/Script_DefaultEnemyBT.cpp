@@ -34,6 +34,9 @@
 #include "Script_Rapax.h"
 #include "Script_Anglerox.h"
 #include "Script_MiningMech.h"
+#include "FBsPacketFactory.h"
+#include "GameManager.h"
+#include "NPCController.h"
 
 
 BTNode* Script_DefaultEnemyBT::SetupTree()
@@ -268,14 +271,62 @@ bool Script_DefaultEnemyBT::Update()
 
 	if (mRoot) {
 		mRoot->Evaluate();
+		
 
 		FBProtocol::MONSTER_BT_TYPE PrevType = mRoot->GetEnemyController()->GetMontserPrevBTType();
 		FBProtocol::MONSTER_BT_TYPE CurrType = mRoot->GetEnemyController()->GetMonsterCurrBTType();
 
 		if (PrevType != CurrType) {
 			/* Send Packet */
+			switch (CurrType)
+			{
+			case FBProtocol::MONSTER_BT_TYPE_DEATH:
+				LOG_MGR->Cout("MONSTER_BT_TYPE_DEATH\n");
+				break;
+			case FBProtocol::MONSTER_BT_TYPE_ATTACK:
+				LOG_MGR->Cout("MONSTER_BT_TYPE_ATTACK\n");
+				break;
+			case FBProtocol::MONSTER_BT_TYPE_GETHIT:
+				LOG_MGR->Cout("MONSTER_BT_TYPE_GETHIT\n");
+				break;
+			case FBProtocol::MONSTER_BT_TYPE_MOVE_TO_TARGET:
+				LOG_MGR->Cout("MONSTER_BT_TYPE_MOVE_TO_TARGET\n");
+				break;
+			case FBProtocol::MONSTER_BT_TYPE_MOVE_TO_PATH:
+				LOG_MGR->Cout("MONSTER_BT_TYPE_MOVE_TO_PATH\n");
+				break;
+			case FBProtocol::MONSTER_BT_TYPE_PATROL:
+				LOG_MGR->Cout("MONSTER_BT_TYPE_PATROL\n");
+				break;
+
+			default:
+				LOG_MGR->Cout("MONSTER BT TYPE ..XXXX \n");
+				break;
+			}
+
 			std::dynamic_pointer_cast<GameMonster>(GetOwner())->Broadcast_SPkt_Mosnter_State(CurrType);
 			mRoot->GetEnemyController()->SetBTType(CurrType);
+
+			if (mRoot->GetEnemyController()->GetTargetPlayer()) {
+				int monster_id			= mRoot->GetEnemyController()->GetOwnerMonster()->GetID();
+				int target_monster_id	= -1;
+				int target_player_id	= mRoot->GetEnemyController()->GetTargetPlayer()->GetID();
+
+
+				auto pkt = FBS_FACTORY->SPkt_Monster_Target(monster_id, target_player_id, target_monster_id);
+				GAME_MGR->BroadcastRoom(mRoot->GetEnemyController()->GetOwnerMonster()->GetOwnerNPCController()->GetOwnerRoom()->GetID(), pkt);
+			}
+			else {
+				int monster_id = mRoot->GetEnemyController()->GetOwnerMonster()->GetID();
+				int target_monster_id = -1;
+				int target_player_id = 0;
+
+
+				auto pkt = FBS_FACTORY->SPkt_Monster_Target(monster_id, target_player_id, target_monster_id);
+				GAME_MGR->BroadcastRoom(mRoot->GetEnemyController()->GetOwnerMonster()->GetOwnerNPCController()->GetOwnerRoom()->GetID(), pkt);
+			}
+
+
 		}
 
 		mRoot->GetEnemyController()->UpdateMonsterCurrBTType();
