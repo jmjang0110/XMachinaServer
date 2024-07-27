@@ -35,6 +35,14 @@ public:
 	virtual void Dead();
 	virtual bool Hit(float damage, SPtr_GameObject instigator = nullptr) override;
 
+protected:
+	void BasicAttackCallback();
+	void RoarAttackCallback();
 
+	void SpecialAttack();
+	void SpecialAttackCallback();
+	void SpecialAttackStartCallback();
+
+	virtual void AttackEndCallback() override;
 };
 

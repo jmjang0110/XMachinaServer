@@ -50,6 +50,7 @@ private:
 	std::map<float, MotionCallback> mCallbacks;
 	sptr<MotionCallback> mCallbackStop;
 	sptr<MotionCallback> mCallbackChange;
+	sptr<MotionCallback> mCallbackAnimate;
 
 public:
 	AnimatorMotion(const AnimatorMotionInfo& info);
@@ -73,8 +74,11 @@ public:
 	void DelStopCallback();
 	void AddChangeCallback(const std::function<void()>& callback);
 	void DelChabgeCallback();
+	void AddAnimateCallback(const std::function<void()>& callback);
+	void DelAnimateCallback();
 
 	void AddCallback(const std::function<void()>& callback, int frame);
+
 	void DelCallback(int frame);
 
 protected:
@@ -152,7 +156,7 @@ public:
 	AnimatorLayer(const AnimatorLayer& other);
 
 public:
-	sptr<AnimatorMotion> CheckTransition(const AnimatorController* controller);
+	sptr<AnimatorMotion> CheckTransition(const AnimatorController* controller, bool isChangeImmed);
 	void ChangeState(rsptr<AnimatorMotion> state);
 
 	sptr<AnimatorMotion> FindMotionByName(const std::string& motionName) const;
@@ -237,14 +241,17 @@ public:
 		return true;
 	}
 
+	// isChangeImmed == true : transition animation state without waiting & blending
 	template<class T, typename std::enable_if<is_valid_param_type<T>>::type* = nullptr>
-	void SetValue(const std::string& paramName, T value)
+	void SetValue(const std::string& paramName, T value, bool isChangeImmed = false)
 	{
 		if (!SetValueOnly(paramName, value)) {
 			return;
 		}
 
-		CheckTransition();
+		if (isChangeImmed) {
+			CheckTransition(isChangeImmed);
+		}
 	}
 
 	void SetName(const std::string& name) { mName = name; }
@@ -252,7 +259,7 @@ public:
 
 public:
 	void InitLayers();
-	void CheckTransition() const;
+	void CheckTransition(bool isChangedImmed = false) const;
 
 	sptr<AnimatorMotion> FindMotionByName(const std::string& motionName, const std::string& layerName = "Base Layer") const;
 	sptr<AnimatorLayer>  FindLayerByName(const std::string& layerName) const;

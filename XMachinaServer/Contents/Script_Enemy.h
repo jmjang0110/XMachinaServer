@@ -4,7 +4,7 @@
 
 class Script_Enemy : public Script_EnemyStat
 {
-private:
+protected:
 	SPtr<Script_EnemyController> mEnemyController = {};
 
 public:
@@ -33,9 +33,12 @@ public:
 	///		Stat :  virtual function 
 	/// ------------------------------+
 	virtual void Attack();
-	virtual void AttackCallback();
 	virtual void Dead();
 	virtual bool Hit(float damage, SPtr_GameObject instigator = nullptr) override;
+protected:
+	virtual void AttackCallback();
+	virtual void AttackEndCallback();
+
 
 };
 

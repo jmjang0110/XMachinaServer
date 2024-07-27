@@ -27,12 +27,13 @@ public:
 
 	virtual bool WakeUp();
 	virtual bool Start();
+
 	virtual bool Update();
 	virtual void OnDestroy();
 
 	/// +------------------------------
-///		Stat :  virtual function 
-/// ------------------------------+
+	///		Stat :  virtual function 
+	/// ------------------------------+
 	virtual void Attack();
 	virtual void AttackCallback();
 	virtual void Dead();

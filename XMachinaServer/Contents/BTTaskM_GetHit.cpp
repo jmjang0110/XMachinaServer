@@ -16,9 +16,12 @@ BTNodeState MonsterTask::GetHit::Evaluate()
 {
 	//LOG_MGR->Cout("GetHit \n");
 
-
 	if (!mEnemyController->GetTarget())
 		return  BTNodeState::Failure;
+
+	if (mStat->GetStat_GetHitAnimName() == "None") {
+		return BTNodeState::Failure;
+	}
 
 	const float crntHP = mStat->GetCrntHp();
 	if (!mStat->UpdatePrevHP()) {

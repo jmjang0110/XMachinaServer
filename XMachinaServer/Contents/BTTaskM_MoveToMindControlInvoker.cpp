@@ -46,6 +46,7 @@ BTNodeState MonsterTask::BTTaskM_MoveToMindControlInvoker::Evaluate()
 	checkSectors.push_back(My_SectorIdx);
 	checkSectors.push_back(Target_SectorIdx);
 
+	// TODO : must check
 	if (My_SectorIdx.z != Target_SectorIdx.z && My_SectorIdx.x != Target_SectorIdx.x) {
 
 		Coordinate RT_sectorIDx = Coordinate(std::max(My_SectorIdx.x, Target_SectorIdx.x), std::max(My_SectorIdx.z, Target_SectorIdx.z));
@@ -68,7 +69,6 @@ BTNodeState MonsterTask::BTTaskM_MoveToMindControlInvoker::Evaluate()
 				Alpha_SectorIdx = Coordinate(My_SectorIdx.x, My_SectorIdx.z + 1);
 		}
 		checkSectors.push_back(Alpha_SectorIdx);
-
 	}
 
 	// 타겟이 속한 모든 그리드를 검사해야 한다.
@@ -94,7 +94,7 @@ BTNodeState MonsterTask::BTTaskM_MoveToMindControlInvoker::Evaluate()
 		GetOwner()->GetTransform()->Translate(GetOwner()->GetTransform()->GetLook(), mStat->GetStat_MoveSpeed() * DELTA_TIME);
 	}
 
-	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_MOVE_TO_TARGET);;
+	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_MOVE_TO_MIND_TARGET);
 	return BTNodeState::Success;
 }
 

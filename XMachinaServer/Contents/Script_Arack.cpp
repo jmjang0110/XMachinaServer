@@ -19,8 +19,10 @@ Script_Arack::Script_Arack(SPtr<GameObject> owner, ScriptInfo::Type type)
     Script_EnemyStat::SetStat_AttackRate(5);
     Script_EnemyStat::SetStat_AttackRange(3);
     Script_EnemyStat::SetStat_AttackCoolTime(0);
-    Script_EnemyStat::SetMaxHP(50);
-    Script_EnemyStat::SetStat_AttackAnimName("ClawsAttack");
+    Script_EnemyStat::SetMaxHP(30);
+    Script_EnemyStat::SetStat_Attack1AnimName("ClawsAttack");
+    Script_EnemyStat::SetStat_Attack2AnimName("None");
+    Script_EnemyStat::SetStat_Attack3AnimName("None");
     Script_EnemyStat::SetStat_DeathAnimName("Death");
     Script_EnemyStat::SetStat_GetHitName("GetHitFront");
 
@@ -41,44 +43,64 @@ void Script_Arack::Clone(SPtr<Component> other)
 
 void Script_Arack::Activate()
 {
+    Script_Enemy::Activate();
+
 }
 
 void Script_Arack::DeActivate()
 {
+    Script_Enemy::DeActivate();
+
 }
 
 bool Script_Arack::WakeUp()
 {
+    Script_Enemy::WakeUp();
+
     return false;
 }
 
 bool Script_Arack::Start()
 {
+    Script_Enemy::Start();
+    GetOwner()->GetAnimation()->GetController()->FindMotionByName(Script_EnemyStat::GetStat_Attack1AnimName())->AddCallback(std::bind(&Script_Arack::AttackCallback, this), 13);
     return false;
 }
 
 bool Script_Arack::Update()
 {
+    Script_Enemy::Update();
+
     return false;
 }
 
 void Script_Arack::OnDestroy()
 {
+    Script_Enemy::OnDestroy();
+
 }
 
 void Script_Arack::Attack()
 {
+    Script_Enemy::Attack();
+
 }
 
 void Script_Arack::AttackCallback()
 {
+    Script_Enemy::AttackCallback();
+
 }
 
 void Script_Arack::Dead()
 {
+    Script_Enemy::Dead();
+
 }
 
 bool Script_Arack::Hit(float damage, SPtr_GameObject instigator)
 {
+    Script_Enemy::Hit(damage, instigator);
+
     return false;
 }
