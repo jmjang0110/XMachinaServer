@@ -104,28 +104,28 @@ BTNode* Script_DefaultEnemyBT::SetupTree()
 		root_selector_Children.push_back(SeqNode);
 	}
 
-	/* CheckAttackRange */
-	BTNode* node3 = MEMORY->New<MonsterTask::MoveToPath>(GetOwner()); root_selector_Children.push_back(node3);
-	{
-		BTNode* SelNode{};
+	///* CheckAttackRange */
+	//BTNode* node3 = MEMORY->New<MonsterTask::MoveToPath>(GetOwner()); root_selector_Children.push_back(node3);
+	//{
+	//	BTNode* SelNode{};
 
-		std::vector<BTNode*> selector_Children;
-		{
-			/* Sequence - CheckAttackRange, Attack */
-			BTNode* SeqNode{};
-			
-			std::vector<BTNode*> sequence_children;
-			BTNode* n1 = MEMORY->New<MonsterTask::CheckPatrolRange>(GetOwner(), baryCenter, maxDis); sequence_children.push_back(n1);
-			BTNode* n2 = MEMORY->New<MonsterTask::Patrol>(GetOwner());			 sequence_children.push_back(n2);
+	//	std::vector<BTNode*> selector_Children;
+	//	{
+	//		/* Sequence - CheckAttackRange, Attack */
+	//		BTNode* SeqNode{};
+	//		
+	//		std::vector<BTNode*> sequence_children;
+	//		BTNode* n1 = MEMORY->New<MonsterTask::CheckPatrolRange>(GetOwner(), baryCenter, maxDis); sequence_children.push_back(n1);
+	//		BTNode* n2 = MEMORY->New<MonsterTask::Patrol>(GetOwner());			 sequence_children.push_back(n2);
 
-			SeqNode = MEMORY->New<BTNode_Sequence>(GetOwner(), sequence_children);
-			selector_Children.push_back(SeqNode);
-		}
-		BTNode* n3 = MEMORY->New<MonsterTask::PathPlanningToSapwn>(GetOwner());	selector_Children.push_back(n3);
+	//		SeqNode = MEMORY->New<BTNode_Sequence>(GetOwner(), sequence_children);
+	//		selector_Children.push_back(SeqNode);
+	//	}
+	//	BTNode* n3 = MEMORY->New<MonsterTask::PathPlanningToSapwn>(GetOwner());	selector_Children.push_back(n3);
 
-		SelNode = MEMORY->New<BTNode_Selector>(GetOwner(), selector_Children);
-		root_selector_Children.push_back(SelNode);
-	}
+	//	SelNode = MEMORY->New<BTNode_Selector>(GetOwner(), selector_Children);
+	//	root_selector_Children.push_back(SelNode);
+	//}
 
 	mRoot = MEMORY->New<BTNode_Selector>(GetOwner(), root_selector_Children);
 	mRoot->SetRoot();
@@ -298,7 +298,6 @@ bool Script_DefaultEnemyBT::Update()
 			case FBProtocol::MONSTER_BT_TYPE_PATROL:
 				LOG_MGR->Cout("MONSTER_BT_TYPE_PATROL\n");
 				break;
-
 			default:
 				LOG_MGR->Cout("MONSTER BT TYPE ..XXXX \n");
 				break;
@@ -308,7 +307,11 @@ bool Script_DefaultEnemyBT::Update()
 			mRoot->GetEnemyController()->SetBTType(CurrType);
 
 			bool IsMindControlled = mRoot->GetEnemyController()->IsMindControlled();
-			int monster_id        = -1;
+
+			// [BSH] : 타겟이 어떤 몬스터의 것인지에 대한 몬스터 아이디도 보내야함.
+			int monster_id		  = GetOwner()->GetID();
+			// int monster_id     = -1;
+
 			int target_monster_id = -1;
 			int target_player_id  = -1;
 			SPtr<GameObject> target = mRoot->GetEnemyController()->GetTarget();

@@ -2,6 +2,8 @@
 
 #include "Component.h"
 
+class Animation;
+
 class AnimationClip {
 
 public:
@@ -39,6 +41,9 @@ class AnimatorStateMachine;
 class AnimatorMotion {
 
 private:
+	Animation* mAnimOwner;
+
+private:
 	sptr<const AnimationClip> mClip{};
 
 	float 	mSpeed{};
@@ -56,6 +61,7 @@ public:
 	AnimatorMotion(const AnimatorMotionInfo& info);
 	AnimatorMotion(const AnimatorMotion& other);
 
+	void SetAnimOwner(Animation* animOwner) { mAnimOwner = animOwner; }
 	const std::string& GetName() const { return mName; }
 
 public:
@@ -118,7 +124,11 @@ private:
 public:
 	AnimatorStateMachine(const std::string& name, const std::vector<sptr<const AnimatorTransition>>& entryTransitions);
 	AnimatorStateMachine(const AnimatorStateMachine& other);
-
+	void SetAnimOwner(Animation* animOwner) {
+		for (auto& iter : mStates) {
+			iter.second->SetAnimOwner(animOwner);
+		}
+	}
 public:
 	const std::string& GetName() const { return mName; }
 	sptr<AnimatorMotion> GetState(const std::string& name) const;
@@ -162,6 +172,10 @@ public:
 	sptr<AnimatorMotion> FindMotionByName(const std::string& motionName) const;
 	sptr<AnimatorMotion> GetCrntMotion() const { return mCrntState; }
 
+	void SetAnimOwner(Animation* animOwner) { 
+		mRootStateMachine->SetAnimOwner(animOwner);
+	}
+
 	std::string GetName() { return mName; }
 	void Animate();
 
@@ -188,7 +202,7 @@ struct AnimatorParameter {
 class AnimatorController {
 	template <typename T>
 	static constexpr bool is_valid_param_type = (std::is_same<T, bool>::value || std::is_same<T, int>::value || std::is_same<T, float>::value);
-
+	
 private:
 	std::string mName{};
 	std::unordered_map<std::string, AnimatorParameter> mParameters{};
@@ -200,6 +214,8 @@ public:
 	AnimatorController(const AnimatorController& other);
 
 public:
+	void SetAnimOwner(Animation* animOwner) { for (auto& layer : mLayers) layer->SetAnimOwner(animOwner); }
+
 	const AnimatorParameter* GetParam(const std::string& paramName) const { return &mParameters.at(paramName); }
 	bool HasParam(const std::string paramName) const { return mParameters.contains(paramName); }
 

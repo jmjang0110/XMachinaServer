@@ -23,6 +23,7 @@
 #include <string>
 #include <numeric>
 #include <filesystem>
+#include <chrono>
 
 /* STL */
 #include <vector>
@@ -76,6 +77,10 @@ struct Coordinate
 	}
 	bool operator==(const Coordinate& other) const {
 		return x == other.x || z == other.z;
+	}
+	// Check if either x or z is negative
+	bool checkNegative() const {
+		return x < 0 || z < 0;
 	}
 };
 

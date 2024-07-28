@@ -12,6 +12,8 @@ namespace MonsterTask {
 
 	class MoveToTarget : public MonsterBTTask {
 	private:
+		int  Cnt = 0;
+		double time = 0.0;
 
 	public:
 		virtual BTNodeState Evaluate() override;

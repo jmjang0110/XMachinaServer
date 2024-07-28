@@ -171,8 +171,11 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 	/// ------------------------------------------------------------------------------------------------------+
 	/* Send New Mosnter Packet */
 	if (NewMonsters.size() > 0) {
-		const auto& NewMonster_serverPacket = FBS_FACTORY->SPkt_NewMonster(NewMonsters);
-		GetSessionOwner()->Send(NewMonster_serverPacket);
+		// [BSH] : 새로운 몬스터가 플레이어 중 하나라도 뷰 리스트에 들어오면 모든 클라에게 브로드 캐스팅 해야 한다.
+		auto NewMonster_serverPacket = FBS_FACTORY->SPkt_NewMonster(NewMonsters);
+		GAME_MGR->BroadcastRoom(mOwnerPC->GetOwnerRoom()->GetID(), NewMonster_serverPacket);
+		//const auto& NewMonster_serverPacket = FBS_FACTORY->SPkt_NewMonster(NewMonsters);
+		//GetSessionOwner()->Send(NewMonster_serverPacket);
 
 		for (int i = 0; i < NewMonsters_Objects.size(); ++i) {
 
@@ -184,17 +187,25 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 
 
 			/* TARGET PACKET */
+			// [BSH] : 타겟이 없어도 0을 보내주도록 해야 하며 모든 플레이어에게 브로드 캐스팅 해야한다.
 			SPtr<GameObject> target = script->GetTarget();
-			if (target) {
-				int targetplayer_id = target->GetID();
-				if (target->GetType() == GameObjectInfo::Type::GamePlayer) {
-					int monster_id = NewMonsters_Objects[i]->GetID();
-					const auto& pkt = FBS_FACTORY->SPkt_Monster_Target(monster_id, targetplayer_id, -1);
-					GetSessionOwner()->Send(pkt);
-				}
-
+			int targetplayer_id{};
+			if (target && target->GetType() == GameObjectInfo::Type::GamePlayer) {
+				targetplayer_id = target->GetID();
 			}
 
+			int monster_id = NewMonsters_Objects[i]->GetID();
+			auto pkt = FBS_FACTORY->SPkt_Monster_Target(monster_id, targetplayer_id, -1);
+			GAME_MGR->BroadcastRoom(mOwnerPC->GetOwnerRoom()->GetID(), pkt);
+
+			//if (target) {
+			//	int targetplayer_id = target->GetID();
+			//	if (target->GetType() == GameObjectInfo::Type::GamePlayer) {
+			//		int monster_id = NewMonsters_Objects[i]->GetID();
+			//		const auto& pkt = FBS_FACTORY->SPkt_Monster_Target(monster_id, targetplayer_id, -1);
+			//		GetSessionOwner()->Send(pkt);
+			//	}
+			//}
 		}
 		LOG_MGR->Cout("SEND NEW MONSTER \n");
 
