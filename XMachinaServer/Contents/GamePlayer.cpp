@@ -108,6 +108,12 @@ void GamePlayer::Exit()
 	/* Exit Room Clear Data */
 	mInfo.Vlist.Clear();
 
+
+	mInfo.Lock_IsExit.LockWrite();
+	mInfo.IsExit = true;
+	mInfo.Lock_IsExit.UnlockWrite();
+
+
 }
 
 int GamePlayer::OnShoot()
@@ -159,6 +165,8 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 			mInfo.Vlist.RemoveMonster(it.first);
 
 			MonsterSnapShot snapShot = it.second->GetSnapShot();
+			snapShot.Position = it.second->GetTransform()->GetSnapShot().GetPosition();
+			snapShot.Rotation = it.second->GetTransform()->GetSnapShot().GetRotation();
 			RemoveMonsters.push_back(snapShot);
 
 			LOG_MGR->Cout("[ ", it.first, " ] : ", it.second, " : DeActivate\n");
@@ -172,8 +180,9 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 	/* Send New Mosnter Packet */
 	if (NewMonsters.size() > 0) {
 		// [BSH] : 새로운 몬스터가 플레이어 중 하나라도 뷰 리스트에 들어오면 모든 클라에게 브로드 캐스팅 해야 한다.
-		auto NewMonster_serverPacket = FBS_FACTORY->SPkt_NewMonster(NewMonsters);
-		GAME_MGR->BroadcastRoom(mOwnerPC->GetOwnerRoom()->GetID(), NewMonster_serverPacket);
+		
+		auto NewMonster_spkt = FBS_FACTORY->SPkt_NewMonster(NewMonsters);
+		GAME_MGR->BroadcastRoom(mOwnerPC->GetOwnerRoom()->GetID(), NewMonster_spkt);
 		//const auto& NewMonster_serverPacket = FBS_FACTORY->SPkt_NewMonster(NewMonsters);
 		//GetSessionOwner()->Send(NewMonster_serverPacket);
 
@@ -185,6 +194,8 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 			const auto& MonsterType_serverPacket = FBS_FACTORY->SPkt_Monster_State(NewMonsters_Objects[i]->GetID(), btType);
 			GetSessionOwner()->Send(MonsterType_serverPacket);
 
+			auto MonsterState_spkt = FBS_FACTORY->SPkt_Monster_State(NewMonsters_Objects[i]->GetID(), NewMonsters_Objects[i]->GetBTState());
+			GAME_MGR->BroadcastRoom(mOwnerPC->GetOwnerRoom()->GetID(), MonsterState_spkt);
 
 			/* TARGET PACKET */
 			// [BSH] : 타겟이 없어도 0을 보내주도록 해야 하며 모든 플레이어에게 브로드 캐스팅 해야한다.

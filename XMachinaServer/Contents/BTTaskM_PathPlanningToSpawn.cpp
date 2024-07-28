@@ -18,8 +18,6 @@
 
 BTNodeState MonsterTask::PathPlanningToSapwn::Evaluate()
 {
-
-
 	// 경로가 비었다면 경로 재 탐색
 	if (mEnemyController->GetPaths()->empty()) {
 		GetOwner()->GetAnimation()->GetController()->SetValue("Return", true);

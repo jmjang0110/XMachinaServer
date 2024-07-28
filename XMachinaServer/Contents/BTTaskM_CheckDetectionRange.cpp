@@ -34,6 +34,7 @@ BTNodeState MonsterTask::CheckDetectionRange::Evaluate()
 	if (!mEnemyController->GetTarget()) {
 		target = FindDetectionPlayer();
 		if (nullptr == target){
+			mEnemyController->SetTarget(nullptr);
 			return BTNodeState::Failure;
 		}
 		else {
@@ -121,8 +122,12 @@ SPtr<GamePlayer> MonsterTask::CheckDetectionRange::FindDetectionPlayer()
 	}
 
 	SPtr<GamePlayer>	target = nullptr;
-	if(closestPlayerID != -1)
+	if (closestPlayerID != -1) {
 		target = PC->GetPlayer(closestPlayerID);
+		if (target->IsExit() == true) {
+			target == nullptr;
+		}
+	}
 
 	return target;
 }

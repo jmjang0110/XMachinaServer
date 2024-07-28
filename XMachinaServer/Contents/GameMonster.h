@@ -25,7 +25,7 @@ struct MonsterSnapShot : public ObjectSnapShot
 {
 	SPtr<GameMonster>					owner = nullptr;
 	FBProtocol::MONSTER_TYPE			Type;		/*	몬스터 종류	*/
-	
+	FBProtocol::MONSTER_BT_TYPE			CurrState;  Lock::SRWLock lock_CurrState;
 	/* Stat Script 로 빼자... */
 	float								HP;			Lock::SRWLock lock_HP;/*		HP		*/
 	float								Attack;		Lock::SRWLock lock_Attack;/*	  공격력		*/
@@ -75,7 +75,7 @@ public:
 
 	void SetSectorIndex(Coordinate sectorIdx);
 	void SetPheros(std::string pheros)						{ mInfo.Pheros = pheros; }
-
+	void SetBTState(FBProtocol::MONSTER_BT_TYPE type)		{ mInfo.lock_CurrState.LockWrite(); mInfo.CurrState = type; mInfo.lock_CurrState.UnlockWrite(); }
 	// Get 함수들
 	SPtr<GameMonster>			GetSnapShotOwner()			{	 mInfo.owner; }
 	uint32_t					GetMonsterID()				{	return mInfo.ID;		}
@@ -83,7 +83,7 @@ public:
 	float						GetAttack()					{	return mInfo.Attack;	}
 	float						GetHP()						{ mInfo.lock_HP.LockRead();  float hp = mInfo.HP;	mInfo.lock_HP.UnlockRead(); return hp; }
 	Vec3						GetPosition()				{ mInfo.lock_Position.LockRead(); Vec3 pos = mInfo.Position; mInfo.lock_Position.UnlockRead(); return pos; }
-
+	FBProtocol::MONSTER_BT_TYPE GetBTState() { mInfo.lock_CurrState.LockRead(); FBProtocol::MONSTER_BT_TYPE state = mInfo.CurrState; mInfo.lock_CurrState.UnlockRead(); return state; }
 	std::string					GetPheros()					{ return mInfo.Pheros; }
 	// mPheros 벡터를 반환하는 getter 함수
 	const std::vector<SPtr<GameObject>>& GetAllPheros() ;

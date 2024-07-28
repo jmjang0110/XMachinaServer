@@ -155,6 +155,8 @@ BTNodeState MonsterTask::MoveToTarget::Evaluate()
 
 
 	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_MOVE_TO_TARGET);;
+	mEnemyController->GetOwnerMonster()->SetBTState(FBProtocol::MONSTER_BT_TYPE_MOVE_TO_TARGET);
+
 	return BTNodeState::Success;
 
 }

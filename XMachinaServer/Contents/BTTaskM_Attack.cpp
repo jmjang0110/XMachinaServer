@@ -21,6 +21,7 @@ BTNodeState MonsterTask::Attack::Evaluate()
 	// ※ Attack Range BTNode 에서 Target 체크하므로 여기서는 할 필요 없음 
 
 	SPtr<GamePlayer> target = std::dynamic_pointer_cast<GamePlayer>(mEnemyController->GetTarget());
+	
 	Vec3 TargetPos          = target->GetPosition(); /* Lock */
 	
 	// 1. Target Player 를 향해 회전한다.
@@ -29,6 +30,8 @@ BTNodeState MonsterTask::Attack::Evaluate()
 	ExecuteCallback();
 
 	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK);
+	mEnemyController->GetOwnerMonster()->SetBTState(FBProtocol::MONSTER_BT_TYPE_ATTACK);
+
 	return BTNodeState::Success;
 }
 

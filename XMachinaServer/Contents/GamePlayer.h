@@ -119,6 +119,7 @@ struct PlayerSnapShot : public ObjectSnapShot
 	UINT32					RoomID			= -1;	/* ROOM NUMBER	*/
 	std::vector<Coordinate>	CurSectorID;			 // 현재 속해있는 Sector index ( 여러개일 수 있음 ) 최대 4개..
 
+	bool		IsExit = false; Lock::SRWLock Lock_IsExit;
 
 	/// +-----------------------------------------------------------
 	///		Item 
@@ -215,7 +216,7 @@ public:
 	void SetPhero(float phero)							 { mInfo.Lock_Phero.LockWrite();	mInfo.Phero    = phero; mInfo.Lock_Phero.UnlockWrite(); }
 	void SetActiveSkill(SkillInfo::Type skillType, bool isActive) { mInfo.Lock_ActiveSkills.LockWrite(); mInfo.ActiveSkills[static_cast<UINT8>(skillType)] = isActive; mInfo.Lock_ActiveSkills.UnlockWrite(); }
 	void SetEquipWeapon(FBProtocol::WEAPON_TYPE weaponType) { mInfo.Lock_Weapon.LockWrite(); mInfo.WeaponType = weaponType; mInfo.Lock_Weapon.UnlockWrite(); return; }
-
+	
 
 public:
 	/// +-----------------------------------------------------------
@@ -239,8 +240,10 @@ public:
 	Vec3					GetSpineDir()	 { mInfo.Lock_SpineDir.LockRead(); Vec3  spine = mInfo.SpineDir; mInfo.Lock_SpineDir.UnlockRead(); return spine; }
 	bool					GetActiveSkill(SkillInfo::Type skillType)  { mInfo.Lock_ActiveSkills.LockRead(); bool active = mInfo.ActiveSkills[static_cast<UINT8>(skillType)]; mInfo.Lock_ActiveSkills.UnlockRead(); return active; }
 	float					GetPhero()		 { mInfo.Lock_Phero.LockRead(); float phero = mInfo.Phero; mInfo.Lock_Phero.UnlockRead(); return phero; }
-	FBProtocol::WEAPON_TYPE	GetCurrWeapon() { mInfo.Lock_Weapon.LockRead(); FBProtocol::WEAPON_TYPE name = mInfo.WeaponType; ; mInfo.Lock_Weapon.UnlockRead(); return name; }
+	FBProtocol::WEAPON_TYPE	GetCurrWeapon()  { mInfo.Lock_Weapon.LockRead(); FBProtocol::WEAPON_TYPE name = mInfo.WeaponType; ; mInfo.Lock_Weapon.UnlockRead(); return name; }
  	
+	bool IsExit()							 { mInfo.Lock_IsExit.LockWrite(); bool isExit = mInfo.IsExit; mInfo.Lock_IsExit.UnlockWrite(); return isExit; };
+
 	// Get all active skills
 	std::vector<bool> GetActiveSkills() {
 		mInfo.Lock_ActiveSkills.LockRead();

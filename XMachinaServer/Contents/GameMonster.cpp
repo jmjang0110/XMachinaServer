@@ -81,14 +81,14 @@ void GameMonster::Update()
 	// 0.5초마다 패킷 전송
 	if (mTimer >= 0.1f) {
 		/* Send Transform Packet */
-		Broadcast_SPkt_Monster_Transform();
+		//Broadcast_SPkt_Monster_Transform();
 
-		Vec3 pos = GetTransform()->GetPosition();
+		//Vec3 pos = GetTransform()->GetPosition();
 
 		//LOG_MGR->Cout(GetName(), " : ", GetID(), " : ", pos.x , " ", pos.y, " ", pos.z, "\n");
 
 		// 타이머 초기화
-		mTimer = 0.0f;
+		//mTimer = 0.0f;
 	}
 }
 
