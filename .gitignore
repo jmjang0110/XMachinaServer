@@ -27,7 +27,6 @@
 *.lib
 
 # Executables
-*.exe
 *.out
 *.app
 
@@ -38,3 +37,4 @@
 /Executable
 /Debug
 /PerformanceTest/x64
+/PerformanceTest

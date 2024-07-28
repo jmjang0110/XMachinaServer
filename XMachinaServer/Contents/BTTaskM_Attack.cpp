@@ -29,9 +29,6 @@ BTNodeState MonsterTask::Attack::Evaluate()
 	mStat->UpdatePrevHP();
 	ExecuteCallback();
 
-	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK);
-	mEnemyController->GetOwnerMonster()->SetBTState(FBProtocol::MONSTER_BT_TYPE_ATTACK);
-
 	return BTNodeState::Success;
 }
 

@@ -61,11 +61,12 @@ enum WEAPON_TYPE : uint8_t {
   WEAPON_TYPE_BURNOUT = 6,
   WEAPON_TYPE_DIRECT_DRAIN = 7,
   WEAPON_TYPE_SKYLINE = 8,
+  WEAPON_TYPE_END = 9,
   WEAPON_TYPE_MIN = WEAPON_TYPE_H_LOOK,
-  WEAPON_TYPE_MAX = WEAPON_TYPE_SKYLINE
+  WEAPON_TYPE_MAX = WEAPON_TYPE_END
 };
 
-inline const WEAPON_TYPE (&EnumValuesWEAPON_TYPE())[9] {
+inline const WEAPON_TYPE (&EnumValuesWEAPON_TYPE())[10] {
   static const WEAPON_TYPE values[] = {
     WEAPON_TYPE_H_LOOK,
     WEAPON_TYPE_DBMS,
@@ -75,13 +76,14 @@ inline const WEAPON_TYPE (&EnumValuesWEAPON_TYPE())[9] {
     WEAPON_TYPE_PIPELINE,
     WEAPON_TYPE_BURNOUT,
     WEAPON_TYPE_DIRECT_DRAIN,
-    WEAPON_TYPE_SKYLINE
+    WEAPON_TYPE_SKYLINE,
+    WEAPON_TYPE_END
   };
   return values;
 }
 
 inline const char * const *EnumNamesWEAPON_TYPE() {
-  static const char * const names[10] = {
+  static const char * const names[11] = {
     "H_LOOK",
     "DBMS",
     "STUART",
@@ -91,13 +93,14 @@ inline const char * const *EnumNamesWEAPON_TYPE() {
     "BURNOUT",
     "DIRECT_DRAIN",
     "SKYLINE",
+    "END",
     nullptr
   };
   return names;
 }
 
 inline const char *EnumNameWEAPON_TYPE(WEAPON_TYPE e) {
-  if (::flatbuffers::IsOutRange(e, WEAPON_TYPE_H_LOOK, WEAPON_TYPE_SKYLINE)) return "";
+  if (::flatbuffers::IsOutRange(e, WEAPON_TYPE_H_LOOK, WEAPON_TYPE_END)) return "";
   const size_t index = static_cast<size_t>(e);
   return EnumNamesWEAPON_TYPE()[index];
 }
@@ -164,21 +167,25 @@ inline const char *EnumNameMONSTER_TYPE(MONSTER_TYPE e) {
 
 enum MONSTER_BT_TYPE : uint8_t {
   MONSTER_BT_TYPE_DEATH = 0,
-  MONSTER_BT_TYPE_ATTACK = 1,
-  MONSTER_BT_TYPE_GETHIT = 2,
-  MONSTER_BT_TYPE_MOVE_TO_TARGET = 3,
-  MONSTER_BT_TYPE_MOVE_TO_PATH = 4,
-  MONSTER_BT_TYPE_MOVE_TO_MIND_TARGET = 5,
-  MONSTER_BT_TYPE_PATROL = 6,
-  MONSTER_BT_TYPE_END = 7,
+  MONSTER_BT_TYPE_ATTACK_1 = 1,
+  MONSTER_BT_TYPE_ATTACK_2 = 2,
+  MONSTER_BT_TYPE_ATTACK_3 = 3,
+  MONSTER_BT_TYPE_GETHIT = 4,
+  MONSTER_BT_TYPE_MOVE_TO_TARGET = 5,
+  MONSTER_BT_TYPE_MOVE_TO_PATH = 6,
+  MONSTER_BT_TYPE_MOVE_TO_MIND_TARGET = 7,
+  MONSTER_BT_TYPE_PATROL = 8,
+  MONSTER_BT_TYPE_END = 9,
   MONSTER_BT_TYPE_MIN = MONSTER_BT_TYPE_DEATH,
   MONSTER_BT_TYPE_MAX = MONSTER_BT_TYPE_END
 };
 
-inline const MONSTER_BT_TYPE (&EnumValuesMONSTER_BT_TYPE())[8] {
+inline const MONSTER_BT_TYPE (&EnumValuesMONSTER_BT_TYPE())[10] {
   static const MONSTER_BT_TYPE values[] = {
     MONSTER_BT_TYPE_DEATH,
-    MONSTER_BT_TYPE_ATTACK,
+    MONSTER_BT_TYPE_ATTACK_1,
+    MONSTER_BT_TYPE_ATTACK_2,
+    MONSTER_BT_TYPE_ATTACK_3,
     MONSTER_BT_TYPE_GETHIT,
     MONSTER_BT_TYPE_MOVE_TO_TARGET,
     MONSTER_BT_TYPE_MOVE_TO_PATH,
@@ -190,9 +197,11 @@ inline const MONSTER_BT_TYPE (&EnumValuesMONSTER_BT_TYPE())[8] {
 }
 
 inline const char * const *EnumNamesMONSTER_BT_TYPE() {
-  static const char * const names[9] = {
+  static const char * const names[11] = {
     "DEATH",
-    "ATTACK",
+    "ATTACK_1",
+    "ATTACK_2",
+    "ATTACK_3",
     "GETHIT",
     "MOVE_TO_TARGET",
     "MOVE_TO_PATH",
@@ -261,35 +270,38 @@ enum PLAYER_SKILL_TYPE : uint8_t {
   PLAYER_SKILL_TYPE_IR_DETECTOR = 2,
   PLAYER_SKILL_TYPE_MIND_CONTROL = 3,
   PLAYER_SKILL_TYPE_SHIELD = 4,
+  PLAYER_SKILL_TYPE_END = 5,
   PLAYER_SKILL_TYPE_MIN = PLAYER_SKILL_TYPE_IMPOSSIBLE,
-  PLAYER_SKILL_TYPE_MAX = PLAYER_SKILL_TYPE_SHIELD
+  PLAYER_SKILL_TYPE_MAX = PLAYER_SKILL_TYPE_END
 };
 
-inline const PLAYER_SKILL_TYPE (&EnumValuesPLAYER_SKILL_TYPE())[5] {
+inline const PLAYER_SKILL_TYPE (&EnumValuesPLAYER_SKILL_TYPE())[6] {
   static const PLAYER_SKILL_TYPE values[] = {
     PLAYER_SKILL_TYPE_IMPOSSIBLE,
     PLAYER_SKILL_TYPE_CLOACKING,
     PLAYER_SKILL_TYPE_IR_DETECTOR,
     PLAYER_SKILL_TYPE_MIND_CONTROL,
-    PLAYER_SKILL_TYPE_SHIELD
+    PLAYER_SKILL_TYPE_SHIELD,
+    PLAYER_SKILL_TYPE_END
   };
   return values;
 }
 
 inline const char * const *EnumNamesPLAYER_SKILL_TYPE() {
-  static const char * const names[6] = {
+  static const char * const names[7] = {
     "IMPOSSIBLE",
     "CLOACKING",
     "IR_DETECTOR",
     "MIND_CONTROL",
     "SHIELD",
+    "END",
     nullptr
   };
   return names;
 }
 
 inline const char *EnumNamePLAYER_SKILL_TYPE(PLAYER_SKILL_TYPE e) {
-  if (::flatbuffers::IsOutRange(e, PLAYER_SKILL_TYPE_IMPOSSIBLE, PLAYER_SKILL_TYPE_SHIELD)) return "";
+  if (::flatbuffers::IsOutRange(e, PLAYER_SKILL_TYPE_IMPOSSIBLE, PLAYER_SKILL_TYPE_END)) return "";
   const size_t index = static_cast<size_t>(e);
   return EnumNamesPLAYER_SKILL_TYPE()[index];
 }

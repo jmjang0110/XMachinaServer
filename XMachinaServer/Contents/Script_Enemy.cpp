@@ -1,4 +1,8 @@
 #include "pch.h"
+
+#undef max
+#include "Enum_generated.h"
+
 #include "Script_Enemy.h"
 #include "Script_EnemyStat.h"
 #include "GameObject.h"
@@ -88,6 +92,8 @@ void Script_Enemy::Attack()
 {
 	Script_EnemyStat::Attack();
 
+	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK_1);
+	mEnemyController->GetOwnerMonster()->SetBTState(FBProtocol::MONSTER_BT_TYPE_ATTACK_1);
 }
 
 void Script_Enemy::AttackCallback()

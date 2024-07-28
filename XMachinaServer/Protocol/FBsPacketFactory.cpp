@@ -351,10 +351,10 @@ bool FBsPacketFactory::Process_CPkt_PlayerOnSkill(SPtr_Session session, const FB
 	///> }
 	///> �ܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡ�
 	FBProtocol::PLAYER_SKILL_TYPE	type				=  pkt.skill_type();
-	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
-	auto playerScript = gameSession->GetPlayer()->GetScript<Script_Player>(ScriptInfo::Type::Stat);
-	float PheroAmount = playerScript->GetPhero();
-	int mindontrol_monster_id = pkt.mindcontrol_monster_Id();
+	SPtr_GameSession gameSession                        = std::static_pointer_cast<GameSession>(session);
+	auto playerScript                                   = gameSession->GetPlayer()->GetScript<Script_Player>(ScriptInfo::Type::Stat);
+	float PheroAmount                                   = playerScript->GetPhero();
+	int mindontrol_monster_id                           = pkt.mindcontrol_monster_Id();
 
 
 	/// +---------------------------------------------------------------------------------------
