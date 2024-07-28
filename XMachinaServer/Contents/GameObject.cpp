@@ -53,6 +53,9 @@ GameObject::~GameObject()
 
 void GameObject::Update()
 {
+	if (GetType() == GameObjectInfo::Type::Monster_Ursacetus)
+		int i = 0;
+
 	mPrevTimePoint	= mCurrTimePoint;
 	mCurrTimePoint	= std::chrono::steady_clock::now();
 

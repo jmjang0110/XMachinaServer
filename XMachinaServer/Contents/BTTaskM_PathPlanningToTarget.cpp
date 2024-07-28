@@ -29,7 +29,8 @@ BTNodeState MonsterTask::PathPlanningToTarget::Evaluate()
 
 		Vec3 d = mEnemyController->GetPathTargetObject()->GetTransform()->GetSnapShot().GetPosition();
 
-		Path::Pos start = tileMap->GetTileUniqueIndexFromPos(GetOwner()->GetTransform()->GetPosition());
+		Vec3 pos = GetOwner()->GetTransform()->GetPosition();
+		Path::Pos start = tileMap->GetTileUniqueIndexFromPos(pos);
 		Path::Pos dest  = tileMap->GetTileUniqueIndexFromPos(d);
 
 		// 경로 계획에 실패했다면 Failure를 호출하여 다음 노드로 넘어감
