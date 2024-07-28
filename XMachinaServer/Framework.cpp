@@ -218,47 +218,26 @@ void Framework::Launch()
 	/// +---------------------- IOCP WORKER THREAD : 4 (worker Thread ---------------------------+
 	/* 4 : IOCP Thread  1 : Timer Thread*/
 	for (INT32 i = 1; i <= CoreNum ; ++i) { 
-
+	
 		THREAD_MGR->RunThread("Worker Threads : 4 (CoreNum - 1(Timer))" + std::to_string(i), [&]() {
 
 			UINT32 msTimeOut = 0;
-			//double time = 0;
-			//double prev = 0;
+			double time = 0;
+			double prev = 0;
 			while (!stop.load())
 			{
-				TLS_MGR->Get_TlsInfoData()->TimeMgr.Tick(120.f);
+				TLS_MGR->Get_TlsInfoData()->TimeMgr.Tick(240.f);
 				mServer->WorkerThread(msTimeOut);
 
-				//time += TLS_MGR->Get_TlsInfoData()->TimeMgr.GetTimeElapsed();
+				time += TLS_MGR->Get_TlsInfoData()->TimeMgr.GetTimeElapsed();
 
-				//if ((int)time != (int)prev) {
-				//	LOG_MGR->Cout("[", TLS_MGR->Get_TlsInfoData()->id,"] : ", time, "\n");
-				//	prev = time;
-				//}
+		/*		if ((int)time != (int)prev) {
+					LOG_MGR->Cout("[", TLS_MGR->Get_TlsInfoData()->id,"] : ", time, "\n");
+					prev = time;
+				}*/
 			}
 
 			});
-	}
-
-	/* GameWorld Update Test */
-	for (int i = 0; i < 1; ++i) {
-		//TimerEvent t;
-		//t.Type = TimerEventType::Update_GameObject;
-		//t.WakeUp_Time = std::chrono::system_clock::now() + std::chrono::seconds(0); // 지금 당장 시작 
-		//t.Owner = GAME_WORLD->GetUrsacetusSPtr(i);
-		//TIME_MGR->PushTimerEvent(t);
-
-		//TimerEvent t2;
-		//t2.Type = TimerEventType::Update_GameObject;
-		//t2.WakeUp_Time = std::chrono::system_clock::now(); // 지금 당장 시작 
-		//t2.Owner = GAME_WORLD->GetAdvCombat5(i);
-		//TIME_MGR->PushTimerEvent(t2);
-
-		//TimerEvent t3;
-		//t3.Type = TimerEventType::Update_GameObject;
-		//t3.WakeUp_Time = std::chrono::system_clock::now() + std::chrono::seconds(0); // 지금 당장 시작 
-		//t3.Owner = GAME_WORLD->GetOnyscidus(i);
-		//TIME_MGR->PushTimerEvent(t3);
 	}
 
 	/// +-------------------------	TIMER THREAD : 1 (main) ------------------------------+

@@ -190,18 +190,13 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 			// [BSH] : 타겟이 없어도 0을 보내주도록 해야 하며 모든 플레이어에게 브로드 캐스팅 해야한다.
 			SPtr<GameObject> target = script->GetTarget();
 			int targetplayer_id{};
-			if (target) {
+			if (target && target->GetType() == GameObjectInfo::Type::GamePlayer) {
 				targetplayer_id = target->GetID();
 			}
 
-			if (target->GetType() == GameObjectInfo::Type::GamePlayer) {
-				int monster_id = NewMonsters_Objects[i]->GetID();
-				//const auto& pkt = FBS_FACTORY->SPkt_Monster_Target(monster_id, targetplayer_id, -1);
-				//GetSessionOwner()->Send(pkt);
-
-				auto pkt = FBS_FACTORY->SPkt_Monster_Target(monster_id, targetplayer_id, -1);
-				GAME_MGR->BroadcastRoom(mOwnerPC->GetOwnerRoom()->GetID(), pkt);
-			}
+			int monster_id = NewMonsters_Objects[i]->GetID();
+			auto pkt = FBS_FACTORY->SPkt_Monster_Target(monster_id, targetplayer_id, -1);
+			GAME_MGR->BroadcastRoom(mOwnerPC->GetOwnerRoom()->GetID(), pkt);
 
 			//if (target) {
 			//	int targetplayer_id = target->GetID();

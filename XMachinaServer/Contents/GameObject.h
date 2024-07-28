@@ -10,11 +10,21 @@
 
 class GameObject : public GameEntity
 {
+
 private:
 	GameObjectInfo::Type										mType		= GameObjectInfo::Type::None;
 	std::unordered_map<ComponentInfo::Type, SPtr<Component>>	mComponents = {};
 	std::unordered_map<ScriptInfo::Type,    SPtr<Script>>		mScripts    = {};
 	SPtr<Animation> mAnimation{};
+
+protected:
+	double mDeltaTime;
+
+	std::chrono::steady_clock::time_point	mCurrTimePoint;
+	std::chrono::steady_clock::time_point	mPrevTimePoint;
+
+public:
+	double GetDeltaTime() { return mDeltaTime; }
 
 public:
 	GameObject();

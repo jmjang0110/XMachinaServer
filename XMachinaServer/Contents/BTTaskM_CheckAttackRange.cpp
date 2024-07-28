@@ -56,10 +56,9 @@ BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 		
 		// 너무 가까우면 계속 돈다 그래서 적당히 가까우면 Attack State 로 바꾼다.
 		if (distance < minDistance || Angle < 80.f) {
-		
-			mEnemyController->SetState(EnemyInfo::State::Attack);
 			mEnemyController->RemoveAllAnimation();
 			GetOwner()->GetAnimation()->GetController()->SetValue("Attack", true);
+			mEnemyController->SetState(EnemyInfo::State::Attack);
 
 			return BTNodeState::Success;
 		}

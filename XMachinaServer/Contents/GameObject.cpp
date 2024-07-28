@@ -53,6 +53,12 @@ GameObject::~GameObject()
 
 void GameObject::Update()
 {
+	mPrevTimePoint	= mCurrTimePoint;
+	mCurrTimePoint	= std::chrono::steady_clock::now();
+
+	std::chrono::duration<double> elapsed_seconds = mCurrTimePoint - mPrevTimePoint;
+	mDeltaTime = elapsed_seconds.count();
+
 	// Update all components
 	for (auto& pair : mComponents) {
 		if (pair.second) {  // Check if the shared pointer is not null

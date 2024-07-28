@@ -21,6 +21,12 @@
 
 #include "ServerLib/ThreadManager.h"
 
+#include "FBsPacketFactory.h"
+#include "GameManager.h"
+#include "GameRoom.h"
+#include "GameObject.h"
+
+
 /// +-------------------------------------------------------------------------
 ///	> ¢º¢º¢º Task Move To Target  
 /// __________________________________________________________________________
@@ -88,8 +94,10 @@ BTNodeState MonsterTask::MoveToTarget::Evaluate()
 	/* C */ Coordinate Alpha_SectorIdx;
 
 	std::vector<Coordinate> checkSectors{};
-	checkSectors.push_back(My_SectorIdx);
-	checkSectors.push_back(Target_SectorIdx);
+	if(My_SectorIdx.checkNegative() == false)
+		checkSectors.push_back(My_SectorIdx);
+	if (Target_SectorIdx.checkNegative() == false)
+		checkSectors.push_back(Target_SectorIdx);
 
 	if (My_SectorIdx.z != Target_SectorIdx.z && My_SectorIdx.x != Target_SectorIdx.x) {
 
@@ -112,7 +120,8 @@ BTNodeState MonsterTask::MoveToTarget::Evaluate()
 			else
 				Alpha_SectorIdx = Coordinate(My_SectorIdx.x, My_SectorIdx.z + 1);
 		}
-		checkSectors.push_back(Alpha_SectorIdx);
+		if (Alpha_SectorIdx.checkNegative() == false)
+			checkSectors.push_back(Alpha_SectorIdx);
 
 	}
 
@@ -136,8 +145,14 @@ BTNodeState MonsterTask::MoveToTarget::Evaluate()
 		GetOwner()->GetAnimation()->GetController()->SetValue("Return", false);
 
 		GetOwner()->GetTransform()->RotateTargetAxisY(targetTansSnapShot.GetPosition(), mStat->GetStat_RotationSpeed());
-		GetOwner()->GetTransform()->Translate(GetOwner()->GetTransform()->GetLook(), mStat->GetStat_MoveSpeed() * DELTA_TIME);
+		GetOwner()->GetTransform()->Translate(GetOwner()->GetTransform()->GetLook(), mStat->GetStat_MoveSpeed() * GetOwner()->GetDeltaTime());
+		
+		//Vec3 Pos = GetOwner()->GetTransform()->GetPosition();
+		//Vec3 Rot = Quaternion::ToEuler(GetOwner()->GetTransform()->GetRotation());
+		//auto spkt = FBS_FACTORY->SPkt_Monster_Transform(GetOwner()->GetID(), Pos, Rot);
+		//GAME_MGR->BroadcastAllRoom(spkt);
 	}
+
 
 	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_MOVE_TO_TARGET);;
 	return BTNodeState::Success;

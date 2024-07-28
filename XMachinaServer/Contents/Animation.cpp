@@ -3,6 +3,7 @@
 
 #include "ResourceManager.h"
 #include "ServerLib/ThreadManager.h"
+#include "GameObject.h"
 
 Animation::Animation()
 {
@@ -29,6 +30,7 @@ void Animation::Clone(SPtr<Component> other)
 	SPtr<Animation> other_AnimationComponent = std::static_pointer_cast<Animation>(other);
 
 	mController = MEMORY->Make_Shared<AnimatorController>(*(other_AnimationComponent->GetController().get()));
+	mController->SetAnimOwner(this);
 
 }
 
@@ -158,7 +160,7 @@ AnimatorMotion::AnimatorMotion(const AnimatorMotion& other)
 bool AnimatorMotion::Animate()
 {
 	// LOG_MGR->Cout("[Animation : ", mName, "] (", DELTA_TIME, ")");
-	mCrntLength += mSpeed * DELTA_TIME;
+	mCrntLength += mSpeed * mAnimOwner->GetOwner()->GetDeltaTime();
 
 	for (auto& [time, callback] : mCallbacks | std::ranges::views::reverse) {
 		if (mCrntLength >= time) {
