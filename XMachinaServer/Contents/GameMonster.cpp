@@ -102,7 +102,6 @@ void GameMonster::Start()
 {
 	GameObject::Start();
 
-	
 }
 
 void GameMonster::Activate()

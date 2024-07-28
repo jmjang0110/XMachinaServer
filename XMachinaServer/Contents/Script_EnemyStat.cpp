@@ -16,7 +16,7 @@ Script_EnemyStat::~Script_EnemyStat()
 
 void Script_EnemyStat::Clone(SPtr<Component> other) 
 {
-	Script_Stat::Clone(other);
+	Script::Clone(other);
 	SPtr<Script_EnemyStat> otherScript = std::static_pointer_cast<Script_EnemyStat>(other);
 
 	this->mEnemyLevel			= otherScript->mEnemyLevel			;
@@ -28,52 +28,44 @@ void Script_EnemyStat::Clone(SPtr<Component> other)
 	this->mAttackRate			= otherScript->mAttackRate			;
 	this->mAttackRange			= otherScript->mAttackRange			;
 	this->mAttackCoolTime		= otherScript->mAttackCoolTime		;
-
-	this->mAttack1AnimName		= otherScript->mAttack1AnimName;
-	this->mAttack2AnimName		= otherScript->mAttack2AnimName;
-	this->mAttack3AnimName		= otherScript->mAttack3AnimName;
-
-	this->mDeathAnimName		= otherScript->mDeathAnimName;
-	this->mGetHitAnimName		= otherScript->mGetHitAnimName;
-
 }
 
 void Script_EnemyStat::Activate()
 {
-	Script_Stat::Activate();
+	Script::Activate();
 
 }
 
 void Script_EnemyStat::DeActivate()
 {
-	Script_Stat::DeActivate();
+	Script::DeActivate();
 
 }
 
 bool Script_EnemyStat::WakeUp()
 {
-	Script_Stat::WakeUp();
+	Script::WakeUp();
 
 	return false;
 }
 
 bool Script_EnemyStat::Start()
 {
-	Script_Stat::Start();
+	Script::Start();
 
 	return false;
 }
 
 bool Script_EnemyStat::Update()
 {
-	Script_Stat::Update();
+	Script::Update();
 
 	return false;
 }
 
 void Script_EnemyStat::OnDestroy()
 {
-	Script_Stat::OnDestroy();
+	Script::OnDestroy();
 
 }
 

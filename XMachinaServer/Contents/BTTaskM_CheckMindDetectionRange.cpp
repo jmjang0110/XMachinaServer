@@ -53,7 +53,6 @@ bool MonsterTask::CheckMindDetectionRange::SetTargetNearestEnemy()
 	ViewList vList = mEnemyController->GetOwnerMonster()->GetOwnerNPCController()->GetOwnerRoom()->GetSectorController()->GetViewList(pos, 10.f);
 	SPtr<GameObject> target = nullptr;
 
-	bool isSetTarget = false;
 	for (int i = 0; i < vList.VL_Monsters.size(); ++i) {
 		if (vList.VL_Monsters[i]->IsActive() == false)
 			continue;
@@ -61,16 +60,15 @@ bool MonsterTask::CheckMindDetectionRange::SetTargetNearestEnemy()
 		Vec3 enemyPos = vList.VL_Monsters[i]->GetTransform()->GetSnapShot().GetPosition();
 		float distance = Vec3::Distance(pos, enemyPos);
 
-		if (distance < minDistance && distance < mStat->GetStat_DetectionRange()) {
+		if (distance < minDistance) {
 			minDistance = distance;
 			target      = vList.VL_Monsters[i];
-			isSetTarget = true;
 		}
 	}
 
 	mEnemyController->SetTarget(target);
 
-	return isSetTarget;
+	return true;
 
 }
 

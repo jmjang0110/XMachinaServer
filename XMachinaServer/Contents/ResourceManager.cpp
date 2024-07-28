@@ -175,9 +175,6 @@ void BattleScene::Load()
 					collider->SetBoundingSphereList(model->mBSList);
 					collider->SetBoundingBoxList(model->mBoxList);
 
-					/// +---------------------------------------------------
-					///	¡å Component : Animation 
-					/// ---------------------------------------------------+
 					object->SetAnimation(model->mAnimatorController);
 
 					UINT32 ID = static_cast<UINT32>(mEnemies.size());

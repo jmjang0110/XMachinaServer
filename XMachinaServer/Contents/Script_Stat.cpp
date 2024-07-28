@@ -78,13 +78,6 @@ void Script_Stat::Clone(SPtr<Component> other)
 	Script::Clone(other);
 	SPtr<Script_Stat> otherScript = std::static_pointer_cast<Script_Stat>(other);
 
-	this->mCrntHP			= otherScript->mCrntHP;
-	this->mShieldAmount		= otherScript->mShieldAmount;
-	this->mIsDead			= otherScript->mIsDead;
-	this->mMaxHP			= otherScript->mMaxHP;
-	this->mPhero			= otherScript->mPhero;
-	this->mPrevHP			= otherScript->mPrevHP;
-
 }
 
 void Script_Stat::Activate()

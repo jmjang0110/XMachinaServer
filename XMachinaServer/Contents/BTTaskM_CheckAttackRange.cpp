@@ -56,7 +56,8 @@ BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 		
 		// 너무 가까우면 계속 돈다 그래서 적당히 가까우면 Attack State 로 바꾼다.
 		if (distance < minDistance || Angle < 80.f) {
-		
+			mEnemyController->RemoveAllAnimation();
+			GetOwner()->GetAnimation()->GetController()->SetValue("Attack", true);
 			mEnemyController->SetState(EnemyInfo::State::Attack);
 
 			return BTNodeState::Success;
@@ -70,7 +71,18 @@ MonsterTask::CheckAttackRange::CheckAttackRange(SPtr_GameObject owner, std::func
 	: MonsterBTTask(owner, BTTaskType::MonT_CheckAttackRange, callback)
 
 {
+	const auto& o1 = GetOwner();
+	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
+	mStat = GetStat(GetOwner()->GetType());
 
+
+	const auto& motion = GetOwner()->GetAnimation()->GetController()->FindMotionByName(mStat->GetStat_AttackAnimName());
+	if (motion) {
+		motion->AddEndCallback(std::bind(&CheckAttackRange::AttackEndCallback, this));
+	}
+	else {
+		LOG_MGR->Cout("[ERROR] Couldn't find attack motion : ", GetOwner()->GetName(), " - ",  mStat->GetStat_AttackAnimName(), "\n");
+	}
 }
 
 MonsterTask::CheckAttackRange::~CheckAttackRange()

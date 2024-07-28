@@ -62,16 +62,10 @@ bool Script_Enemy::WakeUp()
 bool Script_Enemy::Start()
 {
 	Script_EnemyStat::Start();
-	
-	if (GetStat_Attack1AnimName() != "None") {
-		GetOwner()->GetAnimation()->GetController()->FindMotionByName(GetStat_Attack1AnimName())->AddEndCallback(std::bind(&Script_Enemy::AttackEndCallback, this));
-	}
-	if (GetStat_Attack2AnimName() != "None") {
-		GetOwner()->GetAnimation()->GetController()->FindMotionByName(GetStat_Attack2AnimName())->AddEndCallback(std::bind(&Script_Enemy::AttackEndCallback, this));
-	}
-	if (GetStat_Attack3AnimName() != "None") {
-		GetOwner()->GetAnimation()->GetController()->FindMotionByName(GetStat_Attack3AnimName())->AddEndCallback(std::bind(&Script_Enemy::AttackEndCallback, this));
-	}
+
+	mEnemyController = std::dynamic_pointer_cast<Script_EnemyController>(GetOwner()->AddScript<Script_EnemyController>(ScriptInfo::Type::EnemyController));
+	//GetOwner()->AddScript<Script_PheroDropper>(ScriptInfo::Type::PheroDropper);
+	//GetOwner()->AddScript<Script_DefaultEnemyBT>(ScriptInfo::Type::BehaviorTree);
 
     return true;
 }
@@ -94,28 +88,10 @@ void Script_Enemy::Attack()
 {
 	Script_EnemyStat::Attack();
 
-	mEnemyController->RemoveAllAnimation();
-	GetOwner()->GetAnimation()->GetController()->SetValue("Attack", true);
 }
-
 
 void Script_Enemy::AttackCallback()
 {
-	if (!mEnemyController->GetTarget()) {
-		return;
-	}
-
-	if (Vec3::Distance(mEnemyController->GetTarget()->GetTransform()->GetSnapShot().GetPosition(), GetOwner()->GetTransform()->GetPosition()) <= GetStat_AttackRange()) {
-		auto stat_script = mEnemyController->GetTarget()->GetScript<Script_Stat>(ScriptInfo::Type::Stat);
-		if (stat_script)
-			stat_script->Hit(GetStat_AttackRate(), GetOwner());
-	}
-}
-
-void Script_Enemy::AttackEndCallback()
-{
-	GetOwner()->GetAnimation()->GetController()->SetValue("Attack", false);
-	mEnemyController->SetState(EnemyInfo::State::Idle);
 }
 
 void Script_Enemy::Dead()

@@ -20,9 +20,7 @@ Script_Ceratoferox::Script_Ceratoferox(SPtr<GameObject> owner, ScriptInfo::Type 
     Script_EnemyStat::SetStat_AttackRange(2);
     Script_EnemyStat::SetStat_AttackCoolTime(0);
     Script_EnemyStat::SetMaxHP(300);
-    Script_EnemyStat::SetStat_Attack1AnimName("DoubleClawsAttack");
-    Script_EnemyStat::SetStat_Attack2AnimName("None");
-    Script_EnemyStat::SetStat_Attack3AnimName("None");
+    Script_EnemyStat::SetStat_AttackAnimName("DoubleClawsAttack");
     Script_EnemyStat::SetStat_DeathAnimName("GetHitFront");
     Script_EnemyStat::SetStat_GetHitName("Death");
 
@@ -33,7 +31,6 @@ Script_Ceratoferox::Script_Ceratoferox(SPtr<GameObject> owner, ScriptInfo::Type 
 
 Script_Ceratoferox::~Script_Ceratoferox()
 {
-
 }
 
 void Script_Ceratoferox::Clone(SPtr<Component> other)
@@ -45,66 +42,44 @@ void Script_Ceratoferox::Clone(SPtr<Component> other)
 
 void Script_Ceratoferox::Activate()
 {
-    Script_Enemy::Activate();
-
 }
 
 void Script_Ceratoferox::DeActivate()
 {
-    Script_Enemy::DeActivate();
-
 }
 
 bool Script_Ceratoferox::WakeUp()
 {
-    Script_Enemy::WakeUp();
-
     return false;
 }
 
 bool Script_Ceratoferox::Start()
 {
-    Script_Enemy::Start();
-
-    GetOwner()->GetAnimation()->GetController()->FindMotionByName(Script_EnemyStat::GetStat_Attack1AnimName())->AddCallback(std::bind(&Script_Ceratoferox::AttackCallback, this), 34);
-    
     return false;
 }
 
 bool Script_Ceratoferox::Update()
 {
-    Script_Enemy::Update();
-
     return false;
 }
 
 void Script_Ceratoferox::OnDestroy()
 {
-    Script_Enemy::OnDestroy();
-
 }
 
 void Script_Ceratoferox::Attack()
 {
-    Script_Enemy::Attack();
-
 }
 
 void Script_Ceratoferox::AttackCallback()
 {
-    Script_Enemy::AttackCallback();
-
 }
 
 void Script_Ceratoferox::Dead()
 {
-    Script_Enemy::Dead();
-
 }
 
 bool Script_Ceratoferox::Hit(float damage, SPtr_GameObject instigator)
 {
-    Script_Enemy::Hit(damage, instigator);
-
     return false;
 }

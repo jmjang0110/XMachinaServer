@@ -107,12 +107,11 @@ void AnimatorController::Animate()
 
 }
 
-void AnimatorController::CheckTransition(bool isChangedImmed) const
+void AnimatorController::CheckTransition() const
 {
-	for (auto& layer : mLayers) {
-		auto nextMotion = layer->CheckTransition(this, isChangedImmed);
-	}
-
+    for (auto& layer : mLayers) {
+        layer->CheckTransition(this);
+    }
 }
 
 sptr<AnimatorMotion> AnimatorController::FindMotionByName(const std::string& motionName, const std::string& layerName) const
@@ -162,10 +161,6 @@ bool AnimatorMotion::Animate()
 {
 	// LOG_MGR->Cout("[Animation : ", mName, "] (", DELTA_TIME, ")");
 	mCrntLength += mSpeed * mAnimOwner->GetOwner()->GetDeltaTime();
-
-	if (mCallbackAnimate) {
-		mCallbackAnimate->Callback();
-	}
 
 	for (auto& [time, callback] : mCallbacks | std::ranges::views::reverse) {
 		if (mCrntLength >= time) {
@@ -247,16 +242,6 @@ void AnimatorMotion::DelChabgeCallback()
 
 }
 
-void AnimatorMotion::AddAnimateCallback(const std::function<void()>& callback)
-{
-	mCallbackAnimate = std::make_shared<MotionCallback>(callback);
-}
-
-void AnimatorMotion::DelAnimateCallback()
-{
-	mCallbackAnimate = nullptr;
-}
-
 void AnimatorMotion::AddCallback(const std::function<void()>& callback, int frame)
 {
 	mCallbacks.insert(std::make_pair(GetFrameTime(frame), MotionCallback{ callback }));
@@ -287,7 +272,7 @@ AnimatorLayer::AnimatorLayer(const AnimatorLayer& other)
 	mCrntState = mRootStateMachine->Entry();
 }
 
-sptr<AnimatorMotion> AnimatorLayer::CheckTransition(const AnimatorController* controller, bool isChangeImmed)
+sptr<AnimatorMotion> AnimatorLayer::CheckTransition(const AnimatorController* controller)
 {
 	const auto& nextState = mRootStateMachine->CheckTransition(controller);
 	if (!nextState) {

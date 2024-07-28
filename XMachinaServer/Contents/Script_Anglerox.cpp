@@ -20,9 +20,7 @@ Script_Anglerox::Script_Anglerox(SPtr<GameObject> owner, ScriptInfo::Type type)
     Script_EnemyStat::SetStat_AttackRange(2);
     Script_EnemyStat::SetStat_AttackCoolTime(0);
     Script_EnemyStat::SetMaxHP(200);
-    Script_EnemyStat::SetStat_Attack1AnimName("ClawsAttack2HitCombo");
-    Script_EnemyStat::SetStat_Attack2AnimName("None");
-    Script_EnemyStat::SetStat_Attack3AnimName("None");
+    Script_EnemyStat::SetStat_AttackAnimName("ClawsAttack2HitCombo");
     Script_EnemyStat::SetStat_DeathAnimName("Death");
     Script_EnemyStat::SetStat_GetHitName("GetHitFront");
 
@@ -44,64 +42,44 @@ void Script_Anglerox::Clone(SPtr<Component> other)
 
 void Script_Anglerox::Activate()
 {
-    Script_Enemy::Activate();
-
 }
 
 void Script_Anglerox::DeActivate()
 {
-    Script_Enemy::DeActivate();
-
 }
 
 bool Script_Anglerox::WakeUp()
 {
-    Script_Enemy::WakeUp();
-
 	return false;
 }
 
 bool Script_Anglerox::Start()
 {
-    Script_Enemy::Start();
-    GetOwner()->GetAnimation()->GetController()->FindMotionByName(Script_EnemyStat::GetStat_Attack1AnimName())->AddCallback(std::bind(&Script_Anglerox::AttackCallback, this), 10);
-    GetOwner()->GetAnimation()->GetController()->FindMotionByName(Script_EnemyStat::GetStat_Attack1AnimName())->AddCallback(std::bind(&Script_Anglerox::AttackCallback, this), 32);
 	return false;
 }
 
 bool Script_Anglerox::Update()
 {
-    Script_Enemy::Update();
-
 	return false;
 }
 
 void Script_Anglerox::OnDestroy()
 {
-    Script_Enemy::OnDestroy();
-
 }
 
 void Script_Anglerox::Attack()
 {
-    Script_Enemy::Attack();
 }
 
 void Script_Anglerox::AttackCallback()
 {
-    Script_Enemy::AttackCallback();
-
 }
 
 void Script_Anglerox::Dead()
 {
-    Script_Enemy::Dead();
-
 }
 
 bool Script_Anglerox::Hit(float damage, SPtr_GameObject instigator)
 {
-    Script_Enemy::Hit(damage, instigator);
-
 	return false;
 }

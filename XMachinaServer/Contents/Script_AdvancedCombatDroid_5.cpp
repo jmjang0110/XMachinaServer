@@ -10,32 +10,27 @@ Script_AdvancedCombatDroid_5::Script_AdvancedCombatDroid_5(SPtr<GameObject> owne
 {
     Script_EnemyStat::SetID(owner->GetID());
     
-    Script_EnemyStat::SetStat_EnemyLevel(3);
-    Script_EnemyStat::SetStat_PheroLevel(3);
+    Script_EnemyStat::SetStat_EnemyLevel(1);
+    Script_EnemyStat::SetStat_PheroLevel(1);
     Script_EnemyStat::SetStat_MoveSpeed(2.5);
-    Script_EnemyStat::SetStat_DetectionRange(15);
+    Script_EnemyStat::SetStat_DetectionRange(1.5);
     Script_EnemyStat::SetStat_RotationSpeed(150);
     Script_EnemyStat::SetStat_AttackRotationSpeed(250);
     Script_EnemyStat::SetStat_AttackRate(30);
     Script_EnemyStat::SetStat_AttackRange(1.5);
     Script_EnemyStat::SetStat_AttackCoolTime(0);
     Script_EnemyStat::SetMaxHP(150);
-
-    Script_EnemyStat::SetStat_Attack1AnimName("2HitComboUnarmed");
-    Script_EnemyStat::SetStat_Attack2AnimName("None");
-    Script_EnemyStat::SetStat_Attack3AnimName("None");
-
+    Script_EnemyStat::SetStat_AttackAnimName("2HitComboUnarmed");
     Script_EnemyStat::SetStat_DeathAnimName("DeathFrontCombat");
     Script_EnemyStat::SetStat_GetHitName("IdleCombat");
 
-    owner->SetName("AdvancedCombatDroid_5");
+   owner->SetName("AdvancedCombatDroid_5");
 
 
 }
 
 Script_AdvancedCombatDroid_5::~Script_AdvancedCombatDroid_5()
 {
-
 }
 
 void Script_AdvancedCombatDroid_5::Clone(SPtr<Component> other) 
@@ -47,15 +42,10 @@ void Script_AdvancedCombatDroid_5::Clone(SPtr<Component> other)
 
 void Script_AdvancedCombatDroid_5::Activate()
 {
-    Script_Enemy::Activate();
-
-    
 }
 
 void Script_AdvancedCombatDroid_5::DeActivate()
 {
-    Script_Enemy::Activate();
-
 }
 
 bool Script_AdvancedCombatDroid_5::WakeUp()
@@ -65,48 +55,31 @@ bool Script_AdvancedCombatDroid_5::WakeUp()
 
 bool Script_AdvancedCombatDroid_5::Start()
 {
-    Script_Enemy::Start();
-
-    GetOwner()->GetAnimation()->GetController()->FindMotionByName(Script_EnemyStat::GetStat_Attack1AnimName())->AddCallback(std::bind(&Script_AdvancedCombatDroid_5::AttackCallback, this), 3);
-    GetOwner()->GetAnimation()->GetController()->FindMotionByName(Script_EnemyStat::GetStat_Attack1AnimName())->AddCallback(std::bind(&Script_AdvancedCombatDroid_5::AttackCallback, this), 20);
-
     return true;
 }
 
 bool Script_AdvancedCombatDroid_5::Update()
 {
-    Script_Enemy::Update();
-
     return true;
 }
 
 void Script_AdvancedCombatDroid_5::OnDestroy()
 {
-    Script_Enemy::OnDestroy();
-
 }
 
 void Script_AdvancedCombatDroid_5::Attack()
 {
-    Script_Enemy::Attack();
-
 }
 
 void Script_AdvancedCombatDroid_5::AttackCallback()
 {
-    Script_Enemy::AttackCallback();
-
 }
 
 void Script_AdvancedCombatDroid_5::Dead()
 {
-    Script_Enemy::Dead();
-
 }
 
 bool Script_AdvancedCombatDroid_5::Hit(float damage, SPtr_GameObject instigator)
 {
-    Script_Enemy::Hit(damage, instigator);
-
     return false;
 }
