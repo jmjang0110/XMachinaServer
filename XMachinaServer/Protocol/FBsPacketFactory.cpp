@@ -354,11 +354,13 @@ bool FBsPacketFactory::Process_CPkt_PlayerOnSkill(SPtr_Session session, const FB
 	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
 	auto playerScript = gameSession->GetPlayer()->GetScript<Script_Player>(ScriptInfo::Type::Stat);
 	float PheroAmount = playerScript->GetPhero();
+	int mindontrol_monster_id = pkt.mindcontrol_monster_Id();
+
 
 	/// +---------------------------------------------------------------------------------------
 	/// SEND NEW PLAYER PKT TO SESSIONS IN ROOM ( SESSION->GET ROOM ID ) - EXCEPT ME ( SESSION )
 	/// ---------------------------------------------------------------------------------------+
-	auto spkt = FBS_FACTORY->SPkt_PlayerOnSkill(session->GetID(), type, PheroAmount);
+	auto spkt = FBS_FACTORY->SPkt_PlayerOnSkill(session->GetID(), type, PheroAmount, mindontrol_monster_id);
 	GAME_MGR->BroadcastRoom(gameSession->GetPlayerSnapShot().RoomID, spkt, gameSession->GetID());
 
 	LOG_MGR->Cout(session->GetID(), "SKILLON", static_cast<int>(type), "\n");
@@ -796,12 +798,11 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_RemovePlayer(uint32_t removeSessionID)
 	return sendBuffer;
 }
 
-SPtr_SendPktBuf FBsPacketFactory::SPkt_PlayerOnSkill(uint32_t player_id, FBProtocol::PLAYER_SKILL_TYPE skill_type, float phero_amount)
+SPtr_SendPktBuf FBsPacketFactory::SPkt_PlayerOnSkill(uint32_t player_id, FBProtocol::PLAYER_SKILL_TYPE skill_type, float phero_amount, int mindcontrol_monster_id)
 {
 	flatbuffers::FlatBufferBuilder builder{};
 
-	int32_t id = player_id;
-	auto ServerPacket = FBProtocol::CreateSPkt_PlayerOnSkill(builder, id, skill_type);
+	auto ServerPacket = FBProtocol::CreateSPkt_PlayerOnSkill(builder, player_id, skill_type, mindcontrol_monster_id);
 	builder.Finish(ServerPacket);
 
 	const uint8_t* bufferPointer = builder.GetBufferPointer();
