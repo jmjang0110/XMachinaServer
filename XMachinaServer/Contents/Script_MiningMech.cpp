@@ -20,7 +20,9 @@ Script_MiningMech::Script_MiningMech(SPtr<GameObject> owner, ScriptInfo::Type ty
     Script_EnemyStat::SetStat_AttackRange(5);
     Script_EnemyStat::SetStat_AttackCoolTime(0);
     Script_EnemyStat::SetMaxHP(1500);
-    Script_EnemyStat::SetStat_AttackAnimName("Direct2HitComboAttackForward");
+    Script_EnemyStat::SetStat_Attack1AnimName("Direct2HitComboAttackForward");
+    Script_EnemyStat::SetStat_Attack2AnimName("UppercutDrillAttack");
+    Script_EnemyStat::SetStat_Attack3AnimName("SmashAttack");
     Script_EnemyStat::SetStat_DeathAnimName("Deactivation");
     Script_EnemyStat::SetStat_GetHitName("Blocked");
 
@@ -64,10 +66,6 @@ bool Script_MiningMech::Update()
 }
 
 void Script_MiningMech::OnDestroy()
-{
-}
-
-void Script_MiningMech::Attack()
 {
 }
 

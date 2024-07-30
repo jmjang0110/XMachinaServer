@@ -32,7 +32,6 @@ public:
 	/// +------------------------------
 ///		Stat :  virtual function 
 /// ------------------------------+
-	virtual void Attack();
 	virtual void AttackCallback();
 	virtual void Dead();
 	virtual bool Hit(float damage, SPtr_GameObject instigator = nullptr) override;

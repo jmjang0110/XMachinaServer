@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Transform.h"
 #include "TimeManager.h"
+#include "GameObject.h"
 
 #include "ServerLib/ThreadManager.h"
 
@@ -468,7 +469,7 @@ bool Transform::RotateTargetAxisY(const Vec3& target, float rotationSpeed)
 	rotationSpeed *= t;
 
 	const float rotationValue = Math::Sign(angle) * rotationSpeed;
-	float rotationAngle = rotationValue * DELTA_TIME;
+	float rotationAngle = rotationValue * GetOwner()->GetDeltaTime();
 
 	if (fabs(rotationAngle) > fabs(angle)) {
 		rotationAngle = angle;

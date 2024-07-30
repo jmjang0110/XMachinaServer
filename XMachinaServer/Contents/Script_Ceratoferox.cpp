@@ -19,8 +19,10 @@ Script_Ceratoferox::Script_Ceratoferox(SPtr<GameObject> owner, ScriptInfo::Type 
     Script_EnemyStat::SetStat_AttackRate(50);
     Script_EnemyStat::SetStat_AttackRange(2);
     Script_EnemyStat::SetStat_AttackCoolTime(0);
-    Script_EnemyStat::SetMaxHP(300);
-    Script_EnemyStat::SetStat_AttackAnimName("DoubleClawsAttack");
+    Script_EnemyStat::SetMaxHP(200);
+    Script_EnemyStat::SetStat_Attack1AnimName("DoubleClawsAttack");
+    Script_EnemyStat::SetStat_Attack2AnimName("None");
+    Script_EnemyStat::SetStat_Attack3AnimName("None");
     Script_EnemyStat::SetStat_DeathAnimName("GetHitFront");
     Script_EnemyStat::SetStat_GetHitName("Death");
 
@@ -64,10 +66,6 @@ bool Script_Ceratoferox::Update()
 }
 
 void Script_Ceratoferox::OnDestroy()
-{
-}
-
-void Script_Ceratoferox::Attack()
 {
 }
 

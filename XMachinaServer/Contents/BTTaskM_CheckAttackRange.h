@@ -17,7 +17,6 @@ namespace MonsterTask {
 
 	public:
 		virtual BTNodeState Evaluate() override;
-		void AttackEndCallback();
 
 
 	public:

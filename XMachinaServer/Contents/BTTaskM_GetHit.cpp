@@ -42,16 +42,13 @@ BTNodeState MonsterTask::GetHit::Evaluate()
 MonsterTask::GetHit::GetHit(SPtr_GameObject owner, std::function<void()> callback)
 	: MonsterBTTask(owner, BTTaskType::MonT_GetHit, callback)
 {
-
-	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
-	mStat = GetStat(owner->GetType());
-
-	
 	mPrevHp          = mStat->GetCrntHp();
 	mKnockBack       = 0.05f;
 	const auto& motion = GetOwner()->GetAnimation()->GetController()->FindMotionByName(mStat->GetStat_GetHitAnimName());
-	motion->AddEndCallback(std::bind(&GetHit::GetHitEndCallback, this));
 
+	if (motion) {
+		motion->AddEndCallback(std::bind(&GetHit::GetHitEndCallback, this));
+	}
 }
 
 MonsterTask::GetHit::~GetHit()

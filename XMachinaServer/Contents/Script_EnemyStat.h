@@ -22,7 +22,9 @@ private:
 	float		mAttackRange         = {};
 	float		mAttackCoolTime      = {};
 	
-	std::string	mAttackAnimName       = {};
+	std::string	mAttack1AnimName       = {};
+	std::string	mAttack2AnimName       = {};
+	std::string	mAttack3AnimName       = {};
 	std::string mGetHitAnimName      = {};
 	std::string	mDeathAnimName       = {};
 
@@ -73,7 +75,9 @@ public:
 	float GetStat_AttackRange() const { return mAttackRange; }
 	float GetStat_AttackCoolTime() const			 { return mAttackCoolTime; }
 
-	std::string GetStat_AttackAnimName() { return mAttackAnimName; }
+	std::string GetStat_Attack1AnimName() { return mAttack1AnimName; }
+	std::string GetStat_Attack2AnimName() { return mAttack2AnimName; }
+	std::string GetStat_Attack3AnimName() { return mAttack3AnimName; }
 	std::string GetStat_GetHitAnimName() { return mGetHitAnimName; }
 	std::string GetStat_DeathAnimName()  { return mDeathAnimName; }
 
@@ -91,7 +95,9 @@ public:
 	void SetStat_AttackRange(float range)		 { mAttackRange = range; }
 	void SetStat_AttackCoolTime(float time)	     { mAttackCoolTime = time; }
 
-	void SetStat_AttackAnimName(std::string name) { mAttackAnimName = name; }
+	void SetStat_Attack1AnimName(std::string name) { mAttack1AnimName = name; }
+	void SetStat_Attack2AnimName(std::string name) { mAttack2AnimName = name; }
+	void SetStat_Attack3AnimName(std::string name) { mAttack3AnimName = name; }
 	void SetStat_GetHitName(std::string name)	  { mGetHitAnimName = name; }
 	void SetStat_DeathAnimName(std::string name)  { mDeathAnimName = name; }
 };

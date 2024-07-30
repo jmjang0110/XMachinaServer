@@ -27,7 +27,7 @@ void GameMonster::UpdateSnapShot()
 	mInfo.HP         = 100; // test
 	mInfo.Attack     = 100;
 	mInfo.Position   = GetTransform()->GetPosition();
-	//mInfo.Rotation = GetTransform()->GetRotation();
+	mInfo.Rotation	 = Quaternion::ToEuler(GetTransform()->GetRotation());
 }
 
 void GameMonster::On_ExitFromViewList()

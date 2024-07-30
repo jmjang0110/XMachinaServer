@@ -269,74 +269,73 @@ bool Script_DefaultEnemyBT::Update()
 {
     Script_BehaviorTree::Update();
 
-	if (mRoot) {
-		mRoot->Evaluate();
-		
+	if (!mRoot) {
+		return true;
+	}
 
-		FBProtocol::MONSTER_BT_TYPE PrevType = mRoot->GetEnemyController()->GetMontserPrevBTType();
-		FBProtocol::MONSTER_BT_TYPE CurrType = mRoot->GetEnemyController()->GetMonsterCurrBTType();
+	FBProtocol::MONSTER_BT_TYPE PrevType = mRoot->GetEnemyController()->GetMontserPrevBTType();
+	FBProtocol::MONSTER_BT_TYPE CurrType = mRoot->GetEnemyController()->GetMonsterCurrBTType();
 
-		if (PrevType != CurrType) {
-			/* Send Packet */
-			switch (CurrType)
-			{
-			case FBProtocol::MONSTER_BT_TYPE_DEATH:
-				LOG_MGR->Cout("MONSTER_BT_TYPE_DEATH\n");
-				break;
-			case FBProtocol::MONSTER_BT_TYPE_ATTACK_1:
-				LOG_MGR->Cout("MONSTER_BT_TYPE_ATTACK_1\n");
-				break;
-			case FBProtocol::MONSTER_BT_TYPE_ATTACK_2:
-				LOG_MGR->Cout("MONSTER_BT_TYPE_ATTACK_2\n");
-				break;
-			case FBProtocol::MONSTER_BT_TYPE_ATTACK_3:
-				LOG_MGR->Cout("MONSTER_BT_TYPE_ATTACK_3\n");
-				break;
+	if (PrevType != CurrType) {
+		/* Send Packet */
+		switch (CurrType)
+		{
+		case FBProtocol::MONSTER_BT_TYPE_DEATH:
+			LOG_MGR->Cout("MONSTER_BT_TYPE_DEATH\n");
+			break;
+		case FBProtocol::MONSTER_BT_TYPE_ATTACK_1:
+			LOG_MGR->Cout("MONSTER_BT_TYPE_ATTACK_1\n");
+			break;
+		case FBProtocol::MONSTER_BT_TYPE_ATTACK_2:
+			LOG_MGR->Cout("MONSTER_BT_TYPE_ATTACK_2\n");
+			break;
+		case FBProtocol::MONSTER_BT_TYPE_ATTACK_3:
+			LOG_MGR->Cout("MONSTER_BT_TYPE_ATTACK_3\n");
+			break;
 
-			case FBProtocol::MONSTER_BT_TYPE_GETHIT:
-				LOG_MGR->Cout("MONSTER_BT_TYPE_GETHIT\n");
-				break;
-			case FBProtocol::MONSTER_BT_TYPE_MOVE_TO_TARGET:
-				LOG_MGR->Cout("MONSTER_BT_TYPE_MOVE_TO_TARGET\n");
-				break;
-			case FBProtocol::MONSTER_BT_TYPE_MOVE_TO_PATH:
-				LOG_MGR->Cout("MONSTER_BT_TYPE_MOVE_TO_PATH\n");
-				break;
-			case FBProtocol::MONSTER_BT_TYPE_PATROL:
-				LOG_MGR->Cout("MONSTER_BT_TYPE_PATROL\n");
-				break;
-			default:
-				LOG_MGR->Cout("MONSTER BT TYPE ..XXXX \n");
-				break;
-			}
-
-			std::dynamic_pointer_cast<GameMonster>(GetOwner())->Broadcast_SPkt_Mosnter_State(CurrType);
-			mRoot->GetEnemyController()->SetBTType(CurrType);
-
-			bool IsMindControlled = mRoot->GetEnemyController()->IsMindControlled();
-
-			// [BSH] : 타겟이 어떤 몬스터의 것인지에 대한 몬스터 아이디도 보내야함.
-			int monster_id		  = GetOwner()->GetID();
-			// int monster_id     = -1;
-
-			int target_monster_id = -1;
-			int target_player_id  = -1;
-			SPtr<GameObject> target = mRoot->GetEnemyController()->GetTarget();
-			if (target) {
-				GameObjectInfo::Type objType = target->GetType();
-				if (objType == GameObjectInfo::Type::GamePlayer) {
-					target_player_id = target->GetID();
-				}
-				else {
-					target_monster_id = target->GetID();
-				}
-				auto pkt = FBS_FACTORY->SPkt_Monster_Target(monster_id, target_player_id, target_monster_id);
-				GAME_MGR->BroadcastRoom(mRoot->GetEnemyController()->GetOwnerMonster()->GetOwnerNPCController()->GetOwnerRoom()->GetID(), pkt);
-			}
+		case FBProtocol::MONSTER_BT_TYPE_GETHIT:
+			LOG_MGR->Cout("MONSTER_BT_TYPE_GETHIT\n");
+			break;
+		case FBProtocol::MONSTER_BT_TYPE_MOVE_TO_TARGET:
+			LOG_MGR->Cout("MONSTER_BT_TYPE_MOVE_TO_TARGET\n");
+			break;
+		case FBProtocol::MONSTER_BT_TYPE_MOVE_TO_PATH:
+			LOG_MGR->Cout("MONSTER_BT_TYPE_MOVE_TO_PATH\n");
+			break;
+		case FBProtocol::MONSTER_BT_TYPE_PATROL:
+			LOG_MGR->Cout("MONSTER_BT_TYPE_PATROL\n");
+			break;
+		default:
+			LOG_MGR->Cout("MONSTER BT TYPE ..XXXX \n");
+			break;
 		}
 
-		mRoot->GetEnemyController()->UpdateMonsterCurrBTType();
+		std::dynamic_pointer_cast<GameMonster>(GetOwner())->Broadcast_SPkt_Mosnter_State(CurrType);
+		mRoot->GetEnemyController()->SetBTType(CurrType);
+
+		bool IsMindControlled = mRoot->GetEnemyController()->IsMindControlled();
+
+		// [BSH] : 타겟이 어떤 몬스터의 것인지에 대한 몬스터 아이디도 보내야함.
+		int monster_id		  = GetOwner()->GetID();
+		// int monster_id     = -1;
+
+		int target_monster_id = -1;
+		int target_player_id  = -1;
+		SPtr<GameObject> target = mRoot->GetEnemyController()->GetTarget();
+		if (target) {
+			GameObjectInfo::Type objType = target->GetType();
+			if (objType == GameObjectInfo::Type::GamePlayer) {
+				target_player_id = target->GetID();
+			}
+			else {
+				target_monster_id = target->GetID();
+			}
+			auto pkt = FBS_FACTORY->SPkt_Monster_Target(monster_id, target_player_id, target_monster_id);
+			GAME_MGR->BroadcastRoom(mRoot->GetEnemyController()->GetOwnerMonster()->GetOwnerNPCController()->GetOwnerRoom()->GetID(), pkt);
+		}
 	}
+
+	mRoot->GetEnemyController()->UpdateMonsterCurrBTType();
 
     return true;
 }

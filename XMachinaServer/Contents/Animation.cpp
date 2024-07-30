@@ -41,6 +41,8 @@ bool Animation::WakeUp()
 
 bool Animation::Start()
 {
+	mController->SetAnimOwner(this);
+
     return false;
 }
 
@@ -135,6 +137,11 @@ sptr<AnimatorLayer> AnimatorController::FindLayerByName(const std::string& layer
 	throw std::runtime_error("there's no layer name in controller");
 }
 
+sptr<AnimatorMotion> AnimatorController::GetCrntMotion(const std::string& layerName) const
+{
+	return FindLayerByName(layerName)->GetCrntMotion();
+}
+
 AnimatorMotion::AnimatorMotion(const AnimatorMotionInfo& info)
 	:
 	mClip(info.Clip),
@@ -160,7 +167,16 @@ AnimatorMotion::AnimatorMotion(const AnimatorMotion& other)
 bool AnimatorMotion::Animate()
 {
 	// LOG_MGR->Cout("[Animation : ", mName, "] (", DELTA_TIME, ")");
+
+	if (!mAnimOwner) {
+		return false;
+	}
+
 	mCrntLength += mSpeed * mAnimOwner->GetOwner()->GetDeltaTime();
+
+	if (mCallbackAnimate) {
+		mCallbackAnimate->Callback();
+	}
 
 	for (auto& [time, callback] : mCallbacks | std::ranges::views::reverse) {
 		if (mCrntLength >= time) {
@@ -240,6 +256,16 @@ void AnimatorMotion::DelChabgeCallback()
 {
 	mCallbackChange = nullptr;
 
+}
+
+void AnimatorMotion::AddAnimateCallback(const std::function<void()>& callback)
+{
+	mCallbackAnimate = std::make_shared<MotionCallback>(callback);
+}
+
+void AnimatorMotion::DelAnimateCallback()
+{
+	mCallbackAnimate = nullptr;
 }
 
 void AnimatorMotion::AddCallback(const std::function<void()>& callback, int frame)

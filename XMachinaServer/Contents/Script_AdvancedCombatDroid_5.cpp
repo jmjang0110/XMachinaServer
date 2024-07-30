@@ -10,8 +10,8 @@ Script_AdvancedCombatDroid_5::Script_AdvancedCombatDroid_5(SPtr<GameObject> owne
 {
     Script_EnemyStat::SetID(owner->GetID());
     
-    Script_EnemyStat::SetStat_EnemyLevel(1);
-    Script_EnemyStat::SetStat_PheroLevel(1);
+    Script_EnemyStat::SetStat_EnemyLevel(3);
+    Script_EnemyStat::SetStat_PheroLevel(3);
     Script_EnemyStat::SetStat_MoveSpeed(2.5);
     Script_EnemyStat::SetStat_DetectionRange(1.5);
     Script_EnemyStat::SetStat_RotationSpeed(150);
@@ -20,7 +20,9 @@ Script_AdvancedCombatDroid_5::Script_AdvancedCombatDroid_5(SPtr<GameObject> owne
     Script_EnemyStat::SetStat_AttackRange(1.5);
     Script_EnemyStat::SetStat_AttackCoolTime(0);
     Script_EnemyStat::SetMaxHP(150);
-    Script_EnemyStat::SetStat_AttackAnimName("2HitComboUnarmed");
+    Script_EnemyStat::SetStat_Attack1AnimName("2HitComboUnarmed");
+    Script_EnemyStat::SetStat_Attack2AnimName("None");
+    Script_EnemyStat::SetStat_Attack3AnimName("None");
     Script_EnemyStat::SetStat_DeathAnimName("DeathFrontCombat");
     Script_EnemyStat::SetStat_GetHitName("IdleCombat");
 
@@ -64,10 +66,6 @@ bool Script_AdvancedCombatDroid_5::Update()
 }
 
 void Script_AdvancedCombatDroid_5::OnDestroy()
-{
-}
-
-void Script_AdvancedCombatDroid_5::Attack()
 {
 }
 

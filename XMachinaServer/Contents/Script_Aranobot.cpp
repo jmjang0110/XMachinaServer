@@ -21,7 +21,9 @@ Script_Aranobot::Script_Aranobot(SPtr<GameObject> owner, ScriptInfo::Type type)
     Script_EnemyStat::SetStat_AttackRange(6);
     Script_EnemyStat::SetStat_AttackCoolTime(0);
     Script_EnemyStat::SetMaxHP(200);
-    Script_EnemyStat::SetStat_AttackAnimName("GetHitFront");
+    Script_EnemyStat::SetStat_Attack1AnimName("GetHitFront");
+    Script_EnemyStat::SetStat_Attack2AnimName("None");
+    Script_EnemyStat::SetStat_Attack3AnimName("None");
     Script_EnemyStat::SetStat_DeathAnimName("Death");
     Script_EnemyStat::SetStat_GetHitName("GetHitLeft");
 
@@ -65,10 +67,6 @@ bool Script_Aranobot::Update()
 }
 
 void Script_Aranobot::OnDestroy()
-{
-}
-
-void Script_Aranobot::Attack()
 {
 }
 

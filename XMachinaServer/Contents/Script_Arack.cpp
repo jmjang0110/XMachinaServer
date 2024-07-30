@@ -19,8 +19,10 @@ Script_Arack::Script_Arack(SPtr<GameObject> owner, ScriptInfo::Type type)
     Script_EnemyStat::SetStat_AttackRate(5);
     Script_EnemyStat::SetStat_AttackRange(3);
     Script_EnemyStat::SetStat_AttackCoolTime(0);
-    Script_EnemyStat::SetMaxHP(50);
-    Script_EnemyStat::SetStat_AttackAnimName("ClawsAttack");
+    Script_EnemyStat::SetMaxHP(30);
+    Script_EnemyStat::SetStat_Attack1AnimName("ClawsAttack");
+    Script_EnemyStat::SetStat_Attack2AnimName("None");
+    Script_EnemyStat::SetStat_Attack3AnimName("None");
     Script_EnemyStat::SetStat_DeathAnimName("Death");
     Script_EnemyStat::SetStat_GetHitName("GetHitFront");
 
@@ -63,10 +65,6 @@ bool Script_Arack::Update()
 }
 
 void Script_Arack::OnDestroy()
-{
-}
-
-void Script_Arack::Attack()
 {
 }
 

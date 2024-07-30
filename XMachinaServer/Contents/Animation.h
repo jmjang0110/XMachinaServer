@@ -41,7 +41,7 @@ class AnimatorStateMachine;
 class AnimatorMotion {
 
 private:
-	Animation* mAnimOwner;
+	Animation* mAnimOwner{};
 
 private:
 	sptr<const AnimationClip> mClip{};
@@ -55,12 +55,16 @@ private:
 	std::map<float, MotionCallback> mCallbacks;
 	sptr<MotionCallback> mCallbackStop;
 	sptr<MotionCallback> mCallbackChange;
+	sptr<MotionCallback> mCallbackAnimate;
 
 public:
 	AnimatorMotion(const AnimatorMotionInfo& info);
 	AnimatorMotion(const AnimatorMotion& other);
 
-	void SetAnimOwner(Animation* animOwner) { mAnimOwner = animOwner; }
+	void SetSpeed(float speed) { mSpeed = speed; }
+	void SetAnimOwner(Animation* animOwner) { 
+		mAnimOwner = animOwner; 
+	}
 	const std::string& GetName() const { return mName; }
 
 public:
@@ -79,6 +83,8 @@ public:
 	void DelStopCallback();
 	void AddChangeCallback(const std::function<void()>& callback);
 	void DelChabgeCallback();
+	void AddAnimateCallback(const std::function<void()>& callback);
+	void DelAnimateCallback();
 
 	void AddCallback(const std::function<void()>& callback, int frame);
 	void DelCallback(int frame);
@@ -210,7 +216,9 @@ public:
 	AnimatorController(const AnimatorController& other);
 
 public:
-	void SetAnimOwner(Animation* animOwner) { for (auto& layer : mLayers) layer->SetAnimOwner(animOwner); }
+	void SetAnimOwner(Animation* animOwner) {
+		for (auto& layer : mLayers) 
+			layer->SetAnimOwner(animOwner); }
 
 	const AnimatorParameter* GetParam(const std::string& paramName) const { return &mParameters.at(paramName); }
 	bool HasParam(const std::string paramName) const { return mParameters.contains(paramName); }
@@ -256,10 +264,7 @@ public:
 	template<class T, typename std::enable_if<is_valid_param_type<T>>::type* = nullptr>
 	void SetValue(const std::string& paramName, T value)
 	{
-		if (!SetValueOnly(paramName, value)) {
-			return;
-		}
-
+		SetValueOnly(paramName, value);
 		CheckTransition();
 	}
 
@@ -272,10 +277,9 @@ public:
 
 	sptr<AnimatorMotion> FindMotionByName(const std::string& motionName, const std::string& layerName = "Base Layer") const;
 	sptr<AnimatorLayer>  FindLayerByName(const std::string& layerName) const;
+	sptr<AnimatorMotion> GetCrntMotion(const std::string& layerName = "Base Layer") const;
 
 };
-//
-
 
 
 

@@ -26,6 +26,8 @@ Script_Enemy::Script_Enemy()
 Script_Enemy::Script_Enemy(SPtr<GameObject> owner, ScriptInfo::Type type)
 	: Script_EnemyStat(owner, type)
 {
+	mEnemyController = std::dynamic_pointer_cast<Script_EnemyController>(GetOwner()->AddScript<Script_EnemyController>(ScriptInfo::Type::EnemyController));
+
 }
 
 Script_Enemy::~Script_Enemy()
@@ -78,7 +80,6 @@ bool Script_Enemy::Update()
 {
 	Script_EnemyStat::Update();
 
-
 	return true;
 }
 
@@ -92,12 +93,39 @@ void Script_Enemy::Attack()
 {
 	Script_EnemyStat::Attack();
 
+	mAnimTime += GetOwner()->GetDeltaTime();
+
 	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK_1);
 	mEnemyController->GetOwnerMonster()->SetBTState(FBProtocol::MONSTER_BT_TYPE_ATTACK_1);
 }
 
 void Script_Enemy::AttackCallback()
 {
+	if (!mEnemyController->GetTarget()) {
+		return;
+	}
+
+	// TODO : 타겟 주변 레인지 범위 공격
+	const Vec3& TargetPos = mEnemyController->GetTarget()->GetTransform()->GetSnapShot().GetPosition();
+	const Vec3& Pos = GetOwner()->GetTransform()->GetPosition();
+	if (Vec3::Distance(TargetPos, Pos) <= GetStat_AttackRange()) {
+
+		const auto& statScript = mEnemyController->GetTarget()->GetScript<Script_Stat>(ScriptInfo::Type::Stat);
+		if (statScript) {
+			// statScript->Hit(GetStat_AttackRate(), nullptr);
+		}
+	}
+}
+
+void Script_Enemy::AttackEndCallback()
+{
+	mEnemyController->SetState(EnemyInfo::State::Idle);
+
+}
+
+void Script_Enemy::DeathEndCallback()
+{
+	GetOwner()->GetAnimation()->GetController()->GetCrntMotion()->SetSpeed(0.f);
 }
 
 void Script_Enemy::Dead()

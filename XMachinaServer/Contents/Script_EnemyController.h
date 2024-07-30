@@ -28,6 +28,8 @@ namespace EnemyInfo
 		Walk,
 		GetHit,
 		Attack,
+		Attack2,
+		Attack3,
 		Death,
 		END,
 	};
@@ -93,7 +95,7 @@ public:
 	std::stack<Vec3>*			GetPaths()					{ return &mPaths; }
 	FBProtocol::MONSTER_BT_TYPE GetMonsterCurrBTType()		{ return mCurrBTType; }
 	FBProtocol::MONSTER_BT_TYPE GetMontserPrevBTType()		{ return mPrevBTType; }
-	FBProtocol::MONSTER_BT_TYPE GetMonsterBTType() { mLock_BTType.LockRead(); FBProtocol::MONSTER_BT_TYPE btType = mBTType; mLock_BTType.UnlockRead(); return btType; }
+	FBProtocol::MONSTER_BT_TYPE GetMonsterBTType()			{ mLock_BTType.LockRead(); FBProtocol::MONSTER_BT_TYPE btType = mBTType; mLock_BTType.UnlockRead(); return btType; }
 	/// +---------------------------------------------------
 	///						S E T T E R 
 	/// ---------------------------------------------------+
@@ -104,7 +106,7 @@ public:
 	void SetPathTargetObject(SPtr<GameObject> target)			{ mPathTarget    = target; }
 	void SetOwnerMonster(SPtr<GameMonster> ownerMonster)		{ mOwnerMonster  = ownerMonster; }
 	void SetTarget(SPtr<GameObject> target)						{ mTarget = target; }
-	void SetBTType(FBProtocol::MONSTER_BT_TYPE btType) { mLock_BTType.LockWrite(); mBTType = btType; mLock_BTType.UnlockWrite(); }
+	void SetBTType(FBProtocol::MONSTER_BT_TYPE btType)			{ mLock_BTType.LockWrite(); mBTType = btType; mLock_BTType.UnlockWrite(); }
 
 	/// +---------------------------------------------------
 	///						MIND CONTROL 

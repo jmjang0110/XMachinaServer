@@ -185,6 +185,7 @@ void BattleScene::Load()
 					/// +---------------------------------------------------
 					///	¡å Script  
 					/// ---------------------------------------------------+
+					object->AddScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
 					switch (objectType)
 					{
 					case GameObjectInfo::Type::Monster_Ursacetus: {
@@ -255,7 +256,7 @@ void BattleScene::Load()
 						break;
 					}
 
-					object->AddScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
+
 					object->AddScript<Script_DefaultEnemyBT>(ScriptInfo::Type::DefaultEnemyBT);
 					const auto& pherodropper = object->AddScript<Script_PheroDropper>(ScriptInfo::Type::PheroDropper);
 					pherodropper->Init();

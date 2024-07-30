@@ -20,7 +20,9 @@ Script_Rapax::Script_Rapax(SPtr<GameObject> owner, ScriptInfo::Type type)
     Script_EnemyStat::SetStat_AttackRange(2);
     Script_EnemyStat::SetStat_AttackCoolTime(0);
     Script_EnemyStat::SetMaxHP(300);
-    Script_EnemyStat::SetStat_AttackAnimName("JumpClawsAttack");
+    Script_EnemyStat::SetStat_Attack1AnimName("JumpClawsAttack");
+    Script_EnemyStat::SetStat_Attack2AnimName("None");
+    Script_EnemyStat::SetStat_Attack3AnimName("None");
     Script_EnemyStat::SetStat_DeathAnimName("Death");
     Script_EnemyStat::SetStat_GetHitName("GetHitFront");
 
@@ -64,10 +66,6 @@ bool Script_Rapax::Update()
 }
 
 void Script_Rapax::OnDestroy()
-{
-}
-
-void Script_Rapax::Attack()
 {
 }
 

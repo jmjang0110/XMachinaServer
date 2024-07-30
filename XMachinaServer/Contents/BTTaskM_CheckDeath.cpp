@@ -21,7 +21,7 @@ BTNodeState MonsterTask::CheckDeath::Evaluate()
 
 	mEnemyController->SetState(EnemyInfo::State::Death);
 
-	mAccTime += DELTA_TIME;
+	mAccTime += GetOwner()->GetDeltaTime();
 
 	mEnemyController->RemoveAllAnimation();
 	GetOwner()->GetAnimation()->GetController()->SetValue("Death", true);

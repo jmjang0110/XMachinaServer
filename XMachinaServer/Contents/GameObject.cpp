@@ -44,7 +44,6 @@ GameObject::GameObject()
 GameObject::GameObject(UINT32 sessionID)
 	: GameEntity(sessionID)
 {
-
 }
 
 GameObject::~GameObject()

@@ -125,7 +125,7 @@ SPtr<GamePlayer> MonsterTask::CheckDetectionRange::FindDetectionPlayer()
 	if (closestPlayerID != -1) {
 		target = PC->GetPlayer(closestPlayerID);
 		if (target->IsExit() == true) {
-			target == nullptr;
+			target = nullptr;
 		}
 	}
 

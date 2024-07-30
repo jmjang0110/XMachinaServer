@@ -20,7 +20,9 @@ Script_LightBipedMech::Script_LightBipedMech(SPtr<GameObject> owner, ScriptInfo:
     Script_EnemyStat::SetStat_AttackRange(6);
     Script_EnemyStat::SetStat_AttackCoolTime(0);
     Script_EnemyStat::SetMaxHP(600);
-    Script_EnemyStat::SetStat_AttackAnimName("DodgeForward");
+    Script_EnemyStat::SetStat_Attack1AnimName("DodgeForward");
+    Script_EnemyStat::SetStat_Attack2AnimName("None");
+    Script_EnemyStat::SetStat_Attack3AnimName("None");
     Script_EnemyStat::SetStat_DeathAnimName("Deactivation");
     Script_EnemyStat::SetStat_GetHitName("IdleActive");
 
@@ -64,10 +66,6 @@ bool Script_LightBipedMech::Update()
 }
 
 void Script_LightBipedMech::OnDestroy()
-{
-}
-
-void Script_LightBipedMech::Attack()
 {
 }
 

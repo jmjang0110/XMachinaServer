@@ -72,7 +72,6 @@ BTNodeState MonsterTask::MoveToTarget::Evaluate()
 
 	// 1. Set Path Target 
 	mEnemyController->SetPathTargetObject(target);
-
 	
 	Vec3 Pos			                 = GetOwner()->GetTransform()->GetPosition();
 	TransformSnapShot targetTansSnapShot = target->GetTransform()->GetSnapShot();
@@ -80,6 +79,7 @@ BTNodeState MonsterTask::MoveToTarget::Evaluate()
 
 	Vec3 objectAdjPos	= Pos + GetOwner()->GetTransform()->GetUp() * 0.5f;
 	Vec3 targetAdjPos	= targetTansSnapShot.GetPosition() + targetTansSnapShot.GetUp() * 0.5f;
+	GetOwner()->GetAnimation()->GetController()->SetValue("Walk", true);
 
 	// 오브젝트로부터 타겟까지의 벡터
 	Vec3 toTarget = targetAdjPos - objectAdjPos;
@@ -140,6 +140,10 @@ BTNodeState MonsterTask::MoveToTarget::Evaluate()
 	// 오브젝트로부터 타겟까지의 벡터
 	const float kMinDistance = 0.1f;
 
+	const float s = mStat->GetStat_MoveSpeed();
+	const float d = GetOwner()->GetDeltaTime();
+
+
 	// 타겟에 도착하지 않았을 경우에만 이동
 	if (toTarget.Length() > kMinDistance) {
 		GetOwner()->GetAnimation()->GetController()->SetValue("Return", false);
@@ -147,17 +151,15 @@ BTNodeState MonsterTask::MoveToTarget::Evaluate()
 		GetOwner()->GetTransform()->RotateTargetAxisY(targetTansSnapShot.GetPosition(), mStat->GetStat_RotationSpeed());
 		GetOwner()->GetTransform()->Translate(GetOwner()->GetTransform()->GetLook(), mStat->GetStat_MoveSpeed() * GetOwner()->GetDeltaTime());
 		
-		//Vec3 Pos = GetOwner()->GetTransform()->GetPosition();
-		//Vec3 Rot = Quaternion::ToEuler(GetOwner()->GetTransform()->GetRotation());
-		//auto spkt = FBS_FACTORY->SPkt_Monster_Transform(GetOwner()->GetID(), Pos, Rot);
-		//GAME_MGR->BroadcastAllRoom(spkt);
+		Vec3 Pos = GetOwner()->GetTransform()->GetPosition();
+		Vec3 Rot = Quaternion::ToEuler(GetOwner()->GetTransform()->GetRotation());
+		auto spkt = FBS_FACTORY->SPkt_Monster_Transform(GetOwner()->GetID(), Pos, Rot);
+		GAME_MGR->BroadcastAllRoom(spkt);
 	}
-
 
 	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_MOVE_TO_TARGET);;
 	mEnemyController->GetOwnerMonster()->SetBTState(FBProtocol::MONSTER_BT_TYPE_MOVE_TO_TARGET);
 
 	return BTNodeState::Success;
-
 }
 

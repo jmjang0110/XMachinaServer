@@ -20,7 +20,9 @@ Script_Gobbler::Script_Gobbler(SPtr<GameObject> owner, ScriptInfo::Type type)
     Script_EnemyStat::SetStat_AttackRange(2);
     Script_EnemyStat::SetStat_AttackCoolTime(0);
     Script_EnemyStat::SetMaxHP(500);
-    Script_EnemyStat::SetStat_AttackAnimName("RamAttack");
+    Script_EnemyStat::SetStat_Attack1AnimName("RamAttack");
+    Script_EnemyStat::SetStat_Attack2AnimName("None");
+    Script_EnemyStat::SetStat_Attack3AnimName("None");
     Script_EnemyStat::SetStat_DeathAnimName("Roar");
     Script_EnemyStat::SetStat_GetHitName("GetHitFront");
 
@@ -63,10 +65,6 @@ bool Script_Gobbler::Update()
 }
 
 void Script_Gobbler::OnDestroy()
-{
-}
-
-void Script_Gobbler::Attack()
 {
 }
 

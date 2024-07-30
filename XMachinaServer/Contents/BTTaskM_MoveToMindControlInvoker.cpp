@@ -91,7 +91,7 @@ BTNodeState MonsterTask::BTTaskM_MoveToMindControlInvoker::Evaluate()
 		GetOwner()->GetAnimation()->GetController()->SetValue("Return", false);
 
 		GetOwner()->GetTransform()->RotateTargetAxisY(targetTransSnapShot.GetPosition(), mStat->GetStat_RotationSpeed());
-		GetOwner()->GetTransform()->Translate(GetOwner()->GetTransform()->GetLook(), mStat->GetStat_MoveSpeed() * DELTA_TIME);
+		GetOwner()->GetTransform()->Translate(GetOwner()->GetTransform()->GetLook(), mStat->GetStat_MoveSpeed() * GetOwner()->GetDeltaTime());
 	}
 
 	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_MOVE_TO_TARGET);;

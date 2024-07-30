@@ -931,8 +931,8 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_NewMonster(std::vector<MonsterSnapShot>& 
 	/// > table Monster{
 	/// > 		id		:  uint;
 	/// > 		type	:  ubyte; // UINT8
-	/// > 		pos		:  Position_Vec2;
-	/// > 
+	/// > 		pos_2	:  Position_Vec2;
+	/// >		rot_y	:  float;
 	/// > 		pheros	: string ;
 	/// > 
 	/// > }
@@ -944,17 +944,17 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_NewMonster(std::vector<MonsterSnapShot>& 
 	/// > ○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○
 
 	flatbuffers::FlatBufferBuilder builder{};
-
-	
 	std::vector<flatbuffers::Offset<FBProtocol::Monster>> MonsterSnapShots_Vector;
 
 	/// +------------------------------------------------------------------------------------------
 	///	Monster 정보 저장 
 	/// ------------------------------------------------------------------------------------------+
 	for (MonsterSnapShot& p : new_monsters) {
-		auto pos     = FBProtocol::CreatePosition_Vec2(builder, p.Position.x, p.Position.z);
-		auto pheros  = builder.CreateString(p.Pheros);
-		auto Monster = FBProtocol::CreateMonster(builder, p.ID, p.Type, pos, pheros); 
+		auto pos		= FBProtocol::CreatePosition_Vec2(builder, p.Position.x, p.Position.z);
+		auto pheros		= builder.CreateString(p.Pheros);
+		
+		float rot_y		= p.Rotation.y;
+		auto Monster	= FBProtocol::CreateMonster(builder, p.ID, p.Type, pos, rot_y, pheros);
 		MonsterSnapShots_Vector.push_back(Monster);
 	}
 

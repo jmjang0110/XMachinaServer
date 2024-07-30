@@ -18,7 +18,9 @@ Script_Onyscidus::Script_Onyscidus(SPtr<GameObject> owner, ScriptInfo::Type type
     Script_EnemyStat::SetStat_AttackRange(4);
     Script_EnemyStat::SetStat_AttackCoolTime(0);
     Script_EnemyStat::SetMaxHP(70);
-    Script_EnemyStat::SetStat_AttackAnimName("2HitComboClawsAttack");
+    Script_EnemyStat::SetStat_Attack1AnimName("2HitComboClawsAttack");
+    Script_EnemyStat::SetStat_Attack2AnimName("None");
+    Script_EnemyStat::SetStat_Attack3AnimName("None");
     Script_EnemyStat::SetStat_DeathAnimName("Death");
     Script_EnemyStat::SetStat_GetHitName("BlockIdle");
 
@@ -62,10 +64,6 @@ bool Script_Onyscidus::Update()
 }
 
 void Script_Onyscidus::OnDestroy()
-{
-}
-
-void Script_Onyscidus::Attack()
 {
 }
 

@@ -26,7 +26,7 @@ BTNodeState MonsterTask::Patrol::Evaluate()
 
 	if (toWayPoint.Length() > kMinDistance) {
 		GetOwner()->GetTransform()->RotateTargetAxisY(wayPoint, mStat->GetStat_RotationSpeed());
-		GetOwner()->GetTransform()->Translate(GetOwner()->GetTransform()->GetLook(), mPatrolSpeed * DELTA_TIME);
+		GetOwner()->GetTransform()->Translate(GetOwner()->GetTransform()->GetLook(), mPatrolSpeed * GetOwner()->GetDeltaTime());
 	}
 	else {
 		mCurrWayPointIdx = (mCurrWayPointIdx + 1) % mWayPoints.size();
