@@ -31,10 +31,10 @@ BTNodeState MonsterTask::CheckDetectionRange::Evaluate()
 	// 따라서 Attack이 계속 실행되지 않고 1회만 실행된다.
 	// 때문에 타겟이 있는 경우 해당 타겟을 컨트롤러에서 가져와서 스킬을 검사하고 성공을 반환해야 한다.
 	SPtr<GamePlayer> target = nullptr;
+	mEnemyController->SetTarget(nullptr);
 	if (!mEnemyController->GetTarget()) {
 		target = FindDetectionPlayer();
 		if (nullptr == target){
-			mEnemyController->SetTarget(nullptr);
 			return BTNodeState::Failure;
 		}
 		else {
@@ -97,7 +97,7 @@ SPtr<GamePlayer> MonsterTask::CheckDetectionRange::FindDetectionPlayer()
 {
 	Vec3 EnemyPos                                  = GetOwner()->GetTransform()->GetPosition();
 	PlayerController* PC                           = mEnemyController->GetOwnerMonster()->GetOwnerNPCController()->GetOwnerRoom()->GetPlayerController();
-	std::vector<std::pair<UINT32, Vec3>> playerPos = PC->GetPlayersPosition();
+	std::vector<std::pair<UINT32, Vec3>> playerPos = PC->GetPlayersPosition(); /* Lock */
 
 	int closestPlayerID = -1;
 	float minDistance = std::numeric_limits<float>::max();

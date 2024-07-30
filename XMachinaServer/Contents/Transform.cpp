@@ -79,6 +79,7 @@ bool Transform::WakeUp()
 }
 bool Transform::Start()
 {
+	mTransformSnapShot[mSnapShotIndex].WorldTransform = mWorldTransform;
 	return true;
 }
 bool Transform::Update()

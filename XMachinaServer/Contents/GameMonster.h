@@ -52,6 +52,9 @@ private:
 
 	double mTimer = 0.f;
 
+	Vec3		mSpawnPos;
+	Vec3		mSpawnRot;
+
 public:
 	virtual void Update() override;
 	virtual void WakeUp() override;

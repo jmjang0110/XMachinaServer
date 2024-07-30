@@ -200,7 +200,7 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 			/* TARGET PACKET */
 			// [BSH] : 타겟이 없어도 0을 보내주도록 해야 하며 모든 플레이어에게 브로드 캐스팅 해야한다.
 			SPtr<GameObject> target = script->GetTarget();
-			int targetplayer_id{};
+			int targetplayer_id = 0;
 			if (target && target->GetType() == GameObjectInfo::Type::GamePlayer) {
 				targetplayer_id = target->GetID();
 			}

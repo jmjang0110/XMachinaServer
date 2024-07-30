@@ -127,7 +127,7 @@ std::vector<SPtr<GameMonster>> Sector::GetMonstersInViewRange(Vec3 player_pos, f
 	std::vector<SPtr<GameMonster>> monstersInView;
 
 	for (auto& Mon : mMonsters) {
-		Vec3 pos = Mon.second->GetPosition(); /* Snap Shot - Position */
+		Vec3 pos = Mon.second->GetTransform()->GetSnapShot().GetPosition(); /* Snap Shot - Position */
 
 		// x, z 좌표 간의 거리 계산
 		float distance = static_cast<float>(std::sqrt(std::pow(pos.x - player_pos.x, 2) + std::pow(pos.z - player_pos.z, 2)));

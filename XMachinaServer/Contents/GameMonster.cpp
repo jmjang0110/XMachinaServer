@@ -34,6 +34,13 @@ void GameMonster::UpdateSnapShot()
 void GameMonster::On_ExitFromViewList()
 {
 	LOG_MGR->Cout(GetID(), " - On Exit From view List ");
+
+	GetTransform()->SetPosition(mSpawnPos);
+	GetTransform()->SetLocalRotation(Quaternion::ToQuaternion(mSpawnRot));
+
+	auto spkt = FBS_FACTORY->SPkt_Monster_Transform(GetID(), mSpawnPos, mSpawnRot);
+	GAME_MGR->BroadcastRoom(GetOwnerNPCController()->GetOwnerRoom()->GetID(), spkt);
+
 }
 
 void GameMonster::Broadcast_SPkt_Monster_Transform()
@@ -103,6 +110,8 @@ void GameMonster::Start()
 {
 	GameObject::Start();
 
+	mSpawnPos = GetTransform()->GetPosition();
+	mSpawnRot = Quaternion::ToEuler(GetTransform()->GetRotation());
 }
 
 void GameMonster::Activate()

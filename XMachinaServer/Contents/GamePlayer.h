@@ -158,7 +158,7 @@ struct PlayerSnapShot : public ObjectSnapShot
 	/// +-----------------------------------------------------------
 	///		View List 
 	/// -----------------------------------------------------------+
-	float					ViewRangeRadius = 20.f;
+	float					ViewRangeRadius = 10.f;
 	ViewList				Vlist;
 	ViewList				VList_Prev;
 
