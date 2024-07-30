@@ -69,8 +69,9 @@ void Script_Stat::Dead()
 	mIsDead = true;
 }
 
-void Script_Stat::Attack()
+bool Script_Stat::Attack()
 {
+	return true;
 }
 
 void Script_Stat::Clone(SPtr<Component> other) 

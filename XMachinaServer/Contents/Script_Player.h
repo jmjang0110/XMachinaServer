@@ -33,7 +33,7 @@ public:
 	virtual void OnDestroy() override;
 
 
-	virtual void Attack()	override;
+	virtual bool Attack()	override;
 	virtual void Dead()		override;
 	virtual bool Hit(float damage, SPtr_GameObject instigator = nullptr) override;
 

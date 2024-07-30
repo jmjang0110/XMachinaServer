@@ -69,7 +69,21 @@ bool Script_Enemy::Start()
 {
 	Script_EnemyStat::Start();
 
-	mEnemyController = std::dynamic_pointer_cast<Script_EnemyController>(GetOwner()->AddScript<Script_EnemyController>(ScriptInfo::Type::EnemyController));
+	mEnemyController = std::dynamic_pointer_cast<Script_EnemyController>(GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController));
+
+	if (GetStat_Attack1AnimName() != "None") {
+		 GetOwner()->GetAnimation()->GetController()->FindMotionByName(GetStat_Attack1AnimName())->AddEndCallback(std::bind(&Script_Enemy::AttackEndCallback, this));
+	}
+	if (GetStat_Attack2AnimName() != "None") {
+		GetOwner()->GetAnimation()->GetController()->FindMotionByName(GetStat_Attack2AnimName())->AddEndCallback(std::bind(&Script_Enemy::AttackEndCallback, this));
+	}
+	if (GetStat_Attack3AnimName() != "None") {
+		GetOwner()->GetAnimation()->GetController()->FindMotionByName(GetStat_Attack3AnimName())->AddEndCallback(std::bind(&Script_Enemy::AttackEndCallback, this));
+	}
+	if (GetStat_DeathAnimName() != "None") {
+		GetOwner()->GetAnimation()->GetController()->FindMotionByName(GetStat_DeathAnimName())->AddEndCallback(std::bind(&Script_Enemy::DeathEndCallback, this));
+	}
+
 	//GetOwner()->AddScript<Script_PheroDropper>(ScriptInfo::Type::PheroDropper);
 	//GetOwner()->AddScript<Script_DefaultEnemyBT>(ScriptInfo::Type::BehaviorTree);
 
@@ -89,20 +103,14 @@ void Script_Enemy::OnDestroy()
 
 }
 
-void Script_Enemy::Attack()
+bool Script_Enemy::Attack()
 {
-	Script_EnemyStat::Attack();
+	if (!Script_EnemyStat::Attack()) {
+		return false;
+	}
 
-	mAnimTime += GetOwner()->GetDeltaTime();
-
-	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK_1);
-	mEnemyController->GetOwnerMonster()->SetBTState(FBProtocol::MONSTER_BT_TYPE_ATTACK_1);
-}
-
-void Script_Enemy::AttackCallback()
-{
 	if (!mEnemyController->GetTarget()) {
-		return;
+		return false;
 	}
 
 	// TODO : 타겟 주변 레인지 범위 공격
@@ -115,12 +123,14 @@ void Script_Enemy::AttackCallback()
 			// statScript->Hit(GetStat_AttackRate(), nullptr);
 		}
 	}
+
+	return true;
 }
 
 void Script_Enemy::AttackEndCallback()
 {
+	mEnemyController->RemoveAllAnimation();
 	mEnemyController->SetState(EnemyInfo::State::Idle);
-
 }
 
 void Script_Enemy::DeathEndCallback()

@@ -66,9 +66,9 @@ void Script_PlayerStat::OnDestory()
 {
 }
 
-void Script_PlayerStat::Attack()
+bool Script_PlayerStat::Attack()
 {
-
+	return true;
 }
 
 void Script_PlayerStat::Dead()

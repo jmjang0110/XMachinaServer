@@ -59,6 +59,8 @@ BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 			mEnemyController->RemoveAllAnimation();
 			GetOwner()->GetAnimation()->GetController()->SetValue("IsAttack", true);
 			GetOwner()->GetAnimation()->GetController()->SetValue("Attack", true);
+			mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK_1);
+			mEnemyController->GetOwnerMonster()->SetBTState(FBProtocol::MONSTER_BT_TYPE_ATTACK_1);
 			mEnemyController->SetState(EnemyInfo::State::Attack);
 
 			return BTNodeState::Success;
@@ -73,8 +75,6 @@ MonsterTask::CheckAttackRange::CheckAttackRange(SPtr_GameObject owner, std::func
 
 {
 	const auto& o1 = GetOwner();
-	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
-	mStat = GetStat(GetOwner()->GetType());
 }
 
 MonsterTask::CheckAttackRange::~CheckAttackRange()

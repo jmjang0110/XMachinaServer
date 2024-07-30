@@ -18,13 +18,13 @@ private:
 	SPtr<Animation> mAnimation{};
 
 protected:
-	double mDeltaTime;
+	float mDeltaTime;
 
 	std::chrono::steady_clock::time_point	mCurrTimePoint;
 	std::chrono::steady_clock::time_point	mPrevTimePoint;
 
 public:
-	double GetDeltaTime() { return mDeltaTime; }
+	float GetDeltaTime() { return mDeltaTime; }
 
 public:
 	GameObject();

@@ -108,8 +108,9 @@ void Script_Player::OnDestroy()
 {
 }
 
-void Script_Player::Attack()
+bool Script_Player::Attack()
 {
+    return true;
 }
 
 void Script_Player::Dead()

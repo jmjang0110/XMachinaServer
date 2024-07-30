@@ -29,21 +29,10 @@ public:
 	///		  virtual function 
 	/// ------------------------------+
 	virtual void Clone(SPtr<Component> other) ;
-
-	virtual void Activate();
-	virtual void DeActivate();
-
-	virtual bool WakeUp();
-	virtual bool Start();
-	virtual bool Update();
-	virtual void OnDestroy();
-
 	/// +------------------------------
 	///		Stat :  virtual function 
 	/// ------------------------------+
-	virtual void Attack();
-	virtual void Dead();
-	virtual bool Hit(float damage, SPtr_GameObject instigator = nullptr) override;
+	virtual bool Attack();
 
 protected:
 	void BasicStartCallback();

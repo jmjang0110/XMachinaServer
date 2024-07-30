@@ -212,8 +212,7 @@ sptr<AnimationClip> FileIO::LoadAnimationClip(const std::string& filePath)
 
         for (int j = 0; j < boneCnt; ++j) {
             FileIO::ReadString(file);
-            std::vector<std::vector<Matrix>> keyFrameTransforms(keyFrameCnt);
-            FileIO::ReadRange(file, keyFrameTransforms[i], boneCnt);
+            Matrix m = FileIO::ReadVal<Matrix>(file);
         }
     }
 

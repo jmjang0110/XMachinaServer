@@ -52,7 +52,7 @@ public:
 	/// ------------------------------+
 	virtual bool Hit(float damage, SPtr_GameObject instigator = nullptr);
 	virtual void Dead();
-	virtual void Attack();
+	virtual bool Attack();
 
 
 public:

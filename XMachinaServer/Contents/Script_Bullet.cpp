@@ -55,7 +55,7 @@ bool Script_Bullet::Update()
 {
     Script::Update();
 
-	mCurrLifeTime += DELTA_TIME;
+	mCurrLifeTime += GetOwner()->GetDeltaTime();
 
 	if (mCurrLifeTime >= mMaxLifeTime) {
 		Reset();

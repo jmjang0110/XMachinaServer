@@ -183,7 +183,7 @@ void Script_PheroDropper::OnCollisionWithPlayer(int PlayerID)
 
 int Script_PheroDropper::CalculatePercentage(int totalNumber, double percentage)
 {
-	return std::round(totalNumber * (percentage / 100.0));
+	return static_cast<int>(std::round(totalNumber * (percentage / 100.0)));
 }
 
 void Script_PheroDropper::Shuffle_OdffsetDistIndexList()

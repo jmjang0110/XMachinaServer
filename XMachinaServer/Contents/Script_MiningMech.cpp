@@ -20,7 +20,7 @@ Script_MiningMech::Script_MiningMech(SPtr<GameObject> owner, ScriptInfo::Type ty
     Script_EnemyStat::SetStat_AttackRange(5);
     Script_EnemyStat::SetStat_AttackCoolTime(0);
     Script_EnemyStat::SetMaxHP(1500);
-    Script_EnemyStat::SetStat_Attack1AnimName("Direct2HitComboAttackForward");
+    Script_EnemyStat::SetStat_Attack1AnimName("UppercutDiggerAttack");
     Script_EnemyStat::SetStat_Attack2AnimName("UppercutDrillAttack");
     Script_EnemyStat::SetStat_Attack3AnimName("SmashAttack");
     Script_EnemyStat::SetStat_DeathAnimName("Deactivation");
@@ -42,42 +42,3 @@ void Script_MiningMech::Clone(SPtr<Component> other)
 
 }
 
-void Script_MiningMech::Activate()
-{
-}
-
-void Script_MiningMech::DeActivate()
-{
-}
-
-bool Script_MiningMech::WakeUp()
-{
-    return false;
-}
-
-bool Script_MiningMech::Start()
-{
-    return false;
-}
-
-bool Script_MiningMech::Update()
-{
-    return false;
-}
-
-void Script_MiningMech::OnDestroy()
-{
-}
-
-void Script_MiningMech::AttackCallback()
-{
-}
-
-void Script_MiningMech::Dead()
-{
-}
-
-bool Script_MiningMech::Hit(float damage, SPtr_GameObject instigator)
-{
-    return false;
-}

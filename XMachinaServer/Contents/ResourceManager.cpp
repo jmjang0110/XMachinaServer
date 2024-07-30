@@ -237,7 +237,7 @@ void BattleScene::Load()
 						break;
 					case GameObjectInfo::Type::Monster_MiningMech: {
 						object->SetMonsterType(FBProtocol::MONSTER_TYPE_MININGMECH);
-						object->AddScript<Script_AdvancedCombatDroid_5>(ScriptInfo::Type::MiningMech);
+						object->AddScript<Script_MiningMech>(ScriptInfo::Type::MiningMech);
 
 					}
 						break;

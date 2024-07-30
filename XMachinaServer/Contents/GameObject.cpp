@@ -59,7 +59,7 @@ void GameObject::Update()
 	mCurrTimePoint	= std::chrono::steady_clock::now();
 
 	std::chrono::duration<double> elapsed_seconds = mCurrTimePoint - mPrevTimePoint;
-	mDeltaTime = elapsed_seconds.count();
+	mDeltaTime = static_cast<float>(elapsed_seconds.count());
 
 	// Update all components
 	for (auto& pair : mComponents) {

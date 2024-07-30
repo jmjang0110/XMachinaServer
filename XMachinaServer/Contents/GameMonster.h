@@ -98,7 +98,7 @@ public:
 	int							GetActivate_RefCnt()						{ return mActivate_Ref.load(); }
 	void						DecreaseRef()								{ mActivate_Ref.fetch_sub(1); if (mActivate_Ref.load() < 0) mActivate_Ref = 0; }
 
-	MonsterSnapShot GetSnapShot() { mLock_SnapShot.LockWrite(); MonsterSnapShot snapShot = mInfo; mLock_SnapShot.UnlockWrite(); return snapShot; }
+	MonsterSnapShot GetSnapShot() { mLock_SnapShot.LockRead(); MonsterSnapShot snapShot = mInfo; mLock_SnapShot.UnlockRead(); return snapShot; }
 
 	void UpdateSnapShot(); // 최신 상태로 스냅샷 업데이트 
 

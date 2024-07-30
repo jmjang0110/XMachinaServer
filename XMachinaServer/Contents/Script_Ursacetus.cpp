@@ -48,44 +48,11 @@ void Script_Ursacetus::Clone(SPtr<Component> other)
 
 }
 
-void Script_Ursacetus::Activate()
+bool Script_Ursacetus::Attack()
 {
-}
-
-void Script_Ursacetus::DeActivate()
-{
-}
-
-bool Script_Ursacetus::WakeUp()
-{
-    Script_Enemy::WakeUp();
-
-    return true;
-}
-
-bool Script_Ursacetus::Start()
-{
-    Script_Enemy::Start();
-
-    return true;
-}
-
-bool Script_Ursacetus::Update()
-{
-    Script_Enemy::Update();
-
-    return true;
-}
-
-void Script_Ursacetus::OnDestroy()
-{
-    Script_Enemy::OnDestroy();
-
-}
-
-void Script_Ursacetus::Attack()
-{
-    Script_Enemy::Attack();
+    if (!Script_Enemy::Attack()) {
+        return false;
+    }
 
     bool b{};
     if (mCurrAttackCnt < 2) {
@@ -118,19 +85,8 @@ void Script_Ursacetus::Attack()
         ++mCurrAttackCnt;
         mCurrAttackCnt %= AttackTypeCount;
     }
-}
 
-void Script_Ursacetus::Dead()
-{
-    Script_Enemy::Dead();
-
-}
-
-bool Script_Ursacetus::Hit(float damage, SPtr_GameObject instigator)
-{
-    Script_Enemy::Hit(damage, instigator);
-
-    return false;
+    return true;
 }
 
 void Script_Ursacetus::BasicStartCallback()

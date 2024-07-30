@@ -78,7 +78,7 @@ void GameMonster::Update()
 {
 	GameObject::Update(); // Component, SCript Update
 
-	mTimer += DELTA_TIME;
+	mTimer += GetDeltaTime();
 	// 0.5초마다 패킷 전송
 	if (mTimer >= 0.1f) {
 		/* Send Transform Packet */

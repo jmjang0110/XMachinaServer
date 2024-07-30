@@ -33,8 +33,7 @@ public:
 	/// +------------------------------
 	///		Stat :  virtual function 
 	/// ------------------------------+
-	virtual void Attack();
-	virtual void AttackCallback();
+	virtual bool Attack();
 	virtual void AttackEndCallback();
 	virtual void DeathEndCallback();
 	virtual void Dead();

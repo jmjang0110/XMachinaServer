@@ -6,7 +6,7 @@
 #include "GameObject.h"
 #include "Component.h"
 #include "Transform.h"
-
+#include "TimeManager.h"
 
 Rigidbody::Rigidbody()
 	: Component()
@@ -97,7 +97,7 @@ bool Rigidbody::Update()
 
 			const Vec3 frictionAcc = (frictionForce / mMass) + dragAcc;	// 마찰 가속도 = (마찰력/질량) + 저항 가속도
 
-			const Vec3 resultVec = mVelocity + (frictionAcc * DELTA_TIME);	// 결과 = 현재 속도 + (마찰 가속도 * DeltaTime)
+			const Vec3 resultVec = mVelocity + (frictionAcc * GetOwner()->GetDeltaTime());	// 결과 = 현재 속도 + (마찰 가속도 * DeltaTime)
 
 			// 각 성분의 방향이 바뀌면 0으로 조정한다.
 			mVelocity.x = (mVelocity.x * resultVec.x < 0) ? 0.f : resultVec.x;
@@ -108,14 +108,14 @@ bool Rigidbody::Update()
 			if (mUseGravity) {
 				const Vec3 gravityForce = Vector3::Down * normalForce;			// 중력 = 수직항력(-y)
 				const Vec3 gravityAcc = gravityForce * mMass;				// 중력 가속도 = 중력 * 질량
-				mVelocity += gravityAcc * DELTA_TIME;						// 속도 = 속도 + (중력가속도 * DeltaTime)
+				mVelocity += gravityAcc * GetOwner()->GetDeltaTime();						// 속도 = 속도 + (중력가속도 * DeltaTime)
 			}
 		}
 	}
 
 	if (mVelocity.Length() > FLT_EPSILON) {
 		// mVelocity 속도로 DeltaTime만큼 이동한다.
-		GetOwner()->GetTransform()->Translate(mVelocity * DELTA_TIME);
+		GetOwner()->GetTransform()->Translate(mVelocity * GetOwner()->GetDeltaTime());
 	}
 
 	return true;
@@ -149,7 +149,7 @@ void Rigidbody::AddForce(const Vec3& force, ForceMode forceMode)
 {
 	float t{ 1 };
 	if (forceMode == ForceMode::Accleration) {	// 가속도인 경우 DelteTime을 적용하도록 한다.
-		t = DELTA_TIME;
+		t = GetOwner()->GetDeltaTime();
 	}
 
 	const Vec3 acc = ((force * mAcc) / mMass) * t;	// 가속도 = ((force * mAcc) / 질량) * t

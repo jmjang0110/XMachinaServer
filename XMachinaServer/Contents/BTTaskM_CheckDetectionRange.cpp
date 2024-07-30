@@ -84,8 +84,6 @@ MonsterTask::CheckDetectionRange::CheckDetectionRange(SPtr_GameObject owner, std
 	: MonsterBTTask(owner, BTTaskType::MonT_CheckDetectionRange, callback)
 
 {
-	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
-	mStat = GetStat(owner->GetType());
 
 }
 

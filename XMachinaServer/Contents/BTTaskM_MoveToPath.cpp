@@ -71,7 +71,7 @@ BTNodeState MonsterTask::MoveToPath::Evaluate()
 
 	// 다음 경로를 향해 이동 및 회전
 	GetOwner()->GetTransform()->RotateTargetAxisY(mPath->top(), mStat->GetStat_RotationSpeed());
-	GetOwner()->GetTransform()->Translate(XMVector3Normalize(nextPos), speed * DELTA_TIME);
+	GetOwner()->GetTransform()->Translate(XMVector3Normalize(nextPos), speed * GetOwner()->GetDeltaTime());
 
 	mEnemyController->GetOwnerMonster()->SetPosition(pos); /* Snap Shot - Pos */
 

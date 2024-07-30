@@ -28,6 +28,11 @@ void Script_EnemyStat::Clone(SPtr<Component> other)
 	this->mAttackRate			= otherScript->mAttackRate			;
 	this->mAttackRange			= otherScript->mAttackRange			;
 	this->mAttackCoolTime		= otherScript->mAttackCoolTime		;
+
+	this->mAttack1AnimName = otherScript->mAttack1AnimName;
+	this->mAttack2AnimName = otherScript->mAttack2AnimName;
+	this->mAttack3AnimName = otherScript->mAttack3AnimName;
+
 }
 
 void Script_EnemyStat::Activate()
@@ -69,9 +74,9 @@ void Script_EnemyStat::OnDestroy()
 
 }
 
-void Script_EnemyStat::Attack()
+bool Script_EnemyStat::Attack()
 {
-
+	return true;
 }
 
 void Script_EnemyStat::AttackCallback()
