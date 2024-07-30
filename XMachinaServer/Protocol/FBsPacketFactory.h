@@ -88,7 +88,7 @@ public:
 	SPtr_SendPktBuf SPkt_NewMonster(std::vector<MonsterSnapShot>& new_monsters);
 	SPtr_SendPktBuf SPkt_DeadMonster(uint32_t monster_id, Vec2 dead_point);
 	SPtr_SendPktBuf SPkt_RemoveMonster(uint32_t monster_id);
-	SPtr_SendPktBuf SPkt_Monster_Transform(uint32_t monster_id, Vec3 pos, Vec3 rot);
+	SPtr_SendPktBuf SPkt_Monster_Transform(uint32_t monster_id, Vec3 pos, Vec3 look);
 	SPtr_SendPktBuf SPkt_Monster_HP(uint32_t monster_id, float hp);
 	SPtr_SendPktBuf SPkt_Monster_State(uint32_t monster_id, FBProtocol::MONSTER_BT_TYPE montser_bt_type);
 	SPtr_SendPktBuf SPkt_Monster_Target(uint32_t monster_id, int32_t target_player_id, int32_t target_monster_id);
@@ -103,5 +103,7 @@ public:
 private:
 	static Vec3 GetVector3(const FBProtocol::Vector3* vec3);
 	static Vec4 GetVector4(const FBProtocol::Vector4* vec4);
+	static Vec3 GetPosition_Vec2(float x, float z);
+
 
 };

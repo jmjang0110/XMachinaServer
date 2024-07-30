@@ -953,7 +953,7 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_NewMonster(std::vector<MonsterSnapShot>& 
 		auto pos		= FBProtocol::CreatePosition_Vec2(builder, p.Position.x, p.Position.z);
 		auto pheros		= builder.CreateString(p.Pheros);
 		
-		float rot_y		= p.Rotation.y;
+		float rot_y		= Vector3::SignedAngle(Vector3::Forward, p.Look, Vector3::Up);
 		auto Monster	= FBProtocol::CreateMonster(builder, p.ID, p.Type, pos, rot_y, pheros);
 		MonsterSnapShots_Vector.push_back(Monster);
 	}
@@ -1001,23 +1001,23 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_RemoveMonster(uint32_t monster_id)
 	return sendBuffer;
 }
 
-SPtr_SendPktBuf FBsPacketFactory::SPkt_Monster_Transform(uint32_t monster_id, Vec3 pos, Vec3 rot)
+SPtr_SendPktBuf FBsPacketFactory::SPkt_Monster_Transform(uint32_t monster_id, Vec3 pos, Vec3 look)
 {
 	///> �ۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡ�
 	///> table SPkt_Monster_Transform
 	///> {
 	///> 	monster_id: int;	// 4 bytes
-	///> 	trans: Transform;				// 24 bytes (Vector3 * 2)
+	///> 		pos_2				:  Position_Vec2;
+	/// >		rot_y:  float;				// y
 	///> }
 	///> �ۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡ�
 
 	flatbuffers::FlatBufferBuilder builder{};
 
-	auto position  = FBProtocol::CreateVector3(builder, pos.x, pos.y, pos.z);
-	auto rotation  = FBProtocol::CreateVector3(builder, rot.x, rot.y, rot.z);
-	auto transform = FBProtocol::CreateTransform(builder, position, rotation);
+	auto PosFBs = FBProtocol::CreatePosition_Vec2(builder, pos.x, pos.z);
+	float rot_Y = Vector3::SignedAngle(Vector3::Forward, look, Vector3::Up);
 
-	auto serverPacket = FBProtocol::CreateSPkt_Monster_Transform(builder, monster_id, transform);
+	auto serverPacket = FBProtocol::CreateSPkt_Monster_Transform(builder, monster_id, PosFBs, rot_Y);
 	builder.Finish(serverPacket);
 	SPtr_SendPktBuf sendBuffer = SEND_FACTORY->CreatePacket(builder.GetBufferPointer(), static_cast<uint16_t>(builder.GetSize()), FBsProtocolID::SPkt_Monster_Transform);
 	return sendBuffer;
@@ -1159,4 +1159,9 @@ Vec4 FBsPacketFactory::GetVector4(const FBProtocol::Vector4* vec4)
 	return Vector4;
 }
 
+Vec3 FBsPacketFactory::GetPosition_Vec2(float x, float z)
+{
+	Vec3 Pos_xz = Vec3(x, 0.f, z);
+	return Pos_xz;
+}
 

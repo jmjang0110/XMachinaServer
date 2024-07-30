@@ -32,6 +32,7 @@ struct MonsterSnapShot : public ObjectSnapShot
 
 	Vec3								Position;	Lock::SRWLock lock_Position;
 	Vec3								Rotation;	Lock::SRWLock lock_Rotation;
+	Vec3								Look;		Lock::SRWLock lock_Look;
 	Vec3								SpineDir;	Lock::SRWLock lock_SpineDir;
 
 	std::string							Pheros;
@@ -72,6 +73,7 @@ public:
 	void SetPosition(Vec3 pos)								{ mInfo.lock_Position.LockWrite();	mInfo.Position         = pos;			mInfo.lock_Position.UnlockWrite(); }
 	void SetRotation(Vec3 rot)								{ mInfo.lock_Rotation.LockWrite();	mInfo.Rotation         = rot;			mInfo.lock_Rotation.UnlockWrite(); }
 	void SetSpineDir(Vec3 spinedir)							{ mInfo.lock_SpineDir.LockWrite();	mInfo.SpineDir         = spinedir;		mInfo.lock_SpineDir.UnlockWrite(); }
+	void SetLook(Vec3 look)									{ mInfo.lock_Look.LockWrite(); mInfo.Look = look; mInfo.lock_Look.UnlockWrite(); }
 
 	void SetSectorIndex(Coordinate sectorIdx);
 	void SetPheros(std::string pheros)						{ mInfo.Pheros = pheros; }
@@ -83,8 +85,9 @@ public:
 	float						GetAttack()					{	return mInfo.Attack;	}
 	float						GetHP()						{ mInfo.lock_HP.LockRead();  float hp = mInfo.HP;	mInfo.lock_HP.UnlockRead(); return hp; }
 	Vec3						GetPosition()				{ mInfo.lock_Position.LockRead(); Vec3 pos = mInfo.Position; mInfo.lock_Position.UnlockRead(); return pos; }
-	FBProtocol::MONSTER_BT_TYPE GetBTState() { mInfo.lock_CurrState.LockRead(); FBProtocol::MONSTER_BT_TYPE state = mInfo.CurrState; mInfo.lock_CurrState.UnlockRead(); return state; }
+	FBProtocol::MONSTER_BT_TYPE GetBTState()				{ mInfo.lock_CurrState.LockRead(); FBProtocol::MONSTER_BT_TYPE state = mInfo.CurrState; mInfo.lock_CurrState.UnlockRead(); return state; }
 	std::string					GetPheros()					{ return mInfo.Pheros; }
+	Vec3						GetLook()					{ mInfo.lock_Look.LockRead(); Vec3 look = mInfo.Look; mInfo.lock_Look.UnlockRead(); return look; }
 	// mPheros 벡터를 반환하는 getter 함수
 	const std::vector<SPtr<GameObject>>& GetAllPheros() ;
 

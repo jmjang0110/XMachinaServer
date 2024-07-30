@@ -159,14 +159,13 @@ void BattleScene::Load()
 				if (model) {
 					object->SetName(model->mName);
 					Matrix transformMatrix = FileIO::ReadVal<Matrix>(file);
-					model->mTransform = transformMatrix;
 
 					/// +---------------------------------------------------
 					///	¡å Component : Tarnsform 
 					/// ---------------------------------------------------+
 					SPtr<Transform> transform = object->AddComponent<Transform>(ComponentInfo::Type::Transform);
-					transform->SetLocalTransform(transformMatrix);
-					transform->SetPosition(Transform::GetPosition(transformMatrix));
+					transform->SetWorldTransform(transformMatrix);
+					Vec3 Rot = Quaternion::ToEuler(transform->GetLocalRotation());
 
 					/// +---------------------------------------------------
 					///	¡å Component : Collider 
