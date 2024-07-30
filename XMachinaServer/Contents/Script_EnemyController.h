@@ -114,6 +114,5 @@ public:
 	void OnMindControl()	{ mMindControllded  = true; }
 	void OffMindControl()	{ mMindControllded  = false; }
 	bool IsMindControlled() { return mMindControllded; }
-
 };
 

@@ -176,7 +176,7 @@ void BattleScene::Load()
 
 					object->SetAnimation(model->mAnimatorController);
 
-					UINT32 ID = static_cast<UINT32>(mEnemies.size());
+					UINT32 ID = static_cast<UINT32>(mEnemies.size() + 1);
 					object->SetID(ID);
 					object->SetMonsterID(ID);
 

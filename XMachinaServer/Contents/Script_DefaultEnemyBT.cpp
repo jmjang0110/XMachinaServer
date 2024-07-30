@@ -319,8 +319,8 @@ bool Script_DefaultEnemyBT::Update()
 		int monster_id		  = GetOwner()->GetID();
 		// int monster_id     = -1;
 
-		int target_monster_id = -1;
-		int target_player_id  = -1;
+		int target_monster_id = 0;
+		int target_player_id  = 0;
 		SPtr<GameObject> target = mRoot->GetEnemyController()->GetTarget();
 		if (target) {
 			GameObjectInfo::Type objType = target->GetType();
@@ -330,9 +330,10 @@ bool Script_DefaultEnemyBT::Update()
 			else {
 				target_monster_id = target->GetID();
 			}
-			auto pkt = FBS_FACTORY->SPkt_Monster_Target(monster_id, target_player_id, target_monster_id);
-			GAME_MGR->BroadcastRoom(mRoot->GetEnemyController()->GetOwnerMonster()->GetOwnerNPCController()->GetOwnerRoom()->GetID(), pkt);
 		}
+
+		auto pkt = FBS_FACTORY->SPkt_Monster_Target(monster_id, target_player_id, target_monster_id);
+		GAME_MGR->BroadcastRoom(mRoot->GetEnemyController()->GetOwnerMonster()->GetOwnerNPCController()->GetOwnerRoom()->GetID(), pkt);
 	}
 
 	mRoot->GetEnemyController()->UpdateMonsterCurrBTType();

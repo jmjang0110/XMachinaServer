@@ -78,6 +78,8 @@ void Script_EnemyController::Reset()
 {
 	mState = EnemyInfo::State::Idle;
 	mTarget = nullptr;
+	mPrevBTType = FBProtocol::MONSTER_BT_TYPE::MONSTER_BT_TYPE_END;
+	mCurrBTType = FBProtocol::MONSTER_BT_TYPE::MONSTER_BT_TYPE_END;
 
 	while (!mPaths.empty()) {
 		mPaths.pop();

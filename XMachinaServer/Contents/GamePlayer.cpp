@@ -144,8 +144,10 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 	for (int i = 0; i < monster.size(); ++i) {
 		bool IsSuccess = mInfo.Vlist.TryInsertMonster(monster[i]->GetID(), monster[i]);
 		if (IsSuccess) {
-			// 새로 들어옴 
+			// 새로 들어옴 `
 			MonsterSnapShot snapShot = monster[i]->GetSnapShot();
+			snapShot.Position = monster[i]->GetTransform()->GetSnapShot().GetPosition();
+			snapShot.Rotation = monster[i]->GetTransform()->GetSnapShot().GetRotation();
 			NewMonsters.push_back(snapShot);
 			NewMonsters_Objects.push_back(monster[i]);
 
@@ -182,9 +184,7 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 		// [BSH] : 새로운 몬스터가 플레이어 중 하나라도 뷰 리스트에 들어오면 모든 클라에게 브로드 캐스팅 해야 한다.
 		
 		auto NewMonster_spkt = FBS_FACTORY->SPkt_NewMonster(NewMonsters);
-		GAME_MGR->BroadcastRoom(mOwnerPC->GetOwnerRoom()->GetID(), NewMonster_spkt);
-		//const auto& NewMonster_serverPacket = FBS_FACTORY->SPkt_NewMonster(NewMonsters);
-		//GetSessionOwner()->Send(NewMonster_serverPacket);
+		GetSessionOwner()->Send(NewMonster_spkt);
 
 		for (int i = 0; i < NewMonsters_Objects.size(); ++i) {
 

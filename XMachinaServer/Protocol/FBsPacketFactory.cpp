@@ -282,11 +282,10 @@ bool FBsPacketFactory::Process_CPkt_Chat(SPtr_Session session, const FBProtocol:
 	///>	message: string;	// 가변 크기
 	///> }
 	///> ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
-
+	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
 	std::string message = pkt.message()->c_str();
-
-	std::cout << "CPKT CHAT [" << session->GetID() << "] - SESSION : " << session.get() << " DATA : " <<
-		message << std::endl;
+	auto spkt = FBS_FACTORY->SPkt_Chat(session->GetID(), message);
+	GAME_MGR->BroadcastRoom(gameSession->GetPlayerSnapShot().RoomID, spkt, session->GetID());
 
 	return true;
 }
@@ -952,9 +951,9 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_NewMonster(std::vector<MonsterSnapShot>& 
 	for (MonsterSnapShot& p : new_monsters) {
 		auto pos		= FBProtocol::CreatePosition_Vec2(builder, p.Position.x, p.Position.z);
 		auto pheros		= builder.CreateString(p.Pheros);
-		
+		auto bt_Type	= p.CurrState;
 		float rot_y		= Vector3::SignedAngle(Vector3::Forward, p.Look, Vector3::Up);
-		auto Monster	= FBProtocol::CreateMonster(builder, p.ID, p.Type, pos, rot_y, pheros);
+		auto Monster	= FBProtocol::CreateMonster(builder, p.ID, p.Type, bt_Type, pos, rot_y, pheros);
 		MonsterSnapShots_Vector.push_back(Monster);
 	}
 

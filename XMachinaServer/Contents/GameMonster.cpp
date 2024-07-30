@@ -13,6 +13,7 @@
 #include "GameManager.h"
 #include "TimeManager.h"
 #include "ServerLib/ThreadManager.h"
+#include "Script_EnemyController.h"
 
 const std::vector<SPtr<GameObject>>& GameMonster::GetAllPheros()
 {
@@ -36,11 +37,20 @@ void GameMonster::On_ExitFromViewList()
 	LOG_MGR->Cout(GetID(), " - On Exit From view List ");
 
 	GetTransform()->SetPosition(mSpawnPos);
-	GetTransform()->SetLocalRotation(Quaternion::ToQuaternion(mSpawnRot));
+	/* Update Snap Shot */
+	GetTransform()->UpdateTransofrmSnapShot();
+	GetTransform()->SwapSnapShotIndex();
+	/* Update Snap Shot */
+	GetTransform()->UpdateTransofrmSnapShot();
+	GetTransform()->SwapSnapShotIndex();
 
+
+	GetTransform()->SetLocalRotation(Quaternion::ToQuaternion(mSpawnRot));
+	auto enemyController = GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
+	enemyController->Reset();
+	
 	auto spkt = FBS_FACTORY->SPkt_Monster_Transform(GetID(), mSpawnPos, mSpawnRot);
 	GAME_MGR->BroadcastRoom(GetOwnerNPCController()->GetOwnerRoom()->GetID(), spkt);
-
 }
 
 void GameMonster::Broadcast_SPkt_Monster_Transform()
@@ -149,7 +159,7 @@ void GameMonster::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 	MEMORY->Delete(overlapped);
 
 	Update();
-	
+
 	if (GetActivate_RefCnt() > 0)
 		GameObject::RegisterUpdate();
 	else

@@ -151,11 +151,11 @@ BTNodeState MonsterTask::MoveToTarget::Evaluate()
 		GetOwner()->GetTransform()->RotateTargetAxisY(targetTansSnapShot.GetPosition(), mStat->GetStat_RotationSpeed());
 		GetOwner()->GetTransform()->Translate(GetOwner()->GetTransform()->GetLook(), mStat->GetStat_MoveSpeed() * GetOwner()->GetDeltaTime());
 
-		Vec3 Pos = GetOwner()->GetTransform()->GetPosition();
-		Vec3 look = GetOwner()->GetTransform()->GetLook();
+		//Vec3 Pos = GetOwner()->GetTransform()->GetPosition();
+		//Vec3 look = GetOwner()->GetTransform()->GetLook();
 
-		auto spkt = FBS_FACTORY->SPkt_Monster_Transform(GetOwner()->GetID(), Pos, look);
-		GAME_MGR->BroadcastAllRoom(spkt);
+		//auto spkt = FBS_FACTORY->SPkt_Monster_Transform(GetOwner()->GetID(), Pos, look);
+		//GAME_MGR->BroadcastAllRoom(spkt);
 	}
 
 	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_MOVE_TO_TARGET);;

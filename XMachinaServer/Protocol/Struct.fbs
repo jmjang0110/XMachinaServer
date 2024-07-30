@@ -35,6 +35,7 @@ table Phero {
 table Monster{
 	id					:  uint; 
 	type				:  MONSTER_TYPE;		// UINT8
+	bt_type				:  MONSTER_BT_TYPE;
 	pos_2				:  Position_Vec2;
 	rot_y				:  float;				// y
 
