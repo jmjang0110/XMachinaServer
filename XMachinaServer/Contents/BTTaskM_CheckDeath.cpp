@@ -13,9 +13,6 @@
  
 BTNodeState MonsterTask::CheckDeath::Evaluate()
 {
-	if (GetOwner()->GetType() == GameObjectInfo::Type::Monster_Ursacetus)
-		int i = 0;
-
 	if (!mStat->IsDead())
 		return BTNodeState::Failure;
 

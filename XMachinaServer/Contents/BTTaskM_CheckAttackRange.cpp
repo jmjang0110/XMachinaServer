@@ -62,9 +62,11 @@ BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 		
 		// 너무 가까우면 계속 돈다 그래서 적당히 가까우면 Attack State 로 바꾼다.
 		if (distance < minDistance || Angle < 80.f) {
+
 			mEnemyController->RemoveAllAnimation();
 			GetOwner()->GetAnimation()->GetController()->SetValue("IsAttack", true);
 			GetOwner()->GetAnimation()->GetController()->SetValue("Attack", true);
+
 			mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK_1);
 			mEnemyController->GetOwnerMonster()->SetBTState(FBProtocol::MONSTER_BT_TYPE_ATTACK_1);
 			mEnemyController->SetState(EnemyInfo::State::Attack);

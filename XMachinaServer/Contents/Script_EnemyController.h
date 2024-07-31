@@ -95,7 +95,7 @@ public:
 	FBProtocol::MONSTER_BT_TYPE GetMonsterCurrBTType()		{ return mCurrBTType; }
 	FBProtocol::MONSTER_BT_TYPE GetMontserPrevBTType()		{ return mPrevBTType; }
 
-	SPtr<GameObject>			GetTarget()					{ Lock_Target.LockRead(); SPtr<GameObject> target = mPathTarget; Lock_Target.UnlockRead(); return target; }
+	SPtr<GameObject>			GetTarget()					{ Lock_Target.LockRead(); SPtr<GameObject> target = mTarget; Lock_Target.UnlockRead(); return target; }
 	FBProtocol::MONSTER_BT_TYPE GetMonsterBTType()			{ mLock_BTType.LockRead(); FBProtocol::MONSTER_BT_TYPE btType = mBTType; mLock_BTType.UnlockRead(); return btType; }
 	/// +---------------------------------------------------
 	///						S E T T E R 

@@ -133,7 +133,6 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 	mInfo.VList_Prev = mInfo.Vlist;
 	std::vector<SPtr<GameMonster>> NewMonsters;
 	std::vector<SPtr<GameMonster>> RemoveMonsters;
-	std::vector<SPtr<GameMonster>> NewMonsters_Objects;
 
 	/// +--------------------------------------------------------------------------------
 	///	1. [PLAYER] VIEW LIST 
@@ -151,7 +150,7 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 		bool IsSuccess = mInfo.Vlist.TryInsertMonster(monster[i]->GetID(), monster[i]);
 		if (IsSuccess) {
 			// »õ·Î µé¾î¿È
-			NewMonsters_Objects.push_back(monster[i]);
+			NewMonsters.push_back(monster[i]);
 			LOG_MGR->Cout("[ ", monster[i]->GetID(), " ] : NewMonsters \n");
 		}
 	}
@@ -184,12 +183,12 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 		auto NewMonster_spkt = FBS_FACTORY->SPkt_NewMonster(NewMonsters);
 		GetSessionOwner()->Send(NewMonster_spkt);
 
-		for (int i = 0; i < NewMonsters_Objects.size(); ++i) {
+		for (int i = 0; i < NewMonsters.size(); ++i) {
 
 			/// > ¢¹ SEND MOSNTER STATE 
-			auto						script         = NewMonsters_Objects[i]->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
+			auto						script         = NewMonsters[i]->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
 			FBProtocol::MONSTER_BT_TYPE btType         = script->GetMonsterBTType();
-			const auto&					SPkt_monState  = FBS_FACTORY->SPkt_Monster_State(NewMonsters_Objects[i]->GetID(), btType);
+			const auto&					SPkt_monState  = FBS_FACTORY->SPkt_Monster_State(NewMonsters[i]->GetID(), btType);
 			GetSessionOwner()->Send(SPkt_monState);
 
 			/* TARGET PACKET */
@@ -201,7 +200,7 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 			}
 
 			/// > ¢¹ BROADCAST MOSNTER TRAGET 
-			int monster_id = NewMonsters_Objects[i]->GetID();
+			int monster_id = NewMonsters[i]->GetID();
 			auto pkt       = FBS_FACTORY->SPkt_Monster_Target(monster_id, targetplayer_id, -1);
 			GAME_MGR->BroadcastRoom(mOwnerPC->GetOwnerRoom()->GetID(), pkt);
 		}
