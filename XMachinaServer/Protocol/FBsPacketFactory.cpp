@@ -236,7 +236,7 @@ bool FBsPacketFactory::Process_CPkt_EnterGame(SPtr_Session session, const FBProt
 	/// SEND NEW PLAYER PKT TO SESSIONS IN ROOM ( SESSION->GET ROOM ID ) - EXCEPT ME ( SESSION )
 	/// ---------------------------------------------------------------------------------------+
 	auto SendPkt_NewPlayer = FBS_FACTORY->SPkt_NewPlayer(MyPlayer);
-	GAME_MGR->BroadcastRoom(gameSession->GetPlayerSnapShot().RoomID, SendPkt_NewPlayer, gameSession->GetID());
+	GAME_MGR->BroadcastRoom(gameSession->GetPlayer()->GetRoomID(), SendPkt_NewPlayer, gameSession->GetID());
 	return true;
 }
 
@@ -251,7 +251,7 @@ bool FBsPacketFactory::Process_CPkt_Chat(SPtr_Session session, const FBProtocol:
 	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
 	std::string message = pkt.message()->c_str();
 	auto spkt = FBS_FACTORY->SPkt_Chat(session->GetID(), message);
-	GAME_MGR->BroadcastRoom(gameSession->GetPlayerSnapShot().RoomID, spkt, session->GetID());
+	GAME_MGR->BroadcastRoom(gameSession->GetPlayer()->GetRoomID(), spkt, session->GetID());
 
 	return true;
 }
@@ -275,7 +275,7 @@ bool FBsPacketFactory::Process_CPkt_NetworkLatency(SPtr_Session session, const F
 	auto spkt = FBS_FACTORY->SPkt_NetworkLatency(timestamp);
 
 	session->Send(spkt);
-	GAME_MGR->Send(spkt, gameSession->GetPlayerSnapShot().RoomID, session->GetID());
+	GAME_MGR->Send(spkt, gameSession->GetPlayer()->GetRoomID(), session->GetID());
 
 	return true;
 }
@@ -326,7 +326,7 @@ bool FBsPacketFactory::Process_CPkt_PlayerOnSkill(SPtr_Session session, const FB
 	/// SEND NEW PLAYER PKT TO SESSIONS IN ROOM ( SESSION->GET ROOM ID ) - EXCEPT ME ( SESSION )
 	/// ---------------------------------------------------------------------------------------+
 	auto spkt = FBS_FACTORY->SPkt_PlayerOnSkill(session->GetID(), type, PheroAmount, mindontrol_monster_id);
-	GAME_MGR->BroadcastRoom(gameSession->GetPlayerSnapShot().RoomID, spkt, gameSession->GetID());
+	GAME_MGR->BroadcastRoom(gameSession->GetPlayer()->GetRoomID(), spkt, gameSession->GetID());
 
 	LOG_MGR->Cout(session->GetID(), "SKILLON", static_cast<int>(type), "\n");
 
@@ -368,7 +368,7 @@ bool FBsPacketFactory::Process_CPkt_Player_Transform(SPtr_Session session, const
 
 	/* Boradcast Player's Transform Update */
 	SPtr_SendPktBuf SendPkt = FBS_FACTORY->SPkt_Player_Transform(id, move_state, latency, velocity, movedir, pos, rot, spine_look, animparam_h, animparam_v);
-	GAME_MGR->BroadcastRoom(gameSession->GetPlayerSnapShot().RoomID, SendPkt, id);
+	GAME_MGR->BroadcastRoom(gameSession->GetPlayer()->GetRoomID(), SendPkt, id);
 
 
 	/* Player Info Update */

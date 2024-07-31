@@ -1,6 +1,5 @@
 #pragma once
 #include "BTNode.h"
-#include "AStarPath.h"
 #include "Script_Enemy.h"
 #include "Script_EnemyController.h"
 #include "GameObject.h"

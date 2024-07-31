@@ -61,75 +61,84 @@ BTNode* Script_DefaultEnemyBT::SetupTree()
 	SPtr<Script_Enemy> enemy = GetScriptEnemy(GetOwner()->GetType());
 
 #pragma region BehaviorTree
-	std::vector<BTNode*> root_selector_Children;
 	
-	/* Check Death */
-	BTNode* node1 = MEMORY->New<MonsterTask::CheckDeath>(GetOwner(), std::bind(&Script_Enemy::Dead, enemy));	
-	root_selector_Children.push_back(node1);
+
+	/// +---------------------------------------------------------------------------------------------------------------
+	///	Ready To Create Behavior Tree 
+	/// ---------------------------------------------------------------------------------------------------------------+
+	std::vector<BTNode*>	 Selector_Root;
+	BTNode*					 CheckDeath				= MEMORY->New<MonsterTask::CheckDeath>(GetOwner(), std::bind(&Script_Enemy::Dead, enemy));
+	
+	std::vector<BTNode*>	 Sequence_1;
+	BTNode*					 CheckAttackRange		= MEMORY->New<MonsterTask::CheckAttackRange>(GetOwner());
+	BTNode*					 Attack					= MEMORY->New<MonsterTask::Attack>(GetOwner(), std::bind(&Script_Enemy::Attack, enemy));
+
+
+	BTNode*					 GetHit					= MEMORY->New<MonsterTask::GetHit>(GetOwner());
+
+	std::vector<BTNode*>     Sequence_2;
+	BTNode*					 CheckDetectionRange	= MEMORY->New<MonsterTask::CheckDetectionRange>(GetOwner());
+
+	std::vector<BTNode*>	 Selector_2_1;
+	BTNode*					 MoveToTarget			= MEMORY->New<MonsterTask::MoveToTarget>(GetOwner());
+	BTNode*					 PathPlanningToTarget	= MEMORY->New<MonsterTask::PathPlanningToTarget>(GetOwner());
+
+
+	/// +---------------------------------------------------------------------------------------------------------------
+	///	Create Behavior Tree 
+	/// ---------------------------------------------------------------------------------------------------------------+
+	// -- Root -- 
+	Selector_Root.push_back(CheckDeath);  // [0] Check Death
 	{
-		/* Sequence - CheckAttackRange, Attack */
-		BTNode* SeqNode{};
-		
-		std::vector<BTNode*> sequence_children;
-		BTNode* n1 = MEMORY->New<MonsterTask::CheckAttackRange>(GetOwner());								sequence_children.push_back(n1);
-		BTNode* n2 = MEMORY->New<MonsterTask::Attack>(GetOwner(), std::bind(&Script_Enemy::Attack, enemy));	sequence_children.push_back(n2);
-		
-		SeqNode = MEMORY->New<BTNode_Sequence>(GetOwner(), sequence_children);
-		root_selector_Children.push_back(SeqNode);
+		// [1] -- Sequence 1 --
+		Sequence_1.push_back(CheckAttackRange);	// [1-1] Check Attack Range 
+		Sequence_1.push_back(Attack);			// [1-2] Attack
+		BTNode* Sequence_1_Node = MEMORY->New<BTNode_Sequence>(GetOwner(), Sequence_1);
+		Selector_Root.push_back(Sequence_1_Node);
 	}
-
-	/* Get Hit */
-	BTNode* node2 = MEMORY->New<MonsterTask::GetHit>(GetOwner());
-	root_selector_Children.push_back(node2);
-
-
-	{
-		/* Sequence - CheckDetectionRange, */
-		BTNode* SeqNode{};
-
-		std::vector<BTNode*> sequence_children;
-		BTNode* n1 = MEMORY->New<MonsterTask::CheckDetectionRange>(GetOwner());	sequence_children.push_back(n1);
+	// [2] -- Get Hit -- 
+	Selector_Root.push_back(GetHit);
+	{	
+		// [3] -- Sequence 2 -- 
+		Sequence_2.push_back(CheckDetectionRange); // [3-0] Check Detection Range 
 		{
-			/* Selector - TaskMoveToTArget, TaskPathPlanningToTarget */
-			BTNode* SelNode{};
-
-			std::vector<BTNode*> selector_Children;
-			BTNode* n1 = MEMORY->New<MonsterTask::MoveToTarget>(GetOwner());		 selector_Children.push_back(n1);
-			BTNode* n2 = MEMORY->New<MonsterTask::PathPlanningToTarget>(GetOwner()); selector_Children.push_back(n2);
-			SelNode = MEMORY->New<BTNode_Selector>(GetOwner(), selector_Children);
-			sequence_children.push_back(SelNode);
+			// -- Selector 2_1 --
+			Selector_2_1.push_back(MoveToTarget);		  // [3-1] Move To Target 
+			Selector_2_1.push_back(PathPlanningToTarget); // [3-2] Path Planning To Target 
+			BTNode* Selector_2_1_Node = MEMORY->New<BTNode_Selector>(GetOwner(), Selector_2_1);
+			Sequence_2.push_back(Selector_2_1_Node);
 		}
-
-		SeqNode = MEMORY->New<BTNode_Sequence>(GetOwner(), sequence_children);
-		root_selector_Children.push_back(SeqNode);
+		BTNode* Sequence_2_Node = MEMORY->New<BTNode_Sequence>(GetOwner(), Sequence_2);
+		Selector_Root.push_back(Sequence_2_Node);
 	}
-
-	///* CheckAttackRange */
-	//BTNode* node3 = MEMORY->New<MonsterTask::MoveToPath>(GetOwner()); root_selector_Children.push_back(node3);
-	//{
-	//	BTNode* SelNode{};
-
-	//	std::vector<BTNode*> selector_Children;
-	//	{
-	//		/* Sequence - CheckAttackRange, Attack */
-	//		BTNode* SeqNode{};
-	//		
-	//		std::vector<BTNode*> sequence_children;
-	//		BTNode* n1 = MEMORY->New<MonsterTask::CheckPatrolRange>(GetOwner(), baryCenter, maxDis); sequence_children.push_back(n1);
-	//		BTNode* n2 = MEMORY->New<MonsterTask::Patrol>(GetOwner());			 sequence_children.push_back(n2);
-
-	//		SeqNode = MEMORY->New<BTNode_Sequence>(GetOwner(), sequence_children);
-	//		selector_Children.push_back(SeqNode);
-	//	}
-	//	BTNode* n3 = MEMORY->New<MonsterTask::PathPlanningToSapwn>(GetOwner());	selector_Children.push_back(n3);
-
-	//	SelNode = MEMORY->New<BTNode_Selector>(GetOwner(), selector_Children);
-	//	root_selector_Children.push_back(SelNode);
-	//}
-
-	mRoot = MEMORY->New<BTNode_Selector>(GetOwner(), root_selector_Children);
+		
+	mRoot = MEMORY->New<BTNode_Selector>(GetOwner(), Selector_Root);
 	mRoot->SetRoot();
 	return mRoot;
+
+	///* CheckAttackRange */
+//BTNode* node3 = MEMORY->New<MonsterTask::MoveToPath>(GetOwner()); root_selector_Children.push_back(node3);
+//{
+//	BTNode* SelNode{};
+
+//	std::vector<BTNode*> selector_Children;
+//	{
+//		/* Sequence - CheckAttackRange, Attack */
+//		BTNode* SeqNode{};
+//		
+//		std::vector<BTNode*> sequence_children;
+//		BTNode* n1 = MEMORY->New<MonsterTask::CheckPatrolRange>(GetOwner(), baryCenter, maxDis); sequence_children.push_back(n1);
+//		BTNode* n2 = MEMORY->New<MonsterTask::Patrol>(GetOwner());			 sequence_children.push_back(n2);
+
+//		SeqNode = MEMORY->New<BTNode_Sequence>(GetOwner(), sequence_children);
+//		selector_Children.push_back(SeqNode);
+//	}
+//	BTNode* n3 = MEMORY->New<MonsterTask::PathPlanningToSapwn>(GetOwner());	selector_Children.push_back(n3);
+
+//	SelNode = MEMORY->New<BTNode_Selector>(GetOwner(), selector_Children);
+//	root_selector_Children.push_back(SelNode);
+//}
+
 }
 
 SPtr<Script_Enemy> Script_DefaultEnemyBT::GetScriptEnemy(GameObjectInfo::Type objtype)
@@ -217,6 +226,7 @@ Script_DefaultEnemyBT::Script_DefaultEnemyBT(SPtr<GameObject> owner, ScriptInfo:
 
 Script_DefaultEnemyBT::~Script_DefaultEnemyBT()
 {
+	MEMORY->Delete(mRoot);
 }
 
 

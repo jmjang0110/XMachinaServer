@@ -149,19 +149,7 @@ void PlayerController::SendPacket(UINT32 sessionID, SPtr_SendPktBuf sendPkt)
 	mSRWLock.UnlockRead();
 }
 
-std::vector<PlayerSnapShot> PlayerController::GetInsertedPlayersInfo()
-{
-	mSRWLock.LockRead();
 
-	std::vector<PlayerSnapShot> PlayerSnapShots = {};
-	for (auto& player : mGamePlayers) {
-		PlayerSnapShots.push_back(player.second->GetSnapShot());
-	}
-
-	mSRWLock.UnlockRead();
-
-	return PlayerSnapShots;
-}
 
 std::vector<SPtr<GamePlayer>> PlayerController::GetPlayersInViewRange(Vec3 player_pos, float viewrange_radius)
 {

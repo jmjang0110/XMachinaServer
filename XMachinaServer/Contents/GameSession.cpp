@@ -33,7 +33,7 @@ void GameSession::OnConnected()
 void GameSession::OnDisconnected()
 {
 	SPtr_SendPktBuf removePkt = FBS_FACTORY->SPkt_RemovePlayer(GetID());
-	GAME_MGR->BroadcastRoom(GetPlayerSnapShot().RoomID, removePkt, GetID()); /* SEND REMOVE PKT TO SESSIONS IN ROOM */
+	GAME_MGR->BroadcastRoom(mPlayer->GetRoomID(), removePkt, GetID()); /* SEND REMOVE PKT TO SESSIONS IN ROOM */
 	GAME_MGR->ExitInRoom(mPlayer); // WRITE Lock
 	mPlayer = nullptr; // Dec Ref 
 

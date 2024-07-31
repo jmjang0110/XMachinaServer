@@ -166,22 +166,24 @@ inline const char *EnumNameMONSTER_TYPE(MONSTER_TYPE e) {
 }
 
 enum MONSTER_BT_TYPE : uint8_t {
-  MONSTER_BT_TYPE_DEATH = 0,
-  MONSTER_BT_TYPE_ATTACK_1 = 1,
-  MONSTER_BT_TYPE_ATTACK_2 = 2,
-  MONSTER_BT_TYPE_ATTACK_3 = 3,
-  MONSTER_BT_TYPE_GETHIT = 4,
-  MONSTER_BT_TYPE_MOVE_TO_TARGET = 5,
-  MONSTER_BT_TYPE_MOVE_TO_PATH = 6,
-  MONSTER_BT_TYPE_MOVE_TO_MIND_TARGET = 7,
-  MONSTER_BT_TYPE_PATROL = 8,
-  MONSTER_BT_TYPE_END = 9,
-  MONSTER_BT_TYPE_MIN = MONSTER_BT_TYPE_DEATH,
+  MONSTER_BT_TYPE_IDLE = 0,
+  MONSTER_BT_TYPE_DEATH = 1,
+  MONSTER_BT_TYPE_ATTACK_1 = 2,
+  MONSTER_BT_TYPE_ATTACK_2 = 3,
+  MONSTER_BT_TYPE_ATTACK_3 = 4,
+  MONSTER_BT_TYPE_GETHIT = 5,
+  MONSTER_BT_TYPE_MOVE_TO_TARGET = 6,
+  MONSTER_BT_TYPE_MOVE_TO_PATH = 7,
+  MONSTER_BT_TYPE_MOVE_TO_MIND_TARGET = 8,
+  MONSTER_BT_TYPE_PATROL = 9,
+  MONSTER_BT_TYPE_END = 10,
+  MONSTER_BT_TYPE_MIN = MONSTER_BT_TYPE_IDLE,
   MONSTER_BT_TYPE_MAX = MONSTER_BT_TYPE_END
 };
 
-inline const MONSTER_BT_TYPE (&EnumValuesMONSTER_BT_TYPE())[10] {
+inline const MONSTER_BT_TYPE (&EnumValuesMONSTER_BT_TYPE())[11] {
   static const MONSTER_BT_TYPE values[] = {
+    MONSTER_BT_TYPE_IDLE,
     MONSTER_BT_TYPE_DEATH,
     MONSTER_BT_TYPE_ATTACK_1,
     MONSTER_BT_TYPE_ATTACK_2,
@@ -197,7 +199,8 @@ inline const MONSTER_BT_TYPE (&EnumValuesMONSTER_BT_TYPE())[10] {
 }
 
 inline const char * const *EnumNamesMONSTER_BT_TYPE() {
-  static const char * const names[11] = {
+  static const char * const names[12] = {
+    "IDLE",
     "DEATH",
     "ATTACK_1",
     "ATTACK_2",
@@ -214,7 +217,7 @@ inline const char * const *EnumNamesMONSTER_BT_TYPE() {
 }
 
 inline const char *EnumNameMONSTER_BT_TYPE(MONSTER_BT_TYPE e) {
-  if (::flatbuffers::IsOutRange(e, MONSTER_BT_TYPE_DEATH, MONSTER_BT_TYPE_END)) return "";
+  if (::flatbuffers::IsOutRange(e, MONSTER_BT_TYPE_IDLE, MONSTER_BT_TYPE_END)) return "";
   const size_t index = static_cast<size_t>(e);
   return EnumNamesMONSTER_BT_TYPE()[index];
 }

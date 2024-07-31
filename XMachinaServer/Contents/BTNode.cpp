@@ -24,6 +24,9 @@ BTNode::BTNode(SPtr_GameObject owner, std::vector<BTNode*>& children)
 
 BTNode::~BTNode()
 {
+	for (int i = 0; i < mChildren.size(); ++i) {
+		MEMORY->Delete(mChildren[i]);
+	}
 }
 
 void BTNode::SetRoot()

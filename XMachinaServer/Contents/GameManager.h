@@ -39,7 +39,6 @@ public:
 
 	std::vector<SPtr<GamePlayer>> GetAllPlayersInRoom(int roomID);
 
-	std::vector<PlayerSnapShot> GetPlayerSnapShots_Room(int roomid);
 
 
 };

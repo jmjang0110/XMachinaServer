@@ -341,9 +341,6 @@
     <ClInclude Include="Contents\GamePlayer.h">
       <Filter>Framework\Contents\GameWorld\GameObject\Player</Filter>
     </ClInclude>
-    <ClInclude Include="Contents\AStarPath.h">
-      <Filter>Framework\Contents\GameWorld\AI</Filter>
-    </ClInclude>
     <ClInclude Include="Contents\DB_Monster.h">
       <Filter>Framework\Contents\DataBase\Object</Filter>
     </ClInclude>
@@ -560,6 +557,9 @@
     <ClInclude Include="Contents\ViewList.h">
       <Filter>Framework\Contents\GameWorld\GameObject\Player</Filter>
     </ClInclude>
+    <ClInclude Include="Contents\AStarPath.h">
+      <Filter>Framework\Contents\GameWorld\AI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp">
@@ -661,9 +661,6 @@
     </ClCompile>
     <ClCompile Include="Contents\GamePlayer.cpp">
       <Filter>Framework\Contents\GameWorld\GameObject\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="Contents\AStarPath.cpp">
-      <Filter>Framework\Contents\GameWorld\AI</Filter>
     </ClCompile>
     <ClCompile Include="Contents\DB_Monster.cpp">
       <Filter>Framework\Contents\DataBase\Object</Filter>
@@ -880,6 +877,9 @@
     </ClCompile>
     <ClCompile Include="Contents\ViewList.cpp">
       <Filter>Framework\Contents\GameWorld\GameObject\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\AStarPath.cpp">
+      <Filter>Framework\Contents\GameWorld\AI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,5 +1,6 @@
 #pragma once
 #include "BTTask.h"
+#include "AStarPath.h"
 #include "Script_Enemy.h"
 #include "Script_EnemyController.h"
 

@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "BTTaskM_PathPlanning_AStar.h"
-
+#include "AStarPath.h"
 #include "BTTask.h"
 #include "Transform.h"
 #include "GameObject.h"

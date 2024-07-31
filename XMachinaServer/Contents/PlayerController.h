@@ -38,7 +38,6 @@ public:
 	void SendPacket(UINT32 sessionID, SPtr_SendPktBuf sendPkt);
 
 
-	std::vector<PlayerSnapShot>				GetInsertedPlayersInfo(); // READ Lock 
 	std::vector<SPtr<GamePlayer>>			GetPlayersInViewRange(Vec3 player_pos, float viewrange_radius);
 
 
