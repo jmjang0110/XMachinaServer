@@ -801,7 +801,7 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_PlayerOnSkill(uint32_t player_id, FBProto
 {
 	flatbuffers::FlatBufferBuilder builder{};
 
-	auto ServerPacket = FBProtocol::CreateSPkt_PlayerOnSkill(builder, player_id, skill_type, mindcontrol_monster_id);
+	auto ServerPacket = FBProtocol::CreateSPkt_PlayerOnSkill(builder, player_id, skill_type, phero_amount, mindcontrol_monster_id);
 	builder.Finish(ServerPacket);
 
 	const uint8_t* bufferPointer = builder.GetBufferPointer();
@@ -1058,6 +1058,9 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_Monster_State(uint32_t monster_id, FBProt
 	///> �ۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡ�
 
 	flatbuffers::FlatBufferBuilder builder{};
+
+	LOG_MGR->Cout(monster_id, " - Create SPkt Monster State : ", static_cast<int>(state), "\n");
+	
 
 	auto serverPacket = FBProtocol::CreateSPkt_Monster_State(builder, monster_id, state);
 	builder.Finish(serverPacket);

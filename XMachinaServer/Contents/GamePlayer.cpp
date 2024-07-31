@@ -148,6 +148,8 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 			MonsterSnapShot snapShot = monster[i]->GetSnapShot();
 			snapShot.Position = monster[i]->GetTransform()->GetSnapShot().GetPosition();
 			snapShot.Rotation = monster[i]->GetTransform()->GetSnapShot().GetRotation();
+			snapShot.CurrState = monster[i]->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController)->GetMonsterBTType();
+
 			NewMonsters.push_back(snapShot);
 			NewMonsters_Objects.push_back(monster[i]);
 
@@ -194,8 +196,8 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 			const auto& MonsterType_serverPacket = FBS_FACTORY->SPkt_Monster_State(NewMonsters_Objects[i]->GetID(), btType);
 			GetSessionOwner()->Send(MonsterType_serverPacket);
 
-			auto MonsterState_spkt = FBS_FACTORY->SPkt_Monster_State(NewMonsters_Objects[i]->GetID(), NewMonsters_Objects[i]->GetBTState());
-			GAME_MGR->BroadcastRoom(mOwnerPC->GetOwnerRoom()->GetID(), MonsterState_spkt);
+			///auto MonsterState_spkt = FBS_FACTORY->SPkt_Monster_State(NewMonsters_Objects[i]->GetID(), NewMonsters_Objects[i]->GetBTState());
+			//GAME_MGR->BroadcastRoom(mOwnerPC->GetOwnerRoom()->GetID(), MonsterState_spkt);
 
 			/* TARGET PACKET */
 			// [BSH] : 타겟이 없어도 0을 보내주도록 해야 하며 모든 플레이어에게 브로드 캐스팅 해야한다.

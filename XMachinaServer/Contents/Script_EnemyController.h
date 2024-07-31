@@ -50,11 +50,11 @@ private:
 	std::stack<Vec3>	mPaths				= {};
 
 
-	FBProtocol::MONSTER_BT_TYPE mCurrBTType;
-	FBProtocol::MONSTER_BT_TYPE mPrevBTType;
+	FBProtocol::MONSTER_BT_TYPE mCurrBTType = FBProtocol::MONSTER_BT_TYPE::MONSTER_BT_TYPE_END;
+	FBProtocol::MONSTER_BT_TYPE mPrevBTType = FBProtocol::MONSTER_BT_TYPE::MONSTER_BT_TYPE_END;
 	
 	/* Lock */
-	FBProtocol::MONSTER_BT_TYPE mBTType; Lock::SRWLock mLock_BTType;
+	FBProtocol::MONSTER_BT_TYPE mBTType = FBProtocol::MONSTER_BT_TYPE::MONSTER_BT_TYPE_END;; Lock::SRWLock mLock_BTType;
 
 
 public:
