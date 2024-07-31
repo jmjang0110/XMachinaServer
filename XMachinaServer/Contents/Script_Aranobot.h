@@ -14,8 +14,6 @@ public:
 	Script_Aranobot(SPtr<GameObject> owner, ScriptInfo::Type type);
 	~Script_Aranobot();
 
-
-
 public:
 	/// +------------------------------
 	///		  virtual function 

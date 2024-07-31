@@ -132,24 +132,31 @@ public:
 	virtual void Dispatch(class OverlappedObject* overlapped, UINT32 bytes = 0) override;
 
 	void Exit();
-	int OnShoot(); // return bullet id 
+	bool IsExit() { mInfo.Lock_IsExit.LockWrite(); bool isExit = mInfo.IsExit; mInfo.Lock_IsExit.UnlockWrite(); return isExit; };
+	int OnShoot();  
+
+public:
+	void DecRef_OwnerGameSession() { mInfo.Owner = nullptr; }
+	void UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vector<SPtr<GameMonster>> montser);
+
+	void CollideCheckWithBullets();
+	void CollideCheckWithMonsters();
 
 public:
 	/// +-----------------------------------------------------------
 	///		S E T T E R 
 	/// -----------------------------------------------------------+
-	void SetOWner(SPtr_GameSession gsession)			 { mInfo.Owner    = gsession; };
-	void SetPlayerID(UINT32 playerid)					 { mInfo.ID       = playerid; };
-	void setRoomID(UINT32 roomid)						 { mInfo.RoomID   = roomid; };
-	void SetName(std::string name)						 { mInfo.Name     = name; };
-	void SetOwnerPlayerController(PlayerController* pc)  { mOwnerPC = pc; }
+	void SetOWner(SPtr_GameSession gsession)								{ mInfo.Owner    = gsession; };
+	void SetPlayerID(UINT32 playerid)										{ mInfo.ID       = playerid; };
+	void setRoomID(UINT32 roomid)											{ mInfo.RoomID   = roomid; };
+	void SetName(std::string name)											{ mInfo.Name     = name; };
+	void SetOwnerPlayerController(PlayerController* pc)						{ mOwnerPC = pc; }
 
-	/* UPDATE FREQUENTLY --- DATA RACE ( Read / Write ) In MultiThreads */
-	void SetSNS_Velocity(float vel)										{ mInfo.Lock_Velocity.LockWrite();		mInfo.Velocity = vel;				 mInfo.Lock_Velocity.UnlockWrite(); }
-	void SetSNS_SpineLookDir(Vec3 spineLookDir)							{ mInfo.Lock_SpineLookDir.LockWrite();	mInfo.SpineLookDir = spineLookDir;   mInfo.Lock_SpineLookDir.UnlockWrite(); }
-	void SetSNS_Phero(float phero)										{ mInfo.Lock_Phero.LockWrite();			mInfo.Phero    = phero;				 mInfo.Lock_Phero.UnlockWrite(); }
-	void SetSNS_ActiveSkill(SkillInfo::Type skillType, bool isActive)	{ mInfo.Lock_ActiveSkills.LockWrite();	mInfo.ActiveSkills[static_cast<UINT8>(skillType)] = isActive; mInfo.Lock_ActiveSkills.UnlockWrite(); }
-	void SetSNS_EquipWeapon(FBProtocol::WEAPON_TYPE weaponType)			{ mInfo.Lock_Weapon.LockWrite();		mInfo.WeaponType = weaponType;		 mInfo.Lock_Weapon.UnlockWrite(); return; }
+	void SetSNS_Velocity(float vel)											{ mInfo.Lock_Velocity.LockWrite();		mInfo.Velocity = vel;				 mInfo.Lock_Velocity.UnlockWrite(); }
+	void SetSNS_SpineLookDir(Vec3 spineLookDir)								{ mInfo.Lock_SpineLookDir.LockWrite();	mInfo.SpineLookDir = spineLookDir;   mInfo.Lock_SpineLookDir.UnlockWrite(); }
+	void SetSNS_Phero(float phero)											{ mInfo.Lock_Phero.LockWrite();			mInfo.Phero    = phero;				 mInfo.Lock_Phero.UnlockWrite(); }
+	void SetSNS_ActiveSkill(SkillInfo::Type skillType, bool isActive)		{ mInfo.Lock_ActiveSkills.LockWrite();	mInfo.ActiveSkills[static_cast<UINT8>(skillType)] = isActive; mInfo.Lock_ActiveSkills.UnlockWrite(); }
+	void SetSNS_EquipWeapon(FBProtocol::WEAPON_TYPE weaponType)				{ mInfo.Lock_Weapon.LockWrite();		mInfo.WeaponType = weaponType;		 mInfo.Lock_Weapon.UnlockWrite(); return; }
 	
 
 public:
@@ -172,8 +179,6 @@ public:
 	FBProtocol::WEAPON_TYPE	GetSNS_CurrWeapon()								{ mInfo.Lock_Weapon.LockRead();			FBProtocol::WEAPON_TYPE name = mInfo.WeaponType; ; mInfo.Lock_Weapon.UnlockRead(); return name; }
 	Vec3					GetSNS_SpineLookDir()							{ mInfo.Lock_SpineLookDir.LockRead();	Vec3 spineLookDir            = mInfo.SpineLookDir; mInfo.Lock_SpineLookDir.UnlockRead(); return spineLookDir; }
 
-	bool IsExit()															{ mInfo.Lock_IsExit.LockWrite(); bool isExit = mInfo.IsExit; mInfo.Lock_IsExit.UnlockWrite(); return isExit; };
-
 	// Get all active skills
 	std::vector<bool> GetSNS_ActiveSkills() {
 		mInfo.Lock_ActiveSkills.LockRead();
@@ -183,12 +188,6 @@ public:
 		return activeSkills;
 	}
 
-public:
-	void DecRef_OwnerGameSession() { mInfo.Owner = nullptr; }
-	void UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vector<SPtr<GameMonster>> montser);
-	
-	void CollideCheckWithBullets();
-	void CollideCheckWithMonsters();
 
 
 public:

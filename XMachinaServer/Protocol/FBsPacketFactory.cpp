@@ -374,7 +374,7 @@ bool FBsPacketFactory::Process_CPkt_Player_Transform(SPtr_Session session, const
 	/* Player Info Update */
 	gameSession->GetPlayer()->GetTransform()->SetPosition(pos);
 	gameSession->GetPlayer()->GetTransform()->SetLocalRotation(Quaternion::ToQuaternion(rot));
-	gameSession->GetPlayer()->Update();
+	gameSession->GetPlayer()->Update(); // Player 업데이트 ! 
 
 	return true;
 }
@@ -535,20 +535,12 @@ bool FBsPacketFactory::Process_CPkt_Bullet_OnShoot(SPtr_Session session, const F
 	
 	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
 
-	
-
 	int  player_id   = gameSession->GetID(); // 플레이어 아이디
 	auto gun_id      = gameSession->GetPlayer()->GetSNS_CurrWeapon();
 	Vec3 ray         = GetVector3(pkt.ray());
 	int  bullet_id   = gameSession->GetPlayer()->OnShoot(); // PQCS -> Bullet Update Start ( Worker Thread  에게 업데이트를 떠넘긴다 ) 
 	
 	LOG_MGR->Cout("[", player_id, "]RAY : ", ray.x, " ", ray.y, " ", ray.z, "\n");
-
-
-	// Shot 불가능 
-	//if (bullet_id == -1) {
-	//	return false;
-	//}
 
 	/// 플레이어가 Shot 했다는 것을 플레이어들에게 알린다. 
 	auto spkt = FBS_FACTORY->SPkt_Bullet_OnShoot(player_id, gun_id, bullet_id, ray);
@@ -904,7 +896,7 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_Player_AimRotation(uint32_t player_id, fl
 ///	◈ SEND [ MONSTER ] PACKET ◈
 /// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------★
 
-SPtr_SendPktBuf FBsPacketFactory::SPkt_NewMonster(std::vector<MonsterSnapShot>& new_monsters)
+SPtr_SendPktBuf FBsPacketFactory::SPkt_NewMonster(std::vector<SPtr<GameMonster>>& new_monsters)
 {
 	///  >  ▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽
 	/// > table Phero{
@@ -933,12 +925,18 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_NewMonster(std::vector<MonsterSnapShot>& 
 	/// +------------------------------------------------------------------------------------------
 	///	Monster 정보 저장 
 	/// ------------------------------------------------------------------------------------------+
-	for (MonsterSnapShot& p : new_monsters) {
-		auto pos		= FBProtocol::CreatePosition_Vec2(builder, p.Position.x, p.Position.z);
-		auto pheros		= builder.CreateString(p.Pheros);
-		auto bt_Type	= p.CurrState;
-		float rot_y		= Vector3::SignedAngle(Vector3::Forward, p.Look, Vector3::Up);
-		auto Monster	= FBProtocol::CreateMonster(builder, p.ID, p.Type, bt_Type, pos, rot_y, pheros);
+	for (SPtr<GameMonster>& mon : new_monsters) {
+
+		auto transSNS = mon.get()->GetTransform()->GetSnapShot();
+		Vec3 transPos = transSNS.GetPosition();
+		Vec3 transRot = transSNS.GetRotation();
+		Vec3 transLook = transSNS.GetLook();
+
+		auto pos		= FBProtocol::CreatePosition_Vec2(builder, transPos.x, transPos.z);
+		auto pheros		= builder.CreateString(mon->GetPheros());
+		auto bt_Type	= mon->GetBTState();
+		float rot_y		= Vector3::SignedAngle(Vector3::Forward, transLook, Vector3::Up);
+		auto Monster	= FBProtocol::CreateMonster(builder, mon->GetID(), mon->GetMonsterType(), bt_Type, pos, rot_y, pheros);
 		MonsterSnapShots_Vector.push_back(Monster);
 	}
 

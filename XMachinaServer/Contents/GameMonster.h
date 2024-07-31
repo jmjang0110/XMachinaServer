@@ -23,18 +23,18 @@ class NPCController;
 
 struct MonsterSnapShot : public ObjectSnapShot
 {
+	/// +-----------------------------------------------------------
+	///		base 
+	/// -----------------------------------------------------------+
 	SPtr<GameMonster>					owner = nullptr;
 	FBProtocol::MONSTER_TYPE			Type;		/*	몬스터 종류	*/
 	FBProtocol::MONSTER_BT_TYPE			CurrState;  Lock::SRWLock lock_CurrState;
-	/* Stat Script 로 빼자... */
+
+	/// +-----------------------------------------------------------
+	///		Stat  
+	/// -----------------------------------------------------------+
 	float								HP;			Lock::SRWLock lock_HP;/*		HP		*/
 	float								Attack;		Lock::SRWLock lock_Attack;/*	  공격력		*/
-
-	Vec3								Position;	Lock::SRWLock lock_Position;
-	Vec3								Rotation;	Lock::SRWLock lock_Rotation;
-	Vec3								Look;		Lock::SRWLock lock_Look;
-	Vec3								SpineDir;	Lock::SRWLock lock_SpineDir;
-
 	std::string							Pheros;
 
 };
@@ -50,12 +50,14 @@ private:
 	
 	std::atomic_int mActivate_Ref = 0;
 
-	double mTimer = 0.f;
+	double		mTimer = 0.f;
 
 	Vec3		mSpawnPos;
 	Vec3		mSpawnRot;
 
 public:
+	virtual SPtr<GameMonster> Clone();
+
 	virtual void Update() override;
 	virtual void WakeUp() override;
 	virtual void Start();
@@ -65,52 +67,47 @@ public:
 
 	virtual void Dispatch(class OverlappedObject* overlapped, UINT32 bytes = 0) override;
 
-	virtual SPtr<GameMonster> Clone();
 
 public:
-	void SetMonsterID(uint32_t id)							{ mInfo.ID			= id;}
-	void SetMonsterType(FBProtocol::MONSTER_TYPE type)		{ mInfo.Type		= type;}
-	void SetAttack(float attack)							{ mInfo.Attack		= attack; }
-		
-	void SetHP(float hp)									{ mInfo.lock_HP.LockWrite();		mInfo.HP               = hp;			mInfo.lock_HP.UnlockWrite(); }
-	void SetPosition(Vec3 pos)								{ mInfo.lock_Position.LockWrite();	mInfo.Position         = pos;			mInfo.lock_Position.UnlockWrite(); }
-	void SetRotation(Vec3 rot)								{ mInfo.lock_Rotation.LockWrite();	mInfo.Rotation         = rot;			mInfo.lock_Rotation.UnlockWrite(); }
-	void SetSpineDir(Vec3 spinedir)							{ mInfo.lock_SpineDir.LockWrite();	mInfo.SpineDir         = spinedir;		mInfo.lock_SpineDir.UnlockWrite(); }
-	void SetLook(Vec3 look)									{ mInfo.lock_Look.LockWrite(); mInfo.Look = look; mInfo.lock_Look.UnlockWrite(); }
-
-	void SetSectorIndex(Coordinate sectorIdx);
-	void SetPheros(std::string pheros)						{ mInfo.Pheros = pheros; }
-	void SetBTState(FBProtocol::MONSTER_BT_TYPE type)		{ mInfo.lock_CurrState.LockWrite(); mInfo.CurrState = type; mInfo.lock_CurrState.UnlockWrite(); }
-	// Get 함수들
-	SPtr<GameMonster>			GetSnapShotOwner()			{	 mInfo.owner; }
-	uint32_t					GetMonsterID()				{	return mInfo.ID;		}
-	FBProtocol::MONSTER_TYPE	GetMonsterType()			{	return mInfo.Type;		}
-	float						GetAttack()					{	return mInfo.Attack;	}
-	float						GetHP()						{ mInfo.lock_HP.LockRead();  float hp = mInfo.HP;	mInfo.lock_HP.UnlockRead(); return hp; }
-	Vec3						GetPosition()				{ mInfo.lock_Position.LockRead(); Vec3 pos = mInfo.Position; mInfo.lock_Position.UnlockRead(); return pos; }
-	FBProtocol::MONSTER_BT_TYPE GetBTState()				{ mInfo.lock_CurrState.LockRead(); FBProtocol::MONSTER_BT_TYPE state = mInfo.CurrState; mInfo.lock_CurrState.UnlockRead(); return state; }
-	std::string					GetPheros()					{ return mInfo.Pheros; }
-	Vec3						GetLook()					{ mInfo.lock_Look.LockRead(); Vec3 look = mInfo.Look; mInfo.lock_Look.UnlockRead(); return look; }
-	// mPheros 벡터를 반환하는 getter 함수
-	const std::vector<SPtr<GameObject>>& GetAllPheros() ;
-
-
-
-	void						SetOwnerNPCController(NPCController* nc)	{ mOwnerNC = nc; }
-	NPCController*				GetOwnerNPCController()						{ return mOwnerNC; }
-	int							GetActivate_RefCnt()						{ return mActivate_Ref.load(); }
-	void						DecreaseRef()								{ mActivate_Ref.fetch_sub(1); if (mActivate_Ref.load() < 0) mActivate_Ref = 0; }
-
-	MonsterSnapShot GetSnapShot() { mLock_SnapShot.LockRead(); MonsterSnapShot snapShot = mInfo; mLock_SnapShot.UnlockRead(); return snapShot; }
-
+	void DecreaseRef() { mActivate_Ref.fetch_sub(1); if (mActivate_Ref.load() < 0) mActivate_Ref = 0; }
 	void UpdateSnapShot(); // 최신 상태로 스냅샷 업데이트 
-
-	void On_ExitFromViewList();
 
 	void Broadcast_SPkt_Monster_Transform();
 	void Broadcast_SPkt_Mosnter_State(FBProtocol::MONSTER_BT_TYPE monster_bt_type);
-	
 	void Send_SPkt_Mosnter_State(FBProtocol::MONSTER_BT_TYPE monser_bt_type);
+
+	void On_ExitFromViewList();
+
+
+public:
+	/// +-----------------------------------------------------------
+	///		S E T T E R 
+	/// -----------------------------------------------------------+
+	void SetMonsterID(uint32_t id)							{ mInfo.ID			                                = id;}
+	void SetMonsterType(FBProtocol::MONSTER_TYPE type)		{ mInfo.Type		                                = type;}
+	void SetAttack(float attack)							{ mInfo.Attack		                                = attack; }
+	void SetSectorIndex(Coordinate sectorIdx)				{ mSectorIndex                                      = sectorIdx; }
+	void SetPheros(std::string pheros)						{ mInfo.Pheros                                      = pheros; }
+
+	void SetHP(float hp)									{ mInfo.lock_HP.LockWrite(); mInfo.HP               = hp;	mInfo.lock_HP.UnlockWrite(); }
+	void SetBTState(FBProtocol::MONSTER_BT_TYPE type)		{ mInfo.lock_CurrState.LockWrite(); mInfo.CurrState = type; mInfo.lock_CurrState.UnlockWrite(); }
+
+	void SetOwnerNPCController(NPCController* nc)			{ mOwnerNC = nc; }
+	/// +-----------------------------------------------------------
+	///		G E T T E R 
+	/// -----------------------------------------------------------+	
+	SPtr<GameMonster>					 GetSnapShotOwner()			{ return mInfo.owner;		}
+	uint32_t							 GetMonsterID()				{ return mInfo.ID;			}
+	FBProtocol::MONSTER_TYPE			 GetMonsterType()			{ return mInfo.Type;		}
+	float								 GetAttack()				{ return mInfo.Attack;		}
+	std::string							 GetPheros()				{ return mInfo.Pheros;		}
+
+	float								 GetHP()					{ mInfo.lock_HP.LockRead();  float hp = mInfo.HP;	mInfo.lock_HP.UnlockRead(); return hp; }
+	FBProtocol::MONSTER_BT_TYPE			 GetBTState()				{ mInfo.lock_CurrState.LockRead(); FBProtocol::MONSTER_BT_TYPE state = mInfo.CurrState; mInfo.lock_CurrState.UnlockRead(); return state; }
+	
+	NPCController*						 GetOwnerNPCController()	{ return mOwnerNC; }
+	int									 GetActivate_RefCnt()				{ return mActivate_Ref.load(); }
+	const std::vector<SPtr<GameObject>>& GetAllPheros() ;
 
 
 public:

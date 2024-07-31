@@ -27,9 +27,6 @@ void GameMonster::UpdateSnapShot()
 	mInfo.ID         = GetID();
 	mInfo.HP         = 100; // test
 	mInfo.Attack     = 100;
-	mInfo.Position   = GetTransform()->GetPosition();
-	mInfo.Rotation	 = Quaternion::ToEuler(GetTransform()->GetRotation());
-	mInfo.Look		 = GetTransform()->GetLook();
 }
 
 void GameMonster::On_ExitFromViewList()
@@ -191,9 +188,6 @@ SPtr<GameMonster> GameMonster::Clone()
 	return copy;
 }
 
-void GameMonster::SetSectorIndex(Coordinate sectorIdx)
-{
-	mSectorIndex = sectorIdx;
-}
+
 
 

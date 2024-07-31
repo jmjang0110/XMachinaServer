@@ -24,6 +24,12 @@ struct ColliderSnapShot : public ObjectSnapShot
 	std::vector<MyBoundingOrientedBox>	BoundingBoxList{};
 };
 
+
+
+
+/// +-----------------------------------------------------
+///				    COLLIDER COMPONENT 
+/// -----------------------------------------------------+
 class Collider : public Component
 {
 private:
@@ -41,21 +47,7 @@ public:
 
 public:
 	virtual void Clone(SPtr<Component> CopyT) ;
-
-
-	virtual void Activate();
-	virtual void DeActivate();
-
-	virtual void OnEnable();
-	virtual void OnDisable();
-
-public:
-	virtual bool WakeUp();
-	virtual bool Start();
-	virtual bool Update();
 	virtual bool LateUpdate();
-
-	virtual void OnDestroy();
 
 public:
 	ColliderSnapShot GetSnapShot(); /* Read Only */
@@ -70,83 +62,3 @@ public:
 	std::vector<MyBoundingOrientedBox>& GetBoundingBoxList() { return mBoundingBoxList; }
 
 };
-
-
-//CollisionMgr
-//{
-//	static bool CollideCheck(ColliderSnapShot A,  ColliderSnapShot B)
-//	{
-//
-//	}
-//
-//	MyBoundingSphere();
-//	ASPDf
-//
-//		Instetsrecets
-//
-//
-//		reutrn;
-//
-//	}
-//
-//}
-//
-//CollisionMgr->( Monster , Player )
-//{
-//	for (int i = 0; i < Player.hcils.size()l + _i) {
-//		bool check = CollisMgr->Collidechl(Palyer.Child / Monster);
-//		
-//		monster->Oncollosion();
-//		Player.child->OnCollision();
-//
-//	}
-//}
-//
-//bool CollisMgr->CheckCollision(a, b)
-//{
-//	a->ObjectCollider->CheckCollision(b->objectCollider)
-//
-//		a.Type;
-//	b.Type;
-//	a.Type == sphere && b.Type == Box
-//	{
-//		return a.BoundingBox < --->Intersects b.BoundingBox;
-//	}
-//}
-//class ObjectCollider
-//{
-//
-//	Collider Ä³½Ì¿ë
-//		std::vector<SPtr<Collider>>
-//
-//	bool CheckCollision(ObjectCllider other)
-//	{
-//	}
-//
-//}
-//
-//class Collider : public Component
-//{
-//	ObjectCollider* col = nullptr;;
-//
-//
-//private:
-//	std::vector<MyBoundingSphere>		Sphere;
-//	std::vector<MyBoundingOrientedBox>  boxs;
-//
-//	GetSnapShot()
-//	{
-//		std::vector<MyBoundingSphere>		Sphere;
-//		std::vector<MyBoundingOrientedBox>  boxs;
-//	}reutrn;
-//
-//public:
-//	Update(Vec3 Position) {
-//		Matrix mat = Piosition;
-//		Box 
-//			Shptetr
-//	}
-//
-//	bool CollisionCheck(MyBoundingSphere);
-//	bool CollisionCheck(MyBoundingOrientedBox);
-//};

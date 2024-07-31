@@ -17,15 +17,8 @@ public:
 	/// +------------------------------
 	///		  virtual function 
 	/// ------------------------------+
-	virtual void Clone(SPtr<Component> other) ;
-
-	virtual void Activate();
-	virtual void DeActivate();
-
-	virtual bool WakeUp();
 	virtual bool Start();
 	virtual bool Update();
-	virtual void OnDestroy();
 
 
 protected:

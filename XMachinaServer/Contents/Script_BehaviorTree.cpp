@@ -16,31 +16,6 @@ Script_BehaviorTree::~Script_BehaviorTree()
 {
 }
 
-void Script_BehaviorTree::Clone(SPtr<Component> other) 
-{
-    Script::Clone(other);
-
-}
-
-void Script_BehaviorTree::Activate()
-{
-    Script::Activate();
-
-}
-
-void Script_BehaviorTree::DeActivate()
-{
-    Script::DeActivate();
-
-}
-
-bool Script_BehaviorTree::WakeUp()
-{
-    Script::WakeUp();
-
-    return true;
-}
-
 bool Script_BehaviorTree::Start()
 {
     Script::Start();
@@ -60,10 +35,4 @@ bool Script_BehaviorTree::Update()
     }
 
     return true;
-}
-
-void Script_BehaviorTree::OnDestroy()
-{
-    Script::OnDestroy();
-
 }

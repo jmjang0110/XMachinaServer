@@ -73,8 +73,6 @@ BTNodeState MonsterTask::MoveToPath::Evaluate()
 	GetOwner()->GetTransform()->RotateTargetAxisY(mPath->top(), mStat->GetStat_RotationSpeed());
 	GetOwner()->GetTransform()->Translate(XMVector3Normalize(nextPos), speed * GetOwner()->GetDeltaTime());
 
-	mEnemyController->GetOwnerMonster()->SetPosition(pos); /* Snap Shot - Pos */
-
 	// 다음 경로에 도착 시 해당 경로 삭제
 	const float kMinDistance = 0.1f;
 	if (nextPos.Length() < kMinDistance) {

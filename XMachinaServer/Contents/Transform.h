@@ -18,6 +18,11 @@ struct TransformSnapShot : public ObjectSnapShot
 	Vec3 GetLook()     { return Vector3::Normalized(Vec3(WorldTransform._31, WorldTransform._32, WorldTransform._33)); }
 };
 
+
+
+/// +-----------------------------------------------------
+///				    TRANSFORM COMPONENT 
+/// -----------------------------------------------------+
 // position, rotation of an object.
 // every object in a Scene has a Transform.
 // it's used to store and manipulate the position, rotation of the object.

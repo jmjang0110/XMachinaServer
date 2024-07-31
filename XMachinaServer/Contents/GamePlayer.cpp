@@ -131,28 +131,28 @@ int GamePlayer::OnShoot()
 void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vector<SPtr<GameMonster>> monster)
 {
 	mInfo.VList_Prev = mInfo.Vlist;
-	std::vector<MonsterSnapShot> NewMonsters;
-	std::vector<MonsterSnapShot> RemoveMonsters;
+	std::vector<SPtr<GameMonster>> NewMonsters;
+	std::vector<SPtr<GameMonster>> RemoveMonsters;
 	std::vector<SPtr<GameMonster>> NewMonsters_Objects;
 
+	/// +--------------------------------------------------------------------------------
+	///	1. [PLAYER] VIEW LIST 
+	/// ---------------------------------------------------------------------------------+
 	for (int i = 0; i < players.size(); ++i) {
 		mInfo.Vlist.TryInsertPlayer(players[i]->GetID(), players[i]);
 	}
 
+
+
+	/// +--------------------------------------------------------------------------------
+	///	2. [NEW MONSTER] VIEW LIST 
+	/// ---------------------------------------------------------------------------------+
 	for (int i = 0; i < monster.size(); ++i) {
 		bool IsSuccess = mInfo.Vlist.TryInsertMonster(monster[i]->GetID(), monster[i]);
 		if (IsSuccess) {
-			// 새로 들어옴 `
-			MonsterSnapShot snapShot = monster[i]->GetSnapShot();
-			snapShot.Position = monster[i]->GetTransform()->GetSnapShot().GetPosition();
-			snapShot.Rotation = monster[i]->GetTransform()->GetSnapShot().GetRotation();
-			snapShot.CurrState = monster[i]->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController)->GetMonsterBTType();
-
-			NewMonsters.push_back(snapShot);
+			// 새로 들어옴
 			NewMonsters_Objects.push_back(monster[i]);
-
-			LOG_MGR->Cout("[ ", snapShot.ID , " ] : NewMonsters \n");
-
+			LOG_MGR->Cout("[ ", monster[i]->GetID(), " ] : NewMonsters \n");
 		}
 	}
 
@@ -161,15 +161,15 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 		currentMonsterIDs.insert(monster[i]->GetID());
 	}
 
+
+	/// +--------------------------------------------------------------------------------
+	///	3. [REMOVE MONSTER] VIEW LIST 
+	/// ---------------------------------------------------------------------------------+
 	for (auto& it : mInfo.VList_Prev.VL_Monsters) {
 		// 이전 ViewList에 있던 Monster가 현재 ViewList에 없다면 
 		if (currentMonsterIDs.find(it.first) == currentMonsterIDs.end()) {
 			mInfo.Vlist.RemoveMonster(it.first);
-
-			MonsterSnapShot snapShot = it.second->GetSnapShot();
-			snapShot.Position = it.second->GetTransform()->GetSnapShot().GetPosition();
-			snapShot.Rotation = it.second->GetTransform()->GetSnapShot().GetRotation();
-			RemoveMonsters.push_back(snapShot);
+			RemoveMonsters.push_back(it.second);
 
 			LOG_MGR->Cout("[ ", it.first, " ] : ", it.second, " : DeActivate\n");
 		}
@@ -177,54 +177,42 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 
 
 	/// +------------------------------------------------------------------------------------------------------
-	///		SEND NEW / REMOVE MOSNTERS PACKET 
+	/// 4. SEND NEW MOSNTERS PACKET 
 	/// ------------------------------------------------------------------------------------------------------+
-	/* Send New Mosnter Packet */
 	if (NewMonsters.size() > 0) {
-		// [BSH] : 새로운 몬스터가 플레이어 중 하나라도 뷰 리스트에 들어오면 모든 클라에게 브로드 캐스팅 해야 한다.
-		
+
 		auto NewMonster_spkt = FBS_FACTORY->SPkt_NewMonster(NewMonsters);
 		GetSessionOwner()->Send(NewMonster_spkt);
 
 		for (int i = 0; i < NewMonsters_Objects.size(); ++i) {
 
-			/* MONSTER STATE */
-			auto script                          = NewMonsters_Objects[i]->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
-			FBProtocol::MONSTER_BT_TYPE btType   = script->GetMonsterBTType();
-			const auto& MonsterType_serverPacket = FBS_FACTORY->SPkt_Monster_State(NewMonsters_Objects[i]->GetID(), btType);
-			GetSessionOwner()->Send(MonsterType_serverPacket);
-
-			///auto MonsterState_spkt = FBS_FACTORY->SPkt_Monster_State(NewMonsters_Objects[i]->GetID(), NewMonsters_Objects[i]->GetBTState());
-			//GAME_MGR->BroadcastRoom(mOwnerPC->GetOwnerRoom()->GetID(), MonsterState_spkt);
+			/// > ▷ SEND MOSNTER STATE 
+			auto						script         = NewMonsters_Objects[i]->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
+			FBProtocol::MONSTER_BT_TYPE btType         = script->GetMonsterBTType();
+			const auto&					SPkt_monState  = FBS_FACTORY->SPkt_Monster_State(NewMonsters_Objects[i]->GetID(), btType);
+			GetSessionOwner()->Send(SPkt_monState);
 
 			/* TARGET PACKET */
 			// [BSH] : 타겟이 없어도 0을 보내주도록 해야 하며 모든 플레이어에게 브로드 캐스팅 해야한다.
-			SPtr<GameObject> target = script->GetTarget();
+			SPtr<GameObject> target = script->GetTarget(); /* Lock Read */
 			int targetplayer_id = 0;
 			if (target && target->GetType() == GameObjectInfo::Type::GamePlayer) {
 				targetplayer_id = target->GetID();
 			}
 
+			/// > ▷ BROADCAST MOSNTER TRAGET 
 			int monster_id = NewMonsters_Objects[i]->GetID();
-			auto pkt = FBS_FACTORY->SPkt_Monster_Target(monster_id, targetplayer_id, -1);
+			auto pkt       = FBS_FACTORY->SPkt_Monster_Target(monster_id, targetplayer_id, -1);
 			GAME_MGR->BroadcastRoom(mOwnerPC->GetOwnerRoom()->GetID(), pkt);
-
-			//if (target) {
-			//	int targetplayer_id = target->GetID();
-			//	if (target->GetType() == GameObjectInfo::Type::GamePlayer) {
-			//		int monster_id = NewMonsters_Objects[i]->GetID();
-			//		const auto& pkt = FBS_FACTORY->SPkt_Monster_Target(monster_id, targetplayer_id, -1);
-			//		GetSessionOwner()->Send(pkt);
-			//	}
-			//}
 		}
 		LOG_MGR->Cout("SEND NEW MONSTER \n");
-
 	}
-	
-	/* Send Remove Monster Packet */
+
+	/// +------------------------------------------------------------------------------------------------------
+	/// 5. SEND REMOVE MOSNTERS PACKET 
+	/// ------------------------------------------------------------------------------------------------------+
 	for (int i = 0; i < RemoveMonsters.size(); ++i) {
-		const auto& RemoveMonster_serverPacket = FBS_FACTORY->SPkt_RemoveMonster(RemoveMonsters[i].ID);
+		const auto& RemoveMonster_serverPacket = FBS_FACTORY->SPkt_RemoveMonster(RemoveMonsters[i]->GetID());
 		GetSessionOwner()->Send(RemoveMonster_serverPacket);
 	}
 }

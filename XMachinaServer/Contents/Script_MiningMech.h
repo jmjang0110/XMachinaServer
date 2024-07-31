@@ -13,8 +13,6 @@ public:
 	Script_MiningMech(SPtr<GameObject> owner, ScriptInfo::Type type);
 	~Script_MiningMech();
 
-
-
 public:
 	/// +------------------------------
 	///		  virtual function 

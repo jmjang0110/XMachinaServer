@@ -57,7 +57,7 @@ public:
 public:
 	/* Util */
 	SPtr<Transform> GetTransform() { return GetComponent<Transform>(ComponentInfo::Type::Transform); }
-	SPtr<Collider>	GetCollider() { return GetComponent<Collider>(ComponentInfo::Type::Collider); }
+	SPtr<Collider>	GetCollider()  { return GetComponent<Collider>(ComponentInfo::Type::Collider); }
 	SPtr<Animation> GetAnimation() { return GetComponent<Animation>(ComponentInfo::Type::Animation); }
 	SPtr<Rigidbody>	GetRigidbody() { return GetComponent<Rigidbody>(ComponentInfo::Type::Rigidbody); }
 

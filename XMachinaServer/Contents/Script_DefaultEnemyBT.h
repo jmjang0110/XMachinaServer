@@ -11,29 +11,17 @@ class Script_DefaultEnemyBT : public Script_BehaviorTree
 private:
 	BTNode*					mRoot;
 
-
-public:
 public:
 	Script_DefaultEnemyBT();
 	Script_DefaultEnemyBT(SPtr<GameObject> owner, ScriptInfo::Type type);
 	virtual ~Script_DefaultEnemyBT();
 
 public:
-	virtual void OnEnable() override ;
-	virtual void OnDisable() override;
-
 	/// +------------------------------
 	///		  virtual function 
 	/// ------------------------------+
 	virtual void Clone(SPtr<Component> other) ;
-
-	virtual void Activate();
-	virtual void DeActivate();
-
-	virtual bool WakeUp();
-	virtual bool Start();
 	virtual bool Update();
-	virtual void OnDestroy();
 
 
 protected:

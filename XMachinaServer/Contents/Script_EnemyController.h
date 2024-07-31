@@ -45,7 +45,7 @@ private:
 	bool				mMindControllded	= false;
 	EnemyInfo::State	mState				= EnemyInfo::State::Idle;
 
-	SPtr<GameObject>	mTarget				= {}; 
+	SPtr<GameObject>	mTarget             = {}; Lock::SRWLock Lock_Target;
 	SPtr_GameObject		mPathTarget			= {};
 	std::stack<Vec3>	mPaths				= {};
 
@@ -88,13 +88,14 @@ public:
 	/// ---------------------------------------------------+
 	SPtr<GameMonster>			GetOwnerMonster()			{ return mOwnerMonster; }
 
-	SPtr<GameObject>			GetTarget()					{ return mTarget; }
 	SPtr_GameObject				GetPathTargetObject()		{ return mPathTarget;  }
 
 	EnemyInfo::State			GetState()					{ return mState; }
 	std::stack<Vec3>*			GetPaths()					{ return &mPaths; }
 	FBProtocol::MONSTER_BT_TYPE GetMonsterCurrBTType()		{ return mCurrBTType; }
 	FBProtocol::MONSTER_BT_TYPE GetMontserPrevBTType()		{ return mPrevBTType; }
+
+	SPtr<GameObject>			GetTarget()					{ Lock_Target.LockRead(); SPtr<GameObject> target = mPathTarget; Lock_Target.UnlockRead(); return target; }
 	FBProtocol::MONSTER_BT_TYPE GetMonsterBTType()			{ mLock_BTType.LockRead(); FBProtocol::MONSTER_BT_TYPE btType = mBTType; mLock_BTType.UnlockRead(); return btType; }
 	/// +---------------------------------------------------
 	///						S E T T E R 
@@ -105,7 +106,7 @@ public:
 
 	void SetPathTargetObject(SPtr<GameObject> target)			{ mPathTarget    = target; }
 	void SetOwnerMonster(SPtr<GameMonster> ownerMonster)		{ mOwnerMonster  = ownerMonster; }
-	void SetTarget(SPtr<GameObject> target)						{ mTarget = target; }
+	void SetTarget(SPtr<GameObject> target)						{ Lock_Target.LockWrite(); mTarget = target; Lock_Target.UnlockWrite(); }
 	void SetBTType(FBProtocol::MONSTER_BT_TYPE btType)			{ mLock_BTType.LockWrite(); mBTType = btType; mLock_BTType.UnlockWrite(); }
 
 	/// +---------------------------------------------------

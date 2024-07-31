@@ -13,8 +13,6 @@ public:
 	Script_LightBipedMech(SPtr<GameObject> owner, ScriptInfo::Type type);
 	~Script_LightBipedMech();
 
-
-
 public:
 	/// +------------------------------
 	///		  virtual function 

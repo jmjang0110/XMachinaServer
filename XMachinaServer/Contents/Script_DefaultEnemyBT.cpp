@@ -219,17 +219,7 @@ Script_DefaultEnemyBT::~Script_DefaultEnemyBT()
 {
 }
 
-void Script_DefaultEnemyBT::OnEnable()
-{
-    Script_BehaviorTree::OnEnable();
 
-}
-
-void Script_DefaultEnemyBT::OnDisable()
-{
-    Script_BehaviorTree::OnDisable();
-
-}
 
 void Script_DefaultEnemyBT::Clone(SPtr<Component> other) 
 {
@@ -239,31 +229,6 @@ void Script_DefaultEnemyBT::Clone(SPtr<Component> other)
 
 }
 
-void Script_DefaultEnemyBT::Activate()
-{
-    Script_BehaviorTree::Activate();
-
-}
-
-void Script_DefaultEnemyBT::DeActivate()
-{
-    Script_BehaviorTree::Activate();
-
-}
-
-bool Script_DefaultEnemyBT::WakeUp()
-{
-    Script_BehaviorTree::WakeUp();
-
-    return false;
-}
-
-bool Script_DefaultEnemyBT::Start()
-{
-    Script_BehaviorTree::Start();
-
-    return true;
-}
 
 bool Script_DefaultEnemyBT::Update()
 {
@@ -341,8 +306,3 @@ bool Script_DefaultEnemyBT::Update()
     return true;
 }
 
-void Script_DefaultEnemyBT::OnDestroy()
-{
-    Script_BehaviorTree::OnDestroy();
-
-}

@@ -8,8 +8,6 @@ class Script_Onyscidus : public Script_Enemy
 {
 private:
 	
-
-
 ;public:
 	Script_Onyscidus();
 	Script_Onyscidus(SPtr<GameObject> owner, ScriptInfo::Type type);

@@ -7,7 +7,6 @@ class Script_Ceratoferox : public Script_Enemy
 {
 private:
 
-
 public:
 	Script_Ceratoferox();
 	Script_Ceratoferox(SPtr<GameObject> owner, ScriptInfo::Type type);

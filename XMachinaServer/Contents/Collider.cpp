@@ -58,36 +58,6 @@ void Collider::Clone(SPtr<Component> other)
 
 }
 
-void Collider::Activate()
-{
-}
-
-void Collider::DeActivate()
-{
-}
-
-bool Collider::WakeUp()
-{
-    Component::WakeUp();
-
-    return true;
-}
-
-bool Collider::Start()
-{
-    Component::Start();
-
-    return true;
-}
-
-bool Collider::Update()
-{
-    Component::Update();
-
-
-    return true;
-}
-
 bool Collider::LateUpdate()
 {
     UpdateTransform();
@@ -97,10 +67,6 @@ bool Collider::LateUpdate()
     SwapSnapShotIndex();
 
     return true;
-}
-
-void Collider::OnDestroy()
-{
 }
 
 ColliderSnapShot Collider::GetSnapShot()
@@ -159,36 +125,4 @@ void Collider::SetBoundingBoxList(const std::vector<MyBoundingOrientedBox>& boxL
         box.Transform(GetOwner()->GetTransform()->GetWorldTransform());
     }
 }
-
-void Collider::OnEnable()
-{
-    Component::OnEnable();
-
-
-}
-
-void Collider::OnDisable()
-{
-}
-
-
-
-//bool ObjectCollider::Intersects(const GameObject& a, const GameObject& b)
-//{
-//
-//    const auto& colliderA = a.GetCollider();
-//    const auto& colliderB = b.GetCollider();
-//
-//    // 반드시 두 객체 모두 ObjectCollider를 가지고 있어야 한다.
-//    if (!colliderA || !colliderB) {
-//        return false;
-//    }
-//
-//    // 둘 중 하나라도 비활성 상태라면 검사하지 않는다.
-//    if (!colliderA->IsActive() || !colliderB->IsActive()) {
-//        return false;
-//    }
-//
-//    return colliderA->Intersects(colliderB);
-//}
 
