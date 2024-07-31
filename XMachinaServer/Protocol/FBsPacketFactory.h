@@ -71,12 +71,12 @@ private:
 public:
 	/* LOGIN, LATENCY, CHAT */
 	SPtr_SendPktBuf SPkt_LogIn(bool success);
-	SPtr_SendPktBuf SPkt_EnterGame(PlayerSnapShot& myinfo, std::vector<PlayerSnapShot>& players);
+	SPtr_SendPktBuf SPkt_EnterGame(SPtr<GamePlayer>& myinfo, std::vector<SPtr<GamePlayer>>& players);
 	SPtr_SendPktBuf SPkt_NetworkLatency(long long timestamp);
 	SPtr_SendPktBuf SPkt_Chat(uint32_t player_id, std::string msg);
 
 	/* PLAYER */
-	SPtr_SendPktBuf SPkt_NewPlayer(PlayerSnapShot& newplayer);
+	SPtr_SendPktBuf SPkt_NewPlayer(SPtr<GamePlayer>& newplayer);
 	SPtr_SendPktBuf SPkt_RemovePlayer(uint32_t player_id);
 	SPtr_SendPktBuf SPkt_PlayerOnSkill(uint32_t player_id, FBProtocol::PLAYER_SKILL_TYPE skill_type, float phero_amount, int mindcontrol_monster_id);
 	SPtr_SendPktBuf SPkt_Player_Transform(uint32_t player_id, int32_t move_state, long long latency, float velocity, Vec3 movedir, Vec3 pos, Vec3 rot, Vec3 spine_look, float animparam_h, float animparam_v);

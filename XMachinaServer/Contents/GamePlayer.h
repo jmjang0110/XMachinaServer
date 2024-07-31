@@ -8,6 +8,8 @@
 #include "ObjectSnapShot.h"
 #include "Skill.h"
 #include "DB_Weapon.h"
+#include "ViewList.h"
+
 
 /// +-------------------------------
 ///		     GamePlayer
@@ -42,70 +44,6 @@ namespace PlayerEnum
 	};
 }
 
-struct ViewList
-{
-	std::unordered_map<UINT32, SPtr<GamePlayer>> VL_Players;
-	std::unordered_map<UINT32, SPtr<GameMonster>> VL_Monsters;
-
-	bool TryInsertPlayer(UINT32 key, SPtr<GamePlayer> player)
-	{
-		auto monsterIt = VL_Players.find(key);
-		// 이미 존재한다.
-		if (monsterIt != VL_Players.end())
-			return false;
-		else
-			VL_Players.insert(std::make_pair(key, player));
-		
-		return true;
-
-	}
-	bool TryInsertMonster(UINT32 key, SPtr<GameMonster> monster)
-	{
-		auto monsterIt = VL_Monsters.find(key);
-		// 이미 존재한다.
-		if (monsterIt != VL_Monsters.end())
-			return false;
-		else
-		{
-			VL_Monsters.insert(std::make_pair(key, monster));
-			monster->Activate();
-		}
-
-		return true;
-	}
-	bool RemovePlayer(UINT32 key)
-	{
-		auto playerIt = VL_Players.find(key);
-		if (playerIt != VL_Players.end())
-		{
-			VL_Players.erase(playerIt);
-			return true;
-		}
-		return false;
-	}
-
-	bool RemoveMonster(UINT32 key)
-	{
-		auto monsterIt = VL_Monsters.find(key);
-		if (monsterIt != VL_Monsters.end())
-		{
-			monsterIt->second->DeActivate();
-			VL_Monsters.erase(monsterIt);
-			return true;
-		}
-		return false;
-	}
-
-	void Clear()
-	{
-		for (auto& it : VL_Monsters)
-			it.second->DecreaseRef();
-
-		VL_Monsters.clear();
-		VL_Players.clear();
-	}
-
-};
 
 
 /* 플레이어 상태 */
@@ -115,52 +53,51 @@ struct PlayerSnapShot : public ObjectSnapShot
 	///		base 
 	/// -----------------------------------------------------------+
 	std::string				Name			= {};
-	SPtr<GameSession>		Owner			= {};	/* OWNER SESSION */ 
-	UINT32					RoomID			= -1;	/* ROOM NUMBER	*/
-	std::vector<Coordinate>	CurSectorID;			 // 현재 속해있는 Sector index ( 여러개일 수 있음 ) 최대 4개..
+	SPtr<GameSession>		Owner			= {};								// Owner Session 
+	UINT32					RoomID			= -1;								// Owner Room ID 
+	std::vector<Coordinate>	CurSectorID		= {};								// Current Secotr Indexes
 
-	bool		IsExit = false; Lock::SRWLock Lock_IsExit;
-
-	/// +-----------------------------------------------------------
-	///		Item 
-	/// -----------------------------------------------------------+
-	FBProtocol::WEAPON_TYPE	WeaponType = {}; Lock::SRWLock Lock_Weapon;
-	std::array<SPtr<GameBullet>, GameObjectInfo::maxBulletsNum> Bullets;
-	Concurrency::concurrent_queue<int> mPossibleBulletIndex;
+	bool IsExit = false;	Lock::SRWLock Lock_IsExit;							/// > [LOCK] check Player Disconndected 
 
 	/// +-----------------------------------------------------------
-	///		latency 
+	///		View List 
 	/// -----------------------------------------------------------+
-	long long				Timestamp		= {};
-
-	/// +-----------------------------------------------------------
-	///		Transform 
-	/// -----------------------------------------------------------+
-	float					Velocity = {}; Lock::SRWLock Lock_Velocity;
-	Vec3					Position = {}; Lock::SRWLock Lock_Position;
-	Vec3					Rotation = {}; Lock::SRWLock Lock_Rotation;
-
-	Vec3					FrontDir = {}; Lock::SRWLock Lock_FrontDir;
-	Vec3					SpineDir = {}; Lock::SRWLock Lock_SpineDir;
+	float					ViewRangeRadius = 40.f;								// View Range 
+	ViewList				Vlist           = {};								// View List ( Current ) 
+	ViewList				VList_Prev      = {};								// View List (  Prev  )
 
 	/// +-----------------------------------------------------------
 	///		Skill 
 	/// -----------------------------------------------------------+
 	bool					ActiveSkills[static_cast<UINT8>(SkillInfo::Type::End)]{ false, }; Lock::SRWLock Lock_ActiveSkills;
 
-	float					HP;     Lock::SRWLock lock_HP;
-	float					Shield; Lock::SRWLock Lock_Shield;
+	float					HP;     Lock::SRWLock lock_HP;						/// > [LOCK] HP 
+	float					Shield; Lock::SRWLock Lock_Shield;					/// > [LOCK] shield 
+	/// +-----------------------------------------------------------
+	///		Item 
+	/// -----------------------------------------------------------+
+	FBProtocol::WEAPON_TYPE	WeaponType = {};	Lock::SRWLock Lock_Weapon;		/// > [LOCK] Current Equipped Weapon 
+
+	std::array<SPtr<GameBullet>, GameObjectInfo::maxBulletsNum> Bullets;		// Bullets 
+	Concurrency::concurrent_queue<int> mPossibleBulletIndex;					// Possible To Shoot Bullets 
+
+	/// +-----------------------------------------------------------
+	///		latency 
+	/// -----------------------------------------------------------+
+	long long				Timestamp = {};										// Latency 
+
+	/// +-----------------------------------------------------------
+	///		Transform 
+	/// -----------------------------------------------------------+
+	float					Velocity = {};	Lock::SRWLock Lock_Velocity;		/// > [LOCK] Move Speed 
+	Vec3					SpineLookDir = {}; Lock::SRWLock Lock_SpineLookDir; /// > [LOCK] Spine Look Direction 
+
 	/// +-----------------------------------------------------------
 	///		Phero 
 	/// -----------------------------------------------------------+
 	float					Phero;  Lock::SRWLock Lock_Phero; // 현재 페로 양 
 
-	/// +-----------------------------------------------------------
-	///		View List 
-	/// -----------------------------------------------------------+
-	float					ViewRangeRadius = 40.f;
-	ViewList				Vlist;
-	ViewList				VList_Prev;
+
 
 	PlayerSnapShot(){}
 	PlayerSnapShot(UINT32 id, std::string name) { ObjectSnapShot::ID = id, Name = name; }
@@ -208,14 +145,11 @@ public:
 	void SetOwnerPlayerController(PlayerController* pc)  { mOwnerPC = pc; }
 
 	/* UPDATE FREQUENTLY --- DATA RACE ( Read / Write ) In MultiThreads */
-	void SetVelocity(float vel)							 { mInfo.Lock_Velocity.LockWrite();	mInfo.Velocity = vel;	mInfo.Lock_Velocity.UnlockWrite(); }
-	void SetPosition(Vec3 pos)							 { mInfo.Lock_Position.LockWrite();	mInfo.Position = pos;	mInfo.Lock_Position.UnlockWrite(); }
-	void SetRotation(Vec3 Rot)							 { mInfo.Lock_Rotation.LockWrite();	mInfo.Rotation = Rot;	mInfo.Lock_Rotation.UnlockWrite(); }
-	void SetFrontDir(Vec3 FDir)							 { mInfo.Lock_FrontDir.LockWrite();	mInfo.FrontDir = FDir;	mInfo.Lock_FrontDir.UnlockWrite(); }
-	void SetSpineDir(Vec3 SDir)							 { mInfo.Lock_SpineDir.LockWrite();	mInfo.SpineDir = SDir;	mInfo.Lock_SpineDir.UnlockWrite(); }
-	void SetPhero(float phero)							 { mInfo.Lock_Phero.LockWrite();	mInfo.Phero    = phero; mInfo.Lock_Phero.UnlockWrite(); }
-	void SetActiveSkill(SkillInfo::Type skillType, bool isActive) { mInfo.Lock_ActiveSkills.LockWrite(); mInfo.ActiveSkills[static_cast<UINT8>(skillType)] = isActive; mInfo.Lock_ActiveSkills.UnlockWrite(); }
-	void SetEquipWeapon(FBProtocol::WEAPON_TYPE weaponType) { mInfo.Lock_Weapon.LockWrite(); mInfo.WeaponType = weaponType; mInfo.Lock_Weapon.UnlockWrite(); return; }
+	void SetSNS_Velocity(float vel)										{ mInfo.Lock_Velocity.LockWrite();		mInfo.Velocity = vel;				 mInfo.Lock_Velocity.UnlockWrite(); }
+	void SetSNS_SpineLookDir(Vec3 spineLookDir)							{ mInfo.Lock_SpineLookDir.LockWrite();	mInfo.SpineLookDir = spineLookDir;   mInfo.Lock_SpineLookDir.UnlockWrite(); }
+	void SetSNS_Phero(float phero)										{ mInfo.Lock_Phero.LockWrite();			mInfo.Phero    = phero;				 mInfo.Lock_Phero.UnlockWrite(); }
+	void SetSNS_ActiveSkill(SkillInfo::Type skillType, bool isActive)	{ mInfo.Lock_ActiveSkills.LockWrite();	mInfo.ActiveSkills[static_cast<UINT8>(skillType)] = isActive; mInfo.Lock_ActiveSkills.UnlockWrite(); }
+	void SetSNS_EquipWeapon(FBProtocol::WEAPON_TYPE weaponType)			{ mInfo.Lock_Weapon.LockWrite();		mInfo.WeaponType = weaponType;		 mInfo.Lock_Weapon.UnlockWrite(); return; }
 	
 
 public:
@@ -223,29 +157,25 @@ public:
 	///		G E T T E R 
 	/// -----------------------------------------------------------+
 	
-	PlayerSnapShot			GetSnapShot()			        { mSRWLock_SnapShot.LockRead(); PlayerSnapShot currInfo = mInfo; mSRWLock_SnapShot.UnlockRead(); return currInfo; };
-	SPtr<GameSession>		GetSessionOwner()		        { return mInfo.Owner; };
-	PlayerController*		GetOwnerPlayerController()      { return mOwnerPC; }
-	float					GetViewRangeRadius()	        { return mInfo.ViewRangeRadius; }
+	PlayerSnapShot			GetSnapShot()									{ mSRWLock_SnapShot.LockRead(); PlayerSnapShot currInfo = mInfo; mSRWLock_SnapShot.UnlockRead(); return currInfo; };
+	SPtr<GameSession>		GetSessionOwner()								{ return mInfo.Owner; };
+	PlayerController*		GetOwnerPlayerController()						{ return mOwnerPC; }
+	float					GetViewRangeRadius()							{ return mInfo.ViewRangeRadius; }
 
-	// Getters
-	std::string				GetName()		 { return mInfo.Name; }
-	UINT32					GetRoomID()		 { return mInfo.RoomID; }
-	long long				GetTimestamp()	 { return mInfo.Timestamp; }
+	std::string				GetName()										{ return mInfo.Name; }
+	UINT32					GetRoomID()										{ return mInfo.RoomID; }
+	long long				GetTimestamp()									{ return mInfo.Timestamp; }
 
-	float					GetVelocity()	 { mInfo.Lock_Velocity.LockRead(); float vel = mInfo.Velocity; mInfo.Lock_Velocity.UnlockRead(); return vel; }
-	Vec3					GetPosition()	 { mInfo.Lock_Position.LockRead(); Vec3  pos = mInfo.Position;  mInfo.Lock_Position.UnlockRead(); return pos; }
-	Vec3					GetRotation()	 { mInfo.Lock_Rotation.LockRead(); Vec3  rot = mInfo.Rotation;  mInfo.Lock_Rotation.UnlockRead(); return rot; }
-	Vec3					GetFrontDir()	 { mInfo.Lock_FrontDir.LockRead(); Vec3  front = mInfo.FrontDir; mInfo.Lock_FrontDir.UnlockRead(); return front; }
-	Vec3					GetSpineDir()	 { mInfo.Lock_SpineDir.LockRead(); Vec3  spine = mInfo.SpineDir; mInfo.Lock_SpineDir.UnlockRead(); return spine; }
-	bool					GetActiveSkill(SkillInfo::Type skillType)  { mInfo.Lock_ActiveSkills.LockRead(); bool active = mInfo.ActiveSkills[static_cast<UINT8>(skillType)]; mInfo.Lock_ActiveSkills.UnlockRead(); return active; }
-	float					GetPhero()		 { mInfo.Lock_Phero.LockRead(); float phero = mInfo.Phero; mInfo.Lock_Phero.UnlockRead(); return phero; }
-	FBProtocol::WEAPON_TYPE	GetCurrWeapon()  { mInfo.Lock_Weapon.LockRead(); FBProtocol::WEAPON_TYPE name = mInfo.WeaponType; ; mInfo.Lock_Weapon.UnlockRead(); return name; }
- 	
-	bool IsExit()							 { mInfo.Lock_IsExit.LockWrite(); bool isExit = mInfo.IsExit; mInfo.Lock_IsExit.UnlockWrite(); return isExit; };
+	float					GetSNS_Velocity()								{ mInfo.Lock_Velocity.LockRead();		float vel                    = mInfo.Velocity; mInfo.Lock_Velocity.UnlockRead(); return vel; }
+	bool					GetSNS_ActiveSkill(SkillInfo::Type skillType)	{ mInfo.Lock_ActiveSkills.LockRead();	bool active                  = mInfo.ActiveSkills[static_cast<UINT8>(skillType)]; mInfo.Lock_ActiveSkills.UnlockRead(); return active; }
+	float					GetSNS_Phero()									{ mInfo.Lock_Phero.LockRead();			float phero                  = mInfo.Phero; mInfo.Lock_Phero.UnlockRead(); return phero; }
+	FBProtocol::WEAPON_TYPE	GetSNS_CurrWeapon()								{ mInfo.Lock_Weapon.LockRead();			FBProtocol::WEAPON_TYPE name = mInfo.WeaponType; ; mInfo.Lock_Weapon.UnlockRead(); return name; }
+	Vec3					GetSNS_SpineLookDir()							{ mInfo.Lock_SpineLookDir.LockRead();	Vec3 spineLookDir            = mInfo.SpineLookDir; mInfo.Lock_SpineLookDir.UnlockRead(); return spineLookDir; }
+
+	bool IsExit()															{ mInfo.Lock_IsExit.LockWrite(); bool isExit = mInfo.IsExit; mInfo.Lock_IsExit.UnlockWrite(); return isExit; };
 
 	// Get all active skills
-	std::vector<bool> GetActiveSkills() {
+	std::vector<bool> GetSNS_ActiveSkills() {
 		mInfo.Lock_ActiveSkills.LockRead();
 		std::vector<bool> activeSkills(static_cast<UINT8>(SkillInfo::Type::End));
 		for (size_t i = 0; i < static_cast<size_t>(SkillInfo::Type::End); ++i) { activeSkills[i] = mInfo.ActiveSkills[i]; }

@@ -86,6 +86,11 @@ std::vector<PlayerSnapShot> GameRoom::GetInsertedPlayersInfo()
 	return mPC->GetInsertedPlayersInfo();
 }
 
+std::vector<SPtr<GamePlayer>> GameRoom::GetallPlayers()
+{
+	return mPC->GetAllPlayers();
+}
+
 
 /// +-------------------------------------------------------------------
 ///	¢º¢º¢º NPC Controller 

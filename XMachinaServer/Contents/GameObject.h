@@ -37,13 +37,15 @@ public:
 	virtual void Animate();
 	virtual void Start();
 
-
-
 	virtual void Activate();
 	virtual void DeActivate();
 
 	// 객체(other)와 충돌 시 호출된다.
 	virtual void OnCollision(GameObject* other);
+	
+public:
+	void UpdateDeltaTime();
+
 
 public:
 	void SetType(GameObjectInfo::Type type) { mType = type; }

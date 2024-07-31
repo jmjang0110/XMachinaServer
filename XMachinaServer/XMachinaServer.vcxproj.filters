@@ -557,6 +557,9 @@
     <ClInclude Include="Contents\BTTaskM_MoveToMindControlInvoker.h">
       <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask\MoveTo</Filter>
     </ClInclude>
+    <ClInclude Include="Contents\ViewList.h">
+      <Filter>Framework\Contents\GameWorld\GameObject\Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp">
@@ -874,6 +877,9 @@
     </ClCompile>
     <ClCompile Include="Contents\BTTaskM_MoveToMindControlInvoker.cpp">
       <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster\BT\MonsterTask\MoveTo</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\ViewList.cpp">
+      <Filter>Framework\Contents\GameWorld\GameObject\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,26 +1,9 @@
-﻿  BlockMemoryPool.cpp
+﻿  MemoryManager.cpp
   main.cpp
-C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\MemoryTest\MemoryManager.h(26,2): warning C4309: '초기화 중': 상수 값이 잘립니다.
-  (소스 파일 '/main.cpp'을(를) 컴파일하는 중)
-  
-C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\MemoryTest\MemoryManager.h(26,2): warning C4369: 'MemoryCnt::BYTES_32_CNT':  열거자 값 '1000000'을(를) 'unsigned short'(으)로 나타낼 수 없습니다. 값은 '1000000'입니다.
-  (소스 파일 '/main.cpp'을(를) 컴파일하는 중)
-  
-C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\MemoryTest\BlockMemoryPool.h(169,19): warning C4244: '초기화 중': '__int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  (소스 파일 '/main.cpp'을(를) 컴파일하는 중)
-  C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\MemoryTest\BlockMemoryPool.h(169,19):
-  템플릿 인스턴스화 컨텍스트(가장 오래된 인스턴스화 컨텍스트)가
-  	C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\main.cpp(11,23):
-  	컴파일되는 클래스 템플릿 인스턴스화 'MemoryPool_MyArr<int>'에 대한 참조를 확인하세요.
-  	C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\MemoryTest\BlockMemoryPool.h(166,10):
-  	클래스 템플릿 멤버 함수 'void MemoryPool_MyArr<int>::Deallocate(void *)'을(를) 컴파일하는 중입니다.
-  		C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\main.cpp(30,29):
-  		'main::<lambda_1>::operator ()'에서 'MemoryPool_MyArr<int>::Deallocate'에 대한 첫 번째 참조를 확인하세요.
-  
   코드를 생성하고 있습니다.
-  48 of 658 functions ( 7.3%) were compiled, the rest were copied from previous compilation.
-    25 functions were new in current compilation
-    74 functions had inline decision re-evaluated but remain unchanged
+  74 of 288 functions (25.7%) were compiled, the rest were copied from previous compilation.
+    12 functions were new in current compilation
+    58 functions had inline decision re-evaluated but remain unchanged
   코드를 생성했습니다.
   PerformanceTest.vcxproj -> C:\MyGithub\Xmachina\XMachinaServer\x64\Release\PerformanceTest.exe
   'pwsh.exe'은(는) 내부 또는 외부 명령, 실행할 수 있는 프로그램, 또는

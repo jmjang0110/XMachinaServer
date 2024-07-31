@@ -51,14 +51,12 @@ GamePlayer::~GamePlayer()
 void GamePlayer::Update()
 {
 	GameObject::Update(); // CPkt_PlayerTRnasform 패킷을 받을 때만 Update 
-
 	
 	/* Update View List */
-	mOwnerPC->GetOwnerRoom()->GetSectorController()->UpdateViewList(this, mInfo.Position, mInfo.ViewRangeRadius);
+	Vec3  Pos        = GetTransform()->GetPosition();
+	float ViewRange  = mInfo.ViewRangeRadius;
+	mOwnerPC->GetOwnerRoom()->GetSectorController()->UpdateViewList(this, Pos, ViewRange);
 	
-	//LOG_MGR->Cout("POS : ", GetTransform()->GetWorldTransform()._41, " ", GetTransform()->GetWorldTransform()._42, " ", GetTransform()->GetWorldTransform()._43 ," \n");
-
-
 }
 
 void GamePlayer::WakeUp()

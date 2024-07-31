@@ -109,6 +109,12 @@ void GameManager::Send(SPtr_SendPktBuf& pkt, int roomID, int sessionID)
 	mRooms[roomID]->SendPacket(static_cast<UINT32>(sessionID), pkt);
 }
 
+std::vector<SPtr<GamePlayer>> GameManager::GetAllPlayersInRoom(int roomID)
+{
+	std::vector<SPtr<GamePlayer>> players = mRooms[roomID]->GetallPlayers();
+	return players;
+}
+
 std::vector<PlayerSnapShot> GameManager::GetPlayerSnapShots_Room(int roomid)
 {
 	std::vector<PlayerSnapShot> PlayerSnapShots = mRooms[roomid].get()->GetInsertedPlayersInfo(); // READ Lock

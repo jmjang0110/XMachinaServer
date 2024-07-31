@@ -38,13 +38,15 @@ public:
 	void SendPacket(UINT32 sessionID, SPtr_SendPktBuf sendPkt);
 
 
-	std::vector<PlayerSnapShot> GetInsertedPlayersInfo(); // READ Lock 
-	std::vector<SPtr<GamePlayer>> GetPlayersInViewRange(Vec3 player_pos, float viewrange_radius);
+	std::vector<PlayerSnapShot>		GetInsertedPlayersInfo(); // READ Lock 
+	std::vector<SPtr<GamePlayer>>	GetPlayersInViewRange(Vec3 player_pos, float viewrange_radius);
 
 
-	UINT32			GetPlayersSize() { return mCurrPlayerCnt.load(); }
-	SPtr<GameRoom>  GetOwnerRoom() { return mOwnerRoom; }
+	UINT32			 GetPlayersSize() { return mCurrPlayerCnt.load(); }
+	SPtr<GameRoom>   GetOwnerRoom() { return mOwnerRoom; }
 	SPtr<GamePlayer> GetPlayer(UINT32 ID);
+	std::vector<SPtr<GamePlayer>> GetAllPlayers();
+
 
 	
 	std::vector<std::pair<UINT32, Vec3>> GetPlayersPosition();

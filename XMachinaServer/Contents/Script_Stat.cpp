@@ -32,16 +32,6 @@ bool Script_Stat::Start()
     return true;
 }
 
-bool Script_Stat::Update()
-{
-    Script::Update();
-
-    return true;
-}
-
-void Script_Stat::OnDestroy()
-{
-}
 
 bool Script_Stat::Hit(float damage, SPtr_GameObject instigator)
 {
@@ -69,10 +59,6 @@ void Script_Stat::Dead()
 	mIsDead = true;
 }
 
-bool Script_Stat::Attack()
-{
-	return true;
-}
 
 void Script_Stat::Clone(SPtr<Component> other) 
 {
@@ -81,14 +67,3 @@ void Script_Stat::Clone(SPtr<Component> other)
 
 }
 
-void Script_Stat::Activate()
-{
-	Script::Activate();
-
-}
-
-void Script_Stat::DeActivate()
-{
-	Script::DeActivate();
-
-}

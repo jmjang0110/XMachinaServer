@@ -240,6 +240,7 @@
     <ClInclude Include="Contents\Util\Common.h" />
     <ClInclude Include="Contents\Util\DwordOverloader.h" />
     <ClInclude Include="Contents\Util\SimpleMath.h" />
+    <ClInclude Include="Contents\ViewList.h" />
     <ClInclude Include="Contents\Weapon.h" />
     <ClInclude Include="Framework.h" />
     <ClInclude Include="pch.h" />
@@ -359,6 +360,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Contents\ViewList.cpp" />
     <ClCompile Include="Contents\Weapon.cpp" />
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="main.cpp" />

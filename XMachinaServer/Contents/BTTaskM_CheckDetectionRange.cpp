@@ -46,7 +46,7 @@ BTNodeState MonsterTask::CheckDetectionRange::Evaluate()
 		target = std::dynamic_pointer_cast<GamePlayer>(mEnemyController->GetTarget());
 	}
 
-	if (true == target->GetActiveSkill(SkillInfo::Type::Cloaking)) {
+	if (true == target->GetSNS_ActiveSkill(SkillInfo::Type::Cloaking)) {
 		mEnemyController->SetTarget(nullptr);
 		return BTNodeState::Failure;
 	}

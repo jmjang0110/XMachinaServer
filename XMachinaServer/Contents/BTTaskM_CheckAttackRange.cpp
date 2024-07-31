@@ -42,7 +42,7 @@ BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 		return BTNodeState::Failure;
 	}
 
-	bool IsCloakingOn = target->GetActiveSkill(SkillInfo::Type::Cloaking);
+	bool IsCloakingOn = target->GetSNS_ActiveSkill(SkillInfo::Type::Cloaking);
 	if (IsCloakingOn == true) {
 		mEnemyController->SetTarget(nullptr);
 		return BTNodeState::Failure;
@@ -50,10 +50,11 @@ BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 
 	
 	// 4. Target Player 가 일정 범위에 들어오면 Attack 으로.. 
-	constexpr float minDistance = 1.f;
-	Vec3	Pos		  = GetOwner()->GetTransform()->GetPosition();
-	Vec3	TargetPos = target->GetPosition();
-	float	distance  = (Pos - TargetPos).Length();
+	constexpr float minDistance    = 1.f;
+	Vec3	Pos		               = GetOwner()->GetTransform()->GetPosition();
+	auto	targetTransSNS         = target->GetTransform()->GetSnapShot(); /* Snap Shot */
+	Vec3	TargetPos              = targetTransSNS.GetPosition();
+	float	distance               = (Pos - TargetPos).Length();
 
 	if (distance < mStat->GetStat_AttackRange()) {
 		Vec3	ToTargetDir = Vector3::Normalized(TargetPos - Pos);

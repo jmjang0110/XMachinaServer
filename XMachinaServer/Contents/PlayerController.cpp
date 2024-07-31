@@ -19,13 +19,29 @@ SPtr<GamePlayer> PlayerController::GetPlayer(UINT32 ID)
 	return nullptr;
 }
 
+std::vector<SPtr<GamePlayer>> PlayerController::GetAllPlayers()
+{
+	std::vector<SPtr<GamePlayer>> allPlayers;
+	mSRWLock.LockRead();
+
+	for (auto& iter : mGamePlayers) {
+		allPlayers.push_back(iter.second);
+	}
+
+	mSRWLock.UnlockRead();
+	return allPlayers;
+}
+
 std::vector<std::pair<UINT32, Vec3>> PlayerController::GetPlayersPosition()
 {
 	std::vector<std::pair<UINT32, Vec3>> result;
 	for (auto& iter : mGamePlayers) { 
-		int id   = iter.second->GetID();
-		Vec3 pos = iter.second->GetPosition();
+
+		int  id                       = iter.second->GetID();
+		auto playerTransformSnapShot  = iter.second->GetTransform()->GetSnapShot();
+		Vec3 pos                      = playerTransformSnapShot.GetPosition();
 		result.push_back(std::make_pair(id, pos));
+
 	}
 	return result;
 }
@@ -151,11 +167,13 @@ std::vector<SPtr<GamePlayer>> PlayerController::GetPlayersInViewRange(Vec3 playe
 {
 	std::vector<SPtr<GamePlayer>> playersInView;
 	for (auto& player : mGamePlayers) {
-		PlayerSnapShot snapShot = player.second->GetSnapShot();
 
+		/* Player Transform Snap Shot */
+		auto PlayerTransformSnapShot = player.second->GetTransform()->GetSnapShot();
+		Vec3 playerPos               = PlayerTransformSnapShot.GetPosition();
 
 		// x, z 좌표 간의 거리 계산
-		float distance = static_cast<float>(std::sqrt(std::pow(snapShot.Position.x - player_pos.x, 2) + std::pow(snapShot.Position.z - player_pos.z, 2)));
+		float distance = static_cast<float>(std::sqrt(std::pow(playerPos.x - player_pos.x, 2) + std::pow(playerPos.z - player_pos.z, 2)));
 
 		// 거리 비교
 		if (distance <= viewrange_radius) {

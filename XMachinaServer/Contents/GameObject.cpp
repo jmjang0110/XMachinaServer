@@ -52,15 +52,8 @@ GameObject::~GameObject()
 
 void GameObject::Update()
 {
-	if (GetType() == GameObjectInfo::Type::Monster_Ursacetus)
-		int i = 0;
 
-	mPrevTimePoint	= mCurrTimePoint;
-	mCurrTimePoint	= std::chrono::steady_clock::now();
-
-	std::chrono::duration<double> elapsed_seconds = mCurrTimePoint - mPrevTimePoint;
-	mDeltaTime = static_cast<float>(elapsed_seconds.count());
-
+	UpdateDeltaTime();
 	// Update all components
 	for (auto& pair : mComponents) {
 		if (pair.second) {  // Check if the shared pointer is not null
@@ -137,6 +130,16 @@ void GameObject::DeActivate()
 
 void GameObject::OnCollision(GameObject* other)
 {
+}
+
+void GameObject::UpdateDeltaTime()
+{
+	mPrevTimePoint = mCurrTimePoint;
+	mCurrTimePoint = std::chrono::steady_clock::now();
+
+	std::chrono::duration<double> elapsed_seconds = mCurrTimePoint - mPrevTimePoint;
+	mDeltaTime = static_cast<float>(elapsed_seconds.count());
+
 }
 
 bool GameObject::RegisterUpdate(std::chrono::system_clock::duration offset)

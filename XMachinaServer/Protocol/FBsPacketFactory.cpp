@@ -192,13 +192,14 @@ bool FBsPacketFactory::Process_CPkt_LogIn(SPtr_Session session, const FBProtocol
 
 	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
 
-	gameSession->GetPlayer()->SetPosition(Vec3(65, 0, 240));
+	gameSession->GetPlayer()->GetTransform()->SetPosition(Vec3(65, 0, 240));
 
 	LOG_MGR->SetColor(TextColor::BrightBlue);
 	LOG_MGR->Cout("LOG IN SESSION ID : ", gameSession->GetID());
 	LOG_MGR->WCout(L"-- LOG-IN-IP : IPv4-", gameSession->GetSocketData().GetIpAddress().c_str(), '\n');
 	LOG_MGR->SetColor(TextColor::Default);
 
+	gameSession->GetPlayer()->Update();
 
 	/// +--------------------------------
 	/// SEND LOG IN PKT TO ME ( SESSION )
@@ -223,54 +224,19 @@ bool FBsPacketFactory::Process_CPkt_EnterGame(SPtr_Session session, const FBProt
 	/// ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
 
 	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
+	
+	int								ID             = pkt.player_id();
+	SPtr<GamePlayer>				MyPlayer       = gameSession->GetPlayer();
+	std::vector<SPtr<GamePlayer>>	RemotePlayers  = GAME_MGR->GetAllPlayersInRoom(MyPlayer->GetRoomID());
 
-	int ID = pkt.player_id();
-
-	PlayerSnapShot				MyInfo            = gameSession->GetPlayerSnapShot();  // MY GAME PLAYER INFO 
-	std::vector<PlayerSnapShot> RemotePlayersInfo = GAME_MGR->GetPlayerSnapShots_Room(gameSession->GetPlayerSnapShot().RoomID); // REMOTE PLAYERS INFO IN ROOM ( MY PLAYER ROOM ID )
-
-	auto SendSPkt_EnterGame = FBS_FACTORY->SPkt_EnterGame(MyInfo, RemotePlayersInfo);
+	auto SendSPkt_EnterGame = FBS_FACTORY->SPkt_EnterGame(MyPlayer, RemotePlayers);
 	session->Send(SendSPkt_EnterGame);
 
 	/// +---------------------------------------------------------------------------------------
 	/// SEND NEW PLAYER PKT TO SESSIONS IN ROOM ( SESSION->GET ROOM ID ) - EXCEPT ME ( SESSION )
 	/// ---------------------------------------------------------------------------------------+
-	auto SendPkt_NewPlayer = FBS_FACTORY->SPkt_NewPlayer(MyInfo);
+	auto SendPkt_NewPlayer = FBS_FACTORY->SPkt_NewPlayer(MyPlayer);
 	GAME_MGR->BroadcastRoom(gameSession->GetPlayerSnapShot().RoomID, SendPkt_NewPlayer, gameSession->GetID());
-
-	/* TEST MONSTER */
-
-	//std::vector<MonsterSnapShot> MonstersInfos;
-
-	//MonsterSnapShot newMon;
-	//newMon.ID = 1;
-	//newMon.HP = 100;
-	//newMon.Position = Vec3(28, 0, 258);
-	//newMon.Type = MonsterType::AdvancedCombatDroid_5;
-
-	//MonstersInfos.push_back(newMon);
-
-	//newMon.ID = 2;
-	//newMon.HP = 100;
-	//newMon.Position = Vec3(40, 0, 258);
-	//newMon.Type = MonsterType::Onyscidus;
-
-	//MonstersInfos.push_back(newMon);
-
-	//newMon.ID = 3;
-	//newMon.HP = 100;
-	//newMon.Position = Vec3(50, 0, 258);
-	//newMon.Type = MonsterType::Ursacetus;
-
-	//MonstersInfos.push_back(newMon);
-
-
-	//std::cout << "BROADCAST NEW MONSTER INFOS \n";
-
-	//auto SendPkt_NewMonster = FBS_FACTORY->SPkt_NewMonster(MonstersInfos);
-	//GAME_MGR->BroadcastRoom(gameSession->GetPlayerSnapShot().RoomID, SendPkt_NewMonster);
-
-
 	return true;
 }
 
@@ -406,11 +372,9 @@ bool FBsPacketFactory::Process_CPkt_Player_Transform(SPtr_Session session, const
 
 
 	/* Player Info Update */
-	gameSession->GetPlayer()->SetPosition(pos);
 	gameSession->GetPlayer()->GetTransform()->SetPosition(pos);
 	gameSession->GetPlayer()->GetTransform()->SetLocalRotation(Quaternion::ToQuaternion(rot));
 	gameSession->GetPlayer()->Update();
-
 
 	return true;
 }
@@ -574,7 +538,7 @@ bool FBsPacketFactory::Process_CPkt_Bullet_OnShoot(SPtr_Session session, const F
 	
 
 	int  player_id   = gameSession->GetID(); // 플레이어 아이디
-	auto gun_id      = gameSession->GetPlayer()->GetCurrWeapon();
+	auto gun_id      = gameSession->GetPlayer()->GetSNS_CurrWeapon();
 	Vec3 ray         = GetVector3(pkt.ray());
 	int  bullet_id   = gameSession->GetPlayer()->OnShoot(); // PQCS -> Bullet Update Start ( Worker Thread  에게 업데이트를 떠넘긴다 ) 
 	
@@ -679,27 +643,42 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_Chat(uint32_t player_id, std::string msg)
 	return SEND_FACTORY->CreatePacket(bufferPtr, serializedDataSize, FBsProtocolID::SPkt_Chat);
 }
 
-SPtr_SendPktBuf FBsPacketFactory::SPkt_EnterGame(PlayerSnapShot& myinfo, std::vector<PlayerSnapShot>& players)
+SPtr_SendPktBuf FBsPacketFactory::SPkt_EnterGame(SPtr<GamePlayer>& myinfo, std::vector<SPtr<GamePlayer>>& players)
 {
 	flatbuffers::FlatBufferBuilder builder;
 
 	std::vector<flatbuffers::Offset<FBProtocol::Player>> PlayerSnapShots_vector;
 
-	/* My Player Info */
-	auto position      = FBProtocol::CreateVector3(builder, myinfo.Position.x, myinfo.Position.y, myinfo.Position.z);
-	auto rotation      = FBProtocol::CreateVector3(builder, myinfo.Rotation.x, myinfo.Rotation.y, myinfo.Rotation.z);
-	auto transform     = FBProtocol::CreateTransform(builder, position, rotation);
-	auto Spine_LookDir = FBProtocol::CreateVector3(builder, myinfo.SpineDir.x, myinfo.SpineDir.y, myinfo.SpineDir.z);
-	auto Myinfo        = CreatePlayer(builder, myinfo.ID, builder.CreateString(myinfo.Name), FBProtocol::OBJECT_TYPE::OBJECT_TYPE_PLAYER, transform, Spine_LookDir);
+	/// +-------------------------------------------------------------------------------------
+	///		INTERPRET MY PLAYER INFO 
+	/// -------------------------------------------------------------------------------------+	
+	auto transSNS          = myinfo.get()->GetTransform()->GetSnapShot(); 
+	Vec3 transPos          = transSNS.GetPosition();
+	Vec3 transRot          = transSNS.GetRotation();
+	Vec3 transSpineLookDir = transSNS.GetLook();
 
-	/* Remote Players */
-	for (PlayerSnapShot& p : players) {
-		auto ID             = p.ID;
-		auto name           = builder.CreateString(p.Name);
-		auto position       = FBProtocol::CreateVector3(builder, p.Position.x, p.Position.y, p.Position.z);
-		auto rotation       = FBProtocol::CreateVector3(builder, p.Rotation.x, p.Rotation.y, p.Rotation.z);
+	auto position      = FBProtocol::CreateVector3(builder, transPos.x, transPos.y, transPos.z);
+	auto rotation      = FBProtocol::CreateVector3(builder, transRot.x, transRot.y, transRot.z);
+	auto transform     = FBProtocol::CreateTransform(builder, position, rotation);
+	auto Spine_LookDir = FBProtocol::CreateVector3(builder, 0.f, 0.f, 0.f);
+	auto Myinfo        = CreatePlayer(builder, myinfo->GetID(), builder.CreateString(myinfo->GetName()), FBProtocol::OBJECT_TYPE::OBJECT_TYPE_PLAYER, transform, Spine_LookDir);
+
+
+	/// +-------------------------------------------------------------------------------------
+	///		INTERPRET REMOTE PLAYERS INFO 
+	/// -------------------------------------------------------------------------------------+	
+	for (auto& p : players) {
+		auto transSNS          = p->GetTransform()->GetSnapShot();
+		Vec3 transPos          = transSNS.GetPosition();
+		Vec3 transRot          = transSNS.GetRotation();
+		Vec3 transSpineLookDir = p->GetSNS_SpineLookDir();
+
+		auto ID             = p->GetID();
+		auto name           = builder.CreateString(p->GetName());
+		auto position       = FBProtocol::CreateVector3(builder, transPos.x, transPos.y, transPos.z);
+		auto rotation       = FBProtocol::CreateVector3(builder, transRot.x, transRot.y, transRot.z);
 		auto transform      = FBProtocol::CreateTransform(builder, position, rotation);
-		auto Spine_LookDir  = FBProtocol::CreateVector3(builder, p.SpineDir.x, p.SpineDir.y, p.SpineDir.z);
+		auto Spine_LookDir  = FBProtocol::CreateVector3(builder, transSpineLookDir.x, transSpineLookDir.y, transSpineLookDir.z);
 
 
 		auto PlayerSnapShot = CreatePlayer(builder, ID, name, FBProtocol::OBJECT_TYPE::OBJECT_TYPE_PLAYER, transform, Spine_LookDir); // CreatePlayerSnapShot는 스키마에 정의된 함수입니다.
@@ -707,11 +686,12 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_EnterGame(PlayerSnapShot& myinfo, std::ve
 	}
 	auto PlayerSnapShotsOffset = builder.CreateVector(PlayerSnapShots_vector);
 
-	/* Enter Game Server Packet */
+
+	/// +-------------------------------------------------------------------------------------
+	///		SEND ENTER_GAME SPKT 
+	/// -------------------------------------------------------------------------------------+	
 	auto ServerPacket = FBProtocol::CreateSPkt_EnterGame(builder, Myinfo, PlayerSnapShotsOffset);
-
 	builder.Finish(ServerPacket);
-
 	const uint8_t* bufferPtr = builder.GetBufferPointer();
 	const uint16_t serializedDataSize = static_cast<uint16_t>(builder.GetSize());
 
@@ -744,7 +724,7 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_NetworkLatency(long long timestamp)
 ///	◈ SEND [ PLAYER ] PACKET ◈
 /// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------★
 
-SPtr_SendPktBuf FBsPacketFactory::SPkt_NewPlayer(PlayerSnapShot& newPlayerSnapShot)
+SPtr_SendPktBuf FBsPacketFactory::SPkt_NewPlayer(SPtr<GamePlayer>& newPlayer)
 {
 	/// > ○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○
 	/// > table SPkt_NewPlayer
@@ -755,18 +735,23 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_NewPlayer(PlayerSnapShot& newPlayerSnapSh
 
 	flatbuffers::FlatBufferBuilder builder{};
 
-	auto ID = newPlayerSnapShot.ID;
-	auto name = builder.CreateString(newPlayerSnapShot.Name);
+	auto transSNS			= newPlayer.get()->GetTransform()->GetSnapShot();
+	Vec3 transPos			= transSNS.GetPosition();
+	Vec3 transRot			= transSNS.GetRotation();
+	Vec3 transSpineLookDir	= transSNS.GetLook();
 
-	auto position = FBProtocol::CreateVector3(builder, newPlayerSnapShot.Position.x, newPlayerSnapShot.Position.y, newPlayerSnapShot.Position.z);
-	auto rotation = FBProtocol::CreateVector3(builder, newPlayerSnapShot.Rotation.x, newPlayerSnapShot.Rotation.y, newPlayerSnapShot.Rotation.z);
-	auto transform = FBProtocol::CreateTransform(builder, position, rotation);
-	auto Spine_LookDir = FBProtocol::CreateVector3(builder, newPlayerSnapShot.SpineDir.x, newPlayerSnapShot.SpineDir.y, newPlayerSnapShot.SpineDir.z);
-	auto PlayerSnapShot = CreatePlayer(builder, ID, name, FBProtocol::OBJECT_TYPE::OBJECT_TYPE_PLAYER, transform, Spine_LookDir); // CreatePlayerSnapShot는 스키마에 정의된 함수입니다.
+	auto ID					= newPlayer->GetID();
+	auto name				= builder.CreateString(newPlayer->GetName());
+
+	auto position			= FBProtocol::CreateVector3(builder, transPos.x, transPos.y, transPos.z);
+	auto rotation			= FBProtocol::CreateVector3(builder, transRot.x, transRot.y, transRot.z);
+	auto transform			= FBProtocol::CreateTransform(builder, position, rotation);
+	auto Spine_LookDir		= FBProtocol::CreateVector3(builder, transSpineLookDir.x, transSpineLookDir.y, transSpineLookDir.z);
+	auto PlayerSnapShot		= CreatePlayer(builder, ID, name, FBProtocol::OBJECT_TYPE::OBJECT_TYPE_PLAYER, transform, Spine_LookDir); // CreatePlayerSnapShot는 스키마에 정의된 함수입니다.
+
 
 	auto ServerPacket = FBProtocol::CreateSPkt_NewPlayer(builder, PlayerSnapShot);
 	builder.Finish(ServerPacket);
-
 	const uint8_t* bufferPointer = builder.GetBufferPointer();
 	const uint16_t SerializeddataSize = static_cast<uint16_t>(builder.GetSize());;
 	SPtr_SendPktBuf sendBuffer = SEND_FACTORY->CreatePacket(bufferPointer, SerializeddataSize, FBsProtocolID::SPkt_NewPlayer);
