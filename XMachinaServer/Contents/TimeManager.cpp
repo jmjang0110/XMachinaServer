@@ -2,7 +2,6 @@
 #include "TimeManager.h"
 #include "GameOverlapped.h"
 #include "ServerLib/MemoryManager.h"
-#include "GameWorld.h"
 #include "ServerLib/ThreadManager.h"
 #include "Framework.h"
 #include "ServerLib/ServerNetwork.h"

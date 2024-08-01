@@ -108,6 +108,8 @@ void GameObject::Start()
 
 void GameObject::Activate()
 {
+	mCurrTimePoint = std::chrono::steady_clock::now();
+
 	for (auto& iter : mComponents) {
 		iter.second->Activate();
 	}

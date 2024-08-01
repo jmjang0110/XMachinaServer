@@ -20,6 +20,8 @@
 ///		¡è
 /// GAME PLAYER ¡æ GAME SESSION ( Owner )
 /// 
+/// 
+/// SNS : Snap Shot 
 /// -------------------------------+
 /// 
 namespace PlayerEnum
@@ -67,9 +69,9 @@ struct PlayerSnapShot : public ObjectSnapShot
 	/// +-----------------------------------------------------------
 	///		View List 
 	/// -----------------------------------------------------------+
-	float					ViewRangeRadius = 10.f;								// View Range 
-	ViewList				Vlist           = {};								// View List ( Current ) 
-	ViewList				VList_Prev      = {};								// View List (  Prev  )
+	float					ViewRangeRadius = 10.f;										// View Range 
+	ViewList				Vlist           = {};										// View List ( Current ) 
+	ViewList				VList_SnapShot  = {}; Lock::SRWLock Lock_VList_SnapShot;	// View List (  SnapShot - ÀúÀå  )
 
 	/// +-----------------------------------------------------------
 	///		Skill 
@@ -83,9 +85,8 @@ struct PlayerSnapShot : public ObjectSnapShot
 	/// -----------------------------------------------------------+
 	FBProtocol::WEAPON_TYPE	WeaponType = {};	Lock::SRWLock Lock_Weapon;		/// > [LOCK] Current Equipped Weapon 
 
-	std::array<SPtr<GameBullet>, GameObjectInfo::maxBulletsNum> Bullets = {};		// Bullets 
-	Concurrency::concurrent_queue<int> mPossibleBulletIndex;					// Possible To Shoot Bullets 
-
+	std::array<SPtr<GameBullet>, GameObjectInfo::maxBulletsNum>			Bullets			= {};		// Bullets 
+	Concurrency::concurrent_queue<int>									mPossibleBulletIndex;		// Possible To Shoot Bullets 
 	/// +-----------------------------------------------------------
 	///		latency 
 	/// -----------------------------------------------------------+
@@ -120,7 +121,7 @@ class GamePlayer : public GameObject
 {
 private:
 	class PlayerController* mOwnerPC = nullptr;
-	PlayerSnapShot	mSnapShot; Lock::SRWLock mSRWLock_SnapShot;
+	PlayerSnapShot			mSnapShot;	Lock::SRWLock mSRWLock_SnapShot;
 
 public:
 	GamePlayer();
@@ -147,6 +148,8 @@ public:
 
 	void CollideCheckWithBullets();
 	void CollideCheckWithMonsters();
+
+	void Push_PossibleBulletIndex(int idx);
 
 public:
 	/// +-----------------------------------------------------------
@@ -181,9 +184,7 @@ public:
 	FBProtocol::WEAPON_TYPE	GetSNS_CurrWeapon()								{ mSnapShot.Lock_Weapon.LockRead();			FBProtocol::WEAPON_TYPE name = mSnapShot.WeaponType; ; mSnapShot.Lock_Weapon.UnlockRead(); return name; }
 	Vec3					GetSNS_SpineLookDir()							{ mSnapShot.Lock_SpineLookDir.LockRead();	Vec3 spineLookDir            = mSnapShot.SpineLookDir; mSnapShot.Lock_SpineLookDir.UnlockRead(); return spineLookDir; }
 	bool					GetSNS_SkillIsAvtive(FBProtocol::PLAYER_SKILL_TYPE type) { return mSnapShot.Skills[type]->GetIsActive(); }
-
-public:
-	static Coordinate GetSectorIdx(Vec3& Pos);
+	ViewList				GetSNS_ViewList()								{ mSnapShot.Lock_VList_SnapShot.LockRead(); ViewList vl = mSnapShot.VList_SnapShot; mSnapShot.Lock_VList_SnapShot.UnlockWrite(); return vl; }
 
 };
 

@@ -199,7 +199,6 @@
     <ClInclude Include="Contents\GameSession.h" />
     <ClInclude Include="Contents\GameBuilding.h" />
     <ClInclude Include="Contents\GameSkill.h" />
-    <ClInclude Include="Contents\GameWorld.h" />
     <ClInclude Include="Contents\ObjectSnapShot.h" />
     <ClInclude Include="Contents\Rigidbody.h" />
     <ClInclude Include="Contents\Script_Anglerox.h" />
@@ -241,7 +240,6 @@
     <ClInclude Include="Contents\Util\DwordOverloader.h" />
     <ClInclude Include="Contents\Util\SimpleMath.h" />
     <ClInclude Include="Contents\ViewList.h" />
-    <ClInclude Include="Contents\Weapon.h" />
     <ClInclude Include="Framework.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Protocol\Enum_generated.h" />
@@ -303,7 +301,6 @@
     <ClCompile Include="Contents\GameSession.cpp" />
     <ClCompile Include="Contents\GameBuilding.cpp" />
     <ClCompile Include="Contents\GameSkill.cpp" />
-    <ClCompile Include="Contents\GameWorld.cpp" />
     <ClCompile Include="Contents\BTTaskM_Attack.cpp" />
     <ClCompile Include="Contents\BTTaskM_CheckAttackRange.cpp" />
     <ClCompile Include="Contents\BTTaskM_CheckDeath.cpp" />
@@ -361,7 +358,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Contents\ViewList.cpp" />
-    <ClCompile Include="Contents\Weapon.cpp" />
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pch.cpp">

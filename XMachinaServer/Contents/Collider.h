@@ -61,4 +61,5 @@ public:
 	std::vector<MyBoundingSphere>& GetBoundingSphereList() { return mBoundingSphereList; }
 	std::vector<MyBoundingOrientedBox>& GetBoundingBoxList() { return mBoundingBoxList; }
 
+	ColliderSnapShot GetColliderSnapShot() { return mColliderSnapShot[mSnapShotIndex]; }
 };

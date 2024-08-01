@@ -123,7 +123,6 @@ void GameMonster::Start()
 
 void GameMonster::Activate()
 {
-	mCurrTimePoint = std::chrono::steady_clock::now();
 
 	GameObject::Activate();
 

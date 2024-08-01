@@ -18,7 +18,6 @@
 #include "ServerLib/SendBuffersFactory.h"
 #include "Protocol/FBsPacketFactory.h"
 #include "Contents/DBController.h"
-#include "Contents/GameWorld.h"
 #include "Contents/ResourceManager.h"
 
 

@@ -3,7 +3,7 @@
 
 namespace GameObjectInfo
 {
-	constexpr int maxBulletsNum = 30;
+	constexpr int maxBulletsNum = 20;
 
 	enum class Type : UINT16 {
 		None,
@@ -32,6 +32,11 @@ namespace GameObjectInfo
 		///		 BUILDING 
 		/// ------------------------+
 		Building,
+
+		/// +------------------------
+		///		 BUILDING 
+		/// ------------------------+
+		Bullet,
 
 		/// +------------------------
 		///		 COLLIDER TYPE 

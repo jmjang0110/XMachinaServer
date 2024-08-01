@@ -166,7 +166,10 @@ int GamePlayer::OnShoot()
 	if (mSnapShot.mPossibleBulletIndex.try_pop(possibleIndex)) {
 		
 		if (0 <= possibleIndex && possibleIndex < GameObjectInfo::maxBulletsNum) {
-			mSnapShot.Bullets[possibleIndex]->RegisterUpdate(); // PQCS 
+			
+			mSnapShot.Bullets[possibleIndex]->SetWeaponType(GetSNS_CurrWeapon());	// 총알 종류 설정 
+			mSnapShot.Bullets[possibleIndex]->Activate();							// PQCS - Register Update !
+			
 			return possibleIndex;
 		}
 	}
@@ -176,7 +179,12 @@ int GamePlayer::OnShoot()
 
 void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vector<SPtr<GameMonster>> monster)
 {
-	mSnapShot.VList_Prev = mSnapShot.Vlist;
+	ViewList ViewList_Prev;
+	mSnapShot.Lock_VList_SnapShot.LockWrite();
+	ViewList_Prev            = mSnapShot.VList_SnapShot;;
+	mSnapShot.VList_SnapShot = mSnapShot.Vlist;
+	mSnapShot.Lock_VList_SnapShot.UnlockWrite();
+
 	std::vector<SPtr<GameMonster>> NewMonsters;
 	std::vector<SPtr<GameMonster>> RemoveMonsters;
 
@@ -210,7 +218,7 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 	/// +--------------------------------------------------------------------------------
 	///	3. [REMOVE MONSTER] VIEW LIST 
 	/// ---------------------------------------------------------------------------------+
-	for (auto& it : mSnapShot.VList_Prev.VL_Monsters) {
+	for (auto& it : ViewList_Prev.VL_Monsters) {
 		// 이전 ViewList에 있던 Monster가 현재 ViewList에 없다면 
 		if (currentMonsterIDs.find(it.first) == currentMonsterIDs.end()) {
 			mSnapShot.Vlist.RemoveMonster(it.first);
@@ -303,7 +311,7 @@ void GamePlayer::CollideCheckWithMonsters()
 				/*	if (phero_script->GetState() == 이동중)
 						coninue;*/
 
-					if (targetid = -1) {
+					if (targetid == -1) {
 						phero_scirpt->SetTargetPlayerID(GetID());
 						// 플레이어의 페로수치를  올린다. 
 
@@ -318,4 +326,9 @@ void GamePlayer::CollideCheckWithMonsters()
 
 		
 	}
+}
+
+void GamePlayer::Push_PossibleBulletIndex(int idx)
+{
+	mSnapShot.mPossibleBulletIndex.push(idx);
 }

@@ -421,6 +421,7 @@ bool FBsPacketFactory::Process_CPkt_Player_Weapon(SPtr_Session session, const FB
 	FBProtocol::WEAPON_TYPE weaponType = pkt.weapon_type();
 
 	LOG_MGR->Cout("WEAPONTYPE : ", static_cast<int>(weaponType));
+	gameSession->GetPlayer()->SetSNS_EquipWeapon(weaponType);
 
 
 	auto spkt = FBS_FACTORY->SPkt_Player_Weapon(session->GetID(), weaponType);
@@ -541,7 +542,7 @@ bool FBsPacketFactory::Process_CPkt_Bullet_OnShoot(SPtr_Session session, const F
 	Vec3 ray         = GetVector3(pkt.ray());
 	int  bullet_id   = gameSession->GetPlayer()->OnShoot(); // PQCS -> Bullet Update Start ( Worker Thread  에게 업데이트를 떠넘긴다 ) 
 	
-	LOG_MGR->Cout("[", player_id, "]RAY : ", ray.x, " ", ray.y, " ", ray.z, "\n");
+	LOG_MGR->Cout("[", player_id, "]RAY : ", ray.x, " ", ray.y, " ", ray.z, " ---> ", bullet_id, "\n");
 
 	/// 플레이어가 Shot 했다는 것을 플레이어들에게 알린다. 
 	auto spkt = FBS_FACTORY->SPkt_Bullet_OnShoot(player_id, gun_id, bullet_id, ray);

@@ -344,9 +344,6 @@
     <ClInclude Include="Contents\DB_Player.h">
       <Filter>Framework\Contents\DataBase\Object</Filter>
     </ClInclude>
-    <ClInclude Include="Contents\GameWorld.h">
-      <Filter>Framework\Contents\GameWorld</Filter>
-    </ClInclude>
     <ClInclude Include="Contents\TimeManager.h">
       <Filter>Framework\Contents\Timer</Filter>
     </ClInclude>
@@ -436,9 +433,6 @@
     </ClInclude>
     <ClInclude Include="Contents\GameNPC.h">
       <Filter>Framework\Contents\GameWorld\GameObject\NPC</Filter>
-    </ClInclude>
-    <ClInclude Include="Contents\Weapon.h">
-      <Filter>Framework\Contents\GameWorld\GameObject\Player\Weapon</Filter>
     </ClInclude>
     <ClInclude Include="Contents\TileMap.h">
       <Filter>Framework\Contents\GameWorld\GameObject\Sector\TileMap</Filter>
@@ -665,9 +659,6 @@
     <ClCompile Include="Contents\DB_Player.cpp">
       <Filter>Framework\Contents\DataBase\Object</Filter>
     </ClCompile>
-    <ClCompile Include="Contents\GameWorld.cpp">
-      <Filter>Framework\Contents\GameWorld</Filter>
-    </ClCompile>
     <ClCompile Include="Contents\TimeManager.cpp">
       <Filter>Framework\Contents\Timer</Filter>
     </ClCompile>
@@ -757,9 +748,6 @@
     </ClCompile>
     <ClCompile Include="Contents\GameNPC.cpp">
       <Filter>Framework\Contents\GameWorld\GameObject\NPC</Filter>
-    </ClCompile>
-    <ClCompile Include="Contents\Weapon.cpp">
-      <Filter>Framework\Contents\GameWorld\GameObject\Player\Weapon</Filter>
     </ClCompile>
     <ClCompile Include="Contents\TileMap.cpp">
       <Filter>Framework\Contents\GameWorld\GameObject\Sector\TileMap</Filter>

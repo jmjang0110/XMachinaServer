@@ -8,10 +8,12 @@
 
 
 Script_Bullet::Script_Bullet()
+    : Script()
 {
 }
 
 Script_Bullet::Script_Bullet(SPtr<GameObject> owner, ScriptInfo::Type type)
+    : Script(owner, type, static_cast<int>(ScriptInfo::Type::Bullet))
 {
 }
 

@@ -13,10 +13,11 @@ public:
 	~CollisionManager();
 
 public:
-	bool CollideCheck(ColliderSnapShot& A, ColliderSnapShot& B);
-
-public:
 	static float CollideCheckRay_MinimumDist(const ColliderSnapShot& A, Ray& R);
+	
+public:
+	static bool CollideCheck(ColliderSnapShot& A, ColliderSnapShot& B);
+	static bool CollideCheck(ColliderSnapShot& A, Ray& R, float dist);
 
 };
  

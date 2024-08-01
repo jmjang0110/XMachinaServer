@@ -18,10 +18,10 @@ private:
 	SPtr<Animation> mAnimation{};
 
 protected:
-	float mDeltaTime;
+	float mDeltaTime = 0.f;
 
-	std::chrono::steady_clock::time_point	mCurrTimePoint;
-	std::chrono::steady_clock::time_point	mPrevTimePoint;
+	std::chrono::steady_clock::time_point	mCurrTimePoint{};
+	std::chrono::steady_clock::time_point	mPrevTimePoint{};
 
 public:
 	float GetDeltaTime() { return mDeltaTime; }
