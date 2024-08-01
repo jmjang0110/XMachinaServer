@@ -1912,7 +1912,8 @@ struct SPkt_Monster_State FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table
   typedef SPkt_Monster_StateBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_MONSTER_ID = 4,
-    VT_MONSTER_BT_TYPE = 6
+    VT_MONSTER_BT_TYPE = 6,
+    VT_MONSTER_BT_STEP = 8
   };
   uint32_t monster_id() const {
     return GetField<uint32_t>(VT_MONSTER_ID, 0);
@@ -1920,10 +1921,14 @@ struct SPkt_Monster_State FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table
   FBProtocol::MONSTER_BT_TYPE monster_bt_type() const {
     return static_cast<FBProtocol::MONSTER_BT_TYPE>(GetField<uint8_t>(VT_MONSTER_BT_TYPE, 0));
   }
+  int32_t monster_bt_step() const {
+    return GetField<int32_t>(VT_MONSTER_BT_STEP, 0);
+  }
   bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<uint32_t>(verifier, VT_MONSTER_ID, 4) &&
            VerifyField<uint8_t>(verifier, VT_MONSTER_BT_TYPE, 1) &&
+           VerifyField<int32_t>(verifier, VT_MONSTER_BT_STEP, 4) &&
            verifier.EndTable();
   }
 };
@@ -1937,6 +1942,9 @@ struct SPkt_Monster_StateBuilder {
   }
   void add_monster_bt_type(FBProtocol::MONSTER_BT_TYPE monster_bt_type) {
     fbb_.AddElement<uint8_t>(SPkt_Monster_State::VT_MONSTER_BT_TYPE, static_cast<uint8_t>(monster_bt_type), 0);
+  }
+  void add_monster_bt_step(int32_t monster_bt_step) {
+    fbb_.AddElement<int32_t>(SPkt_Monster_State::VT_MONSTER_BT_STEP, monster_bt_step, 0);
   }
   explicit SPkt_Monster_StateBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
@@ -1952,8 +1960,10 @@ struct SPkt_Monster_StateBuilder {
 inline ::flatbuffers::Offset<SPkt_Monster_State> CreateSPkt_Monster_State(
     ::flatbuffers::FlatBufferBuilder &_fbb,
     uint32_t monster_id = 0,
-    FBProtocol::MONSTER_BT_TYPE monster_bt_type = FBProtocol::MONSTER_BT_TYPE_IDLE) {
+    FBProtocol::MONSTER_BT_TYPE monster_bt_type = FBProtocol::MONSTER_BT_TYPE_IDLE,
+    int32_t monster_bt_step = 0) {
   SPkt_Monster_StateBuilder builder_(_fbb);
+  builder_.add_monster_bt_step(monster_bt_step);
   builder_.add_monster_id(monster_id);
   builder_.add_monster_bt_type(monster_bt_type);
   return builder_.Finish();

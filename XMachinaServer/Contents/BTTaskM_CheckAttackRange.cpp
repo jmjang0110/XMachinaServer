@@ -67,8 +67,7 @@ BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 			GetOwner()->GetAnimation()->GetController()->SetValue("IsAttack", true);
 			GetOwner()->GetAnimation()->GetController()->SetValue("Attack", true);
 
-			mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK_1);
-			mEnemyController->GetOwnerMonster()->SetBTState(FBProtocol::MONSTER_BT_TYPE_ATTACK_1);
+			mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK);
 			mEnemyController->SetState(EnemyInfo::State::Attack);
 
 			return BTNodeState::Success;

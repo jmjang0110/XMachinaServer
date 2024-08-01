@@ -151,7 +151,7 @@ public:
 	void setRoomID(UINT32 roomid)											{ mInfo.RoomID   = roomid; };
 	void SetName(std::string name)											{ mInfo.Name     = name; };
 	void SetOwnerPlayerController(PlayerController* pc)						{ mOwnerPC = pc; }
-
+	                   
 	void SetSNS_Velocity(float vel)											{ mInfo.Lock_Velocity.LockWrite();		mInfo.Velocity = vel;				 mInfo.Lock_Velocity.UnlockWrite(); }
 	void SetSNS_SpineLookDir(Vec3 spineLookDir)								{ mInfo.Lock_SpineLookDir.LockWrite();	mInfo.SpineLookDir = spineLookDir;   mInfo.Lock_SpineLookDir.UnlockWrite(); }
 	void SetSNS_Phero(float phero)											{ mInfo.Lock_Phero.LockWrite();			mInfo.Phero    = phero;				 mInfo.Lock_Phero.UnlockWrite(); }

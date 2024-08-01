@@ -60,7 +60,7 @@ bool Script_Ursacetus::Attack()
             b = true;
             std::cout << "ATtack1\n";
             mEnemyController->SetState(EnemyInfo::State::Attack);
-            mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK_1);
+            mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK);
         }
     }
     else if (mCurrAttackCnt < 3) {
@@ -68,7 +68,7 @@ bool Script_Ursacetus::Attack()
             b = true;
             std::cout << "ATtack2\n";
             mEnemyController->SetState(EnemyInfo::State::Attack2);
-            mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK_2);
+            mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK);
         }
     }
     else if (mCurrAttackCnt < 4) {
@@ -76,7 +76,7 @@ bool Script_Ursacetus::Attack()
             b = true;
             std::cout << "ATtack3\n";
             mEnemyController->SetState(EnemyInfo::State::Attack3);
-            mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK_3);
+            mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK);
         }
     }
 
@@ -100,7 +100,7 @@ void Script_Ursacetus::BasicAttackCallback()
     }
 
     mEnemyController->SetState(EnemyInfo::State::Attack);
-    mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK_1);
+    mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK);
     //mEnemyController->GetOwnerMonster()->Broadcast_SPkt_Mosnter_State(FBProtocol::MONSTER_BT_TYPE_ATTACK);
 
     //const float dis = Vec3::Distance(mEnemyMgr->mTarget->GetPosition(), mObject->GetPosition());
@@ -115,7 +115,7 @@ void Script_Ursacetus::BasicAttackCallback()
 void Script_Ursacetus::RoarStartCallback()
 {
     mEnemyController->SetState(EnemyInfo::State::Attack2);
-    mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK_2);
+    mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK);
 }
 
 void Script_Ursacetus::RoarAttackCallback()
@@ -145,7 +145,7 @@ void Script_Ursacetus::SpecialAttackCallback()
 void Script_Ursacetus::SpecialAttackStartCallback()
 {
     mEnemyController->SetState(EnemyInfo::State::Attack3);
-    mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK_3);
+    mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK);
 }
 
 void Script_Ursacetus::AttackEndCallback()

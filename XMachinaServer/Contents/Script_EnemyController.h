@@ -50,11 +50,12 @@ private:
 	std::stack<Vec3>	mPaths				= {};
 
 
-	FBProtocol::MONSTER_BT_TYPE mCurrBTType = FBProtocol::MONSTER_BT_TYPE::MONSTER_BT_TYPE_END;
-	FBProtocol::MONSTER_BT_TYPE mPrevBTType = FBProtocol::MONSTER_BT_TYPE::MONSTER_BT_TYPE_END;
+	// BTType을 바꿀건지를 체크하기 위해 생성함 (상태를 계속 저장하지 않고 바뀌었을 떄만 저장 - Lock 빈도 수 최소화 )
+	FBProtocol::MONSTER_BT_TYPE mCurrBTType = FBProtocol::MONSTER_BT_TYPE::MONSTER_BT_TYPE_IDLE;
+	FBProtocol::MONSTER_BT_TYPE mPrevBTType = FBProtocol::MONSTER_BT_TYPE::MONSTER_BT_TYPE_IDLE;
 	
 	/* Lock */
-	FBProtocol::MONSTER_BT_TYPE mBTType = FBProtocol::MONSTER_BT_TYPE::MONSTER_BT_TYPE_END;; Lock::SRWLock mLock_BTType;
+	FBProtocol::MONSTER_BT_TYPE mBTType = FBProtocol::MONSTER_BT_TYPE::MONSTER_BT_TYPE_IDLE; Lock::SRWLock mLock_BTType;
 
 
 public:
@@ -86,26 +87,27 @@ public:
 	/// +---------------------------------------------------
 	///						G E T T E R  
 	/// ---------------------------------------------------+
-	SPtr<GameMonster>			GetOwnerMonster()			{ return mOwnerMonster; }
+	SPtr<GameMonster>			GetOwnerMonster()				{ return mOwnerMonster; }
 
-	SPtr_GameObject				GetPathTargetObject()		{ return mPathTarget;  }
+	SPtr_GameObject				GetPathTargetObject()			{ return mPathTarget;  }
 
-	EnemyInfo::State			GetState()					{ return mState; }
-	std::stack<Vec3>*			GetPaths()					{ return &mPaths; }
-	FBProtocol::MONSTER_BT_TYPE GetMonsterCurrBTType()		{ return mCurrBTType; }
-	FBProtocol::MONSTER_BT_TYPE GetMontserPrevBTType()		{ return mPrevBTType; }
+	EnemyInfo::State			GetState()						{ return mState; }
+	std::stack<Vec3>*			GetPaths()						{ return &mPaths; }
+	FBProtocol::MONSTER_BT_TYPE GetMonsterCurrBTType()			{ return mCurrBTType; }
+	FBProtocol::MONSTER_BT_TYPE GetMontserPrevBTType()			{ return mPrevBTType; }
 
-	SPtr<GameObject>			GetTarget()					{ Lock_Target.LockRead(); SPtr<GameObject> target = mTarget; Lock_Target.UnlockRead(); return target; }
-	FBProtocol::MONSTER_BT_TYPE GetMonsterBTType()			{ mLock_BTType.LockRead(); FBProtocol::MONSTER_BT_TYPE btType = mBTType; mLock_BTType.UnlockRead(); return btType; }
+	SPtr<GameObject>			GetTarget()						{ Lock_Target.LockRead(); SPtr<GameObject> target = mTarget; Lock_Target.UnlockRead(); return target; }
+	FBProtocol::MONSTER_BT_TYPE GetMonsterBTType()				{ mLock_BTType.LockRead(); FBProtocol::MONSTER_BT_TYPE btType = mBTType; mLock_BTType.UnlockRead(); return btType; }
 	/// +---------------------------------------------------
 	///						S E T T E R 
 	/// ---------------------------------------------------+
-	void SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE type) { mCurrBTType    = type; }
+	void SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE type) { mCurrBTType    = type; }			
 	void UpdateMonsterCurrBTType()								{ mPrevBTType    = mCurrBTType; }
 	void SetState(EnemyInfo::State state)						{ mState         = state; }
 
 	void SetPathTargetObject(SPtr<GameObject> target)			{ mPathTarget    = target; }
 	void SetOwnerMonster(SPtr<GameMonster> ownerMonster)		{ mOwnerMonster  = ownerMonster; }
+	
 	void SetTarget(SPtr<GameObject> target)						{ Lock_Target.LockWrite(); mTarget = target; Lock_Target.UnlockWrite(); }
 	void SetBTType(FBProtocol::MONSTER_BT_TYPE btType)			{ mLock_BTType.LockWrite(); mBTType = btType; mLock_BTType.UnlockWrite(); }
 

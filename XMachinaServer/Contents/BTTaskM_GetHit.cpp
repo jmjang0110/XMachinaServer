@@ -33,7 +33,6 @@ BTNodeState MonsterTask::GetHit::Evaluate()
 		return BTNodeState::Failure;
 
 	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_GETHIT);
-	mEnemyController->GetOwnerMonster()->SetBTState(FBProtocol::MONSTER_BT_TYPE_GETHIT);
 
 	return BTNodeState::Success;
 }

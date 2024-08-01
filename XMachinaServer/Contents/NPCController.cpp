@@ -41,40 +41,33 @@ void NPCController::InitMonsters(Coordinate maxSectorIdx)
 {
 	SectorController* sc = mOwnerRoom->GetSectorController();
 
+
+	/// ___________________________________________________________________
+	///							<SectorController>
+	///						   ↓					  ↓
+	///						  Sector				Sector
+	/// ___________________________________________________________________
+	///					      ↓  ↓  ↓...			↓
+	/// ___________________________________________________________________
+	/// <NPCController> --> [1][2][3][4]....[5]...[EnemyPrototypes.size()]	<--- ( Cloens )
+	/// ___________________________________________________________________
+
 	int monster_id = 1;
-
-
-	//TEST 
-	Coordinate sI = SectorController::GetSectorIdxByPosition(Vec3(25.f, 0.f, 260.f));
-	SPtr<GameMonster> monster = std::make_shared<GameMonster>();
-;	auto trans = monster->AddComponent<Transform>(ComponentInfo::Type::Transform);
-	monster->AddComponent<Collider>(ComponentInfo::Type::Collider);
-
-	trans->SetPosition(Vec3(25.f, 0.f, 260.f));
-	monster->SetOwnerNPCController(this);
-	int ID = 7777; // test 
-	monster->SetID(ID);
-	monster->SetMonsterType(FBProtocol::MONSTER_TYPE_ADVANCED_COMBAT_DROIR_5);
-	
-	sc->AddMonsterInSector(sI, ID, monster);
-	AddMonster(ID, monster);
-
-	monster->UpdateSnapShot();
-
-
 	const std::vector<SPtr<GameMonster>>* EnemyPrototypes = RESOURCE_MGR->GetBattleScene()->GetEnemies();
 	for (int i = 0; i < EnemyPrototypes->size(); ++i) {
 
 		SPtr<GameMonster> enemy = (*EnemyPrototypes)[i]->Clone(); // 복사본을 만든다 ( 원본은 건들이지 않는다. )
+		
+		// NPC
 		enemy->SetOwnerNPCController(this);
 		AddMonster(enemy->GetID(), enemy);
+		// SECTOR
 		Coordinate SectorIndex = SectorController::GetSectorIdxByPosition(enemy->GetTransform()->GetPosition());
 		sc->AddMonsterInSector(SectorIndex, enemy->GetID(), enemy);
 		
+		// INIT
 		enemy->UpdateSnapShot();
 		enemy->Start();
-
-		//break;
 	}
 
 	return;

@@ -223,7 +223,7 @@ void GamePlayer::CollideCheckWithBullets()
 }
 
 void GamePlayer::CollideCheckWithMonsters()
-{
+{    
 	ColliderSnapShot SNS_Player = GetCollider()->GetSnapShot();
 
 	for (auto& iter : mInfo.Vlist.VL_Monsters) {
@@ -231,7 +231,7 @@ void GamePlayer::CollideCheckWithMonsters()
 			continue;
 
 		// 살아있는 상태 
-		if (iter.second->GetHP() > 0.f)
+		if (iter.second->GetSNS_HP() > 0.f)
 		{
 			//iter.second->GetMotionState() // 공격 상태라면 
 			ColliderSnapShot SNS_Monster = iter.second->GetCollider()->GetSnapShot();

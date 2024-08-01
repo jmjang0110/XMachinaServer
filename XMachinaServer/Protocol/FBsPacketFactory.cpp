@@ -11,6 +11,7 @@
 #include "Contents/Skill.h"
 #include "Contents/Collider.h"
 #include "Contents/Script_Player.h"
+#include "Contents/Script_EnemyController.h"
 
 DEFINE_SINGLETON(FBsPacketFactory);
 
@@ -934,7 +935,7 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_NewMonster(std::vector<SPtr<GameMonster>>
 
 		auto pos		= FBProtocol::CreatePosition_Vec2(builder, transPos.x, transPos.z);
 		auto pheros		= builder.CreateString(mon->GetPheros());
-		auto bt_Type	= mon->GetBTState();
+		auto bt_Type	= mon->GetEnemyController()->GetMonsterBTType(); /* Lock Read */
 		float rot_y		= Vector3::SignedAngle(Vector3::Forward, transLook, Vector3::Up);
 		auto Monster	= FBProtocol::CreateMonster(builder, mon->GetID(), mon->GetMonsterType(), bt_Type, pos, rot_y, pheros);
 		MonsterSnapShots_Vector.push_back(Monster);

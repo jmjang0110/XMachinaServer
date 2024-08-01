@@ -258,16 +258,9 @@ bool Script_DefaultEnemyBT::Update()
 		case FBProtocol::MONSTER_BT_TYPE_DEATH:
 			LOG_MGR->Cout("MONSTER_BT_TYPE_DEATH\n");
 			break;
-		case FBProtocol::MONSTER_BT_TYPE_ATTACK_1:
-			LOG_MGR->Cout("MONSTER_BT_TYPE_ATTACK_1\n");
+		case FBProtocol::MONSTER_BT_TYPE_ATTACK:
+			LOG_MGR->Cout("MONSTER_BT_TYPE_ATTACK\n");
 			break;
-		case FBProtocol::MONSTER_BT_TYPE_ATTACK_2:
-			LOG_MGR->Cout("MONSTER_BT_TYPE_ATTACK_2\n");
-			break;
-		case FBProtocol::MONSTER_BT_TYPE_ATTACK_3:
-			LOG_MGR->Cout("MONSTER_BT_TYPE_ATTACK_3\n");
-			break;
-
 		case FBProtocol::MONSTER_BT_TYPE_GETHIT:
 			LOG_MGR->Cout("MONSTER_BT_TYPE_GETHIT\n");
 			break;
