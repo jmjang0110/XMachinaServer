@@ -2,10 +2,10 @@
 #include "BTTaskM_CheckAttackRange.h"
 
 #include "BTTask.h"
-#include "Skill.h"
 #include "Script_Player.h"
 #include "GameMonster.h"
 #include "GamePlayer.h"
+#include "GameSkill.h"
 
 
 #include "Script_AdvancedCombatDroid_5.h"
@@ -42,7 +42,7 @@ BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 		return BTNodeState::Failure;
 	}
 
-	bool IsCloakingOn = target->GetSNS_ActiveSkill(SkillInfo::Type::Cloaking);
+	bool IsCloakingOn = target->GetSNS_SkillIsAvtive(FBProtocol::PLAYER_SKILL_TYPE_CLOACKING);
 	if (IsCloakingOn == true) {
 		mEnemyController->SetTarget(nullptr);
 		return BTNodeState::Failure;

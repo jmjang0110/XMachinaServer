@@ -38,14 +38,23 @@ GamePlayer::GamePlayer(UINT32 sessionID, SPtr_GameSession owner)
 
 	GameObject::SetType(GameObjectInfo::Type::GamePlayer);
 
-	mInfo.ID       = sessionID;
-	mInfo.Owner    = owner;
+	mSnapShot.ID       = sessionID;
+	mSnapShot.Owner    = owner;
 
 }
 
 GamePlayer::~GamePlayer()
 {
-	mInfo.Owner = nullptr;
+	mSnapShot.Owner = nullptr;
+
+	for (int i = 0; i < mSnapShot.Bullets.size(); ++i) {
+		mSnapShot.Bullets[i] = nullptr;
+	}
+
+	for (int i = 0; i < mSnapShot.Skills.size(); ++i) {
+		mSnapShot.Skills[i] = nullptr;
+	}
+
 }
 
 void GamePlayer::Update()
@@ -54,7 +63,7 @@ void GamePlayer::Update()
 	
 	/* Update View List */
 	Vec3  Pos        = GetTransform()->GetPosition();
-	float ViewRange  = mInfo.ViewRangeRadius;
+	float ViewRange  = mSnapShot.ViewRangeRadius;
 	mOwnerPC->GetOwnerRoom()->GetSectorController()->UpdateViewList(this, Pos, ViewRange);
 	
 }
@@ -73,16 +82,53 @@ void GamePlayer::Start()
 	///		CREATE GAME BULLETS
 	/// -------------------------------------------------------------------------------+
 	for (int i = 0; i < GameObjectInfo::maxBulletsNum; ++i) {
-		auto owner = std::dynamic_pointer_cast<GamePlayer>(shared_from_this());
-		SPtr<GameBullet> bullet = MEMORY->Make_Shared<GameBullet>(i, owner);
+		
+		SPtr<GameBullet> bullet = MEMORY->Make_Shared<GameBullet>(i, std::dynamic_pointer_cast<GamePlayer>(shared_from_this()));
+		
 		bullet->AddComponent<Transform>(ComponentInfo::Type::Transform);
 		bullet->AddComponent<Collider>(ComponentInfo::Type::Collider); // 충돌체크 그냥 거리 차이 구할 거임 
 		bullet->AddScript<Script_Bullet>(ScriptInfo::Type::Bullet);
 
-		mInfo.Bullets[i] = bullet;
-		mInfo.mPossibleBulletIndex.push(i);
+		mSnapShot.Bullets[i] = bullet;
+		mSnapShot.mPossibleBulletIndex.push(i);
 	}
 
+
+	/// +-------------------------------------------------------------------------------
+	///		CREATE GAME SKILLS
+	/// -------------------------------------------------------------------------------+
+	for (int i = 0; i < FBProtocol::PLAYER_SKILL_TYPE_END; ++i) {
+		SPtr<GameSkill> skill = MEMORY->Make_Shared<GameSkill>(i, std::dynamic_pointer_cast<GamePlayer>(shared_from_this()));
+		
+		FBProtocol::PLAYER_SKILL_TYPE skilltype = static_cast<FBProtocol::PLAYER_SKILL_TYPE>(i);
+		skill->SetSkillType(skilltype);
+		switch (skilltype)
+		{
+		case FBProtocol::PLAYER_SKILL_TYPE_CLOACKING: {
+			skill->SetCoolTime(3.f);
+			skill->SetDurationTime(0.f);
+		}
+		break;
+		case FBProtocol::PLAYER_SKILL_TYPE_IR_DETECTOR:{
+			skill->SetCoolTime(10.f);
+			skill->SetDurationTime(30.f);
+		}
+		break;
+		case FBProtocol::PLAYER_SKILL_TYPE_MIND_CONTROL:{
+			skill->SetCoolTime(2.f);
+			skill->SetDurationTime(10.f);
+		}
+		break;
+		case FBProtocol::PLAYER_SKILL_TYPE_SHIELD:{
+			skill->SetCoolTime(2.f);
+			skill->SetDurationTime(4.5f);
+		}
+		break;
+		default:
+			break;
+		};
+		mSnapShot.Skills[i] = skill;
+	}
 }
 
 void GamePlayer::Activate()
@@ -104,12 +150,12 @@ void GamePlayer::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 void GamePlayer::Exit()
 {
 	/* Exit Room Clear Data */
-	mInfo.Vlist.Clear();
+	mSnapShot.Vlist.Clear();
 
 
-	mInfo.Lock_IsExit.LockWrite();
-	mInfo.IsExit = true;
-	mInfo.Lock_IsExit.UnlockWrite();
+	mSnapShot.Lock_IsExit.LockWrite();
+	mSnapShot.IsExit = true;
+	mSnapShot.Lock_IsExit.UnlockWrite();
 
 
 }
@@ -117,10 +163,10 @@ void GamePlayer::Exit()
 int GamePlayer::OnShoot()
 {
 	int possibleIndex = -1;
-	if (mInfo.mPossibleBulletIndex.try_pop(possibleIndex)) {
+	if (mSnapShot.mPossibleBulletIndex.try_pop(possibleIndex)) {
 		
 		if (0 <= possibleIndex && possibleIndex < GameObjectInfo::maxBulletsNum) {
-			mInfo.Bullets[possibleIndex]->RegisterUpdate(); // PQCS 
+			mSnapShot.Bullets[possibleIndex]->RegisterUpdate(); // PQCS 
 			return possibleIndex;
 		}
 	}
@@ -130,7 +176,7 @@ int GamePlayer::OnShoot()
 
 void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vector<SPtr<GameMonster>> monster)
 {
-	mInfo.VList_Prev = mInfo.Vlist;
+	mSnapShot.VList_Prev = mSnapShot.Vlist;
 	std::vector<SPtr<GameMonster>> NewMonsters;
 	std::vector<SPtr<GameMonster>> RemoveMonsters;
 
@@ -138,7 +184,7 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 	///	1. [PLAYER] VIEW LIST 
 	/// ---------------------------------------------------------------------------------+
 	for (int i = 0; i < players.size(); ++i) {
-		mInfo.Vlist.TryInsertPlayer(players[i]->GetID(), players[i]);
+		mSnapShot.Vlist.TryInsertPlayer(players[i]->GetID(), players[i]);
 	}
 
 
@@ -147,7 +193,7 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 	///	2. [NEW MONSTER] VIEW LIST 
 	/// ---------------------------------------------------------------------------------+
 	for (int i = 0; i < monster.size(); ++i) {
-		bool IsSuccess = mInfo.Vlist.TryInsertMonster(monster[i]->GetID(), monster[i]);
+		bool IsSuccess = mSnapShot.Vlist.TryInsertMonster(monster[i]->GetID(), monster[i]);
 		if (IsSuccess) {
 			// 새로 들어옴
 			NewMonsters.push_back(monster[i]);
@@ -164,10 +210,10 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 	/// +--------------------------------------------------------------------------------
 	///	3. [REMOVE MONSTER] VIEW LIST 
 	/// ---------------------------------------------------------------------------------+
-	for (auto& it : mInfo.VList_Prev.VL_Monsters) {
+	for (auto& it : mSnapShot.VList_Prev.VL_Monsters) {
 		// 이전 ViewList에 있던 Monster가 현재 ViewList에 없다면 
 		if (currentMonsterIDs.find(it.first) == currentMonsterIDs.end()) {
-			mInfo.Vlist.RemoveMonster(it.first);
+			mSnapShot.Vlist.RemoveMonster(it.first);
 			RemoveMonsters.push_back(it.second);
 
 			LOG_MGR->Cout("[ ", it.first, " ] : ", it.second, " : DeActivate\n");
@@ -226,7 +272,7 @@ void GamePlayer::CollideCheckWithMonsters()
 {    
 	ColliderSnapShot SNS_Player = GetCollider()->GetSnapShot();
 
-	for (auto& iter : mInfo.Vlist.VL_Monsters) {
+	for (auto& iter : mSnapShot.Vlist.VL_Monsters) {
 		if (iter.second->IsActive() == false)
 			continue;
 
@@ -273,4 +319,3 @@ void GamePlayer::CollideCheckWithMonsters()
 		
 	}
 }
-

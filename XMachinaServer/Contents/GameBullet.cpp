@@ -68,14 +68,6 @@ void GameBullet::Update()
 	};
 }
 
-void GameBullet::WakeUp()
-{
-}
-
-void GameBullet::Start()
-{
-}
-
 void GameBullet::Activate()
 {
 	GameObject::Activate();
@@ -93,6 +85,9 @@ void GameBullet::Activate()
 
 void GameBullet::DeActivate()
 {
+	GameObject::DeActivate();
+
+	mActivate_Ref.fetch_sub(1);
 }
 
 void GameBullet::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
@@ -109,7 +104,3 @@ void GameBullet::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 	}
 }
 
-SPtr<GameBullet> GameBullet::Clone()
-{
-	return SPtr<GameBullet>();
-}

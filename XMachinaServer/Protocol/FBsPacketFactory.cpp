@@ -8,7 +8,7 @@
 #include "../ServerLib/SocketData.h"
 #include "Contents/GamePlayer.h"
 #include "Contents/GameManager.h"
-#include "Contents/Skill.h"
+#include "Contents/GameSkill.h"
 #include "Contents/Collider.h"
 #include "Contents/Script_Player.h"
 #include "Contents/Script_EnemyController.h"

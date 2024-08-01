@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Script_PlayerStat.h"
-#include "Skill.h"
+#include "GameSkill.h"
 #include "GameBullet.h"
 
 
@@ -10,9 +10,6 @@ class GamePlayer;
 class Script_Player : public Script_PlayerStat
 {
 private:
-	Skill* mSkills[static_cast<UINT8>(SkillInfo::Type::End)] = {};
-	SPtr<GameBullet> mBullets[PlayerInfo::BulletsMax]        = {};
-
 
 public:  
 	Script_Player();
@@ -36,9 +33,6 @@ public:
 	virtual bool Attack()	override;
 	virtual void Dead()		override;
 	virtual bool Hit(float damage, SPtr_GameObject instigator = nullptr) override;
-
-public:
-	Skill* GetSkill(SkillInfo::Type skill_type) { return mSkills[static_cast<UINT8>(skill_type)]; }
 
 };
 

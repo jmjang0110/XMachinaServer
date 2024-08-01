@@ -198,6 +198,7 @@
     <ClInclude Include="Contents\GameRoom.h" />
     <ClInclude Include="Contents\GameSession.h" />
     <ClInclude Include="Contents\GameBuilding.h" />
+    <ClInclude Include="Contents\GameSkill.h" />
     <ClInclude Include="Contents\GameWorld.h" />
     <ClInclude Include="Contents\ObjectSnapShot.h" />
     <ClInclude Include="Contents\Rigidbody.h" />
@@ -234,7 +235,6 @@
     <ClInclude Include="Contents\Script_Ursacetus.h" />
     <ClInclude Include="Contents\Sector.h" />
     <ClInclude Include="Contents\SectorController.h" />
-    <ClInclude Include="Contents\Skill.h" />
     <ClInclude Include="Contents\TimeManager.h" />
     <ClInclude Include="Contents\Transform.h" />
     <ClInclude Include="Contents\Util\Common.h" />
@@ -302,6 +302,7 @@
     <ClCompile Include="Contents\GameRoom.cpp" />
     <ClCompile Include="Contents\GameSession.cpp" />
     <ClCompile Include="Contents\GameBuilding.cpp" />
+    <ClCompile Include="Contents\GameSkill.cpp" />
     <ClCompile Include="Contents\GameWorld.cpp" />
     <ClCompile Include="Contents\BTTaskM_Attack.cpp" />
     <ClCompile Include="Contents\BTTaskM_CheckAttackRange.cpp" />
@@ -351,7 +352,6 @@
     <ClCompile Include="Contents\Script_Ursacetus.cpp" />
     <ClCompile Include="Contents\Sector.cpp" />
     <ClCompile Include="Contents\SectorController.cpp" />
-    <ClCompile Include="Contents\Skill.cpp" />
     <ClCompile Include="Contents\TimeManager.cpp" />
     <ClCompile Include="Contents\Transform.cpp" />
     <ClCompile Include="Contents\Util\SimpleMath.cpp">

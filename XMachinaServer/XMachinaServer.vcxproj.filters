@@ -128,32 +128,17 @@
     <Filter Include="Framework\Contents\GameWorld\GameObject\Player\Weapon">
       <UniqueIdentifier>{db7a2c9b-6c49-4c59-82d1-6ef7704639b7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Framework\Contents\GameWorld\GameObject\Bullet">
-      <UniqueIdentifier>{ba52d05e-4e9f-4704-bebd-c0eff70ab658}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Framework\Contents\GameWorld\GameObject\Sector">
       <UniqueIdentifier>{78fdcfc7-5a69-46f6-8980-01f4a8b25a01}</UniqueIdentifier>
     </Filter>
     <Filter Include="Framework\Contents\GameWorld\GameObject\Sector\TileMap">
       <UniqueIdentifier>{0b6ebbf5-d6b8-42f3-b8ac-99ddc401480b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Framework\Contents\GameWorld\GameObject\Building">
-      <UniqueIdentifier>{f7b0773c-1889-4e5c-ba94-89ca56de6804}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Framework\Contents\GameWorld\GameObject\01.Base\SnapShot">
       <UniqueIdentifier>{651c291e-f1ec-4ec1-b1e0-7dadd0d97f80}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Framework\Contents\GameWorld\GameObject\Weapon">
-      <UniqueIdentifier>{156786bb-a4b9-4b88-aead-689856378264}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Framework\Contents\GameWorld\GameObject\Monster">
-      <UniqueIdentifier>{b51a25f6-c8db-4978-bbc5-0f90db76d644}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Framework\Contents\GameWorld\GameObject\Component">
       <UniqueIdentifier>{668a7e04-28dc-40d3-bf72-ffd6cfee81f0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Framework\Contents\GameWorld\GameObject\Phero">
-      <UniqueIdentifier>{88edc669-0a5b-44aa-9e53-2ea1b23ded43}</UniqueIdentifier>
     </Filter>
     <Filter Include="Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster BT">
       <UniqueIdentifier>{ffae839c-97b3-4feb-b637-c3b8b2a82de3}</UniqueIdentifier>
@@ -208,6 +193,18 @@
     </Filter>
     <Filter Include="Framework\Contents\GameWorld\Entity\Script\Stat Script">
       <UniqueIdentifier>{16538096-f2b5-445b-8537-f12bd57e3f5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\GameWorld\GameObject\Player\Bullet">
+      <UniqueIdentifier>{ba52d05e-4e9f-4704-bebd-c0eff70ab658}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\GameWorld\GameObject\NPC\Monster">
+      <UniqueIdentifier>{b51a25f6-c8db-4978-bbc5-0f90db76d644}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\GameWorld\GameObject\NPC\Phero">
+      <UniqueIdentifier>{88edc669-0a5b-44aa-9e53-2ea1b23ded43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\GameWorld\GameObject\NPC\Building">
+      <UniqueIdentifier>{f7b0773c-1889-4e5c-ba94-89ca56de6804}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -333,7 +330,7 @@
       <Filter>Framework\Contents\DataBase\Item</Filter>
     </ClInclude>
     <ClInclude Include="Contents\GameMonster.h">
-      <Filter>Framework\Contents\GameWorld\GameObject\Monster</Filter>
+      <Filter>Framework\Contents\GameWorld\GameObject\NPC\Monster</Filter>
     </ClInclude>
     <ClInclude Include="Contents\GamePlayer.h">
       <Filter>Framework\Contents\GameWorld\GameObject\Player</Filter>
@@ -369,7 +366,7 @@
       <Filter>Framework\Contents\GameWorld\GameObject\Sector</Filter>
     </ClInclude>
     <ClInclude Include="Contents\GameBullet.h">
-      <Filter>Framework\Contents\GameWorld\GameObject\Bullet</Filter>
+      <Filter>Framework\Contents\GameWorld\GameObject\Player\Bullet</Filter>
     </ClInclude>
     <ClInclude Include="Contents\ResourceManager.h">
       <Filter>Framework\Contents\GameWorld\Resource</Filter>
@@ -384,7 +381,7 @@
       <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster BT\BT</Filter>
     </ClInclude>
     <ClInclude Include="Contents\GameBuilding.h">
-      <Filter>Framework\Contents\GameWorld\GameObject\Building</Filter>
+      <Filter>Framework\Contents\GameWorld\GameObject\NPC\Building</Filter>
     </ClInclude>
     <ClInclude Include="Contents\BTTask.h">
       <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster BT\BT</Filter>
@@ -439,9 +436,6 @@
     </ClInclude>
     <ClInclude Include="Contents\GameNPC.h">
       <Filter>Framework\Contents\GameWorld\GameObject\NPC</Filter>
-    </ClInclude>
-    <ClInclude Include="Contents\Skill.h">
-      <Filter>Framework\Contents\GameWorld\GameObject\Player\Skill</Filter>
     </ClInclude>
     <ClInclude Include="Contents\Weapon.h">
       <Filter>Framework\Contents\GameWorld\GameObject\Player\Weapon</Filter>
@@ -507,7 +501,7 @@
       <Filter>Framework\Contents\GameWorld\Resource</Filter>
     </ClInclude>
     <ClInclude Include="Contents\GamePhero.h">
-      <Filter>Framework\Contents\GameWorld\GameObject\Phero</Filter>
+      <Filter>Framework\Contents\GameWorld\GameObject\NPC\Phero</Filter>
     </ClInclude>
     <ClInclude Include="Contents\BTTaskM_Attack.h">
       <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster BT\BT\MonsterTask\Attack</Filter>
@@ -556,6 +550,9 @@
     </ClInclude>
     <ClInclude Include="Contents\AStarPath.h">
       <Filter>Framework\Contents\GameWorld\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\GameSkill.h">
+      <Filter>Framework\Contents\GameWorld\GameObject\Player\Skill</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -654,7 +651,7 @@
       <Filter>Framework\Contents\DataBase\Item</Filter>
     </ClCompile>
     <ClCompile Include="Contents\GameMonster.cpp">
-      <Filter>Framework\Contents\GameWorld\GameObject\Monster</Filter>
+      <Filter>Framework\Contents\GameWorld\GameObject\NPC\Monster</Filter>
     </ClCompile>
     <ClCompile Include="Contents\GamePlayer.cpp">
       <Filter>Framework\Contents\GameWorld\GameObject\Player</Filter>
@@ -687,7 +684,7 @@
       <Filter>Framework\Contents\GameWorld\GameObject\Sector</Filter>
     </ClCompile>
     <ClCompile Include="Contents\GameBullet.cpp">
-      <Filter>Framework\Contents\GameWorld\GameObject\Bullet</Filter>
+      <Filter>Framework\Contents\GameWorld\GameObject\Player\Bullet</Filter>
     </ClCompile>
     <ClCompile Include="Contents\ResourceManager.cpp">
       <Filter>Framework\Contents\GameWorld\Resource</Filter>
@@ -702,7 +699,7 @@
       <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster BT\BT</Filter>
     </ClCompile>
     <ClCompile Include="Contents\GameBuilding.cpp">
-      <Filter>Framework\Contents\GameWorld\GameObject\Building</Filter>
+      <Filter>Framework\Contents\GameWorld\GameObject\NPC\Building</Filter>
     </ClCompile>
     <ClCompile Include="Contents\BTTask.cpp">
       <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster BT\BT</Filter>
@@ -760,9 +757,6 @@
     </ClCompile>
     <ClCompile Include="Contents\GameNPC.cpp">
       <Filter>Framework\Contents\GameWorld\GameObject\NPC</Filter>
-    </ClCompile>
-    <ClCompile Include="Contents\Skill.cpp">
-      <Filter>Framework\Contents\GameWorld\GameObject\Player\Skill</Filter>
     </ClCompile>
     <ClCompile Include="Contents\Weapon.cpp">
       <Filter>Framework\Contents\GameWorld\GameObject\Player\Weapon</Filter>
@@ -828,7 +822,7 @@
       <Filter>Framework\Contents\GameWorld\Resource</Filter>
     </ClCompile>
     <ClCompile Include="Contents\GamePhero.cpp">
-      <Filter>Framework\Contents\GameWorld\GameObject\Phero</Filter>
+      <Filter>Framework\Contents\GameWorld\GameObject\NPC\Phero</Filter>
     </ClCompile>
     <ClCompile Include="Contents\BTTaskM_Attack.cpp">
       <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster BT\BT\MonsterTask\Attack</Filter>
@@ -877,6 +871,9 @@
     </ClCompile>
     <ClCompile Include="Contents\AStarPath.cpp">
       <Filter>Framework\Contents\GameWorld\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\GameSkill.cpp">
+      <Filter>Framework\Contents\GameWorld\GameObject\Player\Skill</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

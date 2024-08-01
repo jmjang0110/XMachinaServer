@@ -115,30 +115,6 @@ BTNode* Script_DefaultEnemyBT::SetupTree()
 	mRoot = MEMORY->New<BTNode_Selector>(GetOwner(), Selector_Root);
 	mRoot->SetRoot();
 	return mRoot;
-
-	///* CheckAttackRange */
-//BTNode* node3 = MEMORY->New<MonsterTask::MoveToPath>(GetOwner()); root_selector_Children.push_back(node3);
-//{
-//	BTNode* SelNode{};
-
-//	std::vector<BTNode*> selector_Children;
-//	{
-//		/* Sequence - CheckAttackRange, Attack */
-//		BTNode* SeqNode{};
-//		
-//		std::vector<BTNode*> sequence_children;
-//		BTNode* n1 = MEMORY->New<MonsterTask::CheckPatrolRange>(GetOwner(), baryCenter, maxDis); sequence_children.push_back(n1);
-//		BTNode* n2 = MEMORY->New<MonsterTask::Patrol>(GetOwner());			 sequence_children.push_back(n2);
-
-//		SeqNode = MEMORY->New<BTNode_Sequence>(GetOwner(), sequence_children);
-//		selector_Children.push_back(SeqNode);
-//	}
-//	BTNode* n3 = MEMORY->New<MonsterTask::PathPlanningToSapwn>(GetOwner());	selector_Children.push_back(n3);
-
-//	SelNode = MEMORY->New<BTNode_Selector>(GetOwner(), selector_Children);
-//	root_selector_Children.push_back(SelNode);
-//}
-
 }
 
 SPtr<Script_Enemy> Script_DefaultEnemyBT::GetScriptEnemy(GameObjectInfo::Type objtype)
