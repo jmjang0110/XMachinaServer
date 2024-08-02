@@ -5,15 +5,14 @@
 class Script_Phero : public Script
 {
 private:
-	std::string mPheroState = {}; // ex) "123" : Phero Level : 1, OffsetDistIndex = 23 ( PheroDropInfo::Offsets[23] )
+	std::string			mPheroState = {}; // ex) "123" : Phero Level : 1, OffsetDistIndex = 23 ( PheroDropInfo::Offsets[23] )
 private:
-	int		mLevel      = {};
-	float	mLifeTime   = {};
-	float	mAmount     = {};
+	int					mLevel      = {};
+	float				mLifeTime   = {};
+	float				mAmount     = {};
 
-	int		mOffsetDistIndex = {};
-
-	std::atomic<int> mTargetPlayer = -1;
+	int					mOffsetDistIndex = {};
+	std::atomic<int>	mTargetPlayer = -1;
 
 public:
 	Script_Phero();

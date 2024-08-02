@@ -30,9 +30,9 @@ private:
 	float		mAttackRange         = {};
 	float		mAttackCoolTime      = {};
 	
-	std::string	mAttack1AnimName       = {};
-	std::string	mAttack2AnimName       = {};
-	std::string	mAttack3AnimName       = {};
+	std::string	mAttack1AnimName     = {};
+	std::string	mAttack2AnimName     = {};
+	std::string	mAttack3AnimName     = {};
 	std::string mGetHitAnimName      = {};
 	std::string	mDeathAnimName       = {};
 

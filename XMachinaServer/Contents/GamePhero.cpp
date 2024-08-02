@@ -19,14 +19,20 @@ GamePhero::~GamePhero()
 
 void GamePhero::Update()
 {
+	GameObject::Update();
+
 }
 
 void GamePhero::WakeUp()
 {
+	GameObject::WakeUp();
+
 }
 
 void GamePhero::Start()
 {
+	GameObject::Start();
+
 }
 
 void GamePhero::Activate()
@@ -65,10 +71,7 @@ void GamePhero::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 
 	if (GetActivate_RefCnt() > 0)
 		GameObject::RegisterUpdate();
-	else
-	{
 
-	}
 }
 
 SPtr<GamePhero> GamePhero::Clone()

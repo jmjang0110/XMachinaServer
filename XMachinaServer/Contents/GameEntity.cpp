@@ -26,8 +26,10 @@ void GameEntity::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 
 void GameEntity::Activate()
 {
+	mIsActive = true;
 }
 
 void GameEntity::DeActivate()
 {
+	mIsActive = false;
 }

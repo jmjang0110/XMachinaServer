@@ -40,6 +40,10 @@ struct MonsterSnapShot : public ObjectSnapShot
 
 class GameMonster : public GameObject
 {
+	enum class State : uint8_t {
+		Deactive, Active, Dead, PheroActive, PheroDeactive, End,
+	};
+
 private:
 	NPCController*			mOwnerNC;
 
@@ -57,6 +61,8 @@ private:
 	Script_EnemyStat*		mEnemyStat       = nullptr; // HP, IsDead
 	int						HitCnt           = 0;
 
+	GameMonster::State		mState = GameMonster::State::Deactive;
+
 public:
 	virtual SPtr<GameMonster> Clone();
 
@@ -71,7 +77,7 @@ public:
 
 
 public:
-	void DecreaseRef() { mActivate_Ref.fetch_sub(1); if (mActivate_Ref.load() < 0) mActivate_Ref = 0; }
+	void DecreaseRef() { mActivate_Ref.fetch_sub(1); if (mActivate_Ref.load() < 0) mActivate_Ref.store(0); }
 	void UpdateSnapShot(); // 최신 상태로 스냅샷 업데이트 
 
 	void Broadcast_SPkt_Monster_Transform();

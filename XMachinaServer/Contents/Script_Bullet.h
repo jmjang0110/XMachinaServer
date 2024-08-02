@@ -11,8 +11,8 @@ namespace BulletInfo {
 class Script_Bullet : public Script
 {
 private:
-	SPtr<GamePlayer> mPlayerOwner{};	// 총알을 발사한 객체 (자신은 충돌하지 않도록 한다)
-	SPtr<Rigidbody> mRigid;
+	SPtr<GamePlayer>	mPlayerOwner{};	// 총알을 발사한 객체 (자신은 충돌하지 않도록 한다)
+	SPtr<Rigidbody>		mRigid;
 	std::array<std::vector<std::string>, WeaponInfo::BulletPSTypeCount> mPSNames;
 
 	float mSpeed{};					// speed of bullet

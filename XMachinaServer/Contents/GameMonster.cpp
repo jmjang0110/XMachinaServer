@@ -144,6 +144,7 @@ void GameMonster::Activate()
 		mInfo.owner = std::dynamic_pointer_cast<GameMonster>(shared_from_this());
 	}
 	if (mActivate_Ref.load() == 1) {
+
 		TimerEvent t;
 		t.Type        = TimerEventType::Update_GameObject;
 		t.WakeUp_Time = std::chrono::system_clock::now() + std::chrono::seconds(0); // 지금 당장 시작 
@@ -172,6 +173,7 @@ void GameMonster::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 	else
 	{
 		if (mInfo.owner) {
+
 			mInfo.owner->On_ExitFromViewList();
 		}
 	}
