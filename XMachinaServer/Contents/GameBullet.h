@@ -38,6 +38,7 @@ private:
 	float mMaxLifeTime  = 2.f;
 	float mCurrLifeTime = 0.f;
 
+	Vec3 mOnShootDir;
 
 public:
 	GameBullet();
@@ -55,18 +56,22 @@ public:
 
 public:
 	void DecreaseRef() { mActivate_Ref.fetch_sub(1); if (mActivate_Ref.load() < 0) mActivate_Ref = 0; }
+	void BulletUpdate(FBProtocol::WEAPON_TYPE weaponType);
+	void CheckCollision_WithPlayerViewList();
 
 public:
 	/// +-----------------------------------------------------------
 	///		S E T T E R 
 	/// -----------------------------------------------------------+
 	void SetWeaponType(FBProtocol::WEAPON_TYPE type)		{  mInfo.WeaponType = type;  }
-
+	void SetOnShootDir(Vec3& dir) { mOnShootDir = dir; }
 	// Getters
 	int						GetActivate_RefCnt() { return mActivate_Ref.load(); }
     SPtr<GamePlayer>		GetOwnerPlayer()	 { return mOwnerPlayer;}
     FBProtocol::WEAPON_TYPE GetWeaponType()		 { return mInfo.WeaponType; }
     bool					GetIsActive()		 { mInfo.Lock_IsActive.LockRead();  bool active = mInfo.IsActive;  mInfo.Lock_IsActive.UnlockRead();    return active; }
+
+
 };
 
 

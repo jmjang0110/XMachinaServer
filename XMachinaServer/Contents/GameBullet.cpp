@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "GameObject.h"
 #include "GameBullet.h"
+#include "GameMonster.h"
 #include "GamePlayer.h"
 #include "Collider.h"
 #include "CollisionManager.h"
@@ -37,65 +38,18 @@ void GameBullet::Update()
 {
 	GameObject::Update();
 
+	// Update By Weapon Type 
+	FBProtocol::WEAPON_TYPE weaponType = GetWeaponType();
+	BulletUpdate(weaponType);
+
+	// Limit Life Time 
 	float deltaTime = GetDeltaTime();
 	mCurrLifeTime += deltaTime;
 	if (mCurrLifeTime >= mMaxLifeTime) {
-		DeActivate();
+		DeActivate(); 
 	}
 
-	FBProtocol::WEAPON_TYPE weaponType = GetWeaponType();
 
-
-	// Ray Check Or Simultaion 
-	switch (weaponType)
-	{
-	case FBProtocol::WEAPON_TYPE_H_LOOK:{
-		LOG_MGR->Cout("GameBullet : WEAPON_TYPE_H_LOOK \n");
-	}
-		break;
-	case FBProtocol::WEAPON_TYPE_DBMS: {
-		LOG_MGR->Cout("GameBullet : WEAPON_TYPE_DBMS \n");
-
-	}
-		break;
-	case FBProtocol::WEAPON_TYPE_STUART:{
-		LOG_MGR->Cout("GameBullet : WEAPON_TYPE_STUART \n");
-
-		}
-		break;
-	case FBProtocol::WEAPON_TYPE_DESCRIPTOR:{
-		LOG_MGR->Cout("GameBullet : WEAPON_TYPE_DESCRIPTOR \n");
-
-		}
-		break;
-	case FBProtocol::WEAPON_TYPE_T_12:{
-		LOG_MGR->Cout("GameBullet : WEAPON_TYPE_T_12 \n");
-
-		}
-		break;
-	case FBProtocol::WEAPON_TYPE_PIPELINE:{
-		LOG_MGR->Cout("GameBullet : WEAPON_TYPE_PIPELINE \n");
-
-		}
-		break;
-	case FBProtocol::WEAPON_TYPE_BURNOUT:{
-		LOG_MGR->Cout("GameBullet : WEAPON_TYPE_BURNOUT \n");
-
-		}
-		break;
-	case FBProtocol::WEAPON_TYPE_DIRECT_DRAIN:{
-		LOG_MGR->Cout("GameBullet : WEAPON_TYPE_DIRECT_DRAIN \n");
-
-		}
-		break;
-	case FBProtocol::WEAPON_TYPE_SKYLINE: {
-		LOG_MGR->Cout("GameBullet : WEAPON_TYPE_SKYLINE \n");
-	}
-	 break;
-	default:
-		assert(0);
-		break;
-	};
 
 }
 
@@ -133,5 +87,35 @@ void GameBullet::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 	{
 
 	}
+}
+
+void GameBullet::BulletUpdate(FBProtocol::WEAPON_TYPE weaponType)
+{
+	CheckCollision_WithPlayerViewList();
+
+}
+
+void GameBullet::CheckCollision_WithPlayerViewList()
+{
+	ViewList player_VL = mOwnerPlayer->GetSNS_ViewList(); // Lock : Player View List 
+
+	for (auto& iter : player_VL.VL_Monsters) {
+
+		if(iter.second->GetSNS_IsDead())
+			continue;
+
+		ColliderSnapShot A = iter.second->GetCollider()->GetColliderSnapShot();
+
+		Ray R;
+		R.Direction = mOnShootDir;
+		R.Position  = GetTransform()->GetPosition();
+		bool IsCollide = COLLISION_MGR->CollideCheck(A, R, 0.f);
+		if (IsCollide) {
+			iter.second->OnHit();
+			DeActivate();
+			break;
+		}
+	}
+
 }
 

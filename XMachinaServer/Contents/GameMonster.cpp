@@ -50,6 +50,19 @@ void GameMonster::On_ExitFromViewList()
 	GAME_MGR->BroadcastRoom(GetOwnerNPCController()->GetOwnerRoom()->GetID(), spkt);
 }
 
+void GameMonster::OnHit()
+{
+	HitCnt++;
+	if (HitCnt == 5) {
+		SetSNS_IsDead(true);
+
+		LOG_MGR->Cout(GetID(), " : Dead\n");
+		return;
+	}
+
+	LOG_MGR->Cout(GetID(), " : OnHit\n");
+}
+
 void GameMonster::Broadcast_SPkt_Monster_Transform()
 {	
 	// Transform 패킷 보내기 

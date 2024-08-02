@@ -140,7 +140,7 @@ public:
 
 	void	Exit();
 	bool	IsExit() { mSnapShot.Lock_IsExit.LockWrite(); bool isExit = mSnapShot.IsExit; mSnapShot.Lock_IsExit.UnlockWrite(); return isExit; };
-	int		OnShoot();  
+	int		OnShoot(Vec3& ray);
 
 public:
 	void DecRef_OwnerGameSession() { mSnapShot.Owner = nullptr; }
@@ -184,7 +184,7 @@ public:
 	FBProtocol::WEAPON_TYPE	GetSNS_CurrWeapon()								{ mSnapShot.Lock_Weapon.LockRead();			FBProtocol::WEAPON_TYPE name = mSnapShot.WeaponType; ; mSnapShot.Lock_Weapon.UnlockRead(); return name; }
 	Vec3					GetSNS_SpineLookDir()							{ mSnapShot.Lock_SpineLookDir.LockRead();	Vec3 spineLookDir            = mSnapShot.SpineLookDir; mSnapShot.Lock_SpineLookDir.UnlockRead(); return spineLookDir; }
 	bool					GetSNS_SkillIsAvtive(FBProtocol::PLAYER_SKILL_TYPE type) { return mSnapShot.Skills[type]->GetIsActive(); }
-	ViewList				GetSNS_ViewList()								{ mSnapShot.Lock_VList_SnapShot.LockRead(); ViewList vl = mSnapShot.VList_SnapShot; mSnapShot.Lock_VList_SnapShot.UnlockWrite(); return vl; }
+	ViewList				GetSNS_ViewList()								{ mSnapShot.Lock_VList_SnapShot.LockRead(); ViewList vl = mSnapShot.VList_SnapShot; mSnapShot.Lock_VList_SnapShot.UnlockRead(); return vl; }
 
 };
 

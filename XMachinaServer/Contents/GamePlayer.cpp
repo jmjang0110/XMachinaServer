@@ -160,13 +160,15 @@ void GamePlayer::Exit()
 
 }
 
-int GamePlayer::OnShoot()
+int GamePlayer::OnShoot(Vec3& ray)
 {
 	int possibleIndex = -1;
 	if (mSnapShot.mPossibleBulletIndex.try_pop(possibleIndex)) {
 		
 		if (0 <= possibleIndex && possibleIndex < GameObjectInfo::maxBulletsNum) {
 			
+			mSnapShot.Bullets[possibleIndex]->GetTransform()->SetPosition(GetTransform()->GetSnapShot().GetPosition());
+			mSnapShot.Bullets[possibleIndex]->SetOnShootDir(ray);
 			mSnapShot.Bullets[possibleIndex]->SetWeaponType(GetSNS_CurrWeapon());	// 총알 종류 설정 
 			mSnapShot.Bullets[possibleIndex]->Activate();							// PQCS - Register Update !
 			

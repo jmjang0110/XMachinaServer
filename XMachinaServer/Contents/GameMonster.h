@@ -36,7 +36,7 @@ struct MonsterSnapShot : public ObjectSnapShot
 	float								HP;			Lock::SRWLock lock_HP;	/*		HP		*/
 	float								Attack;								/*	  °ø°Ý·Â		*/
 	std::string							Pheros;
-
+	bool	IsDead = false; Lock::SRWLock lock_IsDead;
 };
 
 class GameMonster : public GameObject
@@ -55,6 +55,8 @@ private:
 	Vec3					mSpawnRot;
 	
 	Script_EnemyController* mEnemyController = nullptr;
+
+	int HitCnt = 0;
 
 public:
 	virtual SPtr<GameMonster> Clone();
@@ -78,6 +80,7 @@ public:
 	void Send_SPkt_Mosnter_State(FBProtocol::MONSTER_BT_TYPE monser_bt_type);
 
 	void On_ExitFromViewList();
+	void OnHit();
 
 
 public:
@@ -91,6 +94,7 @@ public:
 	void SetPheros(std::string pheros)						{ mInfo.Pheros                                      = pheros; }
 
 	void SetSNS_HP(float hp)								{ mInfo.lock_HP.LockWrite(); mInfo.HP               = hp;	mInfo.lock_HP.UnlockWrite(); }
+	void SetSNS_IsDead(bool isdead)							{ mInfo.lock_IsDead.LockWrite(); mInfo.IsDead = isdead;	mInfo.lock_IsDead.UnlockWrite(); }
 
 	void SetOwnerNPCController(NPCController* nc)			{ mOwnerNC = nc; }
 	void SetEnemyController(Script_EnemyController* script) { mEnemyController = script; }
@@ -104,7 +108,8 @@ public:
 	std::string							 GetPheros()				{ return mInfo.Pheros;		}
 
 	float								 GetSNS_HP()				{ mInfo.lock_HP.LockRead();  float hp = mInfo.HP;	mInfo.lock_HP.UnlockRead(); return hp; }
-	
+	bool								 GetSNS_IsDead()			{ mInfo.lock_IsDead.LockRead();  bool isdead = mInfo.IsDead;	mInfo.lock_IsDead.UnlockRead(); return isdead; }
+
 	NPCController*						 GetOwnerNPCController()	{ return mOwnerNC; }
 	Script_EnemyController*				 GetEnemyController()		{ return mEnemyController; }
 	int									 GetActivate_RefCnt()		{ return mActivate_Ref.load(); }
