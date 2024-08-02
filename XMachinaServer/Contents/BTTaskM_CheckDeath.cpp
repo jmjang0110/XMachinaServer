@@ -13,7 +13,7 @@
  
 BTNodeState MonsterTask::CheckDeath::Evaluate()
 {
-	if (!mStat->IsDead())
+	if (!mStat->GetSNS_IsDead())
 		return BTNodeState::Failure;
 
 	mEnemyController->SetState(EnemyInfo::State::Death);

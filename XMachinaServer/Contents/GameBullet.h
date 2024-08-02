@@ -32,13 +32,12 @@ private:
 	SPtr<GamePlayer> mOwnerPlayer = nullptr;
 
 private:
-	BulletSnapShot mInfo;
+	BulletSnapShot  mInfo;
 	std::atomic_int mActivate_Ref = 0;
 
-	float mMaxLifeTime  = 2.f;
-	float mCurrLifeTime = 0.f;
-
-	Vec3 mOnShootDir;
+	float			mMaxLifeTime  = 2.f;
+	float			mCurrLifeTime = 0.f;
+	Vec3			mOnShootDir   = {};
 
 public:
 	GameBullet();

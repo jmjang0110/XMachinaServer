@@ -7,6 +7,7 @@
 #include "DB_Monster.h"
 #include "ObjectSnapShot.h"
 #include "GamePhero.h"
+#include "Script_EnemyStat.h"
 
 /// +-------------------------------
 ///		     Game Monster
@@ -21,6 +22,7 @@
 
 class NPCController;
 class Script_EnemyController;
+class Script_EnemyStat;
 
 struct MonsterSnapShot : public ObjectSnapShot
 {
@@ -33,10 +35,7 @@ struct MonsterSnapShot : public ObjectSnapShot
 	/// +-----------------------------------------------------------
 	///		Stat  
 	/// -----------------------------------------------------------+
-	float								HP;			Lock::SRWLock lock_HP;	/*		HP		*/
-	float								Attack;								/*	  공격력		*/
 	std::string							Pheros;
-	bool	IsDead = false; Lock::SRWLock lock_IsDead;
 };
 
 class GameMonster : public GameObject
@@ -44,8 +43,8 @@ class GameMonster : public GameObject
 private:
 	NPCController*			mOwnerNC;
 
-	Coordinate				mSectorIndex;							// 어느 섹터에 속해있는가?
-	MonsterSnapShot			mInfo; Lock::SRWLock mLock_SnapShot;	
+	Coordinate				mSectorIndex;				// 어느 섹터에 속해있는가?
+	MonsterSnapShot			mInfo; 
 	
 	std::atomic_int			mActivate_Ref = 0;
 
@@ -55,8 +54,8 @@ private:
 	Vec3					mSpawnRot;
 	
 	Script_EnemyController* mEnemyController = nullptr;
-
-	int HitCnt = 0;
+	Script_EnemyStat*		mEnemyStat       = nullptr; // HP, IsDead
+	int						HitCnt           = 0;
 
 public:
 	virtual SPtr<GameMonster> Clone();
@@ -87,34 +86,32 @@ public:
 	/// +-----------------------------------------------------------
 	///		S E T T E R 
 	/// -----------------------------------------------------------+
-	void SetMonsterID(uint32_t id)							{ mInfo.ID			                                = id;}
-	void SetMonsterType(FBProtocol::MONSTER_TYPE type)		{ mInfo.Type		                                = type;}
-	void SetAttack(float attack)							{ mInfo.Attack		                                = attack; }
-	void SetSectorIndex(Coordinate sectorIdx)				{ mSectorIndex                                      = sectorIdx; }
-	void SetPheros(std::string pheros)						{ mInfo.Pheros                                      = pheros; }
+	void SetMonsterID(uint32_t id)									{ mInfo.ID         = id; }
+	void SetMonsterType(FBProtocol::MONSTER_TYPE type)				{ mInfo.Type       = type; }
+	void SetSectorIndex(Coordinate sectorIdx)						{ mSectorIndex     = sectorIdx; }
+	void SetPheros(std::string pheros)								{ mInfo.Pheros     = pheros; }
+	void SetOwnerNPCController(NPCController* nc)					{ mOwnerNC         = nc; }
+	void SetEnemyController(Script_EnemyController* script)			{ mEnemyController = script; }
+	void SetEnemyStat(Script_EnemyStat* script)						{ mEnemyStat       = script; }
 
-	void SetSNS_HP(float hp)								{ mInfo.lock_HP.LockWrite(); mInfo.HP               = hp;	mInfo.lock_HP.UnlockWrite(); }
-	void SetSNS_IsDead(bool isdead)							{ mInfo.lock_IsDead.LockWrite(); mInfo.IsDead = isdead;	mInfo.lock_IsDead.UnlockWrite(); }
-
-	void SetOwnerNPCController(NPCController* nc)			{ mOwnerNC = nc; }
-	void SetEnemyController(Script_EnemyController* script) { mEnemyController = script; }
+	void SetSNS_IsDead(bool isdead)									{ mEnemyStat->SetSNS_IsDead(isdead); } // lock
 	/// +-----------------------------------------------------------
 	///		G E T T E R 
 	/// -----------------------------------------------------------+	
 	SPtr<GameMonster>					 GetSnapShotOwner()			{ return mInfo.owner;		}
 	uint32_t							 GetMonsterID()				{ return mInfo.ID;			}
 	FBProtocol::MONSTER_TYPE			 GetMonsterType()			{ return mInfo.Type;		}
-	float								 GetAttack()				{ return mInfo.Attack;		}
 	std::string							 GetPheros()				{ return mInfo.Pheros;		}
-
-	float								 GetSNS_HP()				{ mInfo.lock_HP.LockRead();  float hp = mInfo.HP;	mInfo.lock_HP.UnlockRead(); return hp; }
-	bool								 GetSNS_IsDead()			{ mInfo.lock_IsDead.LockRead();  bool isdead = mInfo.IsDead;	mInfo.lock_IsDead.UnlockRead(); return isdead; }
-
 	NPCController*						 GetOwnerNPCController()	{ return mOwnerNC; }
 	Script_EnemyController*				 GetEnemyController()		{ return mEnemyController; }
+	Script_EnemyStat*					 GetEnemyStat()				{ return mEnemyStat; }
 	int									 GetActivate_RefCnt()		{ return mActivate_Ref.load(); }
 	const std::vector<SPtr<GameObject>>& GetAllPheros() ;
 
+	// Snap Shot ( in Script )
+	bool	GetSNS_IsDead() { return mEnemyStat->GetSNS_IsDead();  } // Lock
+	float	GetSNS_HP()		{ return mEnemyStat->GetSNS_HP();  } // Lock
+	float	GetAttack()		{ return mEnemyStat->GetStat_AttackRate(); }
 public:
 	GameMonster();
 	GameMonster(UINT32 id, Coordinate sectorIdx); /* Monster 생성 아이디 - (생성되고 소멸될 때 까지 임시 아이디)*/

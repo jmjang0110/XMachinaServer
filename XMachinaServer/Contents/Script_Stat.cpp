@@ -44,6 +44,7 @@ bool Script_Stat::Hit(float damage, SPtr_GameObject instigator)
 	}
 	else {
 		mCrntHP -= damage;
+		SetSNS_HP(mCrntHP); // Lock Write
 	}
 
 	if (mCrntHP <= 0) {
@@ -56,7 +57,9 @@ bool Script_Stat::Hit(float damage, SPtr_GameObject instigator)
 
 void Script_Stat::Dead()
 {
+	Lock_IsDead.LockWrite();
 	mIsDead = true;
+	Lock_IsDead.UnlockWrite();
 }
 
 

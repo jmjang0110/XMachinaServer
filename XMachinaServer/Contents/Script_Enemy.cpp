@@ -33,7 +33,7 @@ Script_Enemy::Script_Enemy(SPtr<GameObject> owner, ScriptInfo::Type type)
 Script_Enemy::~Script_Enemy()
 {
 	mEnemyController = nullptr;
-
+	
 }
 
 void Script_Enemy::Clone(SPtr<Component> other) 

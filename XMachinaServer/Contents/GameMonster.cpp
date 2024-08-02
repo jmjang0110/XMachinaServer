@@ -25,8 +25,6 @@ const std::vector<SPtr<GameObject>>& GameMonster::GetAllPheros()
 void GameMonster::UpdateSnapShot()
 {
 	mInfo.ID         = GetID();
-	mInfo.HP         = 100; // test
-	mInfo.Attack     = 100;
 }
 
 void GameMonster::On_ExitFromViewList()

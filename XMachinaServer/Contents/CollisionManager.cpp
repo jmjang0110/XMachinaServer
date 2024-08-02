@@ -80,7 +80,7 @@ float CollisionManager::CollideCheckRay_MinimumDist(const ColliderSnapShot& A, R
 	}
 
 	for (int i = 0; i < A.BoundingSphereList.size(); ++i) {
-		bool IsCollide = A.BoundingSphereList[i].Intersects(_VECTOR(R.Position), _VECTOR(R.Direction), dist);
+		bool IsCollide = A.BoundingSphereList[i].Intersects(_VECTOR(R.Position), XMVector3Normalize(_VECTOR(R.Direction)), dist);
 		if (IsCollide) {
 			minDist = min(minDist, dist);
 		}

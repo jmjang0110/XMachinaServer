@@ -83,10 +83,6 @@ void GameBullet::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 
 	if (GetActivate_RefCnt() > 0)
 		GameObject::RegisterUpdate();
-	else
-	{
-
-	}
 }
 
 void GameBullet::BulletUpdate(FBProtocol::WEAPON_TYPE weaponType)
@@ -105,10 +101,11 @@ void GameBullet::CheckCollision_WithPlayerViewList()
 			continue;
 
 		ColliderSnapShot A = iter.second->GetCollider()->GetColliderSnapShot();
-
-		Ray R;
-		R.Direction = mOnShootDir;
-		R.Position  = GetTransform()->GetPosition();
+		Ray				 R = {}; 
+		R.Direction = mOnShootDir; 
+		R.Position = GetTransform()->GetPosition();
+		
+		/* Monster(View List) <-- Collide Check --> Bullet */
 		bool IsCollide = COLLISION_MGR->CollideCheck(A, R, 0.f);
 		if (IsCollide) {
 			iter.second->OnHit();
