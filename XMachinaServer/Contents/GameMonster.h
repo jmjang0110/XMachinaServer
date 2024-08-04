@@ -40,11 +40,6 @@ struct MonsterSnapShot : public ObjectSnapShot
 
 class GameMonster : public GameObject
 {
-public:
-	enum class State : uint8_t {
-		Deactive, Active, Dead, End, _count,
-	};
-
 private:
 	NPCController*			mOwnerNC;
 
@@ -63,7 +58,6 @@ private:
 	Script_EnemyStat*		mEnemyStat       = nullptr; // HP, IsDead
 	int						HitCnt           = 0;
 
-	GameMonster::State		mState = GameMonster::State::Deactive; Lock::SRWLock Lock_State;
 
 
 public:
@@ -102,8 +96,6 @@ public:
 	void SetEnemyController(Script_EnemyController* script)			{ mEnemyController = script; }
 	void SetEnemyStat(Script_EnemyStat* script)						{ mEnemyStat       = script; }
 
-	void SetSNS_IsDead(bool isdead)									{ mEnemyStat->SetSNS_IsDead(isdead); } // lock
-	void SetSNS_State(GameMonster::State state)						{ Lock_State.LockWrite(); mState = state; Lock_State.UnlockWrite(); }
 	/// +-----------------------------------------------------------
 	///		G E T T E R 
 	/// -----------------------------------------------------------+	
@@ -118,8 +110,7 @@ public:
 	const std::vector<SPtr<GameObject>>& GetAllPheros() ;
 
 	// Snap Shot ( in Script )
-	State   GetSNS_State()	{ Lock_State.LockRead(); State state = mState; Lock_State.UnlockRead(); return state; }
-	bool	GetSNS_IsDead() { return mEnemyStat->GetSNS_IsDead();  } // Lock
+	Script_Stat::State	GetSNS_State() { return mEnemyStat->GetSNS_State();  } // Lock
 	float	GetSNS_HP()		{ return mEnemyStat->GetSNS_HP();  } // Lock
 	float	GetAttack()		{ return mEnemyStat->GetStat_AttackRate(); }
 public:

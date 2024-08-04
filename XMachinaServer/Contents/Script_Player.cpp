@@ -45,33 +45,47 @@ void Script_Player::DeActivate()
 
 bool Script_Player::WakeUp()
 {
-    return false;
+    Script_PlayerStat::WakeUp();
+
+    return true;
 }
 
 bool Script_Player::Start()
 {
-    return false;
+    Script_PlayerStat::Start();
+
+    return true;
 }
 
 bool Script_Player::Update()
 {
-    return false;
+    Script_PlayerStat::Update();
+
+    return true;
 }
 
 void Script_Player::OnDestroy()
 {
+    Script_PlayerStat::OnDestory();
+
 }
 
 bool Script_Player::Attack()
 {
+    Script_PlayerStat::Attack();
+
     return true;
 }
 
 void Script_Player::Dead()
 {
+    Script_PlayerStat::Dead();
+
 }
 
 bool Script_Player::Hit(float damage, SPtr_GameObject instigator)
 {
-    return false;
+    bool res = Script_PlayerStat::Hit(damage, instigator);
+
+    return true;
 }

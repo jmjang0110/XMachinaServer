@@ -17,6 +17,11 @@
 
 class Script_Stat : public Script	
 {
+public:
+	enum class State : UINT8 {
+		Deactive, Active, Dead, End, _count,
+	};
+
 private:
 	float mMaxHP        = {};
 	float mShieldAmount = {};
@@ -27,7 +32,7 @@ private:
 	float mPhero		= {};
 
 private:
-	bool  mIsDead       = false; Lock::SRWLock Lock_IsDead;
+	State  mState       = State::Deactive; Lock::SRWLock Lock_State;
 	float mHP           = {}; Lock::SRWLock Lock_HP;
 
 public:
@@ -41,6 +46,9 @@ public:
 	///			virtual function 
 	/// ------------------------------+
 	virtual void Clone(SPtr<Component> other) ;
+
+	virtual void Activate();
+	virtual void DeActivate();
 
 	virtual bool WakeUp()	override;
 	virtual bool Start()	override;
@@ -62,8 +70,8 @@ public:
 	void	SetShield(float shield)		{ mShieldAmount  = shield; }
 	void	AddShield(float shield)		{ mShieldAmount += shield; }
 
-	void	SetSNS_HP(float hp)			{ Lock_HP.LockWrite();		mHP     = hp; Lock_HP.UnlockWrite(); }
-	void	SetSNS_IsDead(bool isdead)	{ Lock_IsDead.LockWrite();	mIsDead = isdead; Lock_IsDead.UnlockWrite(); }
+	void	SetSNS_HP(float hp)			{ Lock_HP.LockWrite();		mHP      = hp; Lock_HP.UnlockWrite(); }
+	void	SetSNS_State(State state)   { Lock_State.LockWrite();	mState   = state; Lock_State.UnlockWrite(); }
 
 	/// +------------------------------
 	///			G E T T E R
@@ -72,8 +80,10 @@ public:
 	float	GetMaxHp()	const			{ return mMaxHP; }
 	float	GetPhero()	const			{ return mPhero; }
 
-	bool	GetSNS_IsDead()				{ Lock_IsDead.LockRead();	 bool isdead = mIsDead; Lock_IsDead.UnlockRead();  return isdead; }
 	float	GetSNS_HP()					{ Lock_HP.LockRead();		float hp     = mHP; Lock_HP.UnlockRead(); return hp; }
+	State	GetSNS_State()				{ Lock_State.LockRead();	State state  = mState;  Lock_State.UnlockRead(); return state; }
+
+
 public:
 	bool UpdatePrevHP()					{ bool res = mPrevHP == mCrntHP; mPrevHP = mCrntHP; return res; }
 

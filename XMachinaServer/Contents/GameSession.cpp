@@ -25,6 +25,8 @@ void GameSession::OnConnected()
 	mPlayer->AddComponent<Transform>(ComponentInfo::Type::Transform);
 	mPlayer->AddComponent<Collider>(ComponentInfo::Type::Collider);
 	mPlayer->AddScript<Script_Player>(ScriptInfo::Type::Stat);
+	
+	//mPlayer->Start();
 
 
 	GAME_MGR->EnterInRoom(mPlayer); // WRITE Lock 

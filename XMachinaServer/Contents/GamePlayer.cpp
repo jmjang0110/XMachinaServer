@@ -78,6 +78,7 @@ void GamePlayer::Start()
 {
 	GameObject::Start();
 
+
 	/// +-------------------------------------------------------------------------------
 	///		CREATE GAME BULLETS
 	/// -------------------------------------------------------------------------------+
@@ -86,7 +87,7 @@ void GamePlayer::Start()
 		SPtr<GameBullet> bullet = MEMORY->Make_Shared<GameBullet>(i, std::dynamic_pointer_cast<GamePlayer>(shared_from_this()));
 		
 		bullet->AddComponent<Transform>(ComponentInfo::Type::Transform);
-		bullet->AddComponent<Collider>(ComponentInfo::Type::Collider); // 충돌체크 그냥 거리 차이 구할 거임 
+		bullet->AddComponent<Collider>(ComponentInfo::Type::Collider); 
 		bullet->AddScript<Script_Bullet>(ScriptInfo::Type::Bullet);
 
 		mSnapShot.Bullets[i] = bullet;
@@ -283,21 +284,21 @@ void GamePlayer::CollideCheckWithMonsters()
 	ColliderSnapShot SNS_Player = GetCollider()->GetSnapShot();
 
 	for (auto& iter : mSnapShot.Vlist.VL_Monsters) {
-		GameMonster::State state = iter.second->GetSNS_State();
+		Script_Stat::State state = iter.second->GetSNS_State();
 
 		switch (state)
 		{
-		case GameMonster::State::Deactive:
-		case GameMonster::State::End:
+		case Script_Stat::State::Deactive:
+		case Script_Stat::State::End:
 			continue;
 		break;
 
-		case GameMonster::State::Active:
+		case Script_Stat::State::Active:
 		{
 
 		}
 		break;
-		case GameMonster::State::Dead:
+		case Script_Stat::State::Dead:
 		{
 			// 몬스터의 Phero와 충돌체크  
 			const std::vector<SPtr<GameObject>>& pheros = iter.second->GetAllPheros();

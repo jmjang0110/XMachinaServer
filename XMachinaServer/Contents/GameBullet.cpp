@@ -97,7 +97,7 @@ void GameBullet::CheckCollision_WithPlayerViewList()
 
 	for (auto& iter : player_VL.VL_Monsters) {
 
-		if(iter.second->GetSNS_IsDead())
+		if(iter.second->GetSNS_State() == Script_Stat::State::Dead)
 			continue;
 
 		ColliderSnapShot A = iter.second->GetCollider()->GetColliderSnapShot(); // Monster Collider SnapShot

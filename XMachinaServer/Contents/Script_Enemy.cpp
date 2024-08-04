@@ -120,7 +120,9 @@ bool Script_Enemy::Attack()
 
 		const auto& statScript = mEnemyController->GetTarget()->GetScript<Script_Stat>(ScriptInfo::Type::Stat);
 		if (statScript) {
-			// statScript->Hit(GetStat_AttackRate(), nullptr);
+			LOG_MGR->Cout(GetOwner()->GetID(), " ATTACK ", "\n");
+
+			statScript->Hit(GetStat_AttackRate(), nullptr);
 		}
 	}
 

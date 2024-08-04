@@ -33,6 +33,9 @@ namespace PlayerInfo
 class Script_PlayerStat : public Script_Stat
 {
 private:
+	SPtr<GamePlayer> mPlayerOwner = nullptr;
+
+private:
 
 	/// +-------------------------------------------
 	///	 >> ¢º¢º¢º¢º¢º Player Info 

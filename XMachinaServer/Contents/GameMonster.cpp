@@ -34,17 +34,18 @@ void GameMonster::On_ExitFromViewList()
 	LOG_MGR->Cout(GetID(), " - On Exit From view List ");
 
 	GetTransform()->SetPosition(mSpawnPos);
-	/* Update Snap Shot */
+
+	/* Update Snap Shot [0]  */
 	GetTransform()->UpdateTransofrmSnapShot();
 	GetTransform()->SwapSnapShotIndex();
-	/* Update Snap Shot */
+
+	/* Update Snap Shot [1]  */
 	GetTransform()->UpdateTransofrmSnapShot();
 	GetTransform()->SwapSnapShotIndex();
 
 
 	GetTransform()->SetLocalRotation(Quaternion::ToQuaternion(mSpawnRot));
-	auto enemyController = GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
-	enemyController->Reset();
+	mEnemyController->Reset();
 	
 	auto spkt = FBS_FACTORY->SPkt_Monster_Transform(GetID(), mSpawnPos, mSpawnRot);
 	GAME_MGR->BroadcastRoom(GetOwnerNPCController()->GetOwnerRoom()->GetID(), spkt);
@@ -53,9 +54,8 @@ void GameMonster::On_ExitFromViewList()
 void GameMonster::OnHit()
 {
 	HitCnt++;
-	if (HitCnt == 5) {
-		SetSNS_IsDead(true);
-		SetSNS_State(GameMonster::State::Dead);
+	// TODO : Test : OnHit ( Mosnter <--> Bullet ) 
+	if (mEnemyStat->GetSNS_State() == Script_Stat::State::Dead) {
 		LOG_MGR->Cout(GetID(), " : Dead\n");
 
 		Vec3 pos = GetTransform()->GetSnapShot().GetPosition();
@@ -115,6 +115,7 @@ void GameMonster::Update()
 		// 타이머 초기화
 		mTimer = 0.0f;
 	}
+
 }
 
 void GameMonster::WakeUp()
@@ -167,7 +168,6 @@ void GameMonster::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 	else
 	{
 		if (mInfo.owner) {
-
 			mInfo.owner->On_ExitFromViewList();
 		}
 	}

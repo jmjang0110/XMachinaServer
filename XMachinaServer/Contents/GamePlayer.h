@@ -23,30 +23,6 @@
 /// 
 /// SNS : Snap Shot 
 /// -------------------------------+
-/// 
-namespace PlayerEnum
-{
-	enum class WeaponType : UINT8 {
-		H_Look, 
-		DBMS, 
-		Stuart, 
-		Descriptor, 
-		T_12, 
-		Pipeline, 
-		BurnOut, 
-		Direct_Drain
-	};
-
-	enum class MotionState : DWORD {
-		None   = 0x00,
-		Stand  = 0x01,
-		Sit    = 0x02,
-		Walk   = 0x10,
-		Run    = 0x20,
-		Sprint = 0x40
-	};
-}
-
 
 /// +-----------------------------------------------------------
 ///					    PLAYER SNAPSHOT 
@@ -78,8 +54,10 @@ struct PlayerSnapShot : public ObjectSnapShot
 	/// -----------------------------------------------------------+
 	std::array<SPtr<GameSkill>, FBProtocol::PLAYER_SKILL_TYPE_END> Skills = {};		// Bullets 
 
-	float					HP     = {};     Lock::SRWLock lock_HP;						/// > [LOCK] HP 
-	float					Shield = {};	 Lock::SRWLock Lock_Shield;					/// > [LOCK] shield 
+	/// +-----------------------------------------------------------
+	///		Phero 
+	/// -----------------------------------------------------------+
+	float					Phero = {};  Lock::SRWLock Lock_Phero; // 현재 페로 양 
 	/// +-----------------------------------------------------------
 	///		Item 
 	/// -----------------------------------------------------------+
@@ -98,10 +76,7 @@ struct PlayerSnapShot : public ObjectSnapShot
 	float					Velocity = {};	Lock::SRWLock Lock_Velocity;		/// > [LOCK] Move Speed 
 	Vec3					SpineLookDir = {}; Lock::SRWLock Lock_SpineLookDir; /// > [LOCK] Spine Look Direction 
 
-	/// +-----------------------------------------------------------
-	///		Phero 
-	/// -----------------------------------------------------------+
-	float					Phero = {};  Lock::SRWLock Lock_Phero; // 현재 페로 양 
+
 
 
 
@@ -159,13 +134,12 @@ public:
 	void SetPlayerID(UINT32 playerid)										{ mSnapShot.ID       = playerid; };
 	void setRoomID(UINT32 roomid)											{ mSnapShot.RoomID   = roomid; };
 	void SetName(std::string name)											{ mSnapShot.Name     = name; };
-	void SetOwnerPlayerController(PlayerController* pc)						{ mOwnerPC = pc; }
+	void SetOwnerPlayerController(PlayerController* pc)						{ mOwnerPC           = pc; }
 	                   
-	void SetSNS_Velocity(float vel)											{ mSnapShot.Lock_Velocity.LockWrite();		mSnapShot.Velocity = vel;				 mSnapShot.Lock_Velocity.UnlockWrite(); }
+	void SetSNS_Velocity(float vel)											{ mSnapShot.Lock_Velocity.LockWrite();		mSnapShot.Velocity     = vel;				 mSnapShot.Lock_Velocity.UnlockWrite(); }
 	void SetSNS_SpineLookDir(Vec3 spineLookDir)								{ mSnapShot.Lock_SpineLookDir.LockWrite();	mSnapShot.SpineLookDir = spineLookDir;   mSnapShot.Lock_SpineLookDir.UnlockWrite(); }
-	void SetSNS_Phero(float phero)											{ mSnapShot.Lock_Phero.LockWrite();			mSnapShot.Phero    = phero;				 mSnapShot.Lock_Phero.UnlockWrite(); }
-	void SetSNS_EquipWeapon(FBProtocol::WEAPON_TYPE weaponType)				{ mSnapShot.Lock_Weapon.LockWrite();		mSnapShot.WeaponType = weaponType;		 mSnapShot.Lock_Weapon.UnlockWrite(); return; }
-	
+	void SetSNS_Phero(float phero)											{ mSnapShot.Lock_Phero.LockWrite();			mSnapShot.Phero        = phero;				 mSnapShot.Lock_Phero.UnlockWrite(); }
+	void SetSNS_EquipWeapon(FBProtocol::WEAPON_TYPE weaponType)				{ mSnapShot.Lock_Weapon.LockWrite();		mSnapShot.WeaponType   = weaponType;		 mSnapShot.Lock_Weapon.UnlockWrite(); return; }
 public:
 	/// +-----------------------------------------------------------
 	///		G E T T E R 
@@ -185,6 +159,5 @@ public:
 	Vec3					GetSNS_SpineLookDir()							{ mSnapShot.Lock_SpineLookDir.LockRead();	Vec3 spineLookDir            = mSnapShot.SpineLookDir; mSnapShot.Lock_SpineLookDir.UnlockRead(); return spineLookDir; }
 	bool					GetSNS_SkillIsAvtive(FBProtocol::PLAYER_SKILL_TYPE type) { return mSnapShot.Skills[type]->GetIsActive(); }
 	ViewList				GetSNS_ViewList()								{ mSnapShot.Lock_VList_SnapShot.LockRead(); ViewList vl = mSnapShot.VList_SnapShot; mSnapShot.Lock_VList_SnapShot.UnlockRead(); return vl; }
-
 };
 

@@ -43,29 +43,39 @@ void Script::DeActivate()
 
 void Script::OnEnable()
 {
+	Component::OnEnable();
 
 }
 
 void Script::OnDisable()
 {
+	Component::OnDisable();
 
 }
 
 bool Script::WakeUp()
 {
+	Component::WakeUp();
+
 	return false;
 }
 
 bool Script::Start()
 {
-	return false;
+	Component::Start();
+
+	return true;
 }
 
 bool Script::Update()
 {
-	return false;
+	Component::Update();
+
+	return true;
 }
 
 void Script::OnDestroy()
 {
+	Component::OnDestroy();
+
 }

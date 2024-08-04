@@ -16,7 +16,7 @@ struct PlayerDataBase
 	float HP;
 	float MP;
 
-	PlayerEnum::WeaponType mWeaponType;
+	//PlayerEnum::WeaponType mWeaponType;
 };
 
 class DB_Player

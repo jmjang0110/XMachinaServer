@@ -35,6 +35,8 @@ bool Script_Stat::Start()
 
 bool Script_Stat::Hit(float damage, SPtr_GameObject instigator)
 {
+	LOG_MGR->Cout(" -- Script_Stat::Hit - HP : ", mCrntHP, "\n");
+
 	if (mCrntHP <= 0) {
 		return false;
 	}
@@ -57,9 +59,8 @@ bool Script_Stat::Hit(float damage, SPtr_GameObject instigator)
 
 void Script_Stat::Dead()
 {
-	Lock_IsDead.LockWrite();
-	mIsDead = true;
-	Lock_IsDead.UnlockWrite();
+	SetSNS_State(State::Dead);
+
 }
 
 
@@ -67,6 +68,20 @@ void Script_Stat::Clone(SPtr<Component> other)
 {
 	Script::Clone(other);
 	SPtr<Script_Stat> otherScript = std::static_pointer_cast<Script_Stat>(other);
+
+}
+
+void Script_Stat::Activate()
+{
+	Script::Activate();
+	SetSNS_State(State::Active);
+
+}
+
+void Script_Stat::DeActivate()
+{
+	Script::DeActivate();
+	SetSNS_State(State::Deactive);
 
 }
 
