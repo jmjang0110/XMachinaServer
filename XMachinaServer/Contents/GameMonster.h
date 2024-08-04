@@ -40,8 +40,9 @@ struct MonsterSnapShot : public ObjectSnapShot
 
 class GameMonster : public GameObject
 {
+public:
 	enum class State : uint8_t {
-		Deactive, Active, Dead, PheroActive, PheroDeactive, End,
+		Deactive, Active, Dead, End, _count,
 	};
 
 private:
@@ -52,16 +53,18 @@ private:
 	
 	std::atomic_int			mActivate_Ref = 0;
 
-	double					mTimer = 0.f;
-
-	Vec3					mSpawnPos;
-	Vec3					mSpawnRot;
+private:
+	double					mTimer			 = 0.f;
+											 
+	Vec3					mSpawnPos		 = {};
+	Vec3					mSpawnRot		 = {};
 	
 	Script_EnemyController* mEnemyController = nullptr;
 	Script_EnemyStat*		mEnemyStat       = nullptr; // HP, IsDead
 	int						HitCnt           = 0;
 
-	GameMonster::State		mState = GameMonster::State::Deactive;
+	GameMonster::State		mState = GameMonster::State::Deactive; Lock::SRWLock Lock_State;
+
 
 public:
 	virtual SPtr<GameMonster> Clone();
@@ -80,7 +83,6 @@ public:
 	void DecreaseRef() { mActivate_Ref.fetch_sub(1); if (mActivate_Ref.load() < 0) mActivate_Ref.store(0); }
 	void UpdateSnapShot(); // 최신 상태로 스냅샷 업데이트 
 
-	void Broadcast_SPkt_Monster_Transform();
 	void Broadcast_SPkt_Mosnter_State(FBProtocol::MONSTER_BT_TYPE monster_bt_type);
 	void Send_SPkt_Mosnter_State(FBProtocol::MONSTER_BT_TYPE monser_bt_type);
 
@@ -101,6 +103,7 @@ public:
 	void SetEnemyStat(Script_EnemyStat* script)						{ mEnemyStat       = script; }
 
 	void SetSNS_IsDead(bool isdead)									{ mEnemyStat->SetSNS_IsDead(isdead); } // lock
+	void SetSNS_State(GameMonster::State state)						{ Lock_State.LockWrite(); mState = state; Lock_State.UnlockWrite(); }
 	/// +-----------------------------------------------------------
 	///		G E T T E R 
 	/// -----------------------------------------------------------+	
@@ -115,6 +118,7 @@ public:
 	const std::vector<SPtr<GameObject>>& GetAllPheros() ;
 
 	// Snap Shot ( in Script )
+	State   GetSNS_State()	{ Lock_State.LockRead(); State state = mState; Lock_State.UnlockRead(); return state; }
 	bool	GetSNS_IsDead() { return mEnemyStat->GetSNS_IsDead();  } // Lock
 	float	GetSNS_HP()		{ return mEnemyStat->GetSNS_HP();  } // Lock
 	float	GetAttack()		{ return mEnemyStat->GetStat_AttackRate(); }

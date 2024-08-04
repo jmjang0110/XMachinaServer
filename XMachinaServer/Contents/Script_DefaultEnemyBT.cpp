@@ -229,30 +229,30 @@ bool Script_DefaultEnemyBT::Update()
 
 	if (PrevType != CurrType) {
 		/* Send Packet */
-		//switch (CurrType)
-		//{
-		//case FBProtocol::MONSTER_BT_TYPE_DEATH:
-		//	LOG_MGR->Cout("MONSTER_BT_TYPE_DEATH\n");
-		//	break;
-		//case FBProtocol::MONSTER_BT_TYPE_ATTACK:
-		//	LOG_MGR->Cout("MONSTER_BT_TYPE_ATTACK\n");
-		//	break;
-		//case FBProtocol::MONSTER_BT_TYPE_GETHIT:
-		//	LOG_MGR->Cout("MONSTER_BT_TYPE_GETHIT\n");
-		//	break;
-		//case FBProtocol::MONSTER_BT_TYPE_MOVE_TO_TARGET:
-		//	LOG_MGR->Cout("MONSTER_BT_TYPE_MOVE_TO_TARGET\n");
-		//	break;
-		//case FBProtocol::MONSTER_BT_TYPE_MOVE_TO_PATH:
-		//	LOG_MGR->Cout("MONSTER_BT_TYPE_MOVE_TO_PATH\n");
-		//	break;
-		//case FBProtocol::MONSTER_BT_TYPE_PATROL:
-		//	LOG_MGR->Cout("MONSTER_BT_TYPE_PATROL\n");
-		//	break;
-		//default:
-		//	LOG_MGR->Cout("MONSTER BT TYPE ..XXXX \n");
-		//	break;
-		//}
+		switch (CurrType)
+		{
+		case FBProtocol::MONSTER_BT_TYPE_DEATH:
+			LOG_MGR->Cout("MONSTER_BT_TYPE_DEATH\n");
+			break;
+		case FBProtocol::MONSTER_BT_TYPE_ATTACK:
+			LOG_MGR->Cout("MONSTER_BT_TYPE_ATTACK\n");
+			break;
+		case FBProtocol::MONSTER_BT_TYPE_GETHIT:
+			LOG_MGR->Cout("MONSTER_BT_TYPE_GETHIT\n");
+			break;
+		case FBProtocol::MONSTER_BT_TYPE_MOVE_TO_TARGET:
+			LOG_MGR->Cout("MONSTER_BT_TYPE_MOVE_TO_TARGET\n");
+			break;
+		case FBProtocol::MONSTER_BT_TYPE_MOVE_TO_PATH:
+			LOG_MGR->Cout("MONSTER_BT_TYPE_MOVE_TO_PATH\n");
+			break;
+		case FBProtocol::MONSTER_BT_TYPE_PATROL:
+			LOG_MGR->Cout("MONSTER_BT_TYPE_PATROL\n");
+			break;
+		default:
+			LOG_MGR->Cout("MONSTER BT TYPE ..XXXX \n");
+			break;
+		}
 
 		std::dynamic_pointer_cast<GameMonster>(GetOwner())->Broadcast_SPkt_Mosnter_State(CurrType);
 		mRoot->GetEnemyController()->SetBTType(CurrType);
@@ -261,8 +261,6 @@ bool Script_DefaultEnemyBT::Update()
 
 		// [BSH] : 타겟이 어떤 몬스터의 것인지에 대한 몬스터 아이디도 보내야함.
 		int monster_id		  = GetOwner()->GetID();
-		// int monster_id     = -1;
-
 		int target_monster_id = 0;
 		int target_player_id  = 0;
 		SPtr<GameObject> target = mRoot->GetEnemyController()->GetTarget();

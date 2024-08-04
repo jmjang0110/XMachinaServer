@@ -32,23 +32,20 @@ class GamePlayer;
 struct  SkillSnapShot : public ObjectSnapShot
 {
 	GamePlayer*				PlayerOwner = nullptr;
-
-
 	bool					IsActive    = false; Lock::SRWLock Lock_IsActive;
 };
 
 class GameSkill : public GameObject
 {
 private:
-	SPtr<GamePlayer> mOwnerPlayer = nullptr;
+	SPtr<GamePlayer>				mOwnerPlayer = nullptr;
+	std::atomic_int					mActivate_Ref	= 0;
 
 private:
-	std::atomic_int mActivate_Ref = 0;
-
-	SkillSnapShot   mSnapShot;
-	float			mCoolTime = 0.f;
-	float			mActiveDuration = 0.f;
-	FBProtocol::PLAYER_SKILL_TYPE mSkillType = FBProtocol::PLAYER_SKILL_TYPE_END; 
+	SkillSnapShot					mSnapShot;
+	float							mCoolTime       = 0.f;
+	float							mActiveDuration = 0.f;
+	FBProtocol::PLAYER_SKILL_TYPE	mSkillType      = FBProtocol::PLAYER_SKILL_TYPE_END; 
 
 public:
 	GameSkill();

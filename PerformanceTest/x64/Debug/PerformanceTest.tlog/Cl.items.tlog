@@ -1,7 +1,7 @@
-C:\Users\MDH\Desktop\Other Projects\XMachinaServer\PerformanceTest\main.cpp;C:\Users\MDH\Desktop\Other Projects\XMachinaServer\PerformanceTest\x64\Debug\main.obj
-C:\Users\MDH\Desktop\Other Projects\XMachinaServer\PerformanceTest\MemoryTest\BlockMemoryPool.cpp;C:\Users\MDH\Desktop\Other Projects\XMachinaServer\PerformanceTest\x64\Debug\BlockMemoryPool.obj
-C:\Users\MDH\Desktop\Other Projects\XMachinaServer\PerformanceTest\MemoryTest\MemoryManager.cpp;C:\Users\MDH\Desktop\Other Projects\XMachinaServer\PerformanceTest\x64\Debug\MemoryManager.obj
-C:\Users\MDH\Desktop\Other Projects\XMachinaServer\PerformanceTest\MemoryTest\SListMemoryPool.cpp;C:\Users\MDH\Desktop\Other Projects\XMachinaServer\PerformanceTest\x64\Debug\SListMemoryPool.obj
-C:\Users\MDH\Desktop\Other Projects\XMachinaServer\PerformanceTest\pch.cpp;C:\Users\MDH\Desktop\Other Projects\XMachinaServer\PerformanceTest\x64\Debug\pch.obj
-C:\Users\MDH\Desktop\Other Projects\XMachinaServer\PerformanceTest\SpinLock.cpp;C:\Users\MDH\Desktop\Other Projects\XMachinaServer\PerformanceTest\x64\Debug\SpinLock.obj
-C:\Users\MDH\Desktop\Other Projects\XMachinaServer\PerformanceTest\ThreadManager.cpp;C:\Users\MDH\Desktop\Other Projects\XMachinaServer\PerformanceTest\x64\Debug\ThreadManager.obj
+C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\main.cpp;C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\x64\Debug\main.obj
+C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\MemoryTest\BlockMemoryPool.cpp;C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\x64\Debug\BlockMemoryPool.obj
+C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\MemoryTest\MemoryManager.cpp;C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\x64\Debug\MemoryManager.obj
+C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\MemoryTest\SListMemoryPool.cpp;C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\x64\Debug\SListMemoryPool.obj
+C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\pch.cpp;C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\x64\Debug\pch.obj
+C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\SpinLock.cpp;C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\x64\Debug\SpinLock.obj
+C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\ThreadManager.cpp;C:\MyGithub\Xmachina\XMachinaServer\PerformanceTest\x64\Debug\ThreadManager.obj

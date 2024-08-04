@@ -27,7 +27,7 @@ private:
 	float mPhero		= {};
 
 private:
-	bool  mIsDead       = {}; Lock::SRWLock Lock_IsDead;
+	bool  mIsDead       = false; Lock::SRWLock Lock_IsDead;
 	float mHP           = {}; Lock::SRWLock Lock_HP;
 
 public:

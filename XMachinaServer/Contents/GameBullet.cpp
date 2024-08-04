@@ -100,10 +100,10 @@ void GameBullet::CheckCollision_WithPlayerViewList()
 		if(iter.second->GetSNS_IsDead())
 			continue;
 
-		ColliderSnapShot A = iter.second->GetCollider()->GetColliderSnapShot();
-		Ray				 R = {}; 
-		R.Direction = mOnShootDir; 
-		R.Position = GetTransform()->GetPosition();
+		ColliderSnapShot A = iter.second->GetCollider()->GetColliderSnapShot(); // Monster Collider SnapShot
+		Ray				 R = {};	
+		R.Direction        = mOnShootDir;					// Bullet Move Dir  
+		R.Position         = GetTransform()->GetPosition(); // Bullet Curr Pos 
 		
 		/* Monster(View List) <-- Collide Check --> Bullet */
 		bool IsCollide = COLLISION_MGR->CollideCheck(A, R, 0.f);

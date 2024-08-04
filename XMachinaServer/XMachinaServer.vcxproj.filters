@@ -170,18 +170,6 @@
     <Filter Include="Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster BT\BT\MonsterTask\Path Plan">
       <UniqueIdentifier>{2d6de911-e496-48bb-bc3a-92b7e83ae395}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Framework\Contents\GameWorld\Entity\Script\Building Script">
-      <UniqueIdentifier>{b7c30ac2-1d25-4c05-b8f7-31b3db876a33}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Framework\Contents\GameWorld\Entity\Script\Enemy Script">
-      <UniqueIdentifier>{eb20aac7-1f1a-4aa9-b31c-45bfdf25981a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Framework\Contents\GameWorld\Entity\Script\Enemy Script\Controller Script">
-      <UniqueIdentifier>{784a5247-1695-4c87-ab6b-c5d55ff9b511}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Framework\Contents\GameWorld\Entity\Script\Enemy Script\Monster Script">
-      <UniqueIdentifier>{1d99b89e-07c2-46ca-b1f1-2664b4cbe5de}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Framework\Contents\GameWorld\Entity\Script\Item Script">
       <UniqueIdentifier>{cd5fe6b6-26a2-4e17-90a9-2e23e81eb88e}</UniqueIdentifier>
     </Filter>
@@ -205,6 +193,18 @@
     </Filter>
     <Filter Include="Framework\Contents\GameWorld\GameObject\NPC\Building">
       <UniqueIdentifier>{f7b0773c-1889-4e5c-ba94-89ca56de6804}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Entity\Script\Building Script">
+      <UniqueIdentifier>{b7c30ac2-1d25-4c05-b8f7-31b3db876a33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Entity\Script\Enemy Script">
+      <UniqueIdentifier>{eb20aac7-1f1a-4aa9-b31c-45bfdf25981a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Entity\Script\Enemy Script\Controller Script">
+      <UniqueIdentifier>{784a5247-1695-4c87-ab6b-c5d55ff9b511}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Entity\Script\Enemy Script\Monster Script">
+      <UniqueIdentifier>{1d99b89e-07c2-46ca-b1f1-2664b4cbe5de}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

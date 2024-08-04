@@ -26,7 +26,7 @@ BTNodeState MonsterTask::CheckDeath::Evaluate()
 	ExecuteCallback();
 
 	if (mAccTime >= mRemoveTime) {
-		GetOwner()->DeActivate();
+		// GetOwner()->DeActivate(); 이것 때문에 GameMonster Ref가 -1 이 된다.
 	}
 
 	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_DEATH);

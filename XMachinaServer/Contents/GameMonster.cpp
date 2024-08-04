@@ -14,6 +14,8 @@
 #include "TimeManager.h"
 #include "ServerLib/ThreadManager.h"
 #include "Script_EnemyController.h"
+#include "Transform.h"
+
 
 const std::vector<SPtr<GameObject>>& GameMonster::GetAllPheros()
 {
@@ -53,23 +55,18 @@ void GameMonster::OnHit()
 	HitCnt++;
 	if (HitCnt == 5) {
 		SetSNS_IsDead(true);
-
+		SetSNS_State(GameMonster::State::Dead);
 		LOG_MGR->Cout(GetID(), " : Dead\n");
+
+		Vec3 pos = GetTransform()->GetSnapShot().GetPosition();
+		auto spkt = FBS_FACTORY->SPkt_DeadMonster(GetID(), pos);
+		GAME_MGR->BroadcastRoom(GetOwnerNPCController()->GetOwnerRoom()->GetID(), spkt);
 		return;
 	}
 
 	LOG_MGR->Cout(GetID(), " : OnHit\n");
 }
 
-void GameMonster::Broadcast_SPkt_Monster_Transform()
-{	
-	// Transform 패킷 보내기 
-	Vec3 Pos  = GetTransform()->GetPosition();
-	Vec3 Rot  = Quaternion::ToEuler(GetTransform()->GetRotation());
-	auto spkt = FBS_FACTORY->SPkt_Monster_Transform(GetID(), Pos, Rot);
-
-	GAME_MGR->BroadcastRoom(GetOwnerNPCController()->GetOwnerRoom()->GetID(), spkt);
-}
 
 void GameMonster::Broadcast_SPkt_Mosnter_State(FBProtocol::MONSTER_BT_TYPE monster_bt_type)
 {
@@ -105,16 +102,18 @@ void GameMonster::Update()
 
 	mTimer += GetDeltaTime();
 	// 0.5초마다 패킷 전송
-	if (mTimer >= 0.1f) {
+	if (mTimer >= 0.5f) {
 		/* Send Transform Packet */
-		//Broadcast_SPkt_Monster_Transform();
+		Vec3 Pos  = GetTransform()->GetPosition();
+		Vec3 Rot  = Quaternion::ToEuler(GetTransform()->GetRotation());
+		auto spkt = FBS_FACTORY->SPkt_Monster_Transform(GetID(), Pos, Rot);
 
+		GAME_MGR->BroadcastRoom(GetOwnerNPCController()->GetOwnerRoom()->GetID(), spkt);
 		//Vec3 pos = GetTransform()->GetPosition();
-
 		//LOG_MGR->Cout(GetName(), " : ", GetID(), " : ", pos.x , " ", pos.y, " ", pos.z, "\n");
 
 		// 타이머 초기화
-		//mTimer = 0.0f;
+		mTimer = 0.0f;
 	}
 }
 
@@ -144,12 +143,7 @@ void GameMonster::Activate()
 		mInfo.owner = std::dynamic_pointer_cast<GameMonster>(shared_from_this());
 	}
 	if (mActivate_Ref.load() == 1) {
-
-		TimerEvent t;
-		t.Type        = TimerEventType::Update_GameObject;
-		t.WakeUp_Time = std::chrono::system_clock::now() + std::chrono::seconds(0); // 지금 당장 시작 
-		t.Owner       = shared_from_this();
-		TIME_MGR->PushTimerEvent(t);
+		GameObject::RegisterUpdate();
 	}
 }
 
@@ -159,7 +153,7 @@ void GameMonster::DeActivate()
 
 	mActivate_Ref.fetch_sub(1);
 
-	LOG_MGR->Cout("DeActivate Ref : ", mActivate_Ref.load(), "\n");
+	LOG_MGR->Cout("[", GetID(), "] : DeActivate Ref : ", mActivate_Ref.load(), "\n");
 }
 
 void GameMonster::Dispatch(OverlappedObject* overlapped, UINT32 bytes)

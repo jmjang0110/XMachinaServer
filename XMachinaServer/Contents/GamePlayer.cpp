@@ -283,8 +283,52 @@ void GamePlayer::CollideCheckWithMonsters()
 	ColliderSnapShot SNS_Player = GetCollider()->GetSnapShot();
 
 	for (auto& iter : mSnapShot.Vlist.VL_Monsters) {
-		if (iter.second->IsActive() == false)
+		GameMonster::State state = iter.second->GetSNS_State();
+
+		switch (state)
+		{
+		case GameMonster::State::Deactive:
+		case GameMonster::State::End:
 			continue;
+		break;
+
+		case GameMonster::State::Active:
+		{
+
+		}
+		break;
+		case GameMonster::State::Dead:
+		{
+			// 몬스터의 Phero와 충돌체크  
+			const std::vector<SPtr<GameObject>>& pheros = iter.second->GetAllPheros();
+
+			for (int i = 0; i < pheros.size(); ++i) {
+				ColliderSnapShot SNS_Phero = pheros[i]->GetCollider()->GetSnapShot();
+				bool IsCollide = COLLISION_MGR->CollideCheck(SNS_Phero, SNS_Player);
+				if (IsCollide) {
+					const auto& phero_scirpt = pheros[i]->GetScript<Script_Phero>(ScriptInfo::Type::Phero);
+					int targetid = phero_scirpt->GetTargetPlayerID();
+
+					/*	if (phero_script->GetState() == 이동중)
+							coninue;*/
+
+					if (targetid == -1) {
+						phero_scirpt->SetTargetPlayerID(GetID());
+						// 플레이어의 페로수치를  올린다. 
+
+						auto pkt = FBS_FACTORY->SPkt_GetPhero(pheros[i]->GetID(), GetID());
+						GAME_MGR->BroadcastRoom(mOwnerPC->GetOwnerRoom()->GetID(), pkt, GetID());
+					}
+				}
+
+			}
+		}
+		break;
+
+		default:
+			assert(0);
+			break;
+		}
 
 		// 살아있는 상태 
 		if (iter.second->GetSNS_HP() > 0.f)
@@ -298,35 +342,6 @@ void GamePlayer::CollideCheckWithMonsters()
 			}
 
 		}
-		// 죽은 상태 
-		else {
-			// 몬스터의 Phero와 충돌체크  
-			const std::vector<SPtr<GameObject>>& pheros = iter.second->GetAllPheros();
-
-			for (int i = 0; i < pheros.size(); ++i) {
-				ColliderSnapShot SNS_Phero = pheros[i]->GetCollider()->GetSnapShot();
-				bool IsCollide = COLLISION_MGR->CollideCheck(SNS_Phero, SNS_Player);
-				if (IsCollide) {
-					const auto& phero_scirpt = pheros[i]->GetScript<Script_Phero>(ScriptInfo::Type::Phero);
-					int targetid = phero_scirpt->GetTargetPlayerID();
-
-				/*	if (phero_script->GetState() == 이동중)
-						coninue;*/
-
-					if (targetid == -1) {
-						phero_scirpt->SetTargetPlayerID(GetID());
-						// 플레이어의 페로수치를  올린다. 
-
-						auto pkt = FBS_FACTORY->SPkt_GetPhero(pheros[i]->GetID(), GetID());
-						GAME_MGR->BroadcastRoom(mOwnerPC->GetOwnerRoom()->GetID(), pkt, GetID());
-					}
-				}
-
-			}
-		}
-
-
-		
 	}
 }
 
