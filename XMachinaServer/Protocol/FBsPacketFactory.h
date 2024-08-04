@@ -50,6 +50,8 @@ private:
 	static bool Process_CPkt_Player_Animation(SPtr_Session session, const FBProtocol::CPkt_Player_Animation& pkt);
 	static bool Process_CPkt_Player_Weapon(SPtr_Session session, const FBProtocol::CPkt_Player_Weapon& pkt);
 	static bool Process_CPkt_Player_AimRotation(SPtr_Session session, const FBProtocol::CPkt_Player_AimRotation& pkt);
+	static bool Process_CPkt_Player_State(SPtr_Session session, const FBProtocol::CPkt_Player_State& pkt);
+
 
 	/* MONSTER */
 	static bool Process_CPkt_NewMonster(SPtr_Session session, const FBProtocol::CPkt_NewMonster& pkt);
@@ -83,6 +85,8 @@ public:
 	SPtr_SendPktBuf SPkt_Player_Animation(uint32_t player_id, int anim_upper_idx, int anim_lower_idx, float anim_param_h, float anim_param_v);
 	SPtr_SendPktBuf SPkt_Player_Weapon(uint32_t player_id, FBProtocol::WEAPON_TYPE weapon_type);
 	SPtr_SendPktBuf SPkt_Player_AimRotation(uint32_t player_id, float aim_rotation, float spine_angle);
+	SPtr_SendPktBuf SPKt_Player_State(uint32_t player_id, float hp, float phero, FBProtocol::PLAYER_STATE_TYPE state);
+
 
 	/* MONSTER */
 	SPtr_SendPktBuf SPkt_NewMonster(std::vector<SPtr<GameMonster>>& new_monsters);

@@ -61,6 +61,10 @@ bool FBsPacketFactory::ProcessFBsPacket(SPtr_Session session, BYTE* packetBuf, U
 		Process_CPkt_NetworkLatency(session, *packet);
 		break;
 	}
+
+	/// +--------------------------------
+	///		 PROCESS CPKT PLAYER
+	/// --------------------------------+
 	case FBsProtocolID::CPkt_NewPlayer:
 	{
 		const FBProtocol::CPkt_NewPlayer* packet = flatbuffers::GetRoot<FBProtocol::CPkt_NewPlayer>(DataPtr);
@@ -111,6 +115,17 @@ bool FBsPacketFactory::ProcessFBsPacket(SPtr_Session session, BYTE* packetBuf, U
 		break;
 	}
 	break;
+	case FBsProtocolID::CPkt_Player_State:
+	{
+		const FBProtocol::CPkt_Player_State* packet = flatbuffers::GetRoot<FBProtocol::CPkt_Player_State>(DataPtr);
+		if (!packet) return false;
+		Process_CPkt_Player_State(session, *packet);
+	}
+	break;
+
+	/// +--------------------------------
+	///		 PROCESS CPKT MONSTER
+	/// --------------------------------+
 	case FBsProtocolID::CPkt_NewMonster:
 	{
 		const FBProtocol::CPkt_NewMonster* packet = flatbuffers::GetRoot<FBProtocol::CPkt_NewMonster>(DataPtr);
@@ -146,6 +161,11 @@ bool FBsPacketFactory::ProcessFBsPacket(SPtr_Session session, BYTE* packetBuf, U
 		Process_CPkt_Monster_State(session, *packet);
 		break;
 	}
+
+
+	/// +--------------------------------
+	///		 PROCESS CPKT BULLET
+	/// --------------------------------+
 	case FBsProtocolID::CPkt_Bullet_OnShoot:
 	{
 		const FBProtocol::CPkt_Bullet_OnShoot* packet = flatbuffers::GetRoot<FBProtocol::CPkt_Bullet_OnShoot>(DataPtr);
@@ -171,7 +191,7 @@ bool FBsPacketFactory::ProcessFBsPacket(SPtr_Session session, BYTE* packetBuf, U
 
 bool FBsPacketFactory::Process_CPkt_Invalid(SPtr_Session session, BYTE* packetBuf, UINT32 Datalen)
 {
-	return false;
+	return true;
 }
 
 
@@ -304,7 +324,7 @@ bool FBsPacketFactory::Process_CPkt_RemovePlayer(SPtr_Session session, const FBP
 	/// > 
 	/// > }
 	/// > �ܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡ�
-	return false;
+	return true;
 }
 
 bool FBsPacketFactory::Process_CPkt_PlayerOnSkill(SPtr_Session session, const FBProtocol::CPkt_PlayerOnSkill& pkt)
@@ -314,13 +334,14 @@ bool FBsPacketFactory::Process_CPkt_PlayerOnSkill(SPtr_Session session, const FB
 	///> {
 	///> 	skill_type: PLAYER_SKILL_TYPE;
 	///> 
-	///> }
+	///> }s
 	///> �ܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡ�
-	FBProtocol::PLAYER_SKILL_TYPE	type				=  pkt.skill_type();
-	SPtr_GameSession gameSession                        = std::static_pointer_cast<GameSession>(session);
-	auto playerScript                                   = gameSession->GetPlayer()->GetScript<Script_Player>(ScriptInfo::Type::Stat);
-	float PheroAmount                                   = playerScript->GetPhero();
-	int mindontrol_monster_id                           = pkt.mindcontrol_monster_Id();
+	SPtr_GameSession gameSession                          = std::static_pointer_cast<GameSession>(session);
+
+	FBProtocol::PLAYER_SKILL_TYPE	type				  =  pkt.skill_type();
+	auto							playerScript          = gameSession->GetPlayer()->GetScript<Script_Player>(ScriptInfo::Type::Stat);
+	float							PheroAmount           = playerScript->GetPhero();
+	int								mindontrol_monster_id = pkt.mindcontrol_monster_Id();
 
 
 	/// +---------------------------------------------------------------------------------------
@@ -331,7 +352,7 @@ bool FBsPacketFactory::Process_CPkt_PlayerOnSkill(SPtr_Session session, const FB
 
 	LOG_MGR->Cout(session->GetID(), "SKILLON", static_cast<int>(type), "\n");
 
-	return false;
+	return true;
 }
 
 bool FBsPacketFactory::Process_CPkt_Player_Transform(SPtr_Session session, const FBProtocol::CPkt_Player_Transform& pkt)
@@ -451,6 +472,16 @@ bool FBsPacketFactory::Process_CPkt_Player_AimRotation(SPtr_Session session, con
 	return true;
 }
 
+bool FBsPacketFactory::Process_CPkt_Player_State(SPtr_Session session, const FBProtocol::CPkt_Player_State& pkt)
+{
+	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
+
+	FBProtocol::PLAYER_STATE_TYPE state = pkt.state_type();
+
+
+	return true;
+}
+
 
 /// ��---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ///	�� PROCESS [ MONSTER ] Client PACKET ��
@@ -464,7 +495,7 @@ bool FBsPacketFactory::Process_CPkt_NewMonster(SPtr_Session session, const FBPro
 	/// >
 	/// >}
 	/// >�ܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡ�
-	return false;
+	return true;
 }
 
 bool FBsPacketFactory::Process_CPkt_DeadMonster(SPtr_Session session, const FBProtocol::CPkt_DeadMonster& pkt)
@@ -475,7 +506,7 @@ bool FBsPacketFactory::Process_CPkt_DeadMonster(SPtr_Session session, const FBPr
 	/// >
 	/// >}
 	/// >�ܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡ�
-	return false;
+	return true;
 }
 
 bool FBsPacketFactory::Process_CPkt_RemoveMonster(SPtr_Session session, const FBProtocol::CPkt_RemoveMonster& pkt)
@@ -486,7 +517,7 @@ bool FBsPacketFactory::Process_CPkt_RemoveMonster(SPtr_Session session, const FB
 	///> 
 	///> }
 	///> �ܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡ�
-	return false;
+	return true;
 }
 
 bool FBsPacketFactory::Process_CPkt_Monster_Transform(SPtr_Session session, const FBProtocol::CPkt_Monster_Transform& pkt)
@@ -497,7 +528,7 @@ bool FBsPacketFactory::Process_CPkt_Monster_Transform(SPtr_Session session, cons
 	/// >
 	/// >}
 	/// >�ܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡ�
-	return false;
+	return true;
 }
 
 bool FBsPacketFactory::Process_CPkt_Monster_HP(SPtr_Session session, const FBProtocol::CPkt_Monster_HP& pkt)
@@ -508,7 +539,7 @@ bool FBsPacketFactory::Process_CPkt_Monster_HP(SPtr_Session session, const FBPro
 	///> 
 	///> }
 	///> �ܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡ�
-	return false;
+	return true;
 }
 
 bool FBsPacketFactory::Process_CPkt_Monster_State(SPtr_Session session, const FBProtocol::CPkt_Monster_State& pkt)
@@ -519,7 +550,7 @@ bool FBsPacketFactory::Process_CPkt_Monster_State(SPtr_Session session, const FB
 	///>
 	///>}
 	///>�ܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡ�
-	return false;
+	return true;
 }
 
 /// ��---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -548,7 +579,7 @@ bool FBsPacketFactory::Process_CPkt_Bullet_OnShoot(SPtr_Session session, const F
 	auto spkt = FBS_FACTORY->SPkt_Bullet_OnShoot(player_id, gun_id, bullet_id, ray);
 	GAME_MGR->BroadcastRoom(gameSession->GetPlayer()->GetRoomID(), spkt, player_id);
 
-	return false;
+	return true;
 }
 
 bool FBsPacketFactory::Process_CPkt_Bullet_OnCollision(SPtr_Session session, const FBProtocol::CPkt_Bullet_OnCollision& pkt)
@@ -559,7 +590,7 @@ bool FBsPacketFactory::Process_CPkt_Bullet_OnCollision(SPtr_Session session, con
 	/// >
 	/// >}
 	/// >�ܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡ�
-	return false;
+	return true;
 }
 
 
@@ -576,7 +607,7 @@ bool FBsPacketFactory::Process_CPkt_GetPhero(SPtr_Session session, const FBProto
 	///>}
 	///>�ܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡ�
 
-	return false;
+	return true;
 }
 
 
@@ -891,6 +922,11 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_Player_AimRotation(uint32_t player_id, fl
 	builder.Finish(serverPacket);
 	SPtr_SendPktBuf sendBuffer = SEND_FACTORY->CreatePacket(builder.GetBufferPointer(), static_cast<uint16_t>(builder.GetSize()), FBsProtocolID::SPkt_Player_AimRotation);
 	return sendBuffer;
+}
+
+SPtr_SendPktBuf FBsPacketFactory::SPKt_Player_State(uint32_t player_id, float hp, float phero, FBProtocol::PLAYER_STATE_TYPE state)
+{
+	return SPtr_SendPktBuf();
 }
 
 

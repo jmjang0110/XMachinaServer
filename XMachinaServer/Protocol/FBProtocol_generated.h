@@ -85,6 +85,12 @@ struct CPkt_Player_WeaponBuilder;
 struct SPkt_Player_Weapon;
 struct SPkt_Player_WeaponBuilder;
 
+struct CPkt_Player_State;
+struct CPkt_Player_StateBuilder;
+
+struct SPkt_Player_State;
+struct SPkt_Player_StateBuilder;
+
 struct CPkt_NewMonster;
 struct CPkt_NewMonsterBuilder;
 
@@ -1380,6 +1386,118 @@ inline ::flatbuffers::Offset<SPkt_Player_Weapon> CreateSPkt_Player_Weapon(
   SPkt_Player_WeaponBuilder builder_(_fbb);
   builder_.add_player_id(player_id);
   builder_.add_weapon_type(weapon_type);
+  return builder_.Finish();
+}
+
+struct CPkt_Player_State FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
+  typedef CPkt_Player_StateBuilder Builder;
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
+    VT_STATE_TYPE = 4
+  };
+  FBProtocol::PLAYER_STATE_TYPE state_type() const {
+    return static_cast<FBProtocol::PLAYER_STATE_TYPE>(GetField<uint8_t>(VT_STATE_TYPE, 0));
+  }
+  bool Verify(::flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<uint8_t>(verifier, VT_STATE_TYPE, 1) &&
+           verifier.EndTable();
+  }
+};
+
+struct CPkt_Player_StateBuilder {
+  typedef CPkt_Player_State Table;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_state_type(FBProtocol::PLAYER_STATE_TYPE state_type) {
+    fbb_.AddElement<uint8_t>(CPkt_Player_State::VT_STATE_TYPE, static_cast<uint8_t>(state_type), 0);
+  }
+  explicit CPkt_Player_StateBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  ::flatbuffers::Offset<CPkt_Player_State> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = ::flatbuffers::Offset<CPkt_Player_State>(end);
+    return o;
+  }
+};
+
+inline ::flatbuffers::Offset<CPkt_Player_State> CreateCPkt_Player_State(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    FBProtocol::PLAYER_STATE_TYPE state_type = FBProtocol::PLAYER_STATE_TYPE_NONE) {
+  CPkt_Player_StateBuilder builder_(_fbb);
+  builder_.add_state_type(state_type);
+  return builder_.Finish();
+}
+
+struct SPkt_Player_State FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
+  typedef SPkt_Player_StateBuilder Builder;
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
+    VT_PLAYER_ID = 4,
+    VT_HP = 6,
+    VT_PHERO = 8,
+    VT_STATE_TYPE = 10
+  };
+  uint32_t player_id() const {
+    return GetField<uint32_t>(VT_PLAYER_ID, 0);
+  }
+  float hp() const {
+    return GetField<float>(VT_HP, 0.0f);
+  }
+  float phero() const {
+    return GetField<float>(VT_PHERO, 0.0f);
+  }
+  FBProtocol::PLAYER_STATE_TYPE state_type() const {
+    return static_cast<FBProtocol::PLAYER_STATE_TYPE>(GetField<uint8_t>(VT_STATE_TYPE, 0));
+  }
+  bool Verify(::flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<uint32_t>(verifier, VT_PLAYER_ID, 4) &&
+           VerifyField<float>(verifier, VT_HP, 4) &&
+           VerifyField<float>(verifier, VT_PHERO, 4) &&
+           VerifyField<uint8_t>(verifier, VT_STATE_TYPE, 1) &&
+           verifier.EndTable();
+  }
+};
+
+struct SPkt_Player_StateBuilder {
+  typedef SPkt_Player_State Table;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_player_id(uint32_t player_id) {
+    fbb_.AddElement<uint32_t>(SPkt_Player_State::VT_PLAYER_ID, player_id, 0);
+  }
+  void add_hp(float hp) {
+    fbb_.AddElement<float>(SPkt_Player_State::VT_HP, hp, 0.0f);
+  }
+  void add_phero(float phero) {
+    fbb_.AddElement<float>(SPkt_Player_State::VT_PHERO, phero, 0.0f);
+  }
+  void add_state_type(FBProtocol::PLAYER_STATE_TYPE state_type) {
+    fbb_.AddElement<uint8_t>(SPkt_Player_State::VT_STATE_TYPE, static_cast<uint8_t>(state_type), 0);
+  }
+  explicit SPkt_Player_StateBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  ::flatbuffers::Offset<SPkt_Player_State> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = ::flatbuffers::Offset<SPkt_Player_State>(end);
+    return o;
+  }
+};
+
+inline ::flatbuffers::Offset<SPkt_Player_State> CreateSPkt_Player_State(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    uint32_t player_id = 0,
+    float hp = 0.0f,
+    float phero = 0.0f,
+    FBProtocol::PLAYER_STATE_TYPE state_type = FBProtocol::PLAYER_STATE_TYPE_NONE) {
+  SPkt_Player_StateBuilder builder_(_fbb);
+  builder_.add_phero(phero);
+  builder_.add_hp(hp);
+  builder_.add_player_id(player_id);
+  builder_.add_state_type(state_type);
   return builder_.Finish();
 }
 

@@ -261,6 +261,45 @@ inline const char *EnumNamePLAYER_MOTION_STATE_TYPE(PLAYER_MOTION_STATE_TYPE e) 
   return EnumNamesPLAYER_MOTION_STATE_TYPE()[index];
 }
 
+enum PLAYER_STATE_TYPE : uint8_t {
+  PLAYER_STATE_TYPE_NONE = 0,
+  PLAYER_STATE_TYPE_DEACTIVE = 1,
+  PLAYER_STATE_TYPE_ACTIVE = 2,
+  PLAYER_STATE_TYPE_DEAD = 3,
+  PLAYER_STATE_TYPE_END = 4,
+  PLAYER_STATE_TYPE_MIN = PLAYER_STATE_TYPE_NONE,
+  PLAYER_STATE_TYPE_MAX = PLAYER_STATE_TYPE_END
+};
+
+inline const PLAYER_STATE_TYPE (&EnumValuesPLAYER_STATE_TYPE())[5] {
+  static const PLAYER_STATE_TYPE values[] = {
+    PLAYER_STATE_TYPE_NONE,
+    PLAYER_STATE_TYPE_DEACTIVE,
+    PLAYER_STATE_TYPE_ACTIVE,
+    PLAYER_STATE_TYPE_DEAD,
+    PLAYER_STATE_TYPE_END
+  };
+  return values;
+}
+
+inline const char * const *EnumNamesPLAYER_STATE_TYPE() {
+  static const char * const names[6] = {
+    "NONE",
+    "DEACTIVE",
+    "ACTIVE",
+    "DEAD",
+    "END",
+    nullptr
+  };
+  return names;
+}
+
+inline const char *EnumNamePLAYER_STATE_TYPE(PLAYER_STATE_TYPE e) {
+  if (::flatbuffers::IsOutRange(e, PLAYER_STATE_TYPE_NONE, PLAYER_STATE_TYPE_END)) return "";
+  const size_t index = static_cast<size_t>(e);
+  return EnumNamesPLAYER_STATE_TYPE()[index];
+}
+
 enum PLAYER_SKILL_TYPE : uint8_t {
   PLAYER_SKILL_TYPE_IMPOSSIBLE = 0,
   PLAYER_SKILL_TYPE_CLOACKING = 1,

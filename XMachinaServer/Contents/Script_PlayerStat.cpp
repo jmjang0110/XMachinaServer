@@ -5,7 +5,7 @@
 
 Script_PlayerStat::Script_PlayerStat()
 {
-	Script_Stat::SetMaxHP(1000000.f);
+	Script_Stat::SetMaxHP(1000000.f); // TODO : Test HP 
 
 
 }
