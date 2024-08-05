@@ -23,13 +23,13 @@ BTNodeState MonsterTask::GetHit::Evaluate()
 	const float crntHP = mStat->GetCrntHp();
 	if (!mStat->UpdatePrevHP()) {
 		mEnemyController->SetState(EnemyInfo::State::GetHit);
-		GetOwner()->GetAnimation()->GetController()->SetValue("GetHit", true);
+		MonsterBTTask::mAnimation->GetController()->SetValue("GetHit", true);
 
 		Vec3 moveDir = mEnemyController->GetTarget()->GetTransform()->GetLook();
-		GetOwner()->GetTransform()->Translate(moveDir, mKnockBack);
+		MonsterBTTask::mTransform->Translate(moveDir, mKnockBack);
 	}
 
-	if (GetOwner()->GetAnimation()->GetController()->GetParam("GetHit")->val.b == false)
+	if (MonsterBTTask::mAnimation->GetController()->GetParam("GetHit")->val.b == false)
 		return BTNodeState::Failure;
 
 	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_GETHIT);
@@ -43,7 +43,7 @@ MonsterTask::GetHit::GetHit(SPtr_GameObject owner, std::function<void()> callbac
 {
 	mPrevHp          = mStat->GetCrntHp();
 	mKnockBack       = 0.05f;
-	const auto& motion = GetOwner()->GetAnimation()->GetController()->FindMotionByName(mStat->GetStat_GetHitAnimName());
+	const auto& motion = MonsterBTTask::mAnimation->GetController()->FindMotionByName(mStat->GetStat_GetHitAnimName());
 
 	if (motion) {
 		motion->AddEndCallback(std::bind(&GetHit::GetHitEndCallback, this));
@@ -52,13 +52,11 @@ MonsterTask::GetHit::GetHit(SPtr_GameObject owner, std::function<void()> callbac
 
 MonsterTask::GetHit::~GetHit()
 {
-	mEnemyController = nullptr;
-
 }
 
 void MonsterTask::GetHit::GetHitEndCallback()
 {
-	GetOwner()->GetAnimation()->GetController()->SetValue("GetHit", false);
+	MonsterBTTask::mAnimation->GetController()->SetValue("GetHit", false);
 	mEnemyController->SetState(EnemyInfo::State::Idle);
 
 }

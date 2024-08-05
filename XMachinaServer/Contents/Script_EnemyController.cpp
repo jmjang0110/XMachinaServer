@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "Script_EnemyController.h"
 #include "Script_Stat.h"
-
+#include "NPCController.h"
+#include "GameRoom.h"
 
 
 Script_EnemyController::Script_EnemyController()
@@ -27,6 +28,12 @@ void Script_EnemyController::RemoveAllAnimation()
 	GetOwner()->GetAnimation()->GetController()->SetValue("Return", false);
 	GetOwner()->GetAnimation()->GetController()->SetValue("GetHit", false);
 
+}
+
+void Script_EnemyController::SetOwnerMonster(SPtr<GameMonster> ownerMonster)
+{
+	mOwnerMonster = ownerMonster;
+	mOwnerNPCController = mOwnerMonster->GetOwnerNPCController();
 }
 
 void Script_EnemyController::Clone(SPtr<Component> other) 
@@ -58,6 +65,11 @@ bool Script_EnemyController::WakeUp()
 
 bool Script_EnemyController::Start()
 {
+	Script::Start();
+
+	mOwnerNPCController = mOwnerMonster->GetOwnerNPCController();
+	mOwnerRoom          = mOwnerNPCController->GetOwnerRoom().get();
+
 	return true;
 }
 

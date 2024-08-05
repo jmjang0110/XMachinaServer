@@ -21,7 +21,7 @@ BTNodeState MonsterTask::CheckDeath::Evaluate()
 	mAccTime += GetOwner()->GetDeltaTime();
 
 	mEnemyController->RemoveAllAnimation();
-	GetOwner()->GetAnimation()->GetController()->SetValue("Death", true);
+	MonsterBTTask::mAnimation->GetController()->SetValue("Death", true);
 	
 	ExecuteCallback();
 
@@ -39,15 +39,10 @@ MonsterTask::CheckDeath::CheckDeath(SPtr_GameObject owner, std::function<void()>
 
 {
 
-	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
-	mStat = GetStat(owner->GetType());
-
 }
 
 MonsterTask::CheckDeath::~CheckDeath()
 {
-	mEnemyController = nullptr;
-
 }
 
 void MonsterTask::CheckDeath::ExecuteCallback_CheckDeath()

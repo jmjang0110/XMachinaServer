@@ -22,11 +22,11 @@ BTNodeState MonsterTask::Patrol::Evaluate()
 	Vec3 wayPoint = mWayPoints[mCurrWayPointIdx];
 
 	const float kMinDistance = 1.f;
-	const Vec3 toWayPoint = wayPoint - GetOwner()->GetTransform()->GetPosition().xz();
+	const Vec3 toWayPoint = wayPoint - MonsterBTTask::mTransform->GetPosition().xz();
 
 	if (toWayPoint.Length() > kMinDistance) {
-		GetOwner()->GetTransform()->RotateTargetAxisY(wayPoint, mStat->GetStat_RotationSpeed());
-		GetOwner()->GetTransform()->Translate(GetOwner()->GetTransform()->GetLook(), mPatrolSpeed * GetOwner()->GetDeltaTime());
+		MonsterBTTask::mTransform->RotateTargetAxisY(wayPoint, mStat->GetStat_RotationSpeed());
+		MonsterBTTask::mTransform->Translate(MonsterBTTask::mTransform->GetLook(), mPatrolSpeed * GetOwner()->GetDeltaTime());
 	}
 	else {
 		mCurrWayPointIdx = (mCurrWayPointIdx + 1) % mWayPoints.size();
@@ -40,9 +40,6 @@ BTNodeState MonsterTask::Patrol::Evaluate()
 MonsterTask::Patrol::Patrol(SPtr_GameObject owner, std::function<void()> callback)
 	: MonsterBTTask(owner, BTTaskType::MonT_Patrol, callback)
 {
-	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
-	mStat            = GetStat(owner->GetType());
-
 	mPatrolSpeed     = mStat->GetStat_MoveSpeed() * 0.5f;
 }
 

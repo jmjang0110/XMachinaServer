@@ -52,7 +52,7 @@ BTNodeState MonsterTask::MoveToPath::Evaluate()
 	if (mPath->empty())
 		return BTNodeState::Failure;
 
-	GetOwner()->GetAnimation()->GetController()->SetValue("Walk", true);
+	MonsterBTTask::mAnimation->GetController()->SetValue("Walk", true);
 
 	// 다음 경로까지의 벡터
 	Vec3 pos = GetOwner()->GetTransform()->GetPosition();
@@ -70,8 +70,8 @@ BTNodeState MonsterTask::MoveToPath::Evaluate()
 	}
 
 	// 다음 경로를 향해 이동 및 회전
-	GetOwner()->GetTransform()->RotateTargetAxisY(mPath->top(), mStat->GetStat_RotationSpeed());
-	GetOwner()->GetTransform()->Translate(XMVector3Normalize(nextPos), speed * GetOwner()->GetDeltaTime());
+	MonsterBTTask::mTransform->RotateTargetAxisY(mPath->top(), mStat->GetStat_RotationSpeed());
+	MonsterBTTask::mTransform->Translate(XMVector3Normalize(nextPos), speed * GetOwner()->GetDeltaTime());
 
 	// 다음 경로에 도착 시 해당 경로 삭제
 	const float kMinDistance = 0.1f;

@@ -26,7 +26,7 @@ BTNodeState MonsterTask::Attack::Evaluate()
 	Vec3 TargetPos          = transSNS.GetPosition(); 
 	
 	// 1. Target Player 를 향해 회전한다.
-	GetOwner()->GetTransform()->RotateTargetAxisY(TargetPos, mStat->GetStat_AttackRotationSpeed());
+	MonsterBTTask::mTransform->RotateTargetAxisY(TargetPos, mStat->GetStat_AttackRotationSpeed());
 	mStat->UpdatePrevHP();
 	ExecuteCallback();
 
@@ -42,7 +42,6 @@ MonsterTask::Attack::Attack(SPtr_GameObject owner, std::function<void()> callbac
 
 MonsterTask::Attack::~Attack()
 {
-	mEnemyController = nullptr;
 
 }
 

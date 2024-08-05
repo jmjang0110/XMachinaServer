@@ -12,6 +12,9 @@ DBController::DBController()
 DBController::~DBController()
 {
 	SQLFreeHandle(SQL_HANDLE_ENV, hEnv);
+	MEMORY->Delete(mX_Machina_DB.MonsterDB);
+	MEMORY->Delete(mX_Machina_DB.NPCDB);
+	MEMORY->Delete(mX_Machina_DB.PlayerDB);
 
 }
 

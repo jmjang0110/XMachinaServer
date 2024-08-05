@@ -83,10 +83,15 @@ MonsterBTTask::MonsterBTTask(SPtr_GameObject owner, BTTaskType type, std::functi
 {
 	mEnemyController	= GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
 	mStat				= GetStat(owner->GetType());
+	mAnimation          = GetOwner()->GetAnimation();
+	mTransform          = GetOwner()->GetTransform();
+
 }
 
 MonsterBTTask::~MonsterBTTask()
 {
 	mEnemyController = nullptr;
 	mStat            = nullptr;
+	mAnimation       = nullptr;
+	mTransform       = nullptr;
 }

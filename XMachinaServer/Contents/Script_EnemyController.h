@@ -35,12 +35,14 @@ namespace EnemyInfo
 	};
 }
 
-
+class NPCController;
+class GameRoom;
 class Script_EnemyController : public Script
 {
 private:
 	SPtr<GameMonster>	mOwnerMonster;
-
+	NPCController*		mOwnerNPCController = nullptr;
+	GameRoom*			mOwnerRoom          = nullptr;
 private:
 	bool				mMindControllded	= false;
 	EnemyInfo::State	mState				= EnemyInfo::State::Idle;
@@ -98,6 +100,11 @@ public:
 
 	SPtr<GameObject>			GetTarget()						{ Lock_Target.LockRead(); SPtr<GameObject> target = mTarget; Lock_Target.UnlockRead(); return target; }
 	FBProtocol::MONSTER_BT_TYPE GetMonsterBTType()				{ mLock_BTType.LockRead(); FBProtocol::MONSTER_BT_TYPE btType = mBTType; mLock_BTType.UnlockRead(); return btType; }
+	
+	NPCController*				GetOwnerNPCController()			{ return mOwnerNPCController; }
+	GameRoom*					GetOwnerRoom()					{ return mOwnerRoom; }
+
+	
 	/// +---------------------------------------------------
 	///						S E T T E R 
 	/// ---------------------------------------------------+
@@ -106,7 +113,7 @@ public:
 	void SetState(EnemyInfo::State state)						{ mState         = state; }
 
 	void SetPathTargetObject(SPtr<GameObject> target)			{ mPathTarget    = target; }
-	void SetOwnerMonster(SPtr<GameMonster> ownerMonster)		{ mOwnerMonster  = ownerMonster; }
+	void SetOwnerMonster(SPtr<GameMonster> ownerMonster);
 	
 	void SetTarget(SPtr<GameObject> target)						{ Lock_Target.LockWrite(); mTarget = target; Lock_Target.UnlockWrite(); }
 	void SetBTType(FBProtocol::MONSTER_BT_TYPE btType)			{ mLock_BTType.LockWrite(); mBTType = btType; mLock_BTType.UnlockWrite(); }
@@ -114,8 +121,8 @@ public:
 	/// +---------------------------------------------------
 	///						MIND CONTROL 
 	/// ---------------------------------------------------+
-	void OnMindControl()	{ mMindControllded  = true; }
-	void OffMindControl()	{ mMindControllded  = false; }
-	bool IsMindControlled() { return mMindControllded; }
+	void OnMindControl()										{ mMindControllded  = true; }
+	void OffMindControl()										{ mMindControllded  = false; }
+	bool IsMindControlled()										{ return mMindControllded; }
 };
 

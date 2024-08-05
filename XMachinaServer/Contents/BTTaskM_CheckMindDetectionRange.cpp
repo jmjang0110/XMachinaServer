@@ -20,18 +20,18 @@ BTNodeState MonsterTask::CheckMindDetectionRange::Evaluate()
 	// 가장 가까운 적을 타겟으로 설정
 	if (!SetTargetNearestEnemy()) {
 		mEnemyController->SetState(EnemyInfo::State::Walk);
-		GetOwner()->GetAnimation()->GetController()->SetValue("Walk", true);
+		MonsterBTTask::mAnimation->GetController()->SetValue("Walk", true);
 		return BTNodeState::Running;
 	}
 
 	// 경로 길찾기가 실행중이거나 감지 범위 내에 들어온 경우 다음 노드로 진행
-	Vec3 pos = GetOwner()->GetTransform()->GetPosition();
+	Vec3 pos = MonsterBTTask::mTransform->GetPosition();
 	Vec3 targetPos = mEnemyController->GetTarget()->GetTransform()->GetSnapShot().GetPosition();
 
 	float dist = (pos - targetPos).Length();
 	if (dist < mStat->GetStat_DetectionRange()) {
 		mEnemyController->SetState(EnemyInfo::State::Walk);
-		GetOwner()->GetAnimation()->GetController()->SetValue("Walk", true);
+		MonsterBTTask::mAnimation->GetController()->SetValue("Walk", true);
 		return BTNodeState::Success;
 	}
 	else {

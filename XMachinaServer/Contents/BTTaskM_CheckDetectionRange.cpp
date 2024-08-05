@@ -52,7 +52,7 @@ BTNodeState MonsterTask::CheckDetectionRange::Evaluate()
 	}
 
 	mEnemyController->SetState(EnemyInfo::State::Walk);
-	GetOwner()->GetAnimation()->GetController()->SetValue("walk", true);
+	MonsterBTTask::mAnimation->GetController()->SetValue("walk", true);
 	return BTNodeState::Success;
 
 //	if (!mEnemyController->GetTarget()) {

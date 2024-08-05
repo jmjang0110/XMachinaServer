@@ -55,7 +55,8 @@ class MonsterBTTask : public BTTask
 protected:
 	SPtr<Script_EnemyController>  mEnemyController;
 	SPtr<Script_Enemy>			  mStat;
-
+	SPtr<Animation>				  mAnimation;
+	SPtr<Transform>				  mTransform;
 public:
 	MonsterBTTask(SPtr_GameObject owner, BTTaskType type, std::function<void()> callback = nullptr);
 	~MonsterBTTask();

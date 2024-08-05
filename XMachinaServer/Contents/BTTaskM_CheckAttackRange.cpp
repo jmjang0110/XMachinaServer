@@ -51,7 +51,7 @@ BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 	
 	// 4. Target Player 가 일정 범위에 들어오면 Attack 으로.. 
 	constexpr float minDistance    = 1.f;
-	Vec3	Pos		               = GetOwner()->GetTransform()->GetPosition();
+	Vec3	Pos		               = MonsterBTTask::mTransform->GetPosition();
 	auto	targetTransSNS         = target->GetTransform()->GetSnapShot(); /* Snap Shot */
 	Vec3	TargetPos              = targetTransSNS.GetPosition();
 	float	distance               = (Pos - TargetPos).Length();
@@ -64,8 +64,8 @@ BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 		if (distance < minDistance || Angle < 80.f) {
 
 			mEnemyController->RemoveAllAnimation();
-			GetOwner()->GetAnimation()->GetController()->SetValue("IsAttack", true);
-			GetOwner()->GetAnimation()->GetController()->SetValue("Attack", true);
+			MonsterBTTask::mAnimation->GetController()->SetValue("IsAttack", true);
+			MonsterBTTask::mAnimation->GetController()->SetValue("Attack", true);
 
 			mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK);
 			mEnemyController->SetState(EnemyInfo::State::Attack);

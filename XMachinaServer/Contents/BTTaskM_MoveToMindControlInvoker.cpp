@@ -23,11 +23,11 @@ BTNodeState MonsterTask::BTTaskM_MoveToMindControlInvoker::Evaluate()
 		}
 	}
 
-	Vec3 pos = GetOwner()->GetTransform()->GetPosition();
+	Vec3 pos = MonsterBTTask::mTransform->GetPosition();
 	TransformSnapShot targetTransSnapShot = target->GetTransform()->GetSnapShot();
 
 	// 허리 쪽부터 광선을 쏴야 맞는다.
-	Vec3 objectAdjPos = pos + GetOwner()->GetTransform()->GetUp() * 0.5f;
+	Vec3 objectAdjPos = pos + MonsterBTTask::mTransform->GetUp() * 0.5f;
 	Vec3 targetAdjPos = targetTransSnapShot.GetPosition() + targetTransSnapShot.GetUp() * 0.5f;
 
 	Vec3 toTarget = targetAdjPos - objectAdjPos;
@@ -73,7 +73,7 @@ BTNodeState MonsterTask::BTTaskM_MoveToMindControlInvoker::Evaluate()
 
 	// 타겟이 속한 모든 그리드를 검사해야 한다.
 	for (int i = 0; i < checkSectors.size(); ++i) {
-		SectorController* SC = mEnemyController->GetOwnerMonster()->GetOwnerNPCController()->GetOwnerRoom()->GetSectorController();
+		SectorController* SC = mEnemyController->GetOwnerRoom()->GetSectorController();
 		if (SC->CollideCheckRay_MinimumDist(checkSectors[i], r, GameObjectInfo::Type::Building) < toTarget.Length()) { // Ray와 섹터의 빌딩들과 Ray 체크후 가장 짧은 길이로 비교 
 			return BTNodeState::Failure;
 		}
@@ -88,10 +88,10 @@ BTNodeState MonsterTask::BTTaskM_MoveToMindControlInvoker::Evaluate()
 
 	// 타겟에 도착하지 않았을 경우에만 이동
 	if (toTarget.Length() > kMinDistance) {
-		GetOwner()->GetAnimation()->GetController()->SetValue("Return", false);
+		MonsterBTTask::mAnimation->GetController()->SetValue("Return", false);
 
-		GetOwner()->GetTransform()->RotateTargetAxisY(targetTransSnapShot.GetPosition(), mStat->GetStat_RotationSpeed());
-		GetOwner()->GetTransform()->Translate(GetOwner()->GetTransform()->GetLook(), mStat->GetStat_MoveSpeed() * GetOwner()->GetDeltaTime());
+		MonsterBTTask::mTransform->RotateTargetAxisY(targetTransSnapShot.GetPosition(), mStat->GetStat_RotationSpeed());
+		MonsterBTTask::mTransform->Translate(MonsterBTTask::mTransform->GetLook(), mStat->GetStat_MoveSpeed() * GetOwner()->GetDeltaTime());
 	}
 
 	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_MOVE_TO_TARGET);;

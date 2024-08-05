@@ -21,7 +21,7 @@ BTNodeState MonsterTask::PathPlanningToTarget::Evaluate()
 
 	// 경로가 비었다면 경로 재 탐색
 	if (MonsterTask::PathPlanning_AStar::mPath->empty()) {
-		GetOwner()->GetAnimation()->GetController()->SetValue("Return", false);
+		MonsterBTTask::mAnimation->GetController()->SetValue("Return", false);
 
 		// 시작 지점과 목적지 위치 값을 타일 고유 인덱스로 변환
 		
@@ -29,7 +29,7 @@ BTNodeState MonsterTask::PathPlanningToTarget::Evaluate()
 
 		Vec3 d = mEnemyController->GetPathTargetObject()->GetTransform()->GetSnapShot().GetPosition();
 
-		Vec3 pos = GetOwner()->GetTransform()->GetPosition();
+		Vec3 pos = MonsterBTTask::mTransform->GetPosition();
 		Path::Pos start = tileMap->GetTileUniqueIndexFromPos(pos);
 		Path::Pos dest  = tileMap->GetTileUniqueIndexFromPos(d);
 
