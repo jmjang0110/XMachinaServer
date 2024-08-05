@@ -45,8 +45,8 @@ BTNodeState MonsterTask::CheckDetectionRange::Evaluate()
 		// TODO : must use??? 
 		target = std::dynamic_pointer_cast<GamePlayer>(mEnemyController->GetTarget());
 	}
-
-	if (true == target->GetSNS_SkillIsAvtive(FBProtocol::PLAYER_SKILL_TYPE_CLOACKING)) {
+	GameSkill::State IsCloakingOn = target->GetSNS_SkillState(FBProtocol::PLAYER_SKILL_TYPE_CLOACKING);
+	if (IsCloakingOn == GameSkill::State::Active) {
 		mEnemyController->SetTarget(nullptr);
 		return BTNodeState::Failure;
 	}

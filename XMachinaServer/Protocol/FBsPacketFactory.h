@@ -52,7 +52,6 @@ private:
 	static bool Process_CPkt_Player_AimRotation(SPtr_Session session, const FBProtocol::CPkt_Player_AimRotation& pkt);
 	static bool Process_CPkt_Player_State(SPtr_Session session, const FBProtocol::CPkt_Player_State& pkt);
 
-
 	/* MONSTER */
 	static bool Process_CPkt_NewMonster(SPtr_Session session, const FBProtocol::CPkt_NewMonster& pkt);
 	static bool Process_CPkt_DeadMonster(SPtr_Session session, const FBProtocol::CPkt_DeadMonster& pkt);

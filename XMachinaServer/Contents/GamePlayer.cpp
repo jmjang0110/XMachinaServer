@@ -23,6 +23,7 @@
 
 #include "Script_DefaultEnemyBT.h"
 #include "Script_EnemyController.h"
+#include "Script_PlayerStat.h"
 
 
 
@@ -47,14 +48,15 @@ GamePlayer::~GamePlayer()
 {
 	mSnapShot.Owner = nullptr;
 
-	for (int i = 0; i < mSnapShot.Bullets.size(); ++i) {
-		mSnapShot.Bullets[i] = nullptr;
+	for (int i = 0; i < mBullets.size(); ++i) {
+		mBullets[i] = nullptr;
 	}
 
-	for (int i = 0; i < mSnapShot.Skills.size(); ++i) {
-		mSnapShot.Skills[i] = nullptr;
+	for (int i = 0; i < mSkills.size(); ++i) {
+		mSkills[i] = nullptr;
 	}
 
+	mVlist.Clear();
 }
 
 void GamePlayer::Update()
@@ -63,7 +65,7 @@ void GamePlayer::Update()
 	
 	/* Update View List */
 	Vec3  Pos        = GetTransform()->GetPosition();
-	float ViewRange  = mSnapShot.ViewRangeRadius;
+	float ViewRange  = mViewRangeRadius;
 	mOwnerPC->GetOwnerRoom()->GetSectorController()->UpdateViewList(this, Pos, ViewRange);
 	
 }
@@ -78,7 +80,7 @@ void GamePlayer::Start()
 {
 	GameObject::Start();
 
-
+	mPlayerStat = GetScript<Script_PlayerStat>(ScriptInfo::Type::Stat).get();
 	/// +-------------------------------------------------------------------------------
 	///		CREATE GAME BULLETS
 	/// -------------------------------------------------------------------------------+
@@ -90,8 +92,8 @@ void GamePlayer::Start()
 		bullet->AddComponent<Collider>(ComponentInfo::Type::Collider); 
 		bullet->AddScript<Script_Bullet>(ScriptInfo::Type::Bullet);
 
-		mSnapShot.Bullets[i] = bullet;
-		mSnapShot.mPossibleBulletIndex.push(i);
+		mBullets[i] = bullet;
+		mPossibleBulletIndex.push(i);
 	}
 
 
@@ -128,7 +130,7 @@ void GamePlayer::Start()
 		default:
 			break;
 		};
-		mSnapShot.Skills[i] = skill;
+		mSkills[i] = skill;
 	}
 }
 
@@ -151,7 +153,7 @@ void GamePlayer::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 void GamePlayer::Exit()
 {
 	/* Exit Room Clear Data */
-	mSnapShot.Vlist.Clear();
+	mVlist.Clear();
 
 
 	mSnapShot.Lock_IsExit.LockWrite();
@@ -164,14 +166,14 @@ void GamePlayer::Exit()
 int GamePlayer::OnShoot(Vec3& ray)
 {
 	int possibleIndex = -1;
-	if (mSnapShot.mPossibleBulletIndex.try_pop(possibleIndex)) {
+	if (mPossibleBulletIndex.try_pop(possibleIndex)) {
 		
 		if (0 <= possibleIndex && possibleIndex < GameObjectInfo::maxBulletsNum) {
 			
-			mSnapShot.Bullets[possibleIndex]->GetTransform()->SetPosition(GetTransform()->GetSnapShot().GetPosition());
-			mSnapShot.Bullets[possibleIndex]->SetOnShootDir(ray);
-			mSnapShot.Bullets[possibleIndex]->SetWeaponType(GetSNS_CurrWeapon());	// 총알 종류 설정 
-			mSnapShot.Bullets[possibleIndex]->Activate();							// PQCS - Register Update !
+			mBullets[possibleIndex]->GetTransform()->SetPosition(GetTransform()->GetSnapShot().GetPosition());
+			mBullets[possibleIndex]->SetOnShootDir(ray);
+			mBullets[possibleIndex]->SetWeaponType(GetSNS_CurrWeapon());	// 총알 종류 설정 
+			mBullets[possibleIndex]->Activate();							// PQCS - Register Update !
 			
 			return possibleIndex;
 		}
@@ -180,12 +182,43 @@ int GamePlayer::OnShoot(Vec3& ray)
 	return -1;
 }
 
+bool GamePlayer::OnSkill(FBProtocol::PLAYER_SKILL_TYPE type)
+{
+	GameSkill::State skillState = mSkills[type]->GetSNS_State();
+	switch (skillState)
+	{
+	case GameSkill::State::Impossible:
+	{
+		return false;
+	}
+		break;
+	case GameSkill::State::Possible:
+	{
+		float currPhero = GetSNS_Phero();
+		bool res = mSkills[type]->OnSkill(currPhero);
+		if (res == false)
+			return false;
+	}
+		break;
+	case GameSkill::State::Active:
+	{
+		return false;
+	}
+		break;
+	default:
+		assert(0);
+		break;
+	}
+
+	return true;
+}
+
 void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vector<SPtr<GameMonster>> monster)
 {
 	ViewList ViewList_Prev;
 	mSnapShot.Lock_VList_SnapShot.LockWrite();
 	ViewList_Prev            = mSnapShot.VList_SnapShot;;
-	mSnapShot.VList_SnapShot = mSnapShot.Vlist;
+	mSnapShot.VList_SnapShot = mVlist;
 	mSnapShot.Lock_VList_SnapShot.UnlockWrite();
 
 	std::vector<SPtr<GameMonster>> NewMonsters;
@@ -195,7 +228,7 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 	///	1. [PLAYER] VIEW LIST 
 	/// ---------------------------------------------------------------------------------+
 	for (int i = 0; i < players.size(); ++i) {
-		mSnapShot.Vlist.TryInsertPlayer(players[i]->GetID(), players[i]);
+		mVlist.TryInsertPlayer(players[i]->GetID(), players[i]);
 	}
 
 
@@ -204,7 +237,7 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 	///	2. [NEW MONSTER] VIEW LIST 
 	/// ---------------------------------------------------------------------------------+
 	for (int i = 0; i < monster.size(); ++i) {
-		bool IsSuccess = mSnapShot.Vlist.TryInsertMonster(monster[i]->GetID(), monster[i]);
+		bool IsSuccess = mVlist.TryInsertMonster(monster[i]->GetID(), monster[i]);
 		if (IsSuccess) {
 			// 새로 들어옴
 			NewMonsters.push_back(monster[i]);
@@ -224,7 +257,7 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 	for (auto& it : ViewList_Prev.VL_Monsters) {
 		// 이전 ViewList에 있던 Monster가 현재 ViewList에 없다면 
 		if (currentMonsterIDs.find(it.first) == currentMonsterIDs.end()) {
-			mSnapShot.Vlist.RemoveMonster(it.first);
+			mVlist.RemoveMonster(it.first);
 			RemoveMonsters.push_back(it.second);
 
 			LOG_MGR->Cout("[ ", it.first, " ] : ", it.second, " : DeActivate\n");
@@ -283,17 +316,17 @@ void GamePlayer::CollideCheckWithMonsters()
 {    
 	ColliderSnapShot SNS_Player = GetCollider()->GetSnapShot();
 
-	for (auto& iter : mSnapShot.Vlist.VL_Monsters) {
-		Script_Stat::State state = iter.second->GetSNS_State();
+	for (auto& iter : mVlist.VL_Monsters) {
+		Script_Stat::State enemystate = iter.second->GetSNS_State();
 
-		switch (state)
+		switch (enemystate)
 		{
-		case Script_Stat::State::Deactive:
-		case Script_Stat::State::End:
+		case Script_Stat::State::Deactive:	// Not In Any Player View List 
+		case Script_Stat::State::End:		// Enemy State - Dead -> Phero All Deactive -> Enemy State - End 
 			continue;
 		break;
 
-		case Script_Stat::State::Active:
+		case Script_Stat::State::Active: 
 		{
 
 		}
@@ -330,23 +363,15 @@ void GamePlayer::CollideCheckWithMonsters()
 			assert(0);
 			break;
 		}
-
-		// 살아있는 상태 
-		if (iter.second->GetSNS_HP() > 0.f)
-		{
-			//iter.second->GetMotionState() // 공격 상태라면 
-			ColliderSnapShot SNS_Monster = iter.second->GetCollider()->GetSnapShot();
-			bool IsCollide = COLLISION_MGR->CollideCheck(SNS_Player, SNS_Monster);
-			if (IsCollide) {
-				// 플레이어의 HP 를 내린다 
-
-			}
-
-		}
 	}
 }
 
 void GamePlayer::Push_PossibleBulletIndex(int idx)
 {
-	mSnapShot.mPossibleBulletIndex.push(idx);
+	mPossibleBulletIndex.push(idx);
+}
+
+float GamePlayer::GetSNS_HP()
+{
+	return mPlayerStat->GetSNS_HP();
 }

@@ -475,9 +475,14 @@ bool FBsPacketFactory::Process_CPkt_Player_AimRotation(SPtr_Session session, con
 bool FBsPacketFactory::Process_CPkt_Player_State(SPtr_Session session, const FBProtocol::CPkt_Player_State& pkt)
 {
 	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
+	
+	SPtr<GamePlayer>			  gamePlayer   = gameSession->GetPlayer();
+	float						  hp           = gamePlayer->GetSNS_HP();
+	float						  phero        = gamePlayer->GetSNS_Phero();
+	FBProtocol::PLAYER_STATE_TYPE state        = pkt.state_type();
 
-	FBProtocol::PLAYER_STATE_TYPE state = pkt.state_type();
-
+	auto spkt = FBS_FACTORY->SPKt_Player_State(session->GetID(), hp, phero, state);
+	GAME_MGR->BroadcastRoom(gameSession->GetPlayer()->GetRoomID(), spkt, session->GetID());
 
 	return true;
 }

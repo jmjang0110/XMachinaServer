@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "GameSkill.h"
+#include "GameManager.h"
+
 
 GameSkill::GameSkill() 
 	: GameObject()
@@ -26,6 +28,9 @@ GameSkill::~GameSkill()
 
 void GameSkill::Update()
 {
+	// Update가 불릴 시점에는 CoolTime 이 지난 후이므로 
+	// State를 다시 Possible 로 변경한다. 
+	SetSNS_State(GameSkill::State::Possible);
 }
 
 void GameSkill::Activate()
@@ -48,4 +53,26 @@ void GameSkill::DeActivate()
 
 void GameSkill::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 {
+}
+
+bool GameSkill::OnSkill(float playerTotalPhero)
+{
+	// 사용 불가 
+	if (playerTotalPhero < mConsumePheroAmount)
+		return false;
+
+	// 사용가능 
+	if (GetSNS_State() == GameSkill::State::Possible) {
+
+		SetSNS_State(GameSkill::State::Active);
+		auto duration_in_seconds   = std::chrono::duration<float>(mCoolTime);
+		auto coolTimeDuration = std::chrono::duration_cast<std::chrono::system_clock::duration>(duration_in_seconds);
+		GameObject::RegisterUpdate(coolTimeDuration); // coolTime 후에 호출됨
+	}
+	else {
+		// State : Active, Impossible 일 떄는 사용 불가  
+		return false;
+	}
+
+	return true;
 }
