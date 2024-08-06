@@ -145,6 +145,12 @@ struct CPkt_Bullet_OnShootBuilder;
 struct SPkt_Bullet_OnShoot;
 struct SPkt_Bullet_OnShootBuilder;
 
+struct CPkt_Bullet_OnHitEnemy;
+struct CPkt_Bullet_OnHitEnemyBuilder;
+
+struct SPkt_Bullet_OnHitEnemy;
+struct SPkt_Bullet_OnHitEnemyBuilder;
+
 struct CPkt_Bullet_OnCollision;
 struct CPkt_Bullet_OnCollisionBuilder;
 
@@ -2280,6 +2286,130 @@ inline ::flatbuffers::Offset<SPkt_Bullet_OnShoot> CreateSPkt_Bullet_OnShoot(
     uint32_t bullet_id = 0,
     ::flatbuffers::Offset<FBProtocol::Vector3> ray = 0) {
   SPkt_Bullet_OnShootBuilder builder_(_fbb);
+  builder_.add_ray(ray);
+  builder_.add_bullet_id(bullet_id);
+  builder_.add_gun_id(gun_id);
+  builder_.add_player_id(player_id);
+  return builder_.Finish();
+}
+
+struct CPkt_Bullet_OnHitEnemy FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
+  typedef CPkt_Bullet_OnHitEnemyBuilder Builder;
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
+    VT_MONSTER_ID = 4,
+    VT_RAY = 6
+  };
+  int32_t monster_id() const {
+    return GetField<int32_t>(VT_MONSTER_ID, 0);
+  }
+  const FBProtocol::Vector3 *ray() const {
+    return GetPointer<const FBProtocol::Vector3 *>(VT_RAY);
+  }
+  bool Verify(::flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<int32_t>(verifier, VT_MONSTER_ID, 4) &&
+           VerifyOffset(verifier, VT_RAY) &&
+           verifier.VerifyTable(ray()) &&
+           verifier.EndTable();
+  }
+};
+
+struct CPkt_Bullet_OnHitEnemyBuilder {
+  typedef CPkt_Bullet_OnHitEnemy Table;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_monster_id(int32_t monster_id) {
+    fbb_.AddElement<int32_t>(CPkt_Bullet_OnHitEnemy::VT_MONSTER_ID, monster_id, 0);
+  }
+  void add_ray(::flatbuffers::Offset<FBProtocol::Vector3> ray) {
+    fbb_.AddOffset(CPkt_Bullet_OnHitEnemy::VT_RAY, ray);
+  }
+  explicit CPkt_Bullet_OnHitEnemyBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  ::flatbuffers::Offset<CPkt_Bullet_OnHitEnemy> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = ::flatbuffers::Offset<CPkt_Bullet_OnHitEnemy>(end);
+    return o;
+  }
+};
+
+inline ::flatbuffers::Offset<CPkt_Bullet_OnHitEnemy> CreateCPkt_Bullet_OnHitEnemy(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    int32_t monster_id = 0,
+    ::flatbuffers::Offset<FBProtocol::Vector3> ray = 0) {
+  CPkt_Bullet_OnHitEnemyBuilder builder_(_fbb);
+  builder_.add_ray(ray);
+  builder_.add_monster_id(monster_id);
+  return builder_.Finish();
+}
+
+struct SPkt_Bullet_OnHitEnemy FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
+  typedef SPkt_Bullet_OnHitEnemyBuilder Builder;
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
+    VT_PLAYER_ID = 4,
+    VT_GUN_ID = 6,
+    VT_BULLET_ID = 8,
+    VT_RAY = 10
+  };
+  uint32_t player_id() const {
+    return GetField<uint32_t>(VT_PLAYER_ID, 0);
+  }
+  uint32_t gun_id() const {
+    return GetField<uint32_t>(VT_GUN_ID, 0);
+  }
+  uint32_t bullet_id() const {
+    return GetField<uint32_t>(VT_BULLET_ID, 0);
+  }
+  const FBProtocol::Vector3 *ray() const {
+    return GetPointer<const FBProtocol::Vector3 *>(VT_RAY);
+  }
+  bool Verify(::flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<uint32_t>(verifier, VT_PLAYER_ID, 4) &&
+           VerifyField<uint32_t>(verifier, VT_GUN_ID, 4) &&
+           VerifyField<uint32_t>(verifier, VT_BULLET_ID, 4) &&
+           VerifyOffset(verifier, VT_RAY) &&
+           verifier.VerifyTable(ray()) &&
+           verifier.EndTable();
+  }
+};
+
+struct SPkt_Bullet_OnHitEnemyBuilder {
+  typedef SPkt_Bullet_OnHitEnemy Table;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_player_id(uint32_t player_id) {
+    fbb_.AddElement<uint32_t>(SPkt_Bullet_OnHitEnemy::VT_PLAYER_ID, player_id, 0);
+  }
+  void add_gun_id(uint32_t gun_id) {
+    fbb_.AddElement<uint32_t>(SPkt_Bullet_OnHitEnemy::VT_GUN_ID, gun_id, 0);
+  }
+  void add_bullet_id(uint32_t bullet_id) {
+    fbb_.AddElement<uint32_t>(SPkt_Bullet_OnHitEnemy::VT_BULLET_ID, bullet_id, 0);
+  }
+  void add_ray(::flatbuffers::Offset<FBProtocol::Vector3> ray) {
+    fbb_.AddOffset(SPkt_Bullet_OnHitEnemy::VT_RAY, ray);
+  }
+  explicit SPkt_Bullet_OnHitEnemyBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  ::flatbuffers::Offset<SPkt_Bullet_OnHitEnemy> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = ::flatbuffers::Offset<SPkt_Bullet_OnHitEnemy>(end);
+    return o;
+  }
+};
+
+inline ::flatbuffers::Offset<SPkt_Bullet_OnHitEnemy> CreateSPkt_Bullet_OnHitEnemy(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    uint32_t player_id = 0,
+    uint32_t gun_id = 0,
+    uint32_t bullet_id = 0,
+    ::flatbuffers::Offset<FBProtocol::Vector3> ray = 0) {
+  SPkt_Bullet_OnHitEnemyBuilder builder_(_fbb);
   builder_.add_ray(ray);
   builder_.add_bullet_id(bullet_id);
   builder_.add_gun_id(gun_id);

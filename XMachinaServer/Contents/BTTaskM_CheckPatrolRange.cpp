@@ -12,7 +12,8 @@
 
 BTNodeState MonsterTask::CheckPatrolRange::Evaluate()
 {
-	mEnemyController->SetState(EnemyInfo::State::Walk);
+	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_IDLE);
+	//mEnemyController->SetState(EnemyInfo::State::Walk);
 	//MonsterBTTask::mAnimation->GetController()->SetValue("Walk", true);
 
 	constexpr float adjRange = 0.2f;

@@ -158,8 +158,11 @@ namespace FBsProtocolID
     constexpr UINT16 CPkt_Bullet_OnShoot        = 1040;
     constexpr UINT16 SPkt_Bullet_OnShoot        = 1041;
 
-    constexpr UINT16 CPkt_Bullet_OnCollision    = 1042;
-    constexpr UINT16 SPkt_Bullet_OnCollision    = 1043;
+    constexpr UINT16 CPkt_Bullet_OnHitEnemy     = 1041;
+    constexpr UINT16 SPkt_Bullet_OnHitEnemy     = 1042;
+
+    constexpr UINT16 CPkt_Bullet_OnCollision    = 1043;
+    constexpr UINT16 SPkt_Bullet_OnCollision    = 1044;
 }
 
 

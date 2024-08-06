@@ -127,7 +127,7 @@ BTNodeState MonsterTask::MoveToTarget::Evaluate()
 
 	// 타겟이 속한 모든 그리드를 검사해야 한다.
 	for (int i = 0; i < checkSectors.size(); ++i) {
-		SectorController* SC = mEnemyController->GetOwnerMonster()->GetOwnerNPCController()->GetOwnerRoom()->GetSectorController();
+		SectorController* SC = mEnemyController->GetOwnerRoom()->GetSectorController();
 		if (SC->CollideCheckRay_MinimumDist(checkSectors[i], r, GameObjectInfo::Type::Building) < toTarget.Length()) { // Ray와 섹터의 빌딩들과 Ray 체크후 가장 짧은 길이로 비교 
 			return BTNodeState::Failure;
 		}
@@ -150,15 +150,9 @@ BTNodeState MonsterTask::MoveToTarget::Evaluate()
 
 		MonsterBTTask::mTransform->RotateTargetAxisY(targetTansSnapShot.GetPosition(), mStat->GetStat_RotationSpeed());
 		MonsterBTTask::mTransform->Translate(GetOwner()->GetTransform()->GetLook(), mStat->GetStat_MoveSpeed() * GetOwner()->GetDeltaTime());
-
-		//Vec3 Pos = GetOwner()->GetTransform()->GetPosition();
-		//Vec3 look = GetOwner()->GetTransform()->GetLook();
-
-		//auto spkt = FBS_FACTORY->SPkt_Monster_Transform(GetOwner()->GetID(), Pos, look);
-		//GAME_MGR->BroadcastAllRoom(spkt);
 	}
 
-	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_MOVE_TO_TARGET);;
+	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_MOVE_TO_TARGET);
 	return BTNodeState::Success;
 }
 

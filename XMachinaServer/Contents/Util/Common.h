@@ -138,6 +138,16 @@ namespace Math {
 		return min + ((float)rand() / (float)RAND_MAX) * (max - min);
 	}
 
+	inline Vec2 RandVec2(int seed) {
+		std::default_random_engine dre(seed);
+		std::uniform_real_distribution<float> distribution(-4.f, 4.f);
+
+		Vec2 result;
+		result.x = distribution(dre);
+		result.y = distribution(dre);
+		return result;
+	}
+
 	constexpr float uint16ToFloat(std::uint16_t value)
 	{
 		return static_cast<float>(value) / 65535.0f * 255.0f;

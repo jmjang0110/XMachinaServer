@@ -53,9 +53,17 @@ void GameMonster::On_ExitFromViewList()
 
 void GameMonster::OnHit()
 {
+	if(mEnemyStat->S_GetObjectState() == Script_Stat::ObjectState::Dead)
+		return;
+
+
 	HitCnt++;
+	if (HitCnt == 5) {
+		mEnemyStat->S_SetObjectState(Script_Stat::ObjectState::Dead);
+	}
+
 	// TODO : Test : OnHit ( Mosnter <--> Bullet ) 
-	if (mEnemyStat->GetSNS_State() == Script_Stat::State::Dead) {
+	if (mEnemyStat->S_GetObjectState() == Script_Stat::ObjectState::Dead) {
 		LOG_MGR->Cout(GetID(), " : Dead\n");
 
 		Vec3 pos = GetTransform()->GetSnapShot().GetPosition();

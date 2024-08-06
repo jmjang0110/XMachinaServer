@@ -110,16 +110,16 @@ bool Script_Enemy::Attack()
 		return false;
 	}
 
-	// TODO : 타겟 주변 레인지 범위 공격
-	const Vec3& TargetPos = mEnemyController->GetTarget()->GetTransform()->GetSnapShot().GetPosition();
-	const Vec3& Pos = GetOwner()->GetTransform()->GetPosition();
-	if (Vec3::Distance(TargetPos, Pos) <= GetStat_AttackRange()) {
+	//// TODO : 타겟 주변 레인지 범위 공격
+	//const Vec3& TargetPos = mEnemyController->GetTarget()->GetTransform()->GetSnapShot().GetPosition();
+	//const Vec3& Pos = GetOwner()->GetTransform()->GetPosition();
+	//if (Vec3::Distance(TargetPos, Pos) <= GetStat_AttackRange()) {
 
-		const auto& statScript = mEnemyController->GetTarget()->GetScript<Script_Stat>(ScriptInfo::Type::Stat);
-		if (statScript) {
-			statScript->Hit(GetStat_AttackRate(), nullptr);
-		}
-	}
+	//	const auto& statScript = mEnemyController->GetTarget()->GetScript<Script_Stat>(ScriptInfo::Type::Stat);
+	//	if (statScript) {
+	//		statScript->Hit(GetStat_AttackRate(), nullptr);
+	//	}
+	//}
 
 	return true;
 }
@@ -127,7 +127,8 @@ bool Script_Enemy::Attack()
 void Script_Enemy::AttackEndCallback()
 {
 	mEnemyController->RemoveAllAnimation();
-	mEnemyController->SetState(EnemyInfo::State::Idle);
+	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_IDLE);
+	//mEnemyController->SetState(EnemyInfo::State::Idle);
 }
 
 void Script_Enemy::DeathEndCallback()

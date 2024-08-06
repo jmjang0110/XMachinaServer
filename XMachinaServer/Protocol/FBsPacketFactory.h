@@ -65,6 +65,7 @@ private:
 
 	/* BULLET */
 	static bool Process_CPkt_Bullet_OnShoot(SPtr_Session session, const FBProtocol::CPkt_Bullet_OnShoot& pkt);
+	static bool Process_CPkt_Bullet_OnHitEnemy(SPtr_Session session, const FBProtocol::CPkt_Bullet_OnHitEnemy& pkt);
 	static bool Process_CPkt_Bullet_OnCollision(SPtr_Session session, const FBProtocol::CPkt_Bullet_OnCollision& pkt);
 
 
@@ -101,6 +102,7 @@ public:
 
 	/* BULLET */
 	SPtr_SendPktBuf SPkt_Bullet_OnShoot(uint32_t player_id, FBProtocol::WEAPON_TYPE  gun_id, uint32_t bullet_id, Vec3 ray);
+	SPtr_SendPktBuf SPkt_Bullet_OnHitEnemy(uint32_t player_id, FBProtocol::WEAPON_TYPE  gun_id, uint32_t bullet_id, Vec3 ray);
 	SPtr_SendPktBuf SPkt_Bullet_OnCollision(uint32_t player_id, FBProtocol::WEAPON_TYPE gun_id, uint32_t bullet_id);
 
 private:

@@ -57,14 +57,14 @@ public:
 	void SetCoolTime(float coolTime)							{ mCoolTime       = coolTime; }
 	void SetDurationTime(float durationTime)					{ mActiveDuration = durationTime; }
 	void SetSkillType(FBProtocol::PLAYER_SKILL_TYPE skilltype)	{ mSkillType      = skilltype; }
-	void SetSNS_State(GameSkill::State state)						{ Lock_SkillState.LockWrite(); mSkillState = state; Lock_SkillState.UnlockWrite(); }
+	void S_SetState(GameSkill::State state)						{ Lock_SkillState.LockWrite(); mSkillState = state; Lock_SkillState.UnlockWrite(); }
 
 	/// +-----------------------------------------------------------
 	///		G E T T E R 
 	/// -----------------------------------------------------------+
 	int						GetActivate_RefCnt() { return mActivate_Ref.load(); }
     SPtr<GamePlayer>		GetOwnerPlayer()	 { return mOwnerPlayer;}
-	GameSkill::State		GetSNS_State()		 { Lock_SkillState.LockRead(); GameSkill::State state = mSkillState; Lock_SkillState.UnlockRead(); return state; }
+	GameSkill::State		S_GetState()		 { Lock_SkillState.LockRead(); GameSkill::State state = mSkillState; Lock_SkillState.UnlockRead(); return state; }
 
 };
 

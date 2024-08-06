@@ -13,10 +13,8 @@
  
 BTNodeState MonsterTask::CheckDeath::Evaluate()
 {
-	if (mStat->GetSNS_State() != Script_Stat::State::Dead)
+	if (mStat->S_GetObjectState() != Script_Stat::ObjectState::Dead)
 		return BTNodeState::Failure;
-
-	mEnemyController->SetState(EnemyInfo::State::Death);
 
 	mAccTime += GetOwner()->GetDeltaTime();
 

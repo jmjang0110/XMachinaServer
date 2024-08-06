@@ -18,7 +18,7 @@
 class Script_Stat : public Script	
 {
 public:
-	enum class State : UINT8 {
+	enum class ObjectState : UINT8 {
 		Deactive, Active, Dead, End, _count,
 	};
 
@@ -32,7 +32,7 @@ private:
 	float mPhero		= {};
 
 private:
-	State  mState       = State::Deactive; Lock::SRWLock Lock_State;
+	ObjectState  mObjectState = ObjectState::Deactive; Lock::SRWLock Lock_State;
 	float mHP           = {}; Lock::SRWLock Lock_HP;
 
 public:
@@ -70,8 +70,8 @@ public:
 	void	SetShield(float shield)		{ mShieldAmount  = shield; }
 	void	AddShield(float shield)		{ mShieldAmount += shield; }
 
-	void	SetSNS_HP(float hp)			{ Lock_HP.LockWrite();		mHP      = hp; Lock_HP.UnlockWrite(); }
-	void	SetSNS_State(State state)   { Lock_State.LockWrite();	mState   = state; Lock_State.UnlockWrite(); }
+	void	S_SetHp(float hp)						{ Lock_HP.LockWrite();		mHP      = hp; Lock_HP.UnlockWrite(); }
+	void	S_SetObjectState(ObjectState state)   { Lock_State.LockWrite();	mObjectState   = state; Lock_State.UnlockWrite(); }
 
 	/// +------------------------------
 	///			G E T T E R
@@ -80,8 +80,8 @@ public:
 	float	GetMaxHp()	const			{ return mMaxHP; }
 	float	GetPhero()	const			{ return mPhero; }
 
-	float	GetSNS_HP()					{ Lock_HP.LockRead();		float hp     = mHP; Lock_HP.UnlockRead(); return hp; }
-	State	GetSNS_State()				{ Lock_State.LockRead();	State state  = mState;  Lock_State.UnlockRead(); return state; }
+	float	S_GetHp()					{ Lock_HP.LockRead();		float hp     = mHP; Lock_HP.UnlockRead(); return hp; }
+	ObjectState	S_GetObjectState()			{ Lock_State.LockRead();	ObjectState ObjectState = mObjectState;  Lock_State.UnlockRead(); return mObjectState; }
 
 
 public:

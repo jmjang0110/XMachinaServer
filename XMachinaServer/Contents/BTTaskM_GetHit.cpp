@@ -16,13 +16,12 @@ BTNodeState MonsterTask::GetHit::Evaluate()
 {
 	//LOG_MGR->Cout("GetHit \n");
 
-
 	if (!mEnemyController->GetTarget())
 		return  BTNodeState::Failure;
 
 	const float crntHP = mStat->GetCrntHp();
 	if (!mStat->UpdatePrevHP()) {
-		mEnemyController->SetState(EnemyInfo::State::GetHit);
+		mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_GETHIT);
 		MonsterBTTask::mAnimation->GetController()->SetValue("GetHit", true);
 
 		Vec3 moveDir = mEnemyController->GetTarget()->GetTransform()->GetLook();
@@ -57,6 +56,5 @@ MonsterTask::GetHit::~GetHit()
 void MonsterTask::GetHit::GetHitEndCallback()
 {
 	MonsterBTTask::mAnimation->GetController()->SetValue("GetHit", false);
-	mEnemyController->SetState(EnemyInfo::State::Idle);
-
+	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_IDLE);
 }

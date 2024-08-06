@@ -165,16 +165,38 @@ void GamePlayer::Exit()
 
 int GamePlayer::OnShoot(Vec3& ray)
 {
+	return -1;
+
+	//int possibleIndex = -1;
+	//if (mPossibleBulletIndex.try_pop(possibleIndex)) {
+	//	
+	//	if (0 <= possibleIndex && possibleIndex < GameObjectInfo::maxBulletsNum) {
+	//		
+	//		mBullets[possibleIndex]->GetTransform()->SetPosition(GetTransform()->GetSnapShot().GetPosition());
+	//		mBullets[possibleIndex]->SetOnShootDir(ray);
+	//		mBullets[possibleIndex]->SetWeaponType(S_GetCurrWeapon());	// 총알 종류 설정 
+	//		mBullets[possibleIndex]->Activate();							// PQCS - Register Update !
+	//		
+	//		return possibleIndex;
+	//	}
+	//}
+
+	//return -1;
+}
+
+int GamePlayer::OnHitEnemy(int32_t monster_id, Vec3& ray)
+{
 	int possibleIndex = -1;
 	if (mPossibleBulletIndex.try_pop(possibleIndex)) {
-		
+
 		if (0 <= possibleIndex && possibleIndex < GameObjectInfo::maxBulletsNum) {
-			
+
 			mBullets[possibleIndex]->GetTransform()->SetPosition(GetTransform()->GetSnapShot().GetPosition());
 			mBullets[possibleIndex]->SetOnShootDir(ray);
-			mBullets[possibleIndex]->SetWeaponType(GetSNS_CurrWeapon());	// 총알 종류 설정 
-			mBullets[possibleIndex]->Activate();							// PQCS - Register Update !
-			
+			mBullets[possibleIndex]->SetHitMonsterID(monster_id);
+			mBullets[possibleIndex]->SetWeaponType(S_GetCurrWeapon());	// 총알 종류 설정 
+			mBullets[possibleIndex]->Activate();						// PQCS - Register Update !
+
 			return possibleIndex;
 		}
 	}
@@ -184,7 +206,7 @@ int GamePlayer::OnShoot(Vec3& ray)
 
 bool GamePlayer::OnSkill(FBProtocol::PLAYER_SKILL_TYPE type)
 {
-	GameSkill::State skillState = mSkills[type]->GetSNS_State();
+	GameSkill::State skillState = mSkills[type]->S_GetState();
 	switch (skillState)
 	{
 	case GameSkill::State::Impossible:
@@ -194,7 +216,7 @@ bool GamePlayer::OnSkill(FBProtocol::PLAYER_SKILL_TYPE type)
 		break;
 	case GameSkill::State::Possible:
 	{
-		float currPhero = GetSNS_Phero();
+		float currPhero = S_GetPhero();
 		bool res = mSkills[type]->OnSkill(currPhero);
 		if (res == false)
 			return false;
@@ -237,6 +259,10 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 	///	2. [NEW MONSTER] VIEW LIST 
 	/// ---------------------------------------------------------------------------------+
 	for (int i = 0; i < monster.size(); ++i) {
+		Script_Stat::ObjectState objState = monster[i]->S_GetObjectState();
+		if (objState == Script_Stat::ObjectState::End)
+			continue;
+
 		bool IsSuccess = mVlist.TryInsertMonster(monster[i]->GetID(), monster[i]);
 		if (IsSuccess) {
 			// 새로 들어옴
@@ -317,21 +343,21 @@ void GamePlayer::CollideCheckWithMonsters()
 	ColliderSnapShot SNS_Player = GetCollider()->GetSnapShot();
 
 	for (auto& iter : mVlist.VL_Monsters) {
-		Script_Stat::State enemystate = iter.second->GetSNS_State();
+		Script_Stat::ObjectState enemystate = iter.second->S_GetObjectState();
 
 		switch (enemystate)
 		{
-		case Script_Stat::State::Deactive:	// Not In Any Player View List 
-		case Script_Stat::State::End:		// Enemy State - Dead -> Phero All Deactive -> Enemy State - End 
+		case Script_Stat::ObjectState::Deactive:	// Not In Any Player View List 
+		case Script_Stat::ObjectState::End:		// Enemy State - Dead -> Phero All Deactive -> Enemy State - End 
 			continue;
 		break;
 
-		case Script_Stat::State::Active: 
+		case Script_Stat::ObjectState::Active:
 		{
 
 		}
 		break;
-		case Script_Stat::State::Dead:
+		case Script_Stat::ObjectState::Dead:
 		{
 			// 몬스터의 Phero와 충돌체크  
 			const std::vector<SPtr<GameObject>>& pheros = iter.second->GetAllPheros();
@@ -371,7 +397,7 @@ void GamePlayer::Push_PossibleBulletIndex(int idx)
 	mPossibleBulletIndex.push(idx);
 }
 
-float GamePlayer::GetSNS_HP()
+float GamePlayer::S_GetHp()
 {
-	return mPlayerStat->GetSNS_HP();
+	return mPlayerStat->S_GetHp();
 }

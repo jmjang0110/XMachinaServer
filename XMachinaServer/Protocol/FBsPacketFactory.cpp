@@ -173,6 +173,13 @@ bool FBsPacketFactory::ProcessFBsPacket(SPtr_Session session, BYTE* packetBuf, U
 		Process_CPkt_Bullet_OnShoot(session, *packet);
 		break;
 	}
+	case FBsProtocolID::CPkt_Bullet_OnHitEnemy:
+	{
+		const FBProtocol::CPkt_Bullet_OnHitEnemy* packet = flatbuffers::GetRoot<FBProtocol::CPkt_Bullet_OnHitEnemy>(DataPtr);
+		if (!packet) return false;
+		Process_CPkt_Bullet_OnHitEnemy(session, *packet);
+		break;
+	}
 	case FBsProtocolID::CPkt_Bullet_OnCollision:
 	{
 		const FBProtocol::CPkt_Bullet_OnCollision* packet = flatbuffers::GetRoot<FBProtocol::CPkt_Bullet_OnCollision>(DataPtr);
@@ -440,7 +447,7 @@ bool FBsPacketFactory::Process_CPkt_Player_Weapon(SPtr_Session session, const FB
 	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
 
 	FBProtocol::WEAPON_TYPE weaponType = pkt.weapon_type();
-	gameSession->GetPlayer()->SetSNS_EquipWeapon(weaponType);
+	gameSession->GetPlayer()->S_SetEquipWeapon(weaponType);
 
 
 	auto spkt = FBS_FACTORY->SPkt_Player_Weapon(session->GetID(), weaponType);
@@ -475,8 +482,8 @@ bool FBsPacketFactory::Process_CPkt_Player_State(SPtr_Session session, const FBP
 	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
 	
 	SPtr<GamePlayer>			  gamePlayer   = gameSession->GetPlayer();
-	float						  hp           = gamePlayer->GetSNS_HP();
-	float						  phero        = gamePlayer->GetSNS_Phero();
+	float						  hp           = gamePlayer->S_GetHp();
+	float						  phero        = gamePlayer->S_GetPhero();
 	FBProtocol::PLAYER_STATE_TYPE state        = pkt.state_type();
 
 	auto spkt = FBS_FACTORY->SPKt_Player_State(session->GetID(), hp, phero, state);
@@ -572,7 +579,7 @@ bool FBsPacketFactory::Process_CPkt_Bullet_OnShoot(SPtr_Session session, const F
 	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
 
 	int  player_id   = gameSession->GetID(); // 플레이어 아이디
-	auto gun_id      = gameSession->GetPlayer()->GetSNS_CurrWeapon();
+	auto gun_id      = gameSession->GetPlayer()->S_GetCurrWeapon();
 	Vec3 ray         = GetVector3(pkt.ray());
 	int  bullet_id   = gameSession->GetPlayer()->OnShoot(ray); // PQCS -> Bullet Update Start ( Worker Thread  에게 업데이트를 떠넘긴다 ) 
 	
@@ -581,6 +588,20 @@ bool FBsPacketFactory::Process_CPkt_Bullet_OnShoot(SPtr_Session session, const F
 	/// 플레이어가 Shot 했다는 것을 플레이어들에게 알린다. 
 	auto spkt = FBS_FACTORY->SPkt_Bullet_OnShoot(player_id, gun_id, bullet_id, ray);
 	GAME_MGR->BroadcastRoom(gameSession->GetPlayer()->GetRoomID(), spkt, player_id);
+
+	return true;
+}
+
+bool FBsPacketFactory::Process_CPkt_Bullet_OnHitEnemy(SPtr_Session session, const FBProtocol::CPkt_Bullet_OnHitEnemy& pkt)
+{
+	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
+
+	int  player_id = gameSession->GetID(); // 플레이어 아이디
+	auto gun_id = gameSession->GetPlayer()->S_GetCurrWeapon();
+	
+	int32_t monster_id	= pkt.monster_id();
+	Vec3 ray			= GetVector3(pkt.ray());
+	int  bullet_id		= gameSession->GetPlayer()->OnHitEnemy(monster_id, ray); // PQCS -> Bullet Update Start ( Worker Thread  에게 업데이트를 떠넘긴다 ) 
 
 	return true;
 }
@@ -699,7 +720,7 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_EnterGame(SPtr<GamePlayer>& myinfo, std::
 		auto transSNS          = p->GetTransform()->GetSnapShot();
 		Vec3 transPos          = transSNS.GetPosition();
 		Vec3 transRot          = transSNS.GetRotation();
-		Vec3 transSpineLookDir = p->GetSNS_SpineLookDir();
+		Vec3 transSpineLookDir = p->S_GetSpineLookDir();
 
 		auto ID             = p->GetID();
 		auto name           = builder.CreateString(p->GetName());
@@ -967,6 +988,11 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_NewMonster(std::vector<SPtr<GameMonster>>
 	///	Monster 정보 저장 
 	/// ------------------------------------------------------------------------------------------+
 	for (SPtr<GameMonster>& mon : new_monsters) {
+		Script_Stat::ObjectState objState = mon->S_GetObjectState();
+		if (objState == Script_Stat::ObjectState::Dead) {
+			continue;
+		}
+
 
 		auto transSNS = mon.get()->GetTransform()->GetSnapShot();
 		Vec3 transPos = transSNS.GetPosition();
@@ -982,9 +1008,9 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_NewMonster(std::vector<SPtr<GameMonster>>
 	}
 
 
-	auto MonsterSnapShots_Offset = builder.CreateVector(MonsterSnapShots_Vector);
-	auto ServerPacket            = FBProtocol::CreateSPkt_NewMonster(builder, MonsterSnapShots_Offset);
-	builder.Finish(ServerPacket);
+	auto monsterSnapShots_Offset = builder.CreateVector(MonsterSnapShots_Vector);
+	auto serverPacket            = FBProtocol::CreateSPkt_NewMonster(builder, monsterSnapShots_Offset);
+	builder.Finish(serverPacket);
 	SPtr_SendPktBuf sendBuffer   = SEND_FACTORY->CreatePacket(builder.GetBufferPointer(), static_cast<uint16_t>(builder.GetSize()), FBsProtocolID::SPkt_NewMonster);
 	return sendBuffer;
 }
@@ -1004,7 +1030,7 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_DeadMonster(uint32_t monster_id, Vec3 dea
 	auto serverPacket = FBProtocol::CreateSPkt_DeadMonster(builder, monster_id, dead_p);
 	builder.Finish(serverPacket);
 	SPtr_SendPktBuf sendBuffer = SEND_FACTORY->CreatePacket(builder.GetBufferPointer(), static_cast<uint16_t>(builder.GetSize()), FBsProtocolID::SPkt_DeadMonster);
-	return SPtr_SendPktBuf();
+	return sendBuffer;
 }
 
 SPtr_SendPktBuf FBsPacketFactory::SPkt_RemoveMonster(uint32_t monster_id)
@@ -1140,6 +1166,19 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_Bullet_OnShoot(uint32_t player_id, FBProt
 	auto serverPacket = FBProtocol::CreateSPkt_Bullet_OnShoot(builder, player_id, gun_id, bullet_id, Ray);
 	builder.Finish(serverPacket);
 	SPtr_SendPktBuf sendBuffer = SEND_FACTORY->CreatePacket(builder.GetBufferPointer(), static_cast<uint16_t>(builder.GetSize()), FBsProtocolID::SPkt_Bullet_OnShoot);
+	return sendBuffer;
+}
+
+SPtr_SendPktBuf FBsPacketFactory::SPkt_Bullet_OnHitEnemy(uint32_t player_id, FBProtocol::WEAPON_TYPE gun_id, uint32_t bullet_id, Vec3 ray)
+{
+
+	flatbuffers::FlatBufferBuilder builder{};
+
+	auto Ray = FBProtocol::CreateVector3(builder, ray.x, ray.y, ray.z);
+
+	auto serverPacket = FBProtocol::CreateSPkt_Bullet_OnHitEnemy(builder, player_id, gun_id, bullet_id, Ray);
+	builder.Finish(serverPacket);
+	SPtr_SendPktBuf sendBuffer = SEND_FACTORY->CreatePacket(builder.GetBufferPointer(), static_cast<uint16_t>(builder.GetSize()), FBsProtocolID::CPkt_Bullet_OnHitEnemy);
 	return sendBuffer;
 }
 

@@ -87,17 +87,37 @@ void GameBullet::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 
 void GameBullet::BulletUpdate(FBProtocol::WEAPON_TYPE weaponType)
 {
-	CheckCollision_WithPlayerViewList();
+	switch (weaponType)
+	{
+	case FBProtocol::WEAPON_TYPE_H_LOOK:
+	case FBProtocol::WEAPON_TYPE_DBMS:
+	case FBProtocol::WEAPON_TYPE_STUART:
+	case FBProtocol::WEAPON_TYPE_DESCRIPTOR:
+	case FBProtocol::WEAPON_TYPE_T_12:
+	case FBProtocol::WEAPON_TYPE_PIPELINE:
+	case FBProtocol::WEAPON_TYPE_DIRECT_DRAIN:
+	case FBProtocol::WEAPON_TYPE_SKYLINE:
+		CheckCollision_WithHitMonsterID();
+		break;
+	case FBProtocol::WEAPON_TYPE_BURNOUT://
+		CheckCollision_WithPlayerViewList();
+		break;
+
+	default: {
+
+	}
+		break;
+	}
 
 }
 
 void GameBullet::CheckCollision_WithPlayerViewList()
 {
-	ViewList player_VL = mOwnerPlayer->GetSNS_ViewList(); // Lock : Player View List 
+	ViewList player_VL = mOwnerPlayer->S_GetViewList(); // Lock : Player View List 
 
 	for (auto& iter : player_VL.VL_Monsters) {
 
-		if(iter.second->GetSNS_State() == Script_Stat::State::Dead)
+		if(iter.second->S_GetObjectState() == Script_Stat::ObjectState::Dead)
 			continue;
 
 		ColliderSnapShot A = iter.second->GetCollider()->GetColliderSnapShot(); // Monster Collider SnapShot
@@ -114,5 +134,30 @@ void GameBullet::CheckCollision_WithPlayerViewList()
 		}
 	}
 
+}
+
+void GameBullet::CheckCollision_WithHitMonsterID()
+{
+	ViewList player_VL = mOwnerPlayer->S_GetViewList(); // Lock : Player View List 
+	const auto& iter = player_VL.VL_Monsters.find(static_cast<UINT32>(mHitMonsterID));
+	
+	if (iter != player_VL.VL_Monsters.end()) {
+		if (iter->second->S_GetObjectState() == Script_Stat::ObjectState::Dead)
+			return;
+
+		Ray		  R = {};
+		R.Direction = mOnShootDir;					 // Bullet Move Dir  
+		R.Position  = GetTransform()->GetPosition();  // Bullet Curr Pos 
+		ColliderSnapShot A = iter->second->GetCollider()->GetColliderSnapShot(); // Monster Collider SnapShot
+		
+		/* Monster(View List) <-- Collide Check --> Bullet */
+		bool IsCollide = COLLISION_MGR->CollideCheck(A, R, 0.f);
+		if (IsCollide) {
+			iter->second->OnHit();
+			DeActivate();
+		}
+	}
+
+	
 }
 

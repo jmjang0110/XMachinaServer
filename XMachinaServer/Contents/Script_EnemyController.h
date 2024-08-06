@@ -23,16 +23,16 @@ namespace EnemyInfo
 
 	};
 
-	enum class State : UINT8 {
-		Idle = 0,
-		Walk,
-		GetHit,
-		Attack,
-		Attack2,
-		Attack3,
-		Death,
-		END,
-	};
+	//enum class State : UINT8 {
+	//	Idle = 0,
+	//	Walk,
+	//	GetHit,
+	//	Attack,
+	//	Attack2,
+	//	Attack3,
+	//	Death,
+	//	END,
+	//};
 }
 
 class NPCController;
@@ -45,7 +45,7 @@ private:
 	GameRoom*			mOwnerRoom          = nullptr;
 private:
 	bool				mMindControllded	= false;
-	EnemyInfo::State	mState				= EnemyInfo::State::Idle;
+	//EnemyInfo::State	mState				= EnemyInfo::State::Idle;
 
 	SPtr<GameObject>	mTarget             = {}; Lock::SRWLock Lock_Target;
 	SPtr_GameObject		mPathTarget			= {};
@@ -93,7 +93,7 @@ public:
 
 	SPtr_GameObject				GetPathTargetObject()			{ return mPathTarget;  }
 
-	EnemyInfo::State			GetState()						{ return mState; }
+	//EnemyInfo::State			GetState()						{ return mState; }
 	std::stack<Vec3>*			GetPaths()						{ return &mPaths; }
 	FBProtocol::MONSTER_BT_TYPE GetMonsterCurrBTType()			{ return mCurrBTType; }
 	FBProtocol::MONSTER_BT_TYPE GetMontserPrevBTType()			{ return mPrevBTType; }
@@ -110,7 +110,7 @@ public:
 	/// ---------------------------------------------------+
 	void SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE type) { mCurrBTType    = type; }			
 	void UpdateMonsterCurrBTType()								{ mPrevBTType    = mCurrBTType; }
-	void SetState(EnemyInfo::State state)						{ mState         = state; }
+	//void SetState(EnemyInfo::State state)						{ mState         = state; }
 
 	void SetPathTargetObject(SPtr<GameObject> target)			{ mPathTarget    = target; }
 	void SetOwnerMonster(SPtr<GameMonster> ownerMonster);

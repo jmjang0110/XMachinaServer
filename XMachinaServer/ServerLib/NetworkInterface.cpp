@@ -63,7 +63,7 @@ bool NetworkInterface::WorkerThread(UINT32 msTimeOut)
 		/// ------------+
 		overObj            = reinterpret_cast<OverlappedObject*>(lpOverlapped);
 		SPtr_NetObj netObj = overObj->GetOwner();
-		netObj->Dispatch(overObj, BytesTransferred);
+ 		netObj->Dispatch(overObj, BytesTransferred);
 
 	}
 	else

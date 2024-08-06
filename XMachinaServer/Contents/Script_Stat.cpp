@@ -46,7 +46,7 @@ bool Script_Stat::Hit(float damage, SPtr_GameObject instigator)
 	}
 	else {
 		mCrntHP -= damage;
-		SetSNS_HP(mCrntHP); // Lock Write
+		S_SetHp(mCrntHP); // Lock Write
 	}
 
 	if (mCrntHP <= 0) {
@@ -59,7 +59,7 @@ bool Script_Stat::Hit(float damage, SPtr_GameObject instigator)
 
 void Script_Stat::Dead()
 {
-	SetSNS_State(State::Dead);
+	S_SetObjectState(ObjectState::Dead);
 
 }
 
@@ -74,14 +74,17 @@ void Script_Stat::Clone(SPtr<Component> other)
 void Script_Stat::Activate()
 {
 	Script::Activate();
-	SetSNS_State(State::Active);
+	if(S_GetObjectState() == ObjectState::Deactive)
+		S_SetObjectState(ObjectState::Active);
 
 }
 
 void Script_Stat::DeActivate()
 {
 	Script::DeActivate();
-	SetSNS_State(State::Deactive);
+
+	if(S_GetObjectState() == ObjectState::Active)
+		S_SetObjectState(ObjectState::Deactive);
 
 }
 

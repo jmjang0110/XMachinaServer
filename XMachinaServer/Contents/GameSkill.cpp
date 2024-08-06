@@ -30,7 +30,7 @@ void GameSkill::Update()
 {
 	// Update가 불릴 시점에는 CoolTime 이 지난 후이므로 
 	// State를 다시 Possible 로 변경한다. 
-	SetSNS_State(GameSkill::State::Possible);
+	S_SetState(GameSkill::State::Possible);
 }
 
 void GameSkill::Activate()
@@ -62,9 +62,9 @@ bool GameSkill::OnSkill(float playerTotalPhero)
 		return false;
 
 	// 사용가능 
-	if (GetSNS_State() == GameSkill::State::Possible) {
+	if (S_GetState() == GameSkill::State::Possible) {
 
-		SetSNS_State(GameSkill::State::Active);
+		S_SetState(GameSkill::State::Active);
 		auto duration_in_seconds   = std::chrono::duration<float>(mCoolTime);
 		auto coolTimeDuration = std::chrono::duration_cast<std::chrono::system_clock::duration>(duration_in_seconds);
 		GameObject::RegisterUpdate(coolTimeDuration); // coolTime 후에 호출됨

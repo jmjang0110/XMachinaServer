@@ -32,7 +32,7 @@ BTNodeState MonsterTask::Patrol::Evaluate()
 		mCurrWayPointIdx = (mCurrWayPointIdx + 1) % mWayPoints.size();
 	}
 
-	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_PATROL);
+	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_IDLE);
 	return BTNodeState::Running;
 
 }

@@ -38,6 +38,7 @@ private:
 	float			mMaxLifeTime  = 2.f;
 	float			mCurrLifeTime = 0.f;
 	Vec3			mOnShootDir   = {};
+	int32_t			mHitMonsterID = {};
 
 public:
 	GameBullet();
@@ -57,6 +58,7 @@ public:
 	void DecreaseRef() { mActivate_Ref.fetch_sub(1); if (mActivate_Ref.load() < 0) mActivate_Ref = 0; }
 	void BulletUpdate(FBProtocol::WEAPON_TYPE weaponType);
 	void CheckCollision_WithPlayerViewList();
+	void CheckCollision_WithHitMonsterID();
 
 public:
 	/// +-----------------------------------------------------------
@@ -64,6 +66,8 @@ public:
 	/// -----------------------------------------------------------+
 	void SetWeaponType(FBProtocol::WEAPON_TYPE type)		{  mInfo.WeaponType = type;  }
 	void SetOnShootDir(Vec3& dir) { mOnShootDir = dir; }
+	void SetHitMonsterID(int32_t id) { mHitMonsterID = id; }
+
 	// Getters
 	int						GetActivate_RefCnt() { return mActivate_Ref.load(); }
     SPtr<GamePlayer>		GetOwnerPlayer()	 { return mOwnerPlayer;}

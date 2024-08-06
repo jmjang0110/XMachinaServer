@@ -8,6 +8,7 @@
 #include "ObjectSnapShot.h"
 #include "GamePhero.h"
 #include "Script_EnemyStat.h"
+#include "Script_Stat.h"
 
 /// +-------------------------------
 ///		     Game Monster
@@ -110,8 +111,8 @@ public:
 	const std::vector<SPtr<GameObject>>& GetAllPheros() ;
 
 	// Snap Shot ( in Script )
-	Script_Stat::State	GetSNS_State() { return mEnemyStat->GetSNS_State();  } // Lock
-	float	GetSNS_HP()		{ return mEnemyStat->GetSNS_HP();  } // Lock
+	Script_Stat::ObjectState	S_GetObjectState() { return mEnemyStat->S_GetObjectState(); } // Lock
+	float	S_GetHp()		{ return mEnemyStat->S_GetHp();  } // Lock
 	float	GetAttack()		{ return mEnemyStat->GetStat_AttackRate(); }
 public:
 	GameMonster();

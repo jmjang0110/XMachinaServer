@@ -27,14 +27,16 @@
 
 BTNodeState MonsterTask::CheckDetectionRange::Evaluate()
 {
-	// [BSH] : 주변 타겟이 있다면 성공을 반환해야 하는데 이 전에는 타겟이 있는 경우 바로 실패를 반환한다.
-	// 따라서 Attack이 계속 실행되지 않고 1회만 실행된다.
-	// 때문에 타겟이 있는 경우 해당 타겟을 컨트롤러에서 가져와서 스킬을 검사하고 성공을 반환해야 한다.
+	if (!mEnemyController->GetPaths()->empty()) {
+		return BTNodeState::Failure;
+	}
+
 	SPtr<GamePlayer> target = nullptr;
 	mEnemyController->SetTarget(nullptr);
 	if (!mEnemyController->GetTarget()) {
 		target = FindDetectionPlayer();
 		if (nullptr == target){
+			mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_IDLE);
 			return BTNodeState::Failure;
 		}
 		else {
@@ -42,16 +44,14 @@ BTNodeState MonsterTask::CheckDetectionRange::Evaluate()
 		}
 	}
 	else {
-		// TODO : must use??? 
 		target = std::dynamic_pointer_cast<GamePlayer>(mEnemyController->GetTarget());
 	}
-	GameSkill::State IsCloakingOn = target->GetSNS_SkillState(FBProtocol::PLAYER_SKILL_TYPE_CLOACKING);
+	GameSkill::State IsCloakingOn = target->S_GetSkillState(FBProtocol::PLAYER_SKILL_TYPE_CLOACKING);
 	if (IsCloakingOn == GameSkill::State::Active) {
 		mEnemyController->SetTarget(nullptr);
 		return BTNodeState::Failure;
 	}
 
-	mEnemyController->SetState(EnemyInfo::State::Walk);
 	MonsterBTTask::mAnimation->GetController()->SetValue("walk", true);
 	return BTNodeState::Success;
 }

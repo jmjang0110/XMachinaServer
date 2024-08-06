@@ -30,10 +30,12 @@ BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 	}
 
 	// 2. Attack 상태라면 CheckAttack Range를 할 필요가 없이 바로 Attack  
-	if (mEnemyController->GetState() == EnemyInfo::State::Attack) {
+	//if (mEnemyController->GetState() == EnemyInfo::State::Attack) {
+	//	return BTNodeState::Success;
+	//}
+	if (mEnemyController->GetMonsterCurrBTType() == FBProtocol::MONSTER_BT_TYPE_ATTACK) {
 		return BTNodeState::Success;
 	}
-
 	
 	// 3. Target Player 가 Cloacking 상태라면 Attack (X)
 	SPtr<GamePlayer> target = std::dynamic_pointer_cast<GamePlayer>(mEnemyController->GetTarget());
@@ -42,7 +44,7 @@ BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 		return BTNodeState::Failure;
 	}
 
-	GameSkill::State IsCloakingOn = target->GetSNS_SkillState(FBProtocol::PLAYER_SKILL_TYPE_CLOACKING);
+	GameSkill::State IsCloakingOn = target->S_GetSkillState(FBProtocol::PLAYER_SKILL_TYPE_CLOACKING);
 	if (IsCloakingOn == GameSkill::State::Active) {
 		mEnemyController->SetTarget(nullptr);
 		return BTNodeState::Failure;
@@ -68,7 +70,7 @@ BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 			MonsterBTTask::mAnimation->GetController()->SetValue("Attack", true);
 
 			mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK);
-			mEnemyController->SetState(EnemyInfo::State::Attack);
+			//mEnemyController->SetState(EnemyInfo::State::Attack);
 
 			return BTNodeState::Success;
 		}

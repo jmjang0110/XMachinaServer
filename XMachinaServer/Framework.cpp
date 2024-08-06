@@ -52,6 +52,9 @@ Framework::~Framework()
 bool Framework::Init(HINSTANCE& hInst)
 {
 
+
+
+
 	/// +------------------------------------
 	///	 Log Manager : Console I/O, File I/O 
 	/// ------------------------------------+
@@ -210,7 +213,7 @@ void Framework::Launch()
 	// Seed the random number generator
 	std::srand(static_cast<unsigned>(std::time(0)));
 
-	int CoreNum = 4/* Network Threads */;
+	int CoreNum = 4; /* Network Threads */;
 	std::cout << "Core : " << CoreNum << std::endl;
 	std::atomic<bool> stop(false);
 
