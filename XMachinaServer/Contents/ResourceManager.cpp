@@ -42,27 +42,6 @@ namespace {
 DEFINE_SINGLETON(ResourceManager);
 
 
-void Model::SetChild(SPtr<Model> child)
-{
-	if (mChild) {
-		if (mChild->mSibling) {
-			SPtr<Model> tail = mChild->mSibling;
-			while (tail->mSibling) {
-				tail = tail->mSibling;
-			}
-			tail->mSibling = child;
-		}
-		else {
-			child->mSibling = nullptr;
-			mChild->mSibling = child;
-		}
-	}
-	else {
-		mChild = child;
-	}
-}
-
-
 void BattleScene::Load()
 {
 	std::ifstream file = FileIO::OpenBinFile(kSceneDataPath);
@@ -171,8 +150,7 @@ void BattleScene::Load()
 					///	¡å Component : Collider 
 					/// ---------------------------------------------------+
 					const auto& collider = object->AddComponent<Collider>(ComponentInfo::Type::Collider);
-					collider->SetBoundingSphereList(model->mBSList);
-					collider->SetBoundingBoxList(model->mBoxList);
+					collider->SetBS(model->mBS);
 
 					object->SetAnimation(model->mAnimatorController);
 
@@ -285,8 +263,7 @@ void BattleScene::Load()
 					///	¡å Component : Collider 
 					/// ---------------------------------------------------+
 					const auto& collider = object->AddComponent<Collider>(ComponentInfo::Type::Collider);
-					collider->SetBoundingSphereList(model->mBSList);
-					collider->SetBoundingBoxList(model->mBoxList);
+					collider->SetBS(model->mBS);
 
 					UINT32 ID = static_cast<UINT32>(mBuildings.size());
 					object->SetID(ID);

@@ -105,8 +105,7 @@ void GameMonster::Update()
 	if (mTimer >= 1.f / 5.f) {
 		/* Send Transform Packet */
 		Vec3 Pos  = GetTransform()->GetPosition();
-		Vec3 Rot  = Quaternion::ToEuler(GetTransform()->GetRotation());
-		auto spkt = FBS_FACTORY->SPkt_Monster_Transform(GetID(), Pos, Rot);
+		auto spkt = FBS_FACTORY->SPkt_Monster_Transform(GetID(), Pos, GetTransform()->GetLook());
 
 		GAME_MGR->BroadcastRoom(GetOwnerNPCController()->GetOwnerRoom()->GetID(), spkt);
 		//Vec3 pos = GetTransform()->GetPosition();

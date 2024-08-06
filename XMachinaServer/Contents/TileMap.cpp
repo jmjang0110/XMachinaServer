@@ -60,8 +60,6 @@ void TileMap::UpdateTiles(TileMapInfo::TileType tile, GameObject* object)
 	// 오브젝트의 충돌 박스
 	const auto& Collider = object->GetCollider();
 	auto& Box = Collider->GetBoundingBoxList();
-	auto& Sphere = Collider->GetBoundingSphereList();
-
 	
 	for (int i = 0; i < Box.size(); ++i) {
 		// 오브젝트의 타일 기준 인덱스 계산

@@ -13,14 +13,8 @@ Collider::Collider()
 Collider::Collider(const Collider& other)
     : Component(other)
 {
-    // mBoundingSphereList 복사
-    mBoundingSphereList.resize(other.mBoundingSphereList.size());
-    if (!other.mBoundingSphereList.empty()) {
-        memcpy(mBoundingSphereList.data(), other.mBoundingSphereList.data(),
-            other.mBoundingSphereList.size() * sizeof(MyBoundingSphere));
-    }
+    mBS = other.mBS;
 
-    // mBoundingBoxList 복사
     mBoundingBoxList.resize(other.mBoundingBoxList.size());
     if (!other.mBoundingBoxList.empty()) {
         memcpy(mBoundingBoxList.data(), other.mBoundingBoxList.data(),
@@ -42,20 +36,13 @@ void Collider::Clone(SPtr<Component> other)
 {
     Component::Clone(other);
 
-    // Create a new Collider object
     SPtr<Collider> collider = std::static_pointer_cast<Collider>(other);
 
-    // Copy the bounding sphere list
-    this->mBoundingSphereList.resize(collider->mBoundingSphereList.size());
-    std::memcpy(collider->mBoundingSphereList.data(), collider->mBoundingSphereList.data(), collider->mBoundingSphereList.size() * sizeof(MyBoundingSphere));
-
-    // Copy the bounding box list
+    this->mBS = collider->mBS;
     this->mBoundingBoxList.resize(collider->mBoundingBoxList.size());
     std::memcpy(collider->mBoundingBoxList.data(), collider->mBoundingBoxList.data(), collider->mBoundingBoxList.size() * sizeof(MyBoundingOrientedBox));
 
-    // Associate the new Collider with the copyOwner
     this->SetType(ComponentInfo::Type::Collider);
-
 }
 
 bool Collider::LateUpdate()
@@ -84,36 +71,21 @@ void Collider::SwapSnapShotIndex()
 
 void Collider::UpdateColliderSnapShot()
 {
-    mColliderSnapShot[mSnapShotIndex].BoundingSphereList.resize(mBoundingSphereList.size());
+    mColliderSnapShot[mSnapShotIndex].BS = mBS;
     mColliderSnapShot[mSnapShotIndex].BoundingBoxList.resize(mBoundingBoxList.size());
 
-    std::memcpy(mColliderSnapShot[mSnapShotIndex].BoundingSphereList.data(), mBoundingSphereList.data(), sizeof(MyBoundingSphere) * mBoundingSphereList.size());
     std::memcpy(mColliderSnapShot[mSnapShotIndex].BoundingBoxList.data(), mBoundingBoxList.data(), sizeof(MyBoundingOrientedBox) * mBoundingBoxList.size());
 
 }
 
 void Collider::UpdateTransform()
 {
-
    const Matrix& worldTransform =  GetOwner()->GetTransform()->GetWorldTransform();
+   mBS.Transform(worldTransform);
 
    for (auto& iter : mBoundingBoxList) {
        iter.Transform(worldTransform);
    }
-   for (auto& iter : mBoundingSphereList) {
-       iter.Transform(worldTransform);
-   }
-
-}
-
-void Collider::SetBoundingSphereList(const std::vector<MyBoundingSphere>& sphereList)
-{
-    mBoundingSphereList.resize(sphereList.size());
-    std::memcpy(mBoundingSphereList.data(), sphereList.data(), sizeof(MyBoundingSphere) * sphereList.size());
-
-    for (auto& bs : mBoundingSphereList) {
-        bs.Transform(GetOwner()->GetTransform()->GetWorldTransform());
-    }
 }
 
 void Collider::SetBoundingBoxList(const std::vector<MyBoundingOrientedBox>& boxList)
@@ -125,4 +97,3 @@ void Collider::SetBoundingBoxList(const std::vector<MyBoundingOrientedBox>& boxL
         box.Transform(GetOwner()->GetTransform()->GetWorldTransform());
     }
 }
-

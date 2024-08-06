@@ -20,7 +20,7 @@ namespace ColliderInfo
 /// -----------------------------------------------------+
 struct ColliderSnapShot : public ObjectSnapShot
 {
-	std::vector<MyBoundingSphere>		BoundingSphereList{};
+	MyBoundingSphere BS{};
 	std::vector<MyBoundingOrientedBox>	BoundingBoxList{};
 };
 
@@ -36,7 +36,7 @@ private:
 	std::atomic_bool mSnapShotIndex = 0;
 	ColliderSnapShot mColliderSnapShot[2]{};
 
-	std::vector<MyBoundingSphere>		mBoundingSphereList{};
+	MyBoundingSphere mBS{};
 	std::vector<MyBoundingOrientedBox>	mBoundingBoxList{};
 
 public:
@@ -55,10 +55,10 @@ public:
 	void UpdateColliderSnapShot();
 	void UpdateTransform();
 
-	void SetBoundingSphereList(const std::vector<MyBoundingSphere>& sphereList);
+	void SetBS(const MyBoundingSphere& bs) { mBS = bs; }
 	void SetBoundingBoxList(const std::vector<MyBoundingOrientedBox>& boxList);
 
-	std::vector<MyBoundingSphere>& GetBoundingSphereList() { return mBoundingSphereList; }
+	const MyBoundingSphere& GetBS() const { return mBS; }
 	std::vector<MyBoundingOrientedBox>& GetBoundingBoxList() { return mBoundingBoxList; }
 
 	ColliderSnapShot GetColliderSnapShot() { return mColliderSnapShot[mSnapShotIndex]; }

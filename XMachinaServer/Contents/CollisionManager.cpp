@@ -14,28 +14,20 @@ CollisionManager::~CollisionManager()
 
 bool CollisionManager::CollideCheck(ColliderSnapShot& A, ColliderSnapShot& B)
 {
-	/* Sphere - Sphere Collide Check */
-	for (auto& a : A.BoundingSphereList) {
-		for (auto& b : B.BoundingSphereList) {
-			if (a.Intersects(b))
-				return true;
-		}
+	if (A.BS.Intersects(B.BS)) {
+		return true;
 	}
 
 	/* Box - Sphere */
 	for (auto& a : A.BoundingBoxList) {
-		for (auto& b : B.BoundingSphereList) {
-			if (a.Intersects(b))
-				return true;
-		}
+		if (a.Intersects(B.BS))
+			return true;
 	}
 
 	/* Sphere - Box */
-	for (auto& a : A.BoundingSphereList) {
-		for (auto& b : B.BoundingBoxList) {
-			if (a.Intersects(b))
-				return true;
-		}
+	for (auto& b : B.BoundingBoxList) {
+		if (b.Intersects(A.BS))
+			return true;
 	}
 
 	/* Box - Box */
@@ -46,22 +38,23 @@ bool CollisionManager::CollideCheck(ColliderSnapShot& A, ColliderSnapShot& B)
 		}
 	}
 
-	return false; 
+	return false;
 }
 
 bool CollisionManager::CollideCheck(ColliderSnapShot& A, Ray& R, float dist)
 {
-
-	for (int i = 0; i < A.BoundingBoxList.size(); ++i) {
-		bool IsCollide = A.BoundingBoxList[i].Intersects(_VECTOR(R.Position), XMVector3Normalize(_VECTOR(R.Direction)), dist);
-		if (IsCollide)
-			return true;
+	if (!A.BS.Intersects(_VECTOR(R.Position), XMVector3Normalize(_VECTOR(R.Direction)), dist)) {
+		return false;
 	}
 
-	for (int i = 0; i < A.BoundingSphereList.size(); ++i) {
-		bool IsCollide = A.BoundingSphereList[i].Intersects(_VECTOR(R.Position), XMVector3Normalize(_VECTOR(R.Direction)), dist);
-		if (IsCollide)
+	if (A.BoundingBoxList.empty()) {
+		return true;
+	}
+
+	for (int i = 0; i < A.BoundingBoxList.size(); ++i) {
+		if (A.BoundingBoxList[i].Intersects(_VECTOR(R.Position), XMVector3Normalize(_VECTOR(R.Direction)), dist)) {
 			return true;
+		}
 	}
 
 	return false;
@@ -72,16 +65,12 @@ float CollisionManager::CollideCheckRay_MinimumDist(const ColliderSnapShot& A, R
 	float minDist = 999.f;
 	float dist    = 100;
 
-	for (int i = 0; i < A.BoundingBoxList.size(); ++i) {
-		bool IsCollide = A.BoundingBoxList[i].Intersects(_VECTOR(R.Position), XMVector3Normalize(_VECTOR(R.Direction)), dist);
-		if (IsCollide) {
-			minDist = min(minDist, dist);
-		}
+	if (!A.BS.Intersects(_VECTOR(R.Position), XMVector3Normalize(_VECTOR(R.Direction)), dist)) {
+		return minDist;
 	}
 
-	for (int i = 0; i < A.BoundingSphereList.size(); ++i) {
-		bool IsCollide = A.BoundingSphereList[i].Intersects(_VECTOR(R.Position), XMVector3Normalize(_VECTOR(R.Direction)), dist);
-		if (IsCollide) {
+	for (int i = 0; i < A.BoundingBoxList.size(); ++i) {
+		if (A.BoundingBoxList[i].Intersects(_VECTOR(R.Position), XMVector3Normalize(_VECTOR(R.Direction)), dist)) {
 			minDist = min(minDist, dist);
 		}
 	}

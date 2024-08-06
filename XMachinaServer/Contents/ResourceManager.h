@@ -24,18 +24,11 @@ enum class ObjectTag { None, Building, Enemy };
 	
 class Model {
 public:
-	Matrix								mTransform{};	// local 위치
-	std::string							mAnimatorController{""};
-	std::string							mName{};
-	std::vector<MyBoundingSphere>		mBSList{};
+	Matrix			 mTransform{};	// local 위치
+	std::string		 mAnimatorController{""};
+	std::string		 mName{};
+	MyBoundingSphere mBS{};
 	std::vector<MyBoundingOrientedBox>	mBoxList{};
-
-	SPtr<Model>							mChild{};
-	SPtr<Model>							mSibling{};
-
-public:
-	void SetChild(SPtr<Model> child);
-
 
 public:
 
