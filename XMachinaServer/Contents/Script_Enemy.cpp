@@ -84,9 +84,6 @@ bool Script_Enemy::Start()
 		GetOwner()->GetAnimation()->GetController()->FindMotionByName(GetStat_DeathAnimName())->AddEndCallback(std::bind(&Script_Enemy::DeathEndCallback, this));
 	}
 
-	//GetOwner()->AddScript<Script_PheroDropper>(ScriptInfo::Type::PheroDropper);
-	//GetOwner()->AddScript<Script_DefaultEnemyBT>(ScriptInfo::Type::BehaviorTree);
-
     return true;
 }
 
@@ -120,8 +117,6 @@ bool Script_Enemy::Attack()
 
 		const auto& statScript = mEnemyController->GetTarget()->GetScript<Script_Stat>(ScriptInfo::Type::Stat);
 		if (statScript) {
-			LOG_MGR->Cout(GetOwner()->GetID(), " ATTACK ", "\n");
-
 			statScript->Hit(GetStat_AttackRate(), nullptr);
 		}
 	}

@@ -35,7 +35,7 @@ bool Script_Stat::Start()
 
 bool Script_Stat::Hit(float damage, SPtr_GameObject instigator)
 {
-	LOG_MGR->Cout(" -- Script_Stat::Hit - HP : ", mCrntHP, "\n");
+	//LOG_MGR->Cout(" -- Script_Stat::Hit - HP : ", mCrntHP, "\n");
 
 	if (mCrntHP <= 0) {
 		return false;

@@ -31,8 +31,8 @@ class Sector;
 
 /* Height map (W : 1000, H : 500 )*/
 namespace SectorInfo {
-	constexpr UINT8 Width = 20;
-	constexpr UINT8 height = 10;
+	constexpr UINT8 Width	= 20;
+	constexpr UINT8 height	= 10;
 
 	enum class Type
 	{

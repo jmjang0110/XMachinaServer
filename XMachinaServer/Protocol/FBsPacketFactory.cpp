@@ -440,8 +440,6 @@ bool FBsPacketFactory::Process_CPkt_Player_Weapon(SPtr_Session session, const FB
 	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
 
 	FBProtocol::WEAPON_TYPE weaponType = pkt.weapon_type();
-
-	LOG_MGR->Cout("WEAPONTYPE : ", static_cast<int>(weaponType));
 	gameSession->GetPlayer()->SetSNS_EquipWeapon(weaponType);
 
 
@@ -1084,9 +1082,6 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_Monster_State(uint32_t monster_id, FBProt
 	///> �ۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡ�
 
 	flatbuffers::FlatBufferBuilder builder{};
-
-	LOG_MGR->Cout(monster_id, " - Create SPkt Monster State : ", static_cast<int>(state), "\n");
-	
 
 	auto serverPacket = FBProtocol::CreateSPkt_Monster_State(builder, monster_id, state);
 	builder.Finish(serverPacket);

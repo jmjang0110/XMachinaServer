@@ -50,8 +50,6 @@ struct PlayerSnapShot : public ObjectSnapShot
 };
 
 
-
-
 /// +-----------------------------------------------------------
 ///					    GAME PLAYER 
 /// ____________________________________________________________
@@ -73,7 +71,7 @@ private:
 	Concurrency::concurrent_queue<int>									mPossibleBulletIndex;		// Possible To Shoot Bullets 
 	
 	// View List
-	float					mViewRangeRadius = 10.f;										// View Range 
+	float					mViewRangeRadius = 40.f;										// View Range 
 	ViewList				mVlist           = {};										// View List ( Current ) 
 
 public:

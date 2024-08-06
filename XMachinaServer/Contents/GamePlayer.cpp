@@ -241,7 +241,7 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 		if (IsSuccess) {
 			// »õ·Î µé¾î¿È
 			NewMonsters.push_back(monster[i]);
-			LOG_MGR->Cout("[ ", monster[i]->GetID(), " ] : NewMonsters \n");
+			//LOG_MGR->Cout("[ ", monster[i]->GetID(), " ] : NewMonsters \n");
 		}
 	}
 
@@ -260,7 +260,7 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 			mVlist.RemoveMonster(it.first);
 			RemoveMonsters.push_back(it.second);
 
-			LOG_MGR->Cout("[ ", it.first, " ] : ", it.second, " : DeActivate\n");
+			//LOG_MGR->Cout("[ ", it.first, " ] : ", it.second, " : DeActivate\n");
 		}
 	}
 
@@ -294,7 +294,7 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 			auto pkt       = FBS_FACTORY->SPkt_Monster_Target(monster_id, targetplayer_id, -1);
 			GAME_MGR->BroadcastRoom(mOwnerPC->GetOwnerRoom()->GetID(), pkt);
 		}
-		LOG_MGR->Cout("SEND NEW MONSTER \n");
+		//LOG_MGR->Cout("SEND NEW MONSTER \n");
 	}
 
 	/// +------------------------------------------------------------------------------------------------------

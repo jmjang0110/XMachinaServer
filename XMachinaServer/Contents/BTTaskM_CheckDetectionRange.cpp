@@ -54,28 +54,6 @@ BTNodeState MonsterTask::CheckDetectionRange::Evaluate()
 	mEnemyController->SetState(EnemyInfo::State::Walk);
 	MonsterBTTask::mAnimation->GetController()->SetValue("walk", true);
 	return BTNodeState::Success;
-
-//	if (!mEnemyController->GetTarget()) {
-//
-//		// 1. Find Target Player 
-//		SPtr<GamePlayer> target = FindDetectionPlayer();
-//		if (target) {
-//			// 2. Check Is Player On Cloacking Skill ( IF Cloacking On -- Pass... )
-//			if (true == target->GetActiveSkill(SkillInfo::Type::Cloaking)) {
-//				mEnemyController->SetTarget(nullptr);
-//				return BTNodeState::Failure;
-//			}
-//			else {
-//				mEnemyController->SetTarget(target);
-//				mEnemyController->SetState(EnemyInfo::State::Walk);
-//				GetOwner()->GetAnimation()->GetController()->SetValue("walk", true);
-//				return BTNodeState::Success;
-//			}
-//		}
-//	}
-//
-//
-//	return BTNodeState::Failure;
 }
 
 

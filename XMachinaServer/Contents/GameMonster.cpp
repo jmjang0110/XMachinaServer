@@ -31,7 +31,7 @@ void GameMonster::UpdateSnapShot()
 
 void GameMonster::On_ExitFromViewList()
 {
-	LOG_MGR->Cout(GetID(), " - On Exit From view List ");
+	//LOG_MGR->Cout(GetID(), " - On Exit From view List ");
 
 	GetTransform()->SetPosition(mSpawnPos);
 
@@ -102,7 +102,7 @@ void GameMonster::Update()
 
 	mTimer += GetDeltaTime();
 	// 0.5초마다 패킷 전송
-	if (mTimer >= 0.5f) {
+	if (mTimer >= 1.f / 5.f) {
 		/* Send Transform Packet */
 		Vec3 Pos  = GetTransform()->GetPosition();
 		Vec3 Rot  = Quaternion::ToEuler(GetTransform()->GetRotation());
@@ -154,7 +154,7 @@ void GameMonster::DeActivate()
 
 	mActivate_Ref.fetch_sub(1);
 
-	LOG_MGR->Cout("[", GetID(), "] : DeActivate Ref : ", mActivate_Ref.load(), "\n");
+	//LOG_MGR->Cout("[", GetID(), "] : DeActivate Ref : ", mActivate_Ref.load(), "\n");
 }
 
 void GameMonster::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
