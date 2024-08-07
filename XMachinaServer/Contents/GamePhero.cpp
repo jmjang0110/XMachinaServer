@@ -76,5 +76,13 @@ void GamePhero::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 
 SPtr<GamePhero> GamePhero::Clone()
 {
-    return SPtr<GamePhero>();
+	SPtr<GamePhero> copy       = std::make_shared<GamePhero>();
+	
+	copy->mInfo                = mInfo;
+	
+	SPtr<GameObject> targetObj = std::dynamic_pointer_cast<GameObject>(copy);
+	GameObject::CloneComponents(targetObj);
+	GameObject::CloneScripts(targetObj);
+
+    return copy;
 }

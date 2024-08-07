@@ -59,6 +59,9 @@ private:
 	Script_EnemyStat*		mEnemyStat       = nullptr; // HP, IsDead
 	int						HitCnt           = 0;
 
+	std::atomic_bool mSendDeadMonsterPkt = false;
+
+
 
 
 public:
@@ -108,7 +111,7 @@ public:
 	Script_EnemyController*				 GetEnemyController()		{ return mEnemyController; }
 	Script_EnemyStat*					 GetEnemyStat()				{ return mEnemyStat; }
 	int									 GetActivate_RefCnt()		{ return mActivate_Ref.load(); }
-	const std::vector<SPtr<GameObject>>& GetAllPheros() ;
+	const std::vector<SPtr<GamePhero>>& GetAllPheros() ;
 
 	// Snap Shot ( in Script )
 	Script_Stat::ObjectState	S_GetObjectState() { return mEnemyStat->S_GetObjectState(); } // Lock

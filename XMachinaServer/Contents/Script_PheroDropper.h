@@ -1,10 +1,12 @@
 #pragma once
 #include "Script.h"
 
+class GamePhero;
+
 namespace PheroDropInfo {
 	constexpr int Max_Phero_Drop_Num = 30;
 	constexpr int Min_Phero_Drop_Num = 5;
-	constexpr int Min_Phero__Level   = 1;
+	constexpr int Min_Phero_Level    = 1;
 	constexpr int Max_Phero_Level    = 3;
 };
 
@@ -14,7 +16,7 @@ class Script_PheroDropper : public Script
 public:
 
 private:
-    std::vector<SPtr<GameObject>> mPheros{};
+    std::vector<SPtr<GamePhero>> mPheros{};
 
 public:
 	Script_PheroDropper();
@@ -42,13 +44,14 @@ public:
 	void OnCollisionWithPlayer(int PlayerID);
 
 	int CalculatePercentage(int totalNumber, double percentage);
-	const std::vector<SPtr<GameObject>>& GetPheros()  {return mPheros;}
-	
+	const std::vector<SPtr<GamePhero>>& GetPheros()  {return mPheros;}
+	void SetPherosPos(Vec3& monsterDeadPoint);
 
 private:
 
     void Shuffle_OdffsetDistIndexList();
 	int CreateUniquePheroID(int monster_id, int phero_index);
+
 
 
 };

@@ -117,8 +117,9 @@ void GameBullet::CheckCollision_WithPlayerViewList()
 
 	for (auto& iter : player_VL.VL_Monsters) {
 
-		if(iter.second->S_GetObjectState() == Script_Stat::ObjectState::Dead)
+		if (iter.second->S_GetObjectState() == Script_Stat::ObjectState::Dead) {
 			continue;
+		}
 
 		ColliderSnapShot A = iter.second->GetCollider()->GetColliderSnapShot(); // Monster Collider SnapShot
 		Ray				 R = {};	
@@ -142,22 +143,24 @@ void GameBullet::CheckCollision_WithHitMonsterID()
 	const auto& iter = player_VL.VL_Monsters.find(static_cast<UINT32>(mHitMonsterID));
 	
 	if (iter != player_VL.VL_Monsters.end()) {
-		if (iter->second->S_GetObjectState() == Script_Stat::ObjectState::Dead)
+		if (iter->second->S_GetObjectState() == Script_Stat::ObjectState::Dead) {
+			DeActivate();
 			return;
+		}
 
 		Ray		  R = {};
 		R.Direction = mOnShootDir;					 // Bullet Move Dir  
-		R.Position  = GetTransform()->GetPosition();  // Bullet Curr Pos 
+		R.Position  = GetTransform()->GetPosition();  // Bullet Curr Pos  
 		ColliderSnapShot A = iter->second->GetCollider()->GetColliderSnapShot(); // Monster Collider SnapShot
 		
 		/* Monster(View List) <-- Collide Check --> Bullet */
 		bool IsCollide = COLLISION_MGR->CollideCheck(A, R, 0.f);
 		if (IsCollide) {
 			iter->second->OnHit();
-			DeActivate();
 		}
 	}
 
-	
+	DeActivate();
+
 }
 

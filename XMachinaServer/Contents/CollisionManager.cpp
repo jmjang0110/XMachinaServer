@@ -60,6 +60,13 @@ bool CollisionManager::CollideCheck(ColliderSnapShot& A, Ray& R, float dist)
 	return false;
 }
 
+bool CollisionManager::CollideCheck(Vec3& A, Vec3& B, float dist)
+{
+	if ((A - B).Length() <= dist)
+		return true;
+	return false;
+}
+
 float CollisionManager::CollideCheckRay_MinimumDist(const ColliderSnapShot& A, Ray& R)
 {
 	float minDist = 999.f;

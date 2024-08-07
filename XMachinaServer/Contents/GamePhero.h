@@ -26,6 +26,8 @@ private:
 
 	std::atomic_int mActivate_Ref = 0;
 
+	bool IsSetTargetPlayer;
+
 public:
 	GamePhero();
 	GamePhero(UINT32 id);
@@ -44,10 +46,14 @@ public:
 	virtual SPtr<GamePhero> Clone();
 
 public:
-	void SetPosition(Vec3 pos) { mInfo.Lock_Position.LockWrite();	mInfo.Position = pos;			mInfo.Lock_Position.UnlockWrite(); }
-	Vec3 GetPosition() { mInfo.Lock_Position.LockRead(); Vec3 pos = mInfo.Position; mInfo.Lock_Position.UnlockRead(); return pos; }
-	int	 GetActivate_RefCnt() { return mActivate_Ref.load(); }
+	void SetPosition(Vec3 pos)	{ mInfo.Lock_Position.LockWrite();	mInfo.Position = pos;			mInfo.Lock_Position.UnlockWrite(); }
+	Vec3 GetPosition()			{ mInfo.Lock_Position.LockRead(); Vec3 pos = mInfo.Position; mInfo.Lock_Position.UnlockRead(); return pos; }
+	int	 GetActivate_RefCnt()	{ return mActivate_Ref.load(); }
 
+	void OnTarget() { IsSetTargetPlayer = true; }
+	bool IsSetTarget() { return IsSetTargetPlayer; }
 
+	void SetOffsetDist(Vec3 dist) { mInfo.OffsetDist = dist; }
+	Vec3 GetOffsetDist() { return mInfo.OffsetDist; }
 };
 

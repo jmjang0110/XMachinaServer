@@ -1024,7 +1024,7 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_DeadMonster(uint32_t monster_id, Vec3 dea
 	/// > �ۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡ�'
 	
 	flatbuffers::FlatBufferBuilder builder{};
-	auto dead_p       = FBProtocol::CreatePosition_Vec2(builder, dead_point.x, dead_point.y); // x , z ( y�ƴ� )
+	auto dead_p       = FBProtocol::CreatePosition_Vec2(builder, dead_point.x, dead_point.z); // x , z ( y�ƴ� )
 	auto pheros_str	  = builder.CreateString(pheros);
 	auto serverPacket = FBProtocol::CreateSPkt_DeadMonster(builder, monster_id, dead_p, pheros_str);
 	builder.Finish(serverPacket);

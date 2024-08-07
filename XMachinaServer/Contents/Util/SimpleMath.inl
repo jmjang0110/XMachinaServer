@@ -1,3 +1,4 @@
+#include "SimpleMath.h"
 //-------------------------------------------------------------------------------------
 // SimpleMath.inl -- Simplified C++ Math wrapper for DirectXMath
 //
@@ -713,6 +714,11 @@ inline void Vector2::TransformNormal(const Vector2* varray, size_t count, const 
     using namespace DirectX;
     XMMATRIX M = XMLoadFloat4x4(&m);
     XMVector2TransformNormalStream(resultArray, sizeof(XMFLOAT2), varray, sizeof(XMFLOAT2), count, M);
+}
+
+inline Vector3 DirectX::SimpleMath::Vector2::xz() const noexcept
+{
+    return Vector3(x, 0 ,y);
 }
 
 

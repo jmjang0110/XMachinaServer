@@ -18,6 +18,7 @@ public:
 public:
 	static bool CollideCheck(ColliderSnapShot& A, ColliderSnapShot& B);
 	static bool CollideCheck(ColliderSnapShot& A, Ray& R, float dist);
+	static bool CollideCheck(Vec3& A, Vec3& B, float dist);
 
 };
  

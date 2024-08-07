@@ -37,7 +37,10 @@ public:
 	float GetAmount()				{ return mAmount; }
 
 	void SetLevel(int level)		{ mLevel = level; }
-	void SetTargetPlayerID(int id)	{ if (mTargetPlayer.load() != -1) mTargetPlayer.store(id); }
+	void SetTargetPlayerID(int id)	{ if (mTargetPlayer.load() == -1) mTargetPlayer.store(id); }
+
+
+	int GetLevel() { return mLevel; }
 
 };
 

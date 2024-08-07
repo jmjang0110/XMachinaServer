@@ -70,6 +70,9 @@ void GamePlayer::Update()
 	float ViewRange  = mViewRangeRadius;
 	mOwnerPC->GetOwnerRoom()->GetSectorController()->UpdateViewList(this, Pos, ViewRange);
 	
+	CollideCheckWithMonsters();
+
+
 }
 
 void GamePlayer::WakeUp()
@@ -342,7 +345,6 @@ void GamePlayer::CollideCheckWithBullets()
 
 void GamePlayer::CollideCheckWithMonsters()
 {    
-	ColliderSnapShot SNS_Player = GetCollider()->GetSnapShot();
 
 	for (auto& iter : mVlist.VL_Monsters) {
 		Script_Stat::ObjectState enemystate = iter.second->S_GetObjectState();
@@ -361,12 +363,19 @@ void GamePlayer::CollideCheckWithMonsters()
 		break;
 		case Script_Stat::ObjectState::Dead:
 		{
+			Vec3 playerPos = GetTransform()->GetSnapShot().GetPosition();
+
 			// 몬스터의 Phero와 충돌체크  
-			const std::vector<SPtr<GameObject>>& pheros = iter.second->GetAllPheros();
+			const std::vector<SPtr<GamePhero>>& pheros = iter.second->GetAllPheros();
 
 			for (int i = 0; i < pheros.size(); ++i) {
-				ColliderSnapShot SNS_Phero = pheros[i]->GetCollider()->GetSnapShot();
-				bool IsCollide = COLLISION_MGR->CollideCheck(SNS_Phero, SNS_Player);
+				if (pheros[i]->IsSetTarget() == false)
+					continue;
+
+				//ColliderSnapShot SNS_Phero = pheros[i]->GetCollider()->GetSnapShot();
+				Vec3 pheroPos = pheros[i]->GetTransform()->GetPosition();
+
+				bool IsCollide = COLLISION_MGR->CollideCheck(pheroPos, playerPos, 1.5f);
 				if (IsCollide) {
 
 					const auto& phero_scirpt         = pheros[i]->GetScript<Script_Phero>(ScriptInfo::Type::Phero);
@@ -385,8 +394,13 @@ void GamePlayer::CollideCheckWithMonsters()
 					int  pheroID  = pheros[i]->GetID();
 					int  targetID = GetID();
 
+					pheros[i]->OnTarget(); // IsSetTargetPlayer = true;
+
 					auto pkt      = FBS_FACTORY->SPkt_GetPhero(pheroID, targetID);
-					GAME_MGR->BroadcastRoom(mOwnerPC->GetOwnerRoom()->GetID(), pkt, GetID());
+					GAME_MGR->BroadcastRoom(mOwnerPC->GetOwnerRoom()->GetID(), pkt);
+
+					LOG_MGR->Cout(phero_scirpt->GetLevel(), "[", pheroID, "]", " => Get Phero", "  -- [", targetID, "]\n");
+
 				}
 
 			}
