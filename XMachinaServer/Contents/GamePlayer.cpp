@@ -375,7 +375,8 @@ void GamePlayer::CollideCheckWithMonsters()
 				//ColliderSnapShot SNS_Phero = pheros[i]->GetCollider()->GetSnapShot();
 				Vec3 pheroPos = pheros[i]->GetTransform()->GetPosition();
 
-				bool IsCollide = COLLISION_MGR->CollideCheck(pheroPos, playerPos, 1.5f);
+				playerPos.y = 0.f; pheroPos.y = 0.f;
+				bool IsCollide = COLLISION_MGR->CollideCheck(pheroPos, playerPos, 2.5f);
 				if (IsCollide) {
 
 					const auto& phero_scirpt         = pheros[i]->GetScript<Script_Phero>(ScriptInfo::Type::Phero);
