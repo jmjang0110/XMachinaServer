@@ -23,6 +23,8 @@
 
 #include "Script_DefaultEnemyBT.h"
 #include "Script_EnemyController.h"
+#include "Script_Phero.h"
+#include "Script_PheroDropper.h"
 #include "Script_PlayerStat.h"
 
 
@@ -366,19 +368,25 @@ void GamePlayer::CollideCheckWithMonsters()
 				ColliderSnapShot SNS_Phero = pheros[i]->GetCollider()->GetSnapShot();
 				bool IsCollide = COLLISION_MGR->CollideCheck(SNS_Phero, SNS_Player);
 				if (IsCollide) {
-					const auto& phero_scirpt = pheros[i]->GetScript<Script_Phero>(ScriptInfo::Type::Phero);
-					int targetid = phero_scirpt->GetTargetPlayerID();
 
-					/*	if (phero_script->GetState() == 이동중)
-							coninue;*/
+					const auto& phero_scirpt         = pheros[i]->GetScript<Script_Phero>(ScriptInfo::Type::Phero);
+					int			targetid             = phero_scirpt->GetTargetPlayerID();
 
-					if (targetid == -1) {
-						phero_scirpt->SetTargetPlayerID(GetID());
-						// 플레이어의 페로수치를  올린다. 
-
-						auto pkt = FBS_FACTORY->SPkt_GetPhero(pheros[i]->GetID(), GetID());
-						GAME_MGR->BroadcastRoom(mOwnerPC->GetOwnerRoom()->GetID(), pkt, GetID());
+					/// > ▷ Continue If Phero Already Get Target Player ID 
+					if (targetid != -1) {
+						continue;
 					}
+
+					/// > ▷ Player Get Phero 
+					phero_scirpt->SetTargetPlayerID(GetID());
+					mPlayerStat->AddPheroAmount(phero_scirpt->GetAmount());
+
+					/// > ▷ Broadcast Phero's Target Player ID 
+					int  pheroID  = pheros[i]->GetID();
+					int  targetID = GetID();
+
+					auto pkt      = FBS_FACTORY->SPkt_GetPhero(pheroID, targetID);
+					GAME_MGR->BroadcastRoom(mOwnerPC->GetOwnerRoom()->GetID(), pkt, GetID());
 				}
 
 			}

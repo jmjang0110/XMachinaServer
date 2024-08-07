@@ -1,14 +1,18 @@
 #pragma once
 #include "Script.h"
 
-
 namespace PheroDropInfo {
-	extern std::vector<Vec3> Offsets;  // 전역 변수 선언
-}
+	constexpr int Max_Phero_Drop_Num = 30;
+	constexpr int Min_Phero_Drop_Num = 5;
+	constexpr int Min_Phero__Level   = 1;
+	constexpr int Max_Phero_Level    = 3;
+};
 
 class GameObject;
 class Script_PheroDropper : public Script
 {
+public:
+
 private:
     std::vector<SPtr<GameObject>> mPheros{};
 
@@ -39,10 +43,12 @@ public:
 
 	int CalculatePercentage(int totalNumber, double percentage);
 	const std::vector<SPtr<GameObject>>& GetPheros()  {return mPheros;}
+	
 
 private:
 
     void Shuffle_OdffsetDistIndexList();
+	int CreateUniquePheroID(int monster_id, int phero_index);
 
 
 };

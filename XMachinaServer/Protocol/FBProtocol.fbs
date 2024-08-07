@@ -271,8 +271,9 @@ table CPkt_DeadMonster
 
 table SPkt_DeadMonster
 {
-	id			 : uint;
+	monster_id	 : uint;
 	dead_point   : Position_Vec2;
+	pheros		 : string;
 }
 
 

@@ -57,7 +57,9 @@ void GameMonster::OnHit()
 		return;
 
 
+	// TODO : TEST Hit Cnt == 5 -> Dead 
 	HitCnt++;
+	LOG_MGR->Cout(GetID(), " : OnHit\n");
 	if (HitCnt == 5) {
 		mEnemyStat->S_SetObjectState(Script_Stat::ObjectState::Dead);
 	}
@@ -66,13 +68,13 @@ void GameMonster::OnHit()
 	if (mEnemyStat->S_GetObjectState() == Script_Stat::ObjectState::Dead) {
 		LOG_MGR->Cout(GetID(), " : Dead\n");
 
+		/// > ▷ Send Dead Monster Info ( Dead Point(pos), Pheros Info(string) )
 		Vec3 pos = GetTransform()->GetSnapShot().GetPosition();
-		auto spkt = FBS_FACTORY->SPkt_DeadMonster(GetID(), pos);
-		GAME_MGR->BroadcastRoom(GetOwnerNPCController()->GetOwnerRoom()->GetID(), spkt);
+		auto spkt = FBS_FACTORY->SPkt_DeadMonster(GetID(), pos, GetPheros());
+		GAME_MGR->BroadcastRoom(GetOwnerNPCController()->GetOwnerRoom()->GetID(), spkt);		
 		return;
 	}
 
-	LOG_MGR->Cout(GetID(), " : OnHit\n");
 }
 
 
@@ -109,17 +111,14 @@ void GameMonster::Update()
 	GameObject::Update(); // Component, SCript Update
 
 	mTimer += GetDeltaTime();
-	// 0.5초마다 패킷 전송
-	if (mTimer >= 1.f / 5.f) {
+	if (mTimer >= 1.f / 2.f) {
+
+		/* Send Transform Packet */
 		/* Send Transform Packet */
 		Vec3 Pos  = GetTransform()->GetPosition();
 		auto spkt = FBS_FACTORY->SPkt_Monster_Transform(GetID(), Pos, GetTransform()->GetLook());
-
 		GAME_MGR->BroadcastRoom(GetOwnerNPCController()->GetOwnerRoom()->GetID(), spkt);
-		//Vec3 pos = GetTransform()->GetPosition();
-		//LOG_MGR->Cout(GetName(), " : ", GetID(), " : ", pos.x , " ", pos.y, " ", pos.z, "\n");
-
-		// 타이머 초기화
+		
 		mTimer = 0.0f;
 	}
 

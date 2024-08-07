@@ -23,8 +23,6 @@ void Script_Phero::Clone(SPtr<Component> other)
     this->mLevel           = otherScript->mLevel;
     this->mAmount          = otherScript->mAmount;
     this->mLifeTime        = otherScript->mLifeTime;
-    this->mOffsetDistIndex = otherScript->mOffsetDistIndex;
-    this->mPheroState      = otherScript->mPheroState;
 
 }
 
@@ -68,15 +66,5 @@ void Script_Phero::Init(int level, float lifeTime, float amount)
 
 }
 
-void Script_Phero::Init()
-{
-    std::string level           = std::to_string(mLevel);
-    std::string OffsetDistIndex;
-    if (mOffsetDistIndex < 10)
-        OffsetDistIndex += "0";
 
-    OffsetDistIndex += std::to_string(mOffsetDistIndex);
-    mPheroState                 = level + OffsetDistIndex;
-
-}
 

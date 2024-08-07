@@ -48,8 +48,9 @@ private:
 	///	 >> Phero
 	/// -------------------------------------------+
 	float mStartPheroAmount{};
-	float mCurrPheroAmount{};
 	float mMaxPheroAmount{};
+
+	float mCurrPheroAmount{};	Lock::SRWLock Lock_CurrPheroAmount;
 	float mPheroRegenRate{};
 
 	/// +-------------------------------------------
@@ -103,7 +104,11 @@ public:
 	///	 >> Phero
 	/// -------------------------------------------+
 	virtual void AddPheroAmount(float pheroAmount);
-	virtual bool ReducePheroAmount(float pheroCost, bool checkOnly = false);
+	virtual bool ReducePheroAmount(float pheroCost);
+
+	void S_SetCurrPheroAmount(float phero);
+	float S_GetCurrPheroAmount();
+
 
 	/// +-------------------------------------------
 	///	 >> Weapon

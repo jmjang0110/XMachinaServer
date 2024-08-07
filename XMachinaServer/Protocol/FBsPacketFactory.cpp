@@ -950,7 +950,7 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_Player_AimRotation(uint32_t player_id, fl
 
 SPtr_SendPktBuf FBsPacketFactory::SPKt_Player_State(uint32_t player_id, float hp, float phero, FBProtocol::PLAYER_STATE_TYPE state)
 {
-	return SPtr_SendPktBuf();
+	return nullptr;
 }
 
 
@@ -1000,13 +1000,11 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_NewMonster(std::vector<SPtr<GameMonster>>
 		Vec3 transLook = transSNS.GetLook();
 
 		auto pos		= FBProtocol::CreatePosition_Vec2(builder, transPos.x, transPos.z);
-		auto pheros		= builder.CreateString(mon->GetPheros());
 		auto bt_Type	= mon->GetEnemyController()->GetMonsterBTType(); /* Lock Read */
 		float rot_y		= Vector3::SignedAngle(Vector3::Forward, transLook, Vector3::Up);
-		auto Monster	= FBProtocol::CreateMonster(builder, mon->GetID(), mon->GetMonsterType(), bt_Type, pos, rot_y, pheros);
+		auto Monster	= FBProtocol::CreateMonster(builder, mon->GetID(), mon->GetMonsterType(), bt_Type, pos, rot_y);
 		MonsterSnapShots_Vector.push_back(Monster);
 	}
-
 
 	auto monsterSnapShots_Offset = builder.CreateVector(MonsterSnapShots_Vector);
 	auto serverPacket            = FBProtocol::CreateSPkt_NewMonster(builder, monsterSnapShots_Offset);
@@ -1015,7 +1013,7 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_NewMonster(std::vector<SPtr<GameMonster>>
 	return sendBuffer;
 }
 
-SPtr_SendPktBuf FBsPacketFactory::SPkt_DeadMonster(uint32_t monster_id, Vec3 dead_point)
+SPtr_SendPktBuf FBsPacketFactory::SPkt_DeadMonster(uint32_t monster_id, Vec3 dead_point, std::string pheros)
 {
 	/// > �ۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡۡ�
 	/// > table SPkt_DeadMonster
@@ -1027,7 +1025,8 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_DeadMonster(uint32_t monster_id, Vec3 dea
 	
 	flatbuffers::FlatBufferBuilder builder{};
 	auto dead_p       = FBProtocol::CreatePosition_Vec2(builder, dead_point.x, dead_point.y); // x , z ( y�ƴ� )
-	auto serverPacket = FBProtocol::CreateSPkt_DeadMonster(builder, monster_id, dead_p);
+	auto pheros_str	  = builder.CreateString(pheros);
+	auto serverPacket = FBProtocol::CreateSPkt_DeadMonster(builder, monster_id, dead_p, pheros_str);
 	builder.Finish(serverPacket);
 	SPtr_SendPktBuf sendBuffer = SEND_FACTORY->CreatePacket(builder.GetBufferPointer(), static_cast<uint16_t>(builder.GetSize()), FBsProtocolID::SPkt_DeadMonster);
 	return sendBuffer;
@@ -1089,10 +1088,6 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_Monster_HP(uint32_t monster_id, float hp)
 	builder.Finish(serverPacket);
 	SPtr_SendPktBuf sendBuffer = SEND_FACTORY->CreatePacket(builder.GetBufferPointer(), static_cast<uint16_t>(builder.GetSize()), FBsProtocolID::SPkt_Monster_HP);
 	return sendBuffer;
-
-
-
-	return sendBuffer;
 }
 
 SPtr_SendPktBuf FBsPacketFactory::SPkt_Monster_State(uint32_t monster_id, FBProtocol::MONSTER_BT_TYPE state)
@@ -1112,7 +1107,6 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_Monster_State(uint32_t monster_id, FBProt
 	auto serverPacket = FBProtocol::CreateSPkt_Monster_State(builder, monster_id, state);
 	builder.Finish(serverPacket);
 	SPtr_SendPktBuf sendBuffer = SEND_FACTORY->CreatePacket(builder.GetBufferPointer(), static_cast<uint16_t>(builder.GetSize()), FBsProtocolID::SPkt_Monster_State);
-	
 	return sendBuffer;
 
 }

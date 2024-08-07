@@ -116,9 +116,36 @@ void Script_PlayerStat::SetSpawn(const Vec3& pos)
 /// -------------------------------------------+
 void Script_PlayerStat::AddPheroAmount(float pheroAmount)
 {
+	float currphero = S_GetCurrPheroAmount();
+	currphero -= pheroAmount;
+	currphero = min(currphero, mMaxPheroAmount);
+	S_SetCurrPheroAmount(currphero);
 }
 
-bool Script_PlayerStat::ReducePheroAmount(float pheroCost, bool checkOnly)
+bool Script_PlayerStat::ReducePheroAmount(float pheroCost)
 {
-	return false;
+	float currphero = S_GetCurrPheroAmount();
+	currphero -= pheroCost;
+	if (currphero < 0)
+		return false;
+	else
+		S_SetCurrPheroAmount(currphero);
+	return true;
+}
+
+void Script_PlayerStat::S_SetCurrPheroAmount(float phero)
+{
+	Lock_CurrPheroAmount.LockWrite();
+	mCurrPheroAmount = phero;
+	Lock_CurrPheroAmount.UnlockWrite();
+
+}
+
+float Script_PlayerStat::S_GetCurrPheroAmount()
+{
+	float currPhero = 0.f;
+	Lock_CurrPheroAmount.LockRead();
+	currPhero = mCurrPheroAmount;
+	Lock_CurrPheroAmount.UnlockRead();
+	return currPhero;
 }

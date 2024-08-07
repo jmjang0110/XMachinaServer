@@ -5,13 +5,10 @@
 class Script_Phero : public Script
 {
 private:
-	std::string			mPheroState = {}; // ex) "123" / Phero Level : 1, OffsetDistIndex = 23 ( PheroDropInfo::Offsets[23] )
-private:
 	int					mLevel      = {};
 	float				mLifeTime   = {};
 	float				mAmount     = {};
 
-	int					mOffsetDistIndex = {};
 	std::atomic<int>	mTargetPlayer = -1;
 
 public:
@@ -35,18 +32,12 @@ public:
 
 public:
 	void Init(int level, float lifeTime, float amount);
-	void Init();
-
-	void SetLevel(int level) { mLevel = level; }
-
 public:
-	void SetOffsetDistIndex(int index) { mOffsetDistIndex = index; }
-	std::string& GetPheroStateString() { return mPheroState; }
-	void setPheroStateString(std::string state) { mPheroState = state; }
+	int GetTargetPlayerID()			{ int targetID = mTargetPlayer.load(); return targetID; }
+	float GetAmount()				{ return mAmount; }
 
-public:
-	int GetTargetPlayerID() { int targetID = mTargetPlayer.load(); return targetID; }
-	void SetTargetPlayerID(int id) { if (mTargetPlayer.load() != -1) mTargetPlayer.store(id); }
+	void SetLevel(int level)		{ mLevel = level; }
+	void SetTargetPlayerID(int id)	{ if (mTargetPlayer.load() != -1) mTargetPlayer.store(id); }
 
 };
 
