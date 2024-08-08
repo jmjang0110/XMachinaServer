@@ -16,7 +16,11 @@
 
 #include "Component.h"
 #include "Transform.h"
+#include "FBsPacketFactory.h"
 
+#include "Script_EnemyController.h"
+#include "GameRoom.h"
+#include "GameManager.h"
 
 
 Script_Enemy::Script_Enemy()
@@ -102,14 +106,22 @@ void Script_Enemy::OnDestroy()
 
 void Script_Enemy::StartAttack()
 {
-	if (mCurrAttackCnt == AttackType::None) {
-		mCurrAttackCnt = AttackType::BasicAttack;
+	if (mCurrAttackStep == AttackType::None) {
+		mCurrAttackStep = AttackType::BasicAttack;
 	}
 
 	mEnemyController->RemoveAllAnimation();
 	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK);
-	GetOwner()->GetAnimation()->GetController()->SetValue("Attack", mCurrAttackCnt);
-	std::cout << mCurrAttackCnt << std::endl;
+	GetOwner()->GetAnimation()->GetController()->SetValue("Attack", mCurrAttackStep);
+	std::cout << mCurrAttackStep << std::endl;
+
+	// TODO : 나중에 Monster 가 어떤 플레이어에게 View List 에 들어왔는지 체크해서 그 Player 들에게만 Broadcast 해야함. 
+	auto spkt = FBS_FACTORY->SPkt_Monster_State(GetOwner()->GetID(), FBProtocol::MONSTER_BT_TYPE_ATTACK, mCurrAttackStep);
+	GAME_MGR->BroadcastRoom(mEnemyController->GetOwnerRoom()->GetID(), spkt);
+
+	LOG_MGR->Cout("[", GetOwner()->GetID(), "] : Attack : ", mCurrAttackStep, "\n");
+
+
 }
 
 bool Script_Enemy::Attack()
@@ -129,7 +141,7 @@ bool Script_Enemy::Attack()
 
 	//	const auto& statScript = mEnemyController->GetTarget()->GetScript<Script_Stat>(ScriptInfo::Type::Stat);
 	//	if (statScript) {
-	//		statScript->Hit(GetStat_AttackRate(), nullptr);
+	//		statScript->Hit(GetStat_AttackRate(), nullptr); 
 	//	}
 	//}
 
@@ -138,7 +150,7 @@ bool Script_Enemy::Attack()
 
 void Script_Enemy::AttackEndCallback()
 {
-	mCurrAttackCnt = AttackType::None;
+	mCurrAttackStep = AttackType::None;
 	mEnemyController->RemoveAllAnimation();
 	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_IDLE);
 }

@@ -111,9 +111,9 @@ void Script_Ursacetus::SpecialAttackCallback()
 
 void Script_Ursacetus::AttackEndCallback()
 {
-    ++mCurrAttackCnt;
-    mCurrAttackCnt %= UrsacetusAttackType::_count;
+    ++mCurrAttackStep;
+    mCurrAttackStep %= UrsacetusAttackType::_count;
 
-    GetOwner()->GetAnimation()->GetController()->SetValue("Attack", mCurrAttackCnt);
+    GetOwner()->GetAnimation()->GetController()->SetValue("Attack", mCurrAttackStep);
     mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_IDLE);
 }

@@ -24,7 +24,7 @@
 class NPCController;
 class Script_EnemyController;
 class Script_EnemyStat;
-
+class Script_Enemy;
 struct MonsterSnapShot : public ObjectSnapShot
 {
 	/// +-----------------------------------------------------------
@@ -61,6 +61,7 @@ private:
 
 	std::atomic_bool mSendDeadMonsterPkt = false;
 
+	// For Get Script
 
 
 
@@ -99,7 +100,6 @@ public:
 	void SetOwnerNPCController(NPCController* nc)					{ mOwnerNC         = nc; }
 	void SetEnemyController(Script_EnemyController* script)			{ mEnemyController = script; }
 	void SetEnemyStat(Script_EnemyStat* script)						{ mEnemyStat       = script; }
-
 	/// +-----------------------------------------------------------
 	///		G E T T E R 
 	/// -----------------------------------------------------------+	
@@ -111,7 +111,9 @@ public:
 	Script_EnemyController*				 GetEnemyController()		{ return mEnemyController; }
 	Script_EnemyStat*					 GetEnemyStat()				{ return mEnemyStat; }
 	int									 GetActivate_RefCnt()		{ return mActivate_Ref.load(); }
-	const std::vector<SPtr<GamePhero>>& GetAllPheros() ;
+	const std::vector<SPtr<GamePhero>>&  GetAllPheros() ;
+	ScriptInfo::Type					 GetScriptInfoType();
+	Script_Enemy*						 GetEnemyScript();
 
 	// Snap Shot ( in Script )
 	Script_Stat::ObjectState	S_GetObjectState() { return mEnemyStat->S_GetObjectState(); } // Lock

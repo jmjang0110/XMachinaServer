@@ -209,6 +209,7 @@
     <ClInclude Include="Contents\Script_Ceratoferox.h" />
     <ClInclude Include="Contents\Script_Gobbler.h" />
     <ClInclude Include="Contents\Script_LightBipedMech.h" />
+    <ClInclude Include="Contents\Script_MindControlledEnemy.h" />
     <ClInclude Include="Contents\Script_MiningMech.h" />
     <ClInclude Include="Contents\Script_Rapax.h" />
     <ClInclude Include="Contents\TileMap.h" />
@@ -292,7 +293,7 @@
     <ClCompile Include="Contents\GameEntity.cpp" />
     <ClCompile Include="Contents\Gameinfo.cpp" />
     <ClCompile Include="Contents\GameManager.cpp" />
-    <ClCompile Include="Contents\GameMonster.cpp" />
+    <ClCompile Include="Contents\.cpp" />
     <ClCompile Include="Contents\GameNPC.cpp" />
     <ClCompile Include="Contents\GameObject.cpp" />
     <ClCompile Include="Contents\GamePhero.cpp" />
@@ -324,6 +325,7 @@
     <ClCompile Include="Contents\Script_Ceratoferox.cpp" />
     <ClCompile Include="Contents\Script_Gobbler.cpp" />
     <ClCompile Include="Contents\Script_LightBipedMech.cpp" />
+    <ClCompile Include="Contents\Script_MindControlledEnemy.cpp" />
     <ClCompile Include="Contents\Script_MiningMech.cpp" />
     <ClCompile Include="Contents\Script_Rapax.cpp" />
     <ClCompile Include="Contents\TileMap.cpp" />

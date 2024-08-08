@@ -347,7 +347,7 @@ table CPkt_Monster_State
 	
 }
 
-table SPkt_Monster_State
+table SPkt_Monster_State.
 {
 	monster_id		: uint;					// 4 bytes
 	monster_bt_type	: MONSTER_BT_TYPE;		// 1 byte

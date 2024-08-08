@@ -94,7 +94,7 @@ public:
 	SPtr_SendPktBuf SPkt_RemoveMonster(uint32_t monster_id);
 	SPtr_SendPktBuf SPkt_Monster_Transform(uint32_t monster_id, Vec3 pos, Vec3 look);
 	SPtr_SendPktBuf SPkt_Monster_HP(uint32_t monster_id, float hp);
-	SPtr_SendPktBuf SPkt_Monster_State(uint32_t monster_id, FBProtocol::MONSTER_BT_TYPE montser_bt_type);
+	SPtr_SendPktBuf SPkt_Monster_State(uint32_t monster_id, FBProtocol::MONSTER_BT_TYPE montser_bt_type, int32_t step = 0);
 	SPtr_SendPktBuf SPkt_Monster_Target(uint32_t monster_id, int32_t target_player_id, int32_t target_monster_id);
 
 	/* PHERO */

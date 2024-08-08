@@ -148,7 +148,8 @@ BTNodeState MonsterTask::MoveToTarget::Evaluate()
 	if (toTarget.Length() > kMinDistance) {
 		MonsterBTTask::mAnimation->GetController()->SetValue("Return", false);
 
-		MonsterBTTask::mTransform->RotateTargetAxisY(targetTansSnapShot.GetPosition(), mStat->GetStat_RotationSpeed());
+		//mStat->GetStat_RotationSpeed();
+		MonsterBTTask::mTransform->RotateTargetAxisY(targetTansSnapShot.GetPosition(), 500.f);
 		MonsterBTTask::mTransform->Translate(GetOwner()->GetTransform()->GetLook(), mStat->GetStat_MoveSpeed() * GetOwner()->GetDeltaTime());
 	}
 

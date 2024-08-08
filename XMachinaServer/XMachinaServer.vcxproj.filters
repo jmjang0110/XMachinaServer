@@ -548,6 +548,9 @@
     <ClInclude Include="Contents\GameSkill.h">
       <Filter>Framework\Contents\GameWorld\GameObject\Player\Skill</Filter>
     </ClInclude>
+    <ClInclude Include="Contents\Script_MindControlledEnemy.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster BT</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp">
@@ -644,7 +647,7 @@
     <ClCompile Include="Contents\DB_Inventory.cpp">
       <Filter>Framework\Contents\DataBase\Item</Filter>
     </ClCompile>
-    <ClCompile Include="Contents\GameMonster.cpp">
+    <ClCompile Include="Contents\.cpp">
       <Filter>Framework\Contents\GameWorld\GameObject\NPC\Monster</Filter>
     </ClCompile>
     <ClCompile Include="Contents\GamePlayer.cpp">
@@ -862,6 +865,9 @@
     </ClCompile>
     <ClCompile Include="Contents\GameSkill.cpp">
       <Filter>Framework\Contents\GameWorld\GameObject\Player\Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Script_MindControlledEnemy.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster BT</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

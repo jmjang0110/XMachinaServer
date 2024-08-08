@@ -4,7 +4,7 @@
 #include "Script_Enemy.h"
 #include "Script_EnemyController.h"
 namespace MonsterTask {
-	class BTTaskM_MoveToMindControlInvoker : public MonsterBTTask {
+	class MoveToMindControlInvoker : public MonsterBTTask {
 	private:
 		SPtr<GamePlayer> mInvoker;
 
@@ -15,8 +15,8 @@ namespace MonsterTask {
 
 
 	public:
-		BTTaskM_MoveToMindControlInvoker(SPtr_GameObject owner, std::function<void()> callback = nullptr);
-		~BTTaskM_MoveToMindControlInvoker();
+		MoveToMindControlInvoker(SPtr_GameObject owner, std::function<void()> callback = nullptr);
+		~MoveToMindControlInvoker();
 	};
 
 

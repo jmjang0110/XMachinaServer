@@ -20,6 +20,18 @@
 #include "Script_PheroDropper.h"
 #include "GamePhero.h"
 
+#include "Script_AdvancedCombatDroid_5.h"
+#include "Script_Anglerox.h"
+#include "Script_Arack.h"
+#include "Script_Aranobot.h"
+#include "Script_Ceratoferox.h"
+#include "Script_Gobbler.h"
+#include "Script_LightBipedMech.h"
+#include "Script_MiningMech.h"
+#include "Script_Onyscidus.h"
+#include "Script_Ursacetus.h"
+#include "Script_Rapax.h"
+
 
 const std::vector<SPtr<GamePhero>>& GameMonster::GetAllPheros()
 {
@@ -125,7 +137,6 @@ void GameMonster::Update()
 	if (mTimer >= 1.f / 2.f) {
 
 		/* Send Transform Packet */
-		/* Send Transform Packet */
 		Vec3 Pos  = GetTransform()->GetPosition();
 		auto spkt = FBS_FACTORY->SPkt_Monster_Transform(GetID(), Pos, GetTransform()->GetLook());
 		GAME_MGR->BroadcastRoom(GetOwnerNPCController()->GetOwnerRoom()->GetID(), spkt);
@@ -208,9 +219,58 @@ SPtr<GameMonster> GameMonster::Clone()
 	copy->SetPheros(mInfo.Pheros);
 	
 
+
 	return copy;
 }
 
+ScriptInfo::Type GameMonster::GetScriptInfoType() {
+	FBProtocol::MONSTER_TYPE type = mInfo.Type;
+	ScriptInfo::Type t;
+	switch (type)
+	{
+	case FBProtocol::MONSTER_TYPE_ADVANCED_COMBAT_DROIR_5:
+		t = ScriptInfo::Type::AdvancedCombatDroid_5;
+		break;
+	case FBProtocol::MONSTER_TYPE_ANGLEROX:
+		t = ScriptInfo::Type::Anglerox;
+		break;
+	case FBProtocol::MONSTER_TYPE_ARACK:
+		t = ScriptInfo::Type::Arack;
+		break;
+	case FBProtocol::MONSTER_TYPE_ARANOBOT:
+		t = ScriptInfo::Type::Aranabot;
+		break;
+	case FBProtocol::MONSTER_TYPE_CERATOFEROX:
+		t = ScriptInfo::Type::Ceratoferox;
+		break;
+	case FBProtocol::MONSTER_TYPE_GOBBLER:
+		t = ScriptInfo::Type::Gobbler;
+		break;
+	case FBProtocol::MONSTER_TYPE_LIGHTBIPEDMECH:
+		t = ScriptInfo::Type::LightBipedMech;
+		break;
+	case FBProtocol::MONSTER_TYPE_MININGMECH:
+		t = ScriptInfo::Type::MiningMech;
+		break;
+	case FBProtocol::MONSTER_TYPE_ONYSCIDUS:
+		t = ScriptInfo::Type::Onyscidus;
+		break;
+	case FBProtocol::MONSTER_TYPE_URSACETUS:
+		t = ScriptInfo::Type::Ursacetus;
+		break;
+	case FBProtocol::MONSTER_TYPE_RAPAX:
+		t = ScriptInfo::Type::Rapax;
+		break;
+	default:
+		assert(0);
+		break;
+	}
+	return t;
+}
 
-
+Script_Enemy* GameMonster::GetEnemyScript() {
+	ScriptInfo::Type type = GetScriptInfoType();
+	Script_Enemy* script = GetScript<Script_Enemy>(type).get();
+	return script;
+}
 

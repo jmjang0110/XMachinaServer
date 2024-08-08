@@ -107,7 +107,7 @@ public:
 	/// +---------------------------------------------------
 	///						S E T T E R 
 	/// ---------------------------------------------------+
-	void SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE type) { mCurrBTType    = type; }			
+	void SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE type) { mPrevBTType = mCurrBTType; mCurrBTType = type; }
 	void UpdateMonsterCurrBTType()								{ mPrevBTType    = mCurrBTType; }
 	//void SetState(EnemyInfo::State state)						{ mState         = state; }
 

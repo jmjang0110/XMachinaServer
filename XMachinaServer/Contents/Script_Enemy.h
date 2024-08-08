@@ -13,9 +13,9 @@ protected:
 	};
 
 protected:
-	SPtr<Script_EnemyController> mEnemyController = {};
-	float mAnimTime{};
-	int mCurrAttackCnt{};
+	SPtr<Script_EnemyController>	mEnemyController = {};
+	float							mAnimTime{};
+	int								mCurrAttackStep{};
 
 public:
 	Script_Enemy();
@@ -51,5 +51,8 @@ public:
 protected:
 	virtual void AttackEndCallback();
 	virtual void DeathEndCallback();
+
+public:
+	int GetCurrAttackStep() { return mCurrAttackStep; }
 };
 

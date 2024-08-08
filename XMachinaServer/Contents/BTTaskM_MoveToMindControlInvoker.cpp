@@ -8,7 +8,7 @@
 #include "ServerLib/ThreadManager.h"
 
 
-BTNodeState MonsterTask::BTTaskM_MoveToMindControlInvoker::Evaluate()
+BTNodeState MonsterTask::MoveToMindControlInvoker::Evaluate()
 {
 	SPtr<GameObject> target = mEnemyController->GetTarget();
 
@@ -98,7 +98,7 @@ BTNodeState MonsterTask::BTTaskM_MoveToMindControlInvoker::Evaluate()
 	return BTNodeState::Success;
 }
 
-bool MonsterTask::BTTaskM_MoveToMindControlInvoker::isXInterceptPositive(const Vec3& To, const Vec3& From)
+bool MonsterTask::MoveToMindControlInvoker::isXInterceptPositive(const Vec3& To, const Vec3& From)
 {
 	// 오브젝트로부터 타겟까지의 벡터
 	Vec3 toTarget = To - From;
@@ -115,12 +115,12 @@ bool MonsterTask::BTTaskM_MoveToMindControlInvoker::isXInterceptPositive(const V
 	return xIntercept > 0;
 }
 
-MonsterTask::BTTaskM_MoveToMindControlInvoker::BTTaskM_MoveToMindControlInvoker(SPtr_GameObject owner, std::function<void()> callback)
+MonsterTask::MoveToMindControlInvoker::MoveToMindControlInvoker(SPtr_GameObject owner, std::function<void()> callback)
 	: MonsterBTTask(owner, BTTaskType::MonT_MoveToMindControlInvoker, callback)
 
 {
 }
 
-MonsterTask::BTTaskM_MoveToMindControlInvoker::~BTTaskM_MoveToMindControlInvoker()
+MonsterTask::MoveToMindControlInvoker::~MoveToMindControlInvoker()
 {
 }
