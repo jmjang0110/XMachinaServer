@@ -89,8 +89,8 @@ public:
 	virtual void Dispatch(class OverlappedObject* overlapped, UINT32 bytes = 0) override;
 
 public:
-	int		OnShoot(Vec3& ray);
-	int		OnHitEnemy(int32_t monster_id, Vec3& ray);
+	int		OnShoot(Vec3& pos, Vec3& ray);
+	int		OnHitEnemy(int32_t monster_id, Vec3& pos, Vec3& ray);
 	bool	OnSkill(FBProtocol::PLAYER_SKILL_TYPE type);
 	void	Exit();
 	bool	IsExit() { mSnapShot.Lock_IsExit.LockWrite(); bool isExit = mSnapShot.IsExit; mSnapShot.Lock_IsExit.UnlockWrite(); return isExit; };

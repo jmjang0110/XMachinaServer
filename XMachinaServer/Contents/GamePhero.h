@@ -26,7 +26,7 @@ private:
 
 	std::atomic_int mActivate_Ref = 0;
 
-	bool IsSetTargetPlayer;
+	bool IsSetTargetPlayer = false;
 
 public:
 	GamePhero();

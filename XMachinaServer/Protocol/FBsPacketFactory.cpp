@@ -348,7 +348,7 @@ bool FBsPacketFactory::Process_CPkt_PlayerOnSkill(SPtr_Session session, const FB
 	FBProtocol::PLAYER_SKILL_TYPE	type				  =  pkt.skill_type();
 	auto							playerScript          = gameSession->GetPlayer()->GetScript<Script_Player>(ScriptInfo::Type::Stat);
 	float							PheroAmount           = playerScript->GetPhero();
-	int								mindontrol_monster_id = pkt.mindcontrol_monster_Id();
+	int								mindontrol_monster_id = pkt.mindcontrol_monster_id();
 
 
 	/// +---------------------------------------------------------------------------------------
@@ -448,6 +448,8 @@ bool FBsPacketFactory::Process_CPkt_Player_Weapon(SPtr_Session session, const FB
 
 	FBProtocol::WEAPON_TYPE weaponType = pkt.weapon_type();
 	gameSession->GetPlayer()->S_SetEquipWeapon(weaponType);
+
+	LOG_MGR->Cout(gameSession->GetID(), " - WEAPON TYPE : ", static_cast<int>(weaponType), "\n");
 
 
 	auto spkt = FBS_FACTORY->SPkt_Player_Weapon(session->GetID(), weaponType);
@@ -581,12 +583,19 @@ bool FBsPacketFactory::Process_CPkt_Bullet_OnShoot(SPtr_Session session, const F
 	int  player_id   = gameSession->GetID(); // 플레이어 아이디
 	auto gun_id      = gameSession->GetPlayer()->S_GetCurrWeapon();
 	Vec3 ray         = GetVector3(pkt.ray());
-	int  bullet_id   = gameSession->GetPlayer()->OnShoot(ray); // PQCS -> Bullet Update Start ( Worker Thread  에게 업데이트를 떠넘긴다 ) 
+	Vec3 FirePos     = GetVector3(pkt.pos());
+
+	if (gun_id == FBProtocol::WEAPON_TYPE_AIR_STRIKE) {
+		// PQCS->Bullet Update Start(Worker Thread  에게 업데이트를 떠넘긴다)
+		// server 에서 simulation 한다. 
+
+	}
 	
+	int  bullet_id = {}; // 의미 없어짐. 
 	//LOG_MGR->Cout("[", player_id, "]RAY : ", ray.x, " ", ray.y, " ", ray.z, " ---> ", bullet_id, "\n");
 
 	/// 플레이어가 Shot 했다는 것을 플레이어들에게 알린다. 
-	auto spkt = FBS_FACTORY->SPkt_Bullet_OnShoot(player_id, gun_id, bullet_id, ray);
+	auto spkt = FBS_FACTORY->SPkt_Bullet_OnShoot(player_id, gun_id, bullet_id, FirePos, ray);
 	GAME_MGR->BroadcastRoom(gameSession->GetPlayer()->GetRoomID(), spkt, player_id);
 
 	return true;
@@ -601,7 +610,8 @@ bool FBsPacketFactory::Process_CPkt_Bullet_OnHitEnemy(SPtr_Session session, cons
 	
 	int32_t monster_id	= pkt.monster_id();
 	Vec3 ray			= GetVector3(pkt.ray());
-	int  bullet_id		= gameSession->GetPlayer()->OnHitEnemy(monster_id, ray); // PQCS -> Bullet Update Start ( Worker Thread  에게 업데이트를 떠넘긴다 ) 
+	Vec3 fire_pos       = GetVector3(pkt.fire_pos());
+	int  bullet_id		= gameSession->GetPlayer()->OnHitEnemy(monster_id, fire_pos, ray); // PQCS -> Bullet Update Start ( Worker Thread  에게 업데이트를 떠넘긴다 ) 
 
 	return true;
 }
@@ -1139,7 +1149,7 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_GetPhero(uint32_t phero_id, uint32_t play
 ///	◈ SEND [ BULLET ] PACKET ◈
 /// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------★
 
-SPtr_SendPktBuf FBsPacketFactory::SPkt_Bullet_OnShoot(uint32_t player_id, FBProtocol::WEAPON_TYPE gun_id, uint32_t bullet_id, Vec3 ray)
+SPtr_SendPktBuf FBsPacketFactory::SPkt_Bullet_OnShoot(uint32_t player_id, FBProtocol::WEAPON_TYPE gun_id, uint32_t bullet_id, Vec3 fire_pos, Vec3 ray)
 {
 
 	/// > ○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○
@@ -1155,9 +1165,10 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_Bullet_OnShoot(uint32_t player_id, FBProt
 
 	flatbuffers::FlatBufferBuilder builder{};
 
-	auto Ray = FBProtocol::CreateVector3(builder, ray.x, ray.y, ray.z);
+	auto Ray     = FBProtocol::CreateVector3(builder, ray.x, ray.y, ray.z);
+	auto firePos = FBProtocol::CreateVector3(builder, fire_pos.x, fire_pos.y, fire_pos.z);
 
-	auto serverPacket = FBProtocol::CreateSPkt_Bullet_OnShoot(builder, player_id, gun_id, bullet_id, Ray);
+	auto serverPacket = FBProtocol::CreateSPkt_Bullet_OnShoot(builder, player_id, gun_id, bullet_id, firePos, Ray);
 	builder.Finish(serverPacket);
 	SPtr_SendPktBuf sendBuffer = SEND_FACTORY->CreatePacket(builder.GetBufferPointer(), static_cast<uint16_t>(builder.GetSize()), FBsProtocolID::SPkt_Bullet_OnShoot);
 	return sendBuffer;

@@ -168,7 +168,7 @@ void GamePlayer::Exit()
 
 }
 
-int GamePlayer::OnShoot(Vec3& ray)
+int GamePlayer::OnShoot(Vec3& pos, Vec3& ray)
 {
 	return -1;
 
@@ -189,7 +189,7 @@ int GamePlayer::OnShoot(Vec3& ray)
 	//return -1;
 }
 
-int GamePlayer::OnHitEnemy(int32_t monster_id, Vec3& ray)
+int GamePlayer::OnHitEnemy(int32_t monster_id, Vec3& pos, Vec3& ray)
 {
 	int possibleIndex = -1;
 	if (mPossibleBulletIndex.try_pop(possibleIndex)) {
@@ -197,6 +197,7 @@ int GamePlayer::OnHitEnemy(int32_t monster_id, Vec3& ray)
 		if (0 <= possibleIndex && possibleIndex < GameObjectInfo::maxBulletsNum) {
 
 			mBullets[possibleIndex]->GetTransform()->SetPosition(GetTransform()->GetSnapShot().GetPosition());
+			//mBullets[possibleIndex]->GetTransform()->SetPosition(pos);
 			mBullets[possibleIndex]->SetOnShootDir(ray);
 			mBullets[possibleIndex]->SetHitMonsterID(monster_id);
 			mBullets[possibleIndex]->SetWeaponType(S_GetCurrWeapon());	// 총알 종류 설정 
@@ -367,9 +368,11 @@ void GamePlayer::CollideCheckWithMonsters()
 			// 몬스터의 Phero와 충돌체크  
 			const std::vector<SPtr<GamePhero>>& pheros = iter.second->GetAllPheros();
 
+
 			for (int i = 0; i < pheros.size(); ++i) {
-				if (pheros[i]->IsSetTarget() == false)
+				if (pheros[i]->IsSetTarget() == true) {
 					continue;
+				}
 
 				//ColliderSnapShot SNS_Phero = pheros[i]->GetCollider()->GetSnapShot();
 				Vec3 pheroPos = pheros[i]->GetTransform()->GetPosition();
@@ -399,7 +402,7 @@ void GamePlayer::CollideCheckWithMonsters()
 					auto pkt      = FBS_FACTORY->SPkt_GetPhero(pheroID, targetID);
 					GAME_MGR->BroadcastRoom(mOwnerPC->GetOwnerRoom()->GetID(), pkt);
 
-					LOG_MGR->Cout(phero_scirpt->GetLevel(), "[", pheroID, "]", " => Get Phero", "  -- [", targetID, "]\n");
+					//LOG_MGR->Cout(phero_scirpt->GetLevel(), "[", pheroID, "]", " => Get Phero", "  -- [", targetID, "]\n");
 
 				}
 

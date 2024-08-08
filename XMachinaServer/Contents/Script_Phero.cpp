@@ -3,11 +3,14 @@
 
 Script_Phero::Script_Phero()
 {
+    mTargetPlayer.store(-1);
+    
 }
 
 Script_Phero::Script_Phero(SPtr<GameObject> owner, ScriptInfo::Type type)
     : Script(owner, type, static_cast<UINT32>(type))
 {
+    mTargetPlayer.store(-1);
 
 }
 
@@ -23,6 +26,7 @@ void Script_Phero::Clone(SPtr<Component> other)
     this->mLevel           = otherScript->mLevel;
     this->mAmount          = otherScript->mAmount;
     this->mLifeTime        = otherScript->mLifeTime;
+    mTargetPlayer.store(-1);
 
 }
 

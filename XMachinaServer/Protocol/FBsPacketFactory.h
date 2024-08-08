@@ -101,7 +101,7 @@ public:
 	SPtr_SendPktBuf SPkt_GetPhero(uint32_t phero_id, uint32_t player_id);
 
 	/* BULLET */
-	SPtr_SendPktBuf SPkt_Bullet_OnShoot(uint32_t player_id, FBProtocol::WEAPON_TYPE  gun_id, uint32_t bullet_id, Vec3 ray);
+	SPtr_SendPktBuf SPkt_Bullet_OnShoot(uint32_t player_id, FBProtocol::WEAPON_TYPE  gun_id, uint32_t bullet_id, Vec3 fire_pos, Vec3 ray);
 	SPtr_SendPktBuf SPkt_Bullet_OnHitEnemy(uint32_t player_id, FBProtocol::WEAPON_TYPE  gun_id, uint32_t bullet_id, Vec3 ray);
 	SPtr_SendPktBuf SPkt_Bullet_OnCollision(uint32_t player_id, FBProtocol::WEAPON_TYPE gun_id, uint32_t bullet_id);
 
