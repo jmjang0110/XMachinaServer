@@ -70,7 +70,6 @@ BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 			MonsterBTTask::mAnimation->GetController()->SetValue("Attack", true);
 
 			mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK);
-			//mEnemyController->SetState(EnemyInfo::State::Attack);
 
 			return BTNodeState::Success;
 		}

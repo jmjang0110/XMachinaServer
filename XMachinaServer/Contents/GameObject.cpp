@@ -78,6 +78,11 @@ void GameObject::Update()
 		}
 	}
 
+	for (auto& pair : mScripts) {
+		if (pair.second) {
+			pair.second->LateUpdate();
+		}
+	}
 }
 
 void GameObject::Animate()

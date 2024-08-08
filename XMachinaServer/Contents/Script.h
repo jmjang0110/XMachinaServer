@@ -62,6 +62,7 @@ public:
 	virtual bool WakeUp();
 	virtual bool Start();
 	virtual bool Update();
+	virtual bool LateUpdate();
 	virtual void OnDestroy();
 
 };

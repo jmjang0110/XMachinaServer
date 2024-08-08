@@ -8,9 +8,9 @@ class Script_Ursacetus : public Script_Enemy
 {
 private:
 	enum class AttackType {
-		BasicAttack = 0,	
-		RoarAttack = 3,		
-		SpecialAttack = 4,	
+		BasicAttack = 1,	
+		RoarAttack = 4,		
+		SpecialAttack = 5,
 
 		_count,
 	};
@@ -32,21 +32,14 @@ public:
 	/// +------------------------------
 	///		Stat :  virtual function 
 	/// ------------------------------+
-	virtual bool Attack();
+	virtual bool Start() override;
+	virtual bool LateUpdate() override;
+	virtual bool Attack() override;
 
 protected:
-	void BasicStartCallback();
 	void BasicAttackCallback();
-
-	void RoarStartCallback();
-	void RoarAttackCallback();
-
-	void SpecialAttack();
 	void SpecialAttackCallback();
 
-	void SpecialAttackStartCallback();
-
 	virtual void AttackEndCallback() override;
-
 };
 

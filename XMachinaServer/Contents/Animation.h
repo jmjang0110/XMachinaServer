@@ -130,6 +130,10 @@ public:
 		for (auto& iter : mStates) {
 			iter.second->SetAnimOwner(animOwner);
 		}
+
+		for (auto& iter : mStateMachines) {
+			iter.second->SetAnimOwner(animOwner);
+		}
 	}
 public:
 	const std::string& GetName() const { return mName; }
@@ -222,6 +226,19 @@ public:
 
 	const AnimatorParameter* GetParam(const std::string& paramName) const { return &mParameters.at(paramName); }
 	bool HasParam(const std::string paramName) const { return mParameters.contains(paramName); }
+
+	template<class T, typename std::enable_if<is_valid_param_type<T>>::type* = nullptr>
+	T GetParamValue(const std::string& paramName) const
+	{
+		if (std::is_same_v<T, bool>) {
+			return mParameters.at(paramName).val.b;
+		}
+		if (std::is_same_v<T, int>) {
+			return mParameters.at(paramName).val.i;
+		}
+
+		return mParameters.at(paramName).val.f;
+	}
 
 	template<class T, typename std::enable_if<is_valid_param_type<T>>::type* = nullptr>
 	bool SetValueOnly(const std::string& paramName, T value)

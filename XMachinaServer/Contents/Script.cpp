@@ -74,6 +74,13 @@ bool Script::Update()
 	return true;
 }
 
+bool Script::LateUpdate()
+{
+	Component::LateUpdate();
+
+	return true;
+}
+
 void Script::OnDestroy()
 {
 	Component::OnDestroy();

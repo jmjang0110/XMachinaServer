@@ -33,11 +33,13 @@ public:
 	/// +------------------------------
 	///		Stat :  virtual function 
 	/// ------------------------------+
+
 	virtual bool Attack();
-	virtual void AttackEndCallback();
-	virtual void DeathEndCallback();
 	virtual void Dead();
 	virtual bool Hit(float damage, SPtr_GameObject instigator = nullptr) override;
 
+protected:
+	virtual void AttackEndCallback();
+	virtual void DeathEndCallback();
 };
 

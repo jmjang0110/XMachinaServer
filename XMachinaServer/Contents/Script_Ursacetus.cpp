@@ -45,7 +45,30 @@ void Script_Ursacetus::Clone(SPtr<Component> other)
 {
     Script_Enemy::Clone(other);
     SPtr<Script_Ursacetus> otherScript = std::static_pointer_cast<Script_Ursacetus>(other);
+}
 
+bool Script_Ursacetus::Start()
+{
+    if (!Script_Enemy::Start()) {
+        return false;
+    }
+ 
+    mCurrAttackCnt = static_cast<int>(AttackType::BasicAttack);
+    GetOwner()->GetAnimation()->GetController()->FindMotionByName(GetStat_Attack1AnimName())->AddCallback(std::bind(&Script_Ursacetus::BasicAttackCallback, this), 57);
+    GetOwner()->GetAnimation()->GetController()->FindMotionByName(GetStat_Attack3AnimName())->AddCallback(std::bind(&Script_Ursacetus::SpecialAttackCallback, this),65);
+
+    return true;
+}
+
+bool Script_Ursacetus::LateUpdate()
+{
+    if (!Script_Enemy::LateUpdate()) {
+        return false;
+    }
+
+    //GetOwner()->GetAnimation()->GetController()->SetValue("IsAttack", false);
+
+    return true;
 }
 
 bool Script_Ursacetus::Attack()
@@ -54,43 +77,13 @@ bool Script_Ursacetus::Attack()
         return false;
     }
 
-    bool isAttack{};
-    if (mCurrAttackCnt < 2) {
-        if (mAnimTime >= 4.33f) {
-            isAttack = true;
-            std::cout << "ATtack1\n";
-           // mEnemyController->SetState(EnemyInfo::State::Attack);
-            mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK);
-        }
-    }
-    else if (mCurrAttackCnt < 3) {
-        if (mAnimTime >= 5.16f) {
-            isAttack = true;
-            std::cout << "ATtack2\n";
-           // mEnemyController->SetState(EnemyInfo::State::Attack2);
-            mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK);
-        }
-    }
-    else if (mCurrAttackCnt < 4) {
-        if (mAnimTime >= 3.83f) {
-            isAttack = true;
-            std::cout << "ATtack3\n";
-           // mEnemyController->SetState(EnemyInfo::State::Attack3);
-            mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK);
-        }
-    }
+    mEnemyController->RemoveAllAnimation();
+    GetOwner()->GetAnimation()->GetController()->SetValue("Attack", mCurrAttackCnt);
+    GetOwner()->GetAnimation()->GetController()->SetValue("IsAttack", true);
 
-    if (isAttack) {
-        mAnimTime = 0.f;
-        ++mCurrAttackCnt;
-        mCurrAttackCnt %= AttackTypeCount;
-    }
+    std::cout << "ATTACKING" << std::endl;
 
     return true;
-}
-
-void Script_Ursacetus::BasicStartCallback()
-{
 }
 
 void Script_Ursacetus::BasicAttackCallback()
@@ -98,10 +91,6 @@ void Script_Ursacetus::BasicAttackCallback()
     if (!Script_Enemy::mEnemyController->GetTarget()) {
         return;
     }
-
-   // mEnemyController->SetState(EnemyInfo::State::Attack);
-    mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK);
-    //mEnemyController->GetOwnerMonster()->Broadcast_SPkt_Mosnter_State(FBProtocol::MONSTER_BT_TYPE_ATTACK);
 
     //const float dis = Vec3::Distance(mEnemyMgr->mTarget->GetPosition(), mObject->GetPosition());
     //if (mArmCollider->Intersects(mEnemyMgr->mTarget->GetComponent<Collider>()) || dis < 3.f) {
@@ -112,18 +101,7 @@ void Script_Ursacetus::BasicAttackCallback()
     //}
 }
 
-void Script_Ursacetus::RoarStartCallback()
-{
-    //mEnemyController->SetState(EnemyInfo::State::Attack2);
-    mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK);
-}
-
-void Script_Ursacetus::RoarAttackCallback()
-{
-   
-}
-
-void Script_Ursacetus::SpecialAttack()
+void Script_Ursacetus::SpecialAttackCallback()
 {
     //// 거리에 따른 데미지
     //const float specialAttackRange = mEnemyMgr->mStat.AttackRange * 2.5f;
@@ -138,22 +116,17 @@ void Script_Ursacetus::SpecialAttack()
     //}
 }
 
-void Script_Ursacetus::SpecialAttackCallback()
-{
-}
-
-void Script_Ursacetus::SpecialAttackStartCallback()
-{
-    //mEnemyController->SetState(EnemyInfo::State::Attack3);
-    mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK);
-}
-
 void Script_Ursacetus::AttackEndCallback()
 {
     ++mCurrAttackCnt;
     mCurrAttackCnt %= AttackTypeCount;
+    
+    if (mCurrAttackCnt < 1) {
+        mCurrAttackCnt = 1;
+    }
 
     GetOwner()->GetAnimation()->GetController()->SetValue("Attack", mCurrAttackCnt);
     GetOwner()->GetAnimation()->GetController()->SetValue("IsAttack", false);
-  //  mEnemyController->SetState(EnemyInfo::State::Idle);
+    mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_IDLE);
+    std::cout << "ATTACKING ENDCALLBACK" << std::endl;
 }
