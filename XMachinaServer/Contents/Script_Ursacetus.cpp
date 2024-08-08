@@ -53,7 +53,6 @@ bool Script_Ursacetus::Start()
         return false;
     }
  
-    mCurrAttackCnt = static_cast<int>(AttackType::BasicAttack);
     GetOwner()->GetAnimation()->GetController()->FindMotionByName(GetStat_Attack1AnimName())->AddCallback(std::bind(&Script_Ursacetus::BasicAttackCallback, this), 57);
     GetOwner()->GetAnimation()->GetController()->FindMotionByName(GetStat_Attack3AnimName())->AddCallback(std::bind(&Script_Ursacetus::SpecialAttackCallback, this),65);
 
@@ -66,7 +65,7 @@ bool Script_Ursacetus::LateUpdate()
         return false;
     }
 
-    //GetOwner()->GetAnimation()->GetController()->SetValue("IsAttack", false);
+    const auto& motion = GetOwner()->GetAnimation()->GetController()->GetCrntMotion();
 
     return true;
 }
@@ -76,12 +75,6 @@ bool Script_Ursacetus::Attack()
     if (!Script_Enemy::Attack()) {
         return false;
     }
-
-    mEnemyController->RemoveAllAnimation();
-    GetOwner()->GetAnimation()->GetController()->SetValue("Attack", mCurrAttackCnt);
-    GetOwner()->GetAnimation()->GetController()->SetValue("IsAttack", true);
-
-    std::cout << "ATTACKING" << std::endl;
 
     return true;
 }
@@ -119,14 +112,8 @@ void Script_Ursacetus::SpecialAttackCallback()
 void Script_Ursacetus::AttackEndCallback()
 {
     ++mCurrAttackCnt;
-    mCurrAttackCnt %= AttackTypeCount;
-    
-    if (mCurrAttackCnt < 1) {
-        mCurrAttackCnt = 1;
-    }
+    mCurrAttackCnt %= UrsacetusAttackType::_count;
 
     GetOwner()->GetAnimation()->GetController()->SetValue("Attack", mCurrAttackCnt);
-    GetOwner()->GetAnimation()->GetController()->SetValue("IsAttack", false);
     mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_IDLE);
-    std::cout << "ATTACKING ENDCALLBACK" << std::endl;
 }

@@ -23,8 +23,8 @@ Script_EnemyController::~Script_EnemyController()
 void Script_EnemyController::RemoveAllAnimation()
 {
 
+	GetOwner()->GetAnimation()->GetController()->SetValue("Attack", 0);
 	GetOwner()->GetAnimation()->GetController()->SetValue("Walk", false);
-	GetOwner()->GetAnimation()->GetController()->SetValue("Attack", false);
 	GetOwner()->GetAnimation()->GetController()->SetValue("Return", false);
 	GetOwner()->GetAnimation()->GetController()->SetValue("GetHit", false);
 

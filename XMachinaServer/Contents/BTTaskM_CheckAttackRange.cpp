@@ -24,15 +24,10 @@
 /// __________________________________________________________________________
 BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 {
-	// 1. Target Object가 없다면 Check attack (X)
 	if (!mEnemyController->GetTarget()) {
 		return BTNodeState::Failure;
 	}
 
-	// 2. Attack 상태라면 CheckAttack Range를 할 필요가 없이 바로 Attack  
-	//if (mEnemyController->GetState() == EnemyInfo::State::Attack) {
-	//	return BTNodeState::Success;
-	//}
 	if (mEnemyController->GetMonsterCurrBTType() == FBProtocol::MONSTER_BT_TYPE_ATTACK) {
 		return BTNodeState::Success;
 	}
@@ -64,12 +59,7 @@ BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 		
 		// 너무 가까우면 계속 돈다 그래서 적당히 가까우면 Attack State 로 바꾼다.
 		if (distance < minDistance || Angle < 80.f) {
-
-			mEnemyController->RemoveAllAnimation();
-			MonsterBTTask::mAnimation->GetController()->SetValue("IsAttack", true);
-			MonsterBTTask::mAnimation->GetController()->SetValue("Attack", true);
-
-			mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK);
+			mStat->StartAttack();
 
 			return BTNodeState::Success;
 		}

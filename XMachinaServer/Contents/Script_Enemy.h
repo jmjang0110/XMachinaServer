@@ -5,8 +5,17 @@
 class Script_Enemy : public Script_EnemyStat
 {
 protected:
+	struct AttackType{
+		static constexpr int None = 0;
+		static constexpr int BasicAttack = 1;
+
+		static constexpr int _count = 2;
+	};
+
+protected:
 	SPtr<Script_EnemyController> mEnemyController = {};
 	float mAnimTime{};
+	int mCurrAttackCnt{};
 
 public:
 	Script_Enemy();
@@ -34,6 +43,7 @@ public:
 	///		Stat :  virtual function 
 	/// ------------------------------+
 
+	virtual void StartAttack();
 	virtual bool Attack();
 	virtual void Dead();
 	virtual bool Hit(float damage, SPtr_GameObject instigator = nullptr) override;

@@ -66,6 +66,7 @@ public:
 		mAnimOwner = animOwner; 
 	}
 	const std::string& GetName() const { return mName; }
+	float GetCrntLength() const { return mCrntLength; }
 
 public:
 	bool Animate();

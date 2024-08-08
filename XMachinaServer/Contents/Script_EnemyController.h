@@ -51,7 +51,6 @@ private:
 	SPtr_GameObject		mPathTarget			= {};
 	std::stack<Vec3>	mPaths				= {};
 
-
 	// BTType을 바꿀건지를 체크하기 위해 생성함 (상태를 계속 저장하지 않고 바뀌었을 떄만 저장 - Lock 빈도 수 최소화 )
 	FBProtocol::MONSTER_BT_TYPE mCurrBTType = FBProtocol::MONSTER_BT_TYPE::MONSTER_BT_TYPE_IDLE;
 	FBProtocol::MONSTER_BT_TYPE mPrevBTType = FBProtocol::MONSTER_BT_TYPE::MONSTER_BT_TYPE_IDLE;

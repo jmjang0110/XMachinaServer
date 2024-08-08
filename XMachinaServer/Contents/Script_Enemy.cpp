@@ -100,6 +100,18 @@ void Script_Enemy::OnDestroy()
 
 }
 
+void Script_Enemy::StartAttack()
+{
+	if (mCurrAttackCnt == AttackType::None) {
+		mCurrAttackCnt = AttackType::BasicAttack;
+	}
+
+	mEnemyController->RemoveAllAnimation();
+	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK);
+	GetOwner()->GetAnimation()->GetController()->SetValue("Attack", mCurrAttackCnt);
+	std::cout << mCurrAttackCnt << std::endl;
+}
+
 bool Script_Enemy::Attack()
 {
 	if (!Script_EnemyStat::Attack()) {
@@ -126,9 +138,9 @@ bool Script_Enemy::Attack()
 
 void Script_Enemy::AttackEndCallback()
 {
+	mCurrAttackCnt = AttackType::None;
 	mEnemyController->RemoveAllAnimation();
 	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_IDLE);
-	//mEnemyController->SetState(EnemyInfo::State::Idle);
 }
 
 void Script_Enemy::DeathEndCallback()

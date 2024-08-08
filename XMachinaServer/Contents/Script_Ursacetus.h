@@ -6,17 +6,15 @@ class AnimationController;
 
 class Script_Ursacetus : public Script_Enemy
 {
-private:
-	enum class AttackType {
-		BasicAttack = 1,	
-		RoarAttack = 4,		
-		SpecialAttack = 5,
+protected:
+	struct UrsacetusAttackType : AttackType {
+		static constexpr int RoarAttack = 4;
+		static constexpr int SpecialAttack = 5;
 
-		_count,
+		static constexpr int _count = 6;
 	};
-	enum { AttackTypeCount = static_cast<UINT8>(AttackType::_count) };
 
-	int mCurrAttackCnt{};
+private:
 	SPtr<AnimatorController> mAnimController;
 
 public:
