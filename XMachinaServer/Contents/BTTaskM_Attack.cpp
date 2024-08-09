@@ -17,16 +17,14 @@
 
 BTNodeState MonsterTask::Attack::Evaluate()
 {
-
 	// ※ Attack Range BTNode 에서 Target 체크하므로 여기서는 할 필요 없음 
-
-	SPtr<GamePlayer> target = std::dynamic_pointer_cast<GamePlayer>(mEnemyController->GetTarget());
+	SPtr<GameObject> target = mEnemyController->GetTarget();
 	
 	auto transSNS           = target->GetTransform()->GetSnapShot(); /* Lock */
 	Vec3 TargetPos          = transSNS.GetPosition(); 
 	
 	// 1. Target Player 를 향해 회전한다.
-	MonsterBTTask::mTransform->RotateTargetAxisY(TargetPos, mStat->GetStat_AttackRotationSpeed());
+	MonsterBTTask::mTransform->RotateTargetAxisY(TargetPos, 500.f);
 	mStat->UpdatePrevHP();
 	ExecuteCallback();
 

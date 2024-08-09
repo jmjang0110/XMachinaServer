@@ -91,3 +91,13 @@ void NPCController::AddMonster(UINT32 id, SPtr<GameMonster> monster)
 	
 }
 
+SPtr<GameMonster> NPCController::GetMonster(UINT32 monsterID)
+{
+	const auto& iter = mMonsters.find(monsterID);
+	if (iter == mMonsters.end()) {
+		return nullptr;
+	}
+
+	return iter->second;
+}
+

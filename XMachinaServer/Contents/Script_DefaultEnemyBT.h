@@ -9,7 +9,8 @@ class Script_Enemy;
 class Script_DefaultEnemyBT : public Script_BehaviorTree
 {
 private:
-	BTNode*					mRoot;
+	BTNode* mRoot{};
+
 
 public:
 	Script_DefaultEnemyBT();
@@ -22,7 +23,6 @@ public:
 	/// ------------------------------+
 	virtual void Clone(SPtr<Component> other) ;
 	virtual bool Update();
-
 
 protected:
 	virtual BTNode* SetupTree() override;

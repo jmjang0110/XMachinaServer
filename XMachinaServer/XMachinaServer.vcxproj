@@ -164,6 +164,7 @@
     <ClInclude Include="Contents\BTTaskM_CheckAttackRange.h" />
     <ClInclude Include="Contents\BTTaskM_CheckDeath.h" />
     <ClInclude Include="Contents\BTTaskM_CheckDetectionRange.h" />
+    <ClInclude Include="Contents\BTTaskM_CheckMindControlBT.h" />
     <ClInclude Include="Contents\BTTaskM_CheckMindDetectionRange.h" />
     <ClInclude Include="Contents\BTTaskM_CheckPatrolRange.h" />
     <ClInclude Include="Contents\BTTaskM_GetHit.h" />
@@ -209,7 +210,6 @@
     <ClInclude Include="Contents\Script_Ceratoferox.h" />
     <ClInclude Include="Contents\Script_Gobbler.h" />
     <ClInclude Include="Contents\Script_LightBipedMech.h" />
-    <ClInclude Include="Contents\Script_MindControlledEnemy.h" />
     <ClInclude Include="Contents\Script_MiningMech.h" />
     <ClInclude Include="Contents\Script_Rapax.h" />
     <ClInclude Include="Contents\TileMap.h" />
@@ -277,6 +277,7 @@
     <ClCompile Include="Contents\BehaviorTree.cpp" />
     <ClCompile Include="Contents\BTNode.cpp" />
     <ClCompile Include="Contents\BTTask.cpp" />
+    <ClCompile Include="Contents\BTTaskM_CheckMindControlBT.cpp" />
     <ClCompile Include="Contents\BTTaskM_MoveToMindControlInvoker.cpp" />
     <ClCompile Include="Contents\Collider.cpp" />
     <ClCompile Include="Contents\CollisionManager.cpp" />
@@ -293,7 +294,7 @@
     <ClCompile Include="Contents\GameEntity.cpp" />
     <ClCompile Include="Contents\Gameinfo.cpp" />
     <ClCompile Include="Contents\GameManager.cpp" />
-    <ClCompile Include="Contents\.cpp" />
+    <ClCompile Include="Contents\GameMonster.cpp" />
     <ClCompile Include="Contents\GameNPC.cpp" />
     <ClCompile Include="Contents\GameObject.cpp" />
     <ClCompile Include="Contents\GamePhero.cpp" />
@@ -325,7 +326,6 @@
     <ClCompile Include="Contents\Script_Ceratoferox.cpp" />
     <ClCompile Include="Contents\Script_Gobbler.cpp" />
     <ClCompile Include="Contents\Script_LightBipedMech.cpp" />
-    <ClCompile Include="Contents\Script_MindControlledEnemy.cpp" />
     <ClCompile Include="Contents\Script_MiningMech.cpp" />
     <ClCompile Include="Contents\Script_Rapax.cpp" />
     <ClCompile Include="Contents\TileMap.cpp" />

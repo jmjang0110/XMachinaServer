@@ -33,7 +33,19 @@ Script_Onyscidus::~Script_Onyscidus()
 {
 }
 
-void Script_Onyscidus::Clone(SPtr<Component> other) 
+bool Script_Onyscidus::Start()
+{
+    if (!Script_Enemy::Start()) {
+        return false;
+    }
+
+    GetOwner()->GetAnimation()->GetController()->FindMotionByName(GetStat_Attack1AnimName())->AddCallback(std::bind(&Script_Onyscidus::AttackCallback, this), 17);
+    GetOwner()->GetAnimation()->GetController()->FindMotionByName(GetStat_Attack1AnimName())->AddCallback(std::bind(&Script_Onyscidus::AttackCallback, this), 44);
+
+    return true;
+}
+
+void Script_Onyscidus::Clone(SPtr<Component> other)
 {
 	Script_Enemy::Clone(other);
 	SPtr<Script_Onyscidus> otherScript = std::static_pointer_cast<Script_Onyscidus>(other);

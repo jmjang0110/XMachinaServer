@@ -31,6 +31,7 @@ void GameSkill::Update()
 	// Update가 불릴 시점에는 CoolTime 이 지난 후이므로 
 	// State를 다시 Possible 로 변경한다. 
 	S_SetState(GameSkill::State::Possible);
+
 }
 
 void GameSkill::Activate()
@@ -64,6 +65,23 @@ bool GameSkill::OnSkill(float playerTotalPhero)
 	// 사용가능 
 	if (S_GetState() == GameSkill::State::Possible) {
 
+		switch (mSkillType)
+		{
+		case FBProtocol::PLAYER_SKILL_TYPE_IMPOSSIBLE:
+			break;
+		case FBProtocol::PLAYER_SKILL_TYPE_CLOACKING:
+			break;
+		case FBProtocol::PLAYER_SKILL_TYPE_IR_DETECTOR:
+			break;
+		case FBProtocol::PLAYER_SKILL_TYPE_MIND_CONTROL:
+			InitSkill_MindControl();
+			break;
+		case FBProtocol::PLAYER_SKILL_TYPE_SHIELD:
+			break;
+		default:
+			assert(0);
+			break;
+		}
 		S_SetState(GameSkill::State::Active);
 		auto duration_in_seconds   = std::chrono::duration<float>(mCoolTime);
 		auto coolTimeDuration = std::chrono::duration_cast<std::chrono::system_clock::duration>(duration_in_seconds);
@@ -75,4 +93,17 @@ bool GameSkill::OnSkill(float playerTotalPhero)
 	}
 
 	return true;
+}
+
+void GameSkill::InitSkill_MindControl()
+{
+	if (mMindControlMonster == nullptr)
+		assert(0);
+
+	//mMindControlMonster->
+
+}
+
+void GameSkill::InitSkill_Shield()
+{
 }

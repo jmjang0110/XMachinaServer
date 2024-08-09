@@ -17,8 +17,7 @@ public:
 	/// +------------------------------
 	///		  virtual function 
 	/// ------------------------------+
-	virtual void Clone(SPtr<Component> other) ;
-
-
+	virtual bool Start();
+	virtual void Clone(SPtr<Component> other);
 };
 

@@ -17,26 +17,27 @@
 
 BTNodeState MonsterTask::CheckMindDetectionRange::Evaluate()
 {
+	MonsterBTTask::mAnimation->GetController()->SetValue("Walk", true);
+
 	// 가장 가까운 적을 타겟으로 설정
-	if (!SetTargetNearestEnemy()) {
-		MonsterBTTask::mAnimation->GetController()->SetValue("Walk", true);
-		return BTNodeState::Running;
-	}
+	SetTargetNearestEnemy();
 
-	// 경로 길찾기가 실행중이거나 감지 범위 내에 들어온 경우 다음 노드로 진행
-	Vec3 pos = MonsterBTTask::mTransform->GetPosition();
-	Vec3 targetPos = mEnemyController->GetTarget()->GetTransform()->GetSnapShot().GetPosition();
+	return BTNodeState::Success;
 
-	float dist = (pos - targetPos).Length();
-	if (dist < mStat->GetStat_DetectionRange()) {
-		MonsterBTTask::mAnimation->GetController()->SetValue("Walk", true);
-		return BTNodeState::Success;
-	}
-	else {
-		mEnemyController->SetTarget(nullptr);
-	}
+	//// 경로 길찾기가 실행중이거나 감지 범위 내에 들어온 경우 다음 노드로 진행
+	//Vec3 pos = MonsterBTTask::mTransform->GetPosition();
+	//Vec3 targetPos = mEnemyController->GetTarget()->GetTransform()->GetSnapShot().GetPosition();
 
-	return BTNodeState::Failure;
+	//float dist = (pos - targetPos).Length();
+	//if (dist < mStat->GetStat_DetectionRange()) {
+	//	MonsterBTTask::mAnimation->GetController()->SetValue("Walk", true);
+	//	return BTNodeState::Success;
+	//}
+	//else {
+	//	mEnemyController->SetTarget(nullptr);
+	//}
+
+	//return BTNodeState::Failure;
 }
 
 bool MonsterTask::CheckMindDetectionRange::SetTargetNearestEnemy()
@@ -47,27 +48,30 @@ bool MonsterTask::CheckMindDetectionRange::SetTargetNearestEnemy()
 
 	float minDistance = std::numeric_limits<float>::max();
 
-	Vec3 pos       = GetOwner()->GetTransform()->GetPosition();
-	ViewList vList = mEnemyController->GetOwnerMonster()->GetOwnerNPCController()->GetOwnerRoom()->GetSectorController()->GetViewList(pos, 10.f);
-	SPtr<GameObject> target = nullptr;
+	Vec3				monsterPos       = MonsterBTTask::mTransform->GetPosition();
+	ViewList			monsterVList     = mEnemyController->GetOwnerRoom()->GetSectorController()->GetViewList(monsterPos, mStat->GetStat_DetectionRange(), false);
+	SPtr<GameObject>	target			 = nullptr;
 
-	for (int i = 0; i < vList.VL_Monsters.size(); ++i) {
-		if (vList.VL_Monsters[i]->IsActive() == false)
+	for (auto& iter : monsterVList.VL_Monsters) {
+		if (mStat->S_GetObjectState() == Script_Stat::ObjectState::Dead) {
+			continue;
+		}
+
+		if (iter.second->GetID() == mEnemyController->GetOwnerMonster()->GetID())
 			continue;
 
-		Vec3 enemyPos = vList.VL_Monsters[i]->GetTransform()->GetSnapShot().GetPosition();
-		float distance = Vec3::Distance(pos, enemyPos);
+
+		Vec3	enemyPos = iter.second->GetTransform()->GetSnapShot().GetPosition();
+		float	distance = Vec3::Distance(monsterPos, enemyPos);
 
 		if (distance < minDistance) {
 			minDistance = distance;
-			target      = vList.VL_Monsters[i];
+			target      = iter.second;
 		}
 	}
 
 	mEnemyController->SetTarget(target);
-
 	return true;
-
 }
 
 

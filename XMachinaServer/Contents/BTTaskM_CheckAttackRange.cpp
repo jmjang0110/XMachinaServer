@@ -33,16 +33,18 @@ BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 	}
 	
 	// 3. Target Player 가 Cloacking 상태라면 Attack (X)
-	SPtr<GamePlayer> target = std::dynamic_pointer_cast<GamePlayer>(mEnemyController->GetTarget());
-	if (target->IsExit() == true) {
-		mEnemyController->SetTarget(nullptr);
-		return BTNodeState::Failure;
-	}
+	SPtr<GameObject> target = mEnemyController->GetTarget();
+	if (auto player = std::dynamic_pointer_cast<GamePlayer>(target)) {
+		if (player->IsExit() == true) {
+			mEnemyController->SetTarget(nullptr);
+			return BTNodeState::Failure;
+		}
 
-	GameSkill::State IsCloakingOn = target->S_GetSkillState(FBProtocol::PLAYER_SKILL_TYPE_CLOACKING);
-	if (IsCloakingOn == GameSkill::State::Active) {
-		mEnemyController->SetTarget(nullptr);
-		return BTNodeState::Failure;
+		GameSkill::State IsCloakingOn = player->S_GetSkillState(FBProtocol::PLAYER_SKILL_TYPE_CLOACKING);
+		if (IsCloakingOn == GameSkill::State::Active) {
+			mEnemyController->SetTarget(nullptr);
+			return BTNodeState::Failure;
+		}
 	}
 
 	

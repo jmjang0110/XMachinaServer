@@ -61,6 +61,9 @@ enum MONSTER_BT_TYPE : ubyte {
 	MOVE_TO_PATH,
 	MOVE_TO_MIND_TARGET,
 	PATROL,
+
+	CHANGE_BT,
+
 	END
 }
 

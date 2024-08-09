@@ -78,20 +78,12 @@ public:
 	/// ------------------------------+
 	virtual void Clone(SPtr<Component> other) ;
 
-	virtual void Activate();
-	virtual void DeActivate();
 
-	virtual bool WakeUp();
 	virtual bool Start();
-	virtual bool Update();
-	virtual void OnDestory();
 
 	/// +------------------------------
 	///		 Stat : virtual function 
 	/// ------------------------------+
-	virtual bool Attack();
-	virtual void Dead();
-	virtual bool Hit(float damage, SPtr_GameObject instigator = nullptr);
 
 public:
 	// player를 [pos]로 위치시키고 해당 위치를 리스폰 지점으로 설정한다.

@@ -38,7 +38,7 @@ struct PlayerSnapShot : public ObjectSnapShot
 	bool					IsExit			= false; Lock::SRWLock Lock_IsExit;				
 	
 	ViewList				VList_SnapShot  = {};	 Lock::SRWLock Lock_VList_SnapShot;		
-	float					Phero           = {};	 Lock::SRWLock Lock_Phero;				
+	float					Phero           = 1000;	 Lock::SRWLock Lock_Phero;				
 	FBProtocol::WEAPON_TYPE	WeaponType      = {};	 Lock::SRWLock Lock_Weapon;				
 	float					Velocity        = {};	 Lock::SRWLock Lock_Velocity;			
 	Vec3					SpineLookDir    = {};    Lock::SRWLock Lock_SpineLookDir;		
@@ -91,7 +91,7 @@ public:
 public:
 	int		OnShoot(Vec3& pos, Vec3& ray);
 	int		OnHitEnemy(int32_t monster_id, Vec3& pos, Vec3& ray);
-	bool	OnSkill(FBProtocol::PLAYER_SKILL_TYPE type);
+	bool	OnSkill(FBProtocol::PLAYER_SKILL_TYPE type, SPtr<GameMonster> mindControlledMonster);
 	void	Exit();
 	bool	IsExit() { mSnapShot.Lock_IsExit.LockWrite(); bool isExit = mSnapShot.IsExit; mSnapShot.Lock_IsExit.UnlockWrite(); return isExit; };
 	

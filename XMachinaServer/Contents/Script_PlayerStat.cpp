@@ -40,61 +40,12 @@ void Script_PlayerStat::Clone(SPtr<Component> other)
 
 
 }
-
-void Script_PlayerStat::Activate()
-{
-	Script_Stat::Activate();
-
-}
-
-void Script_PlayerStat::DeActivate()
-{
-	Script_Stat::DeActivate();
-
-}
-
-bool Script_PlayerStat::WakeUp()
-{
-	Script_Stat::WakeUp();
-	return true;
-}
-
 bool Script_PlayerStat::Start()
 {
 	Script_Stat::Start();
 
 	mPlayerOwner = std::dynamic_pointer_cast<GamePlayer>(GetOwner());
 
-	return true;
-}
-
-bool Script_PlayerStat::Update()
-{
-	Script_Stat::Update();
-	return true;
-}
-
-void Script_PlayerStat::OnDestory()
-{
-	Script_Stat::OnDestroy();
-
-}
-
-bool Script_PlayerStat::Attack()
-{
-	return true;
-}
-
-void Script_PlayerStat::Dead()
-{
-	Script_Stat::Dead();
-
-}
-
-bool Script_PlayerStat::Hit(float damage, SPtr_GameObject instigator)
-{
-	Script_Stat::Hit(damage, instigator);
-		
 	return true;
 }
 

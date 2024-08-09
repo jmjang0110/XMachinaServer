@@ -40,6 +40,12 @@ private:
 	Vec3			mOnShootDir   = {};
 	int32_t			mHitMonsterID = {};
 
+	float			mMaxMoveDist  = 40.f;
+	float		    mCurrMoveDist = 0.f;
+
+	float			mSpeed		  = 20.f;
+
+
 public:
 	GameBullet();
 	GameBullet(UINT32 sessionID);
@@ -53,20 +59,26 @@ public:
 
 	virtual void Dispatch(class OverlappedObject* overlapped, UINT32 bytes = 0) override;
 
+private:
+	void BulletUpdate_Air_Strike();
+
 
 public:
 	void DecreaseRef() { mActivate_Ref.fetch_sub(1); if (mActivate_Ref.load() < 0) mActivate_Ref = 0; }
 	void BulletUpdate(FBProtocol::WEAPON_TYPE weaponType);
 	void CheckCollision_WithPlayerViewList();
-	void CheckCollision_WithHitMonsterID();
+	void CheckCollision_WithHitMonsterID_Ray();
 
+	
 public:
 	/// +-----------------------------------------------------------
 	///		S E T T E R 
 	/// -----------------------------------------------------------+
-	void SetWeaponType(FBProtocol::WEAPON_TYPE type)		{  mInfo.WeaponType = type;  }
-	void SetOnShootDir(Vec3& dir) { mOnShootDir = dir; }
-	void SetHitMonsterID(int32_t id) { mHitMonsterID = id; }
+	void SetWeaponType(FBProtocol::WEAPON_TYPE type)		{ mInfo.WeaponType = type;  }
+	void SetOnShootDir(Vec3& dir)							{ mOnShootDir       = dir; }
+	void SetHitMonsterID(int32_t id)						{ mHitMonsterID     = id; }
+	void SetSpeed(float speed)								{ mSpeed            = speed; }
+
 
 	// Getters
 	int						GetActivate_RefCnt() { return mActivate_Ref.load(); }

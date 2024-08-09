@@ -27,38 +27,38 @@ BTNodeState BTTask::Evaluate()
 SPtr<Script_Enemy> BTTask::GetStat(GameObjectInfo::Type enemyType)
 {
 	SPtr<Script_Enemy> stat;
-	if (GetOwner()->GetType() == GameObjectInfo::Type::Monster_AdvancedCombat_5)
-		stat = GetOwner()->GetScript<Script_AdvancedCombatDroid_5>(ScriptInfo::Type::AdvancedCombatDroid_5);
+	if (enemyType == GameObjectInfo::Type::Monster_AdvancedCombat_5)
+		stat = GetOwner()->GetScript<Script_AdvancedCombatDroid_5>(ScriptInfo::Type::Stat);
 
-	else if (GetOwner()->GetType() == GameObjectInfo::Type::Monster_Onyscidus)
-		stat = GetOwner()->GetScript<Script_Onyscidus>(ScriptInfo::Type::Onyscidus);
+	else if (enemyType == GameObjectInfo::Type::Monster_Onyscidus)
+		stat = GetOwner()->GetScript<Script_Onyscidus>(ScriptInfo::Type::Stat);
 
-	else if (GetOwner()->GetType() == GameObjectInfo::Type::Monster_Ursacetus)
-		stat = GetOwner()->GetScript<Script_Ursacetus>(ScriptInfo::Type::Ursacetus);
+	else if (enemyType == GameObjectInfo::Type::Monster_Ursacetus)
+		stat = GetOwner()->GetScript<Script_Ursacetus>(ScriptInfo::Type::Stat);
 
-	else if (GetOwner()->GetType() == GameObjectInfo::Type::Monster_Anglerox)
-		stat = GetOwner()->GetScript<Script_Anglerox>(ScriptInfo::Type::Anglerox);
+	else if (enemyType == GameObjectInfo::Type::Monster_Anglerox)
+		stat = GetOwner()->GetScript<Script_Anglerox>(ScriptInfo::Type::Stat);
 
-	else if (GetOwner()->GetType() == GameObjectInfo::Type::Monster_Arack)
-		stat = GetOwner()->GetScript<Script_Arack>(ScriptInfo::Type::Arack);
+	else if (enemyType == GameObjectInfo::Type::Monster_Arack)
+		stat = GetOwner()->GetScript<Script_Arack>(ScriptInfo::Type::Stat);
 
-	else if (GetOwner()->GetType() == GameObjectInfo::Type::Monster_Aranobot)
-		stat = GetOwner()->GetScript<Script_Aranobot>(ScriptInfo::Type::Aranabot);
+	else if (enemyType == GameObjectInfo::Type::Monster_Aranobot)
+		stat = GetOwner()->GetScript<Script_Aranobot>(ScriptInfo::Type::Stat);
 
-	else if (GetOwner()->GetType() == GameObjectInfo::Type::Monster_Ceratoferox)
-		stat = GetOwner()->GetScript<Script_Ceratoferox>(ScriptInfo::Type::Ceratoferox);
+	else if (enemyType == GameObjectInfo::Type::Monster_Ceratoferox)
+		stat = GetOwner()->GetScript<Script_Ceratoferox>(ScriptInfo::Type::Stat);
 
-	else if (GetOwner()->GetType() == GameObjectInfo::Type::Monster_Gobbler)
-		stat = GetOwner()->GetScript<Script_Gobbler>(ScriptInfo::Type::Gobbler);
+	else if (enemyType == GameObjectInfo::Type::Monster_Gobbler)
+		stat = GetOwner()->GetScript<Script_Gobbler>(ScriptInfo::Type::Stat);
 
-	else if (GetOwner()->GetType() == GameObjectInfo::Type::Monster_LightBipedMech)
-		stat = GetOwner()->GetScript<Script_LightBipedMech>(ScriptInfo::Type::LightBipedMech);
+	else if (enemyType == GameObjectInfo::Type::Monster_LightBipedMech)
+		stat = GetOwner()->GetScript<Script_LightBipedMech>(ScriptInfo::Type::Stat);
 
-	else if (GetOwner()->GetType() == GameObjectInfo::Type::Monster_MiningMech)
-		stat = GetOwner()->GetScript<Script_MiningMech>(ScriptInfo::Type::MiningMech);
+	else if (enemyType == GameObjectInfo::Type::Monster_MiningMech)
+		stat = GetOwner()->GetScript<Script_MiningMech>(ScriptInfo::Type::Stat);
 
-	else if (GetOwner()->GetType() == GameObjectInfo::Type::Monster_Rapax)
-		stat = GetOwner()->GetScript<Script_Rapax>(ScriptInfo::Type::Rapax);
+	else if (enemyType == GameObjectInfo::Type::Monster_Rapax)
+		stat = GetOwner()->GetScript<Script_Rapax>(ScriptInfo::Type::Stat);
 
 	return stat;
 }

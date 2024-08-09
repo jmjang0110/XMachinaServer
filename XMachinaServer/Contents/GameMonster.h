@@ -59,7 +59,8 @@ private:
 	Script_EnemyStat*		mEnemyStat       = nullptr; // HP, IsDead
 	int						HitCnt           = 0;
 
-	std::atomic_bool mSendDeadMonsterPkt = false;
+	std::atomic_bool	mSendDeadMonsterPkt = false;
+	bool				mIsMindControlled   = false;
 
 	// For Get Script
 
@@ -86,7 +87,7 @@ public:
 	void Send_SPkt_Mosnter_State(FBProtocol::MONSTER_BT_TYPE monser_bt_type);
 
 	void On_ExitFromViewList();
-	void OnHit();
+	void OnHit(int hitCnt = 1);
 
 
 public:
@@ -100,6 +101,11 @@ public:
 	void SetOwnerNPCController(NPCController* nc)					{ mOwnerNC         = nc; }
 	void SetEnemyController(Script_EnemyController* script)			{ mEnemyController = script; }
 	void SetEnemyStat(Script_EnemyStat* script)						{ mEnemyStat       = script; }
+	void SetMindControlled(bool mindControlled)						{ 
+		mIsMindControlled = (mindControlled);
+		int i = 0;
+	}
+
 	/// +-----------------------------------------------------------
 	///		G E T T E R 
 	/// -----------------------------------------------------------+	
@@ -111,9 +117,11 @@ public:
 	Script_EnemyController*				 GetEnemyController()		{ return mEnemyController; }
 	Script_EnemyStat*					 GetEnemyStat()				{ return mEnemyStat; }
 	int									 GetActivate_RefCnt()		{ return mActivate_Ref.load(); }
-	const std::vector<SPtr<GamePhero>>&  GetAllPheros() ;
+	const std::vector<SPtr<GamePhero>>&  GetAllPheros();
 	ScriptInfo::Type					 GetScriptInfoType();
 	Script_Enemy*						 GetEnemyScript();
+	bool								 GetIsMindControlled()		{ return mIsMindControlled; }
+	SPtr<GamePlayer>					 GetInvoker();
 
 	// Snap Shot ( in Script )
 	Script_Stat::ObjectState	S_GetObjectState() { return mEnemyStat->S_GetObjectState(); } // Lock

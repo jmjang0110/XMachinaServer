@@ -7,11 +7,18 @@
 #include "../Contents/GameSession.h"
 #include "../ServerLib/SocketData.h"
 #include "Contents/GamePlayer.h"
+#include "Contents/GameMonster.h"
 #include "Contents/GameManager.h"
 #include "Contents/GameSkill.h"
+#include "Contents/NPCController.h"
+#include "Contents/PlayerController.h"
+#include "Contents/GameRoom.h"	
+
 #include "Contents/Collider.h"
-#include "Contents/Script_Player.h"
+
+
 #include "Contents/Script_EnemyController.h"
+#include "Contents/Script_Player.h"
 
 DEFINE_SINGLETON(FBsPacketFactory);
 
@@ -348,16 +355,26 @@ bool FBsPacketFactory::Process_CPkt_PlayerOnSkill(SPtr_Session session, const FB
 	FBProtocol::PLAYER_SKILL_TYPE	type				  =  pkt.skill_type();
 	auto							playerScript          = gameSession->GetPlayer()->GetScript<Script_Player>(ScriptInfo::Type::Stat);
 	float							PheroAmount           = playerScript->GetPhero();
-	int								mindontrol_monster_id = pkt.mindcontrol_monster_id();
-
+	int								mindcontrol_monster_id = pkt.mindcontrol_monster_id();
 
 	/// +---------------------------------------------------------------------------------------
 	/// SEND NEW PLAYER PKT TO SESSIONS IN ROOM ( SESSION->GET ROOM ID ) - EXCEPT ME ( SESSION )
 	/// ---------------------------------------------------------------------------------------+
-	auto spkt = FBS_FACTORY->SPkt_PlayerOnSkill(session->GetID(), type, PheroAmount, mindontrol_monster_id);
+	auto spkt = FBS_FACTORY->SPkt_PlayerOnSkill(session->GetID(), type, PheroAmount, mindcontrol_monster_id);
 	GAME_MGR->BroadcastRoom(gameSession->GetPlayer()->GetRoomID(), spkt, gameSession->GetID());
 
-	LOG_MGR->Cout(session->GetID(), "SKILLON", static_cast<int>(type), "\n");
+	sptr<GameMonster> mindControlMonster = nullptr;
+	if (type == FBProtocol::PLAYER_SKILL_TYPE_MIND_CONTROL) {
+		auto npcController = gameSession->GetPlayer()->GetOwnerPlayerController()->GetOwnerRoom()->GetNPCController();
+
+		mindControlMonster = npcController->GetMonster(mindcontrol_monster_id);
+		if (mindControlMonster != nullptr) {
+			gameSession->GetPlayer()->OnSkill(type, mindControlMonster);
+		}
+
+	}
+
+
 
 	return true;
 }
@@ -583,19 +600,19 @@ bool FBsPacketFactory::Process_CPkt_Bullet_OnShoot(SPtr_Session session, const F
 	int  player_id   = gameSession->GetID(); // 플레이어 아이디
 	auto gun_id      = gameSession->GetPlayer()->S_GetCurrWeapon();
 	Vec3 ray         = GetVector3(pkt.ray());
-	Vec3 FirePos     = GetVector3(pkt.pos());
+	Vec3 firePos = GetVector3(pkt.pos());
 
 	if (gun_id == FBProtocol::WEAPON_TYPE_AIR_STRIKE) {
 		// PQCS->Bullet Update Start(Worker Thread  에게 업데이트를 떠넘긴다)
 		// server 에서 simulation 한다. 
-
+		gameSession->GetPlayer()->OnShoot(firePos, ray);
 	}
 	
 	int  bullet_id = {}; // 의미 없어짐. 
 	//LOG_MGR->Cout("[", player_id, "]RAY : ", ray.x, " ", ray.y, " ", ray.z, " ---> ", bullet_id, "\n");
 
 	/// 플레이어가 Shot 했다는 것을 플레이어들에게 알린다. 
-	auto spkt = FBS_FACTORY->SPkt_Bullet_OnShoot(player_id, gun_id, bullet_id, FirePos, ray);
+	auto spkt = FBS_FACTORY->SPkt_Bullet_OnShoot(player_id, gun_id, bullet_id, firePos, ray);
 	GAME_MGR->BroadcastRoom(gameSession->GetPlayer()->GetRoomID(), spkt, player_id);
 
 	return true;
@@ -847,6 +864,8 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_PlayerOnSkill(uint32_t player_id, FBProto
 
 	auto ServerPacket = FBProtocol::CreateSPkt_PlayerOnSkill(builder, player_id, skill_type, phero_amount, mindcontrol_monster_id);
 	builder.Finish(ServerPacket);
+
+	
 
 	const uint8_t* bufferPointer = builder.GetBufferPointer();
 	const uint16_t SerializeddataSize = static_cast<uint16_t>(builder.GetSize());;

@@ -26,6 +26,7 @@ enum class BTTaskType : UINT16 {
 	MonT_CheckDetectionRange,
 	MonT_CheckMindDetectionRange,
 	MonT_CheckPatrolRange,
+	MonT_CheckMindControlBT,
 
 	End,
 

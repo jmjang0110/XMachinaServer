@@ -34,6 +34,17 @@ Script_Arack::~Script_Arack()
 {
 }
 
+bool Script_Arack::Start()
+{
+    if (!Script_Enemy::Start()) {
+        return false;
+    }
+
+    GetOwner()->GetAnimation()->GetController()->FindMotionByName(GetStat_Attack1AnimName())->AddCallback(std::bind(&Script_Arack::AttackCallback, this), 13);
+
+    return true;
+}
+
 void Script_Arack::Clone(SPtr<Component> other)
 {
     Script_Enemy::Clone(other);

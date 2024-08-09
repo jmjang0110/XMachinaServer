@@ -10,17 +10,17 @@ namespace ScriptInfo {
 		Stat, // Enemy, Player 
 		EnemyController,
 
-		AdvancedCombatDroid_5,
-		Onyscidus,
-		Ursacetus,
-		Anglerox,
-		Arack,
-		Aranabot,
-		Ceratoferox,
-		Gobbler,
-		LightBipedMech,
-		MiningMech,
-		Rapax,
+		//AdvancedCombatDroid_5,
+		//Onyscidus,
+		//Ursacetus,
+		//Anglerox,
+		//Arack,
+		//Aranabot,
+		//Ceratoferox,
+		//Gobbler,
+		//LightBipedMech,
+		//MiningMech,
+		//Rapax,
 
 
 		DefaultEnemyBT,

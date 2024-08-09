@@ -21,18 +21,7 @@ public:
 public:
 	virtual void Clone(SPtr<Component> other) ;
 
-	virtual void Activate();
-	virtual void DeActivate();
 
-	virtual bool WakeUp()	override;
-	virtual bool Start()	override;
-	virtual bool Update()	override;
-	virtual void OnDestroy() override;
-
-
-	virtual bool Attack()	override;
-	virtual void Dead()		override;
-	virtual bool Hit(float damage, SPtr_GameObject instigator = nullptr) override;
 
 };
 

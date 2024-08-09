@@ -8,6 +8,7 @@
 
 class GameBullet;
 class GamePlayer;
+class GameMonster;
 class GameSkill : public GameObject
 {
 public:
@@ -29,6 +30,7 @@ private:
 	FBProtocol::PLAYER_SKILL_TYPE	mSkillType          = FBProtocol::PLAYER_SKILL_TYPE_END; 
 	GameSkill::State				mSkillState         = GameSkill::State::Possible; Lock::SRWLock Lock_SkillState;
 
+	sptr<GameMonster>				mMindControlMonster   = {};
 public:
 	GameSkill();
 	GameSkill(UINT32 sessionID);
@@ -46,6 +48,9 @@ public:
 public:
 	bool OnSkill(float playerTotalPhero);
 
+	void InitSkill_MindControl();
+	void InitSkill_Shield();
+
 
 public:
 	void DecreaseRef() { mActivate_Ref.fetch_sub(1); if (mActivate_Ref.load() < 0) mActivate_Ref = 0; }
@@ -54,10 +59,11 @@ public:
 	/// +-----------------------------------------------------------
 	///		S E T T E R 
 	/// -----------------------------------------------------------+
-	void SetCoolTime(float coolTime)							{ mCoolTime       = coolTime; }
-	void SetDurationTime(float durationTime)					{ mActiveDuration = durationTime; }
-	void SetSkillType(FBProtocol::PLAYER_SKILL_TYPE skilltype)	{ mSkillType      = skilltype; }
-	void S_SetState(GameSkill::State state)						{ Lock_SkillState.LockWrite(); mSkillState = state; Lock_SkillState.UnlockWrite(); }
+	void SetCoolTime(float coolTime)									{ mCoolTime                                = coolTime; }
+	void SetDurationTime(float durationTime)							{ mActiveDuration                          = durationTime; }
+	void SetSkillType(FBProtocol::PLAYER_SKILL_TYPE skilltype)			{ mSkillType                               = skilltype; }
+	void SetMindControlMonster(sptr<GameMonster> mindControlMonster)	{ mMindControlMonster                      = mindControlMonster; }
+	void S_SetState(GameSkill::State state)								{ Lock_SkillState.LockWrite(); mSkillState = state; Lock_SkillState.UnlockWrite(); }
 
 	/// +-----------------------------------------------------------
 	///		G E T T E R 

@@ -170,23 +170,24 @@ void GamePlayer::Exit()
 
 int GamePlayer::OnShoot(Vec3& pos, Vec3& ray)
 {
+	int possibleIndex = -1;
+	if (mPossibleBulletIndex.try_pop(possibleIndex)) {
+		
+		if (0 <= possibleIndex && possibleIndex < GameObjectInfo::maxBulletsNum) {
+			
+			mBullets[possibleIndex]->GetTransform()->SetPosition(pos);
+			mBullets[possibleIndex]->GetTransform()->SetLook(ray);
+
+			mBullets[possibleIndex]->SetOnShootDir(ray);
+			mBullets[possibleIndex]->SetWeaponType(S_GetCurrWeapon());	// 총알 종류 설정 
+
+			mBullets[possibleIndex]->Activate();						// PQCS - Register Update !
+			
+			return possibleIndex;
+		}
+	}
+
 	return -1;
-
-	//int possibleIndex = -1;
-	//if (mPossibleBulletIndex.try_pop(possibleIndex)) {
-	//	
-	//	if (0 <= possibleIndex && possibleIndex < GameObjectInfo::maxBulletsNum) {
-	//		
-	//		mBullets[possibleIndex]->GetTransform()->SetPosition(GetTransform()->GetSnapShot().GetPosition());
-	//		mBullets[possibleIndex]->SetOnShootDir(ray);
-	//		mBullets[possibleIndex]->SetWeaponType(S_GetCurrWeapon());	// 총알 종류 설정 
-	//		mBullets[possibleIndex]->Activate();							// PQCS - Register Update !
-	//		
-	//		return possibleIndex;
-	//	}
-	//}
-
-	//return -1;
 }
 
 int GamePlayer::OnHitEnemy(int32_t monster_id, Vec3& pos, Vec3& ray)
@@ -196,8 +197,8 @@ int GamePlayer::OnHitEnemy(int32_t monster_id, Vec3& pos, Vec3& ray)
 
 		if (0 <= possibleIndex && possibleIndex < GameObjectInfo::maxBulletsNum) {
 
-			mBullets[possibleIndex]->GetTransform()->SetPosition(GetTransform()->GetSnapShot().GetPosition());
-			//mBullets[possibleIndex]->GetTransform()->SetPosition(pos);
+			//mBullets[possibleIndex]->GetTransform()->SetPosition(GetTransform()->GetSnapShot().GetPosition());
+			mBullets[possibleIndex]->GetTransform()->SetPosition(pos);
 			mBullets[possibleIndex]->SetOnShootDir(ray);
 			mBullets[possibleIndex]->SetHitMonsterID(monster_id);
 			mBullets[possibleIndex]->SetWeaponType(S_GetCurrWeapon());	// 총알 종류 설정 
@@ -210,7 +211,7 @@ int GamePlayer::OnHitEnemy(int32_t monster_id, Vec3& pos, Vec3& ray)
 	return -1;
 }
 
-bool GamePlayer::OnSkill(FBProtocol::PLAYER_SKILL_TYPE type)
+bool GamePlayer::OnSkill(FBProtocol::PLAYER_SKILL_TYPE type, SPtr<GameMonster> mindControlledMonster)
 {
 	GameSkill::State skillState = mSkills[type]->S_GetState();
 	switch (skillState)
@@ -223,6 +224,9 @@ bool GamePlayer::OnSkill(FBProtocol::PLAYER_SKILL_TYPE type)
 	case GameSkill::State::Possible:
 	{
 		float currPhero = S_GetPhero();
+		mindControlledMonster->SetMindControlled(true);
+		mindControlledMonster->GetEnemyController()->SetInvoker(std::dynamic_pointer_cast<GamePlayer>(shared_from_this()));
+		mSkills[type]->SetMindControlMonster(mindControlledMonster);
 		bool res = mSkills[type]->OnSkill(currPhero);
 		if (res == false)
 			return false;
@@ -315,14 +319,18 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 
 			/* TARGET PACKET */
 			SPtr<GameObject> target = script->GetTarget(); /* Lock Read */
-			int targetplayer_id = 0;
+			int target_player_id = 0;
+			int target_monster_id = 0;
 			if (target && target->GetType() == GameObjectInfo::Type::GamePlayer) {
-				targetplayer_id = target->GetID();
+				target_player_id = target->GetID();
+			}
+			else if(target) {
+				target_monster_id = target->GetID();
 			}
 
 			/// > ▷ BROADCAST MOSNTER TRAGET 
 			int monster_id = NewMonsters[i]->GetID();
-			auto pkt       = FBS_FACTORY->SPkt_Monster_Target(monster_id, targetplayer_id, -1);
+			auto pkt       = FBS_FACTORY->SPkt_Monster_Target(monster_id, target_player_id, target_monster_id);
 			GAME_MGR->BroadcastRoom(mOwnerPC->GetOwnerRoom()->GetID(), pkt);
 		}
 		//LOG_MGR->Cout("SEND NEW MONSTER \n");

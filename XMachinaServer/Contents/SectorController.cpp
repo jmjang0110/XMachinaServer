@@ -159,7 +159,7 @@ ViewList SectorController::UpdateViewList(GamePlayer* player, Vec3 player_pos, f
     return vList;
 }
 
-ViewList SectorController::GetViewList(Vec3 pos, float viewRange_radius)
+ViewList SectorController::GetViewList(Vec3 pos, float viewRange_radius, bool DoActivate)
 {
     ViewList vList;
 
@@ -216,7 +216,7 @@ ViewList SectorController::GetViewList(Vec3 pos, float viewRange_radius)
         std::vector<SPtr<GamePlayer>>  VL_Players = mOwnerRoom->GetPlayerController()->GetPlayersInViewRange(pos, viewRange_radius);
 
         for (int i = 0; i < VL_Monsters.size(); ++i) {
-            vList.TryInsertMonster(VL_Monsters[i]->GetID(), VL_Monsters[i]);
+            vList.TryInsertMonster(VL_Monsters[i]->GetID(), VL_Monsters[i], DoActivate);
         }
         for (int i = 0; i < VL_Players.size(); ++i) {
             vList.TryInsertPlayer(VL_Players[i]->GetID(), VL_Players[i]);

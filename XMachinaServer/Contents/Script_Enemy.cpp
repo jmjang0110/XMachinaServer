@@ -130,22 +130,29 @@ bool Script_Enemy::Attack()
 		return false;
 	}
 
+	return true;
+}
+
+void Script_Enemy::AttackCallback()
+{
 	if (!mEnemyController->GetTarget()) {
-		return false;
+		return;
 	}
 
-	//// TODO : 타겟 주변 레인지 범위 공격
-	//const Vec3& TargetPos = mEnemyController->GetTarget()->GetTransform()->GetSnapShot().GetPosition();
-	//const Vec3& Pos = GetOwner()->GetTransform()->GetPosition();
-	//if (Vec3::Distance(TargetPos, Pos) <= GetStat_AttackRange()) {
+	// TODO : 타겟 주변 레인지 범위 공격
+	const Vec3& TargetPos = mEnemyController->GetTarget()->GetTransform()->GetSnapShot().GetPosition();
+	const Vec3& Pos = GetOwner()->GetTransform()->GetPosition();
+	if (Vec3::Distance(TargetPos, Pos) <= GetStat_AttackRange()) {
+		const auto& statScript = mEnemyController->GetTarget()->GetScript<Script_Stat>(ScriptInfo::Type::Stat);
+		if (statScript) {
 
-	//	const auto& statScript = mEnemyController->GetTarget()->GetScript<Script_Stat>(ScriptInfo::Type::Stat);
-	//	if (statScript) {
-	//		statScript->Hit(GetStat_AttackRate(), nullptr); 
-	//	}
-	//}
-
-	return true;
+			statScript->Hit(GetStat_AttackRate(), GetOwner());
+			Script_Stat::ObjectState state =  statScript->S_GetObjectState();
+			if (state == Script_Stat::ObjectState::Dead) {
+				mEnemyController->SetTarget(nullptr);
+			}
+		}
+	}
 }
 
 void Script_Enemy::AttackEndCallback()
@@ -172,6 +179,7 @@ bool Script_Enemy::Hit(float damage, SPtr_GameObject instigator)
 
 	if (nullptr != instigator)
 		mEnemyController->SetTarget(instigator);
+
 	return res;
 }
 

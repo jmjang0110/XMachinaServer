@@ -177,12 +177,13 @@ enum MONSTER_BT_TYPE : uint8_t {
   MONSTER_BT_TYPE_MOVE_TO_PATH = 5,
   MONSTER_BT_TYPE_MOVE_TO_MIND_TARGET = 6,
   MONSTER_BT_TYPE_PATROL = 7,
-  MONSTER_BT_TYPE_END = 8,
+  MONSTER_BT_TYPE_CHANGE_BT = 8,
+  MONSTER_BT_TYPE_END = 9,
   MONSTER_BT_TYPE_MIN = MONSTER_BT_TYPE_IDLE,
   MONSTER_BT_TYPE_MAX = MONSTER_BT_TYPE_END
 };
 
-inline const MONSTER_BT_TYPE (&EnumValuesMONSTER_BT_TYPE())[9] {
+inline const MONSTER_BT_TYPE (&EnumValuesMONSTER_BT_TYPE())[10] {
   static const MONSTER_BT_TYPE values[] = {
     MONSTER_BT_TYPE_IDLE,
     MONSTER_BT_TYPE_DEATH,
@@ -192,13 +193,14 @@ inline const MONSTER_BT_TYPE (&EnumValuesMONSTER_BT_TYPE())[9] {
     MONSTER_BT_TYPE_MOVE_TO_PATH,
     MONSTER_BT_TYPE_MOVE_TO_MIND_TARGET,
     MONSTER_BT_TYPE_PATROL,
+    MONSTER_BT_TYPE_CHANGE_BT,
     MONSTER_BT_TYPE_END
   };
   return values;
 }
 
 inline const char * const *EnumNamesMONSTER_BT_TYPE() {
-  static const char * const names[10] = {
+  static const char * const names[11] = {
     "IDLE",
     "DEATH",
     "ATTACK",
@@ -207,6 +209,7 @@ inline const char * const *EnumNamesMONSTER_BT_TYPE() {
     "MOVE_TO_PATH",
     "MOVE_TO_MIND_TARGET",
     "PATROL",
+    "CHANGE_BT",
     "END",
     nullptr
   };

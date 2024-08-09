@@ -75,12 +75,6 @@ bool Script_EnemyController::Start()
 
 bool Script_EnemyController::Update()
 {
-	// [BSH] : 이 부분에서 계속 업데이트를 하며 타겟을 없애기 때문에 문제가 생김. 타겟은 행동트리에서만 바꿀 것.
-	//if (mTarget) {
-	//	if (mTarget->GetScript<Script_Stat>(ScriptInfo::Type::Stat)){
-	//		mTarget = nullptr;
-	//	}
-	//}
 	return true;
 }
 
@@ -90,12 +84,12 @@ void Script_EnemyController::OnDestroy()
 
 void Script_EnemyController::Reset()
 {
-	//mState = EnemyInfo::State::Idle;
 	mTarget = nullptr;
-	mPrevBTType = FBProtocol::MONSTER_BT_TYPE::MONSTER_BT_TYPE_END;
-	mCurrBTType = FBProtocol::MONSTER_BT_TYPE::MONSTER_BT_TYPE_END;
-
+	
 	while (!mPaths.empty()) {
 		mPaths.pop();
 	};
+
+	RemoveAllAnimation();
+	
 }

@@ -15,9 +15,14 @@
 #include "BTTaskM_PathPlanning_AStar.h"
 #include "BTTaskM_PathPlanningToTarget.h"
 #include "BTTaskM_Patrol.h"
+#include "BTTaskM_MoveToMindControlInvoker.h"
+#include "BTTaskM_CheckMindControlBT.h"
+#include "BTTaskM_CheckMindDetectionRange.h"
+
 
 #include "GameObject.h"
 #include "Component.h"
+#include "GameMonster.h"
 #include "Transform.h"
 
 #include "BTNode.h"
@@ -61,12 +66,38 @@ BTNode* Script_DefaultEnemyBT::SetupTree()
 	SPtr<Script_Enemy> enemy = GetScriptEnemy(GetOwner()->GetType());
 
 #pragma region BehaviorTree
+	std::vector<BTNode*>	 Selector_Root;
+
+	std::vector<BTNode*>	 Sequence_MindControlBT;
+	/// +---------------------------------------------------------------------------------------------------------------
+	///	Ready To Create Behavior Tree [MIND CONTROL]
+	/// ---------------------------------------------------------------------------------------------------------------+
+	BTNode* MC_CheckMCBT				= MEMORY->New<MonsterTask::CheckMindControlBT>(GetOwner());
 	
+	std::vector<BTNode*>	MC_Selector_MCBT;
+	BTNode* MC_CheckDeath				= MEMORY->New<MonsterTask::CheckDeath>(GetOwner(), std::bind(&Script_Enemy::Dead, enemy));
+
+	std::vector<BTNode*>	 MC_Sequence_1;
+	BTNode* MC_CheckAttackRange			= MEMORY->New<MonsterTask::CheckAttackRange>(GetOwner());
+	BTNode* MC_Attack					= MEMORY->New<MonsterTask::Attack>(GetOwner(), std::bind(&Script_Enemy::Attack, enemy));
+
+
+	BTNode* MC_GetHit					= MEMORY->New<MonsterTask::GetHit>(GetOwner());
+
+	std::vector<BTNode*>     MC_Sequence_2;
+	BTNode* MC_CheckMindDetectionRange  = MEMORY->New<MonsterTask::CheckMindDetectionRange>(GetOwner());
+
+	std::vector<BTNode*>	 MC_Selector_2_1;
+	BTNode* MC_MoveToMindControlInvoker = MEMORY->New<MonsterTask::MoveToMindControlInvoker>(GetOwner());
+	BTNode* MC_PathPlanningToTarget		= MEMORY->New<MonsterTask::PathPlanningToTarget>(GetOwner());
+	
+	BTNode* MC_MoveToPath				= MEMORY->New<MonsterTask::MoveToPath>(GetOwner());
+
 
 	/// +---------------------------------------------------------------------------------------------------------------
 	///	Ready To Create Behavior Tree 
 	/// ---------------------------------------------------------------------------------------------------------------+
-	std::vector<BTNode*>	 Selector_Root;
+	std::vector<BTNode*>     Selector_DefaultEnemyBT;
 	BTNode*					 CheckDeath				= MEMORY->New<MonsterTask::CheckDeath>(GetOwner(), std::bind(&Script_Enemy::Dead, enemy));
 	
 	std::vector<BTNode*>	 Sequence_1;
@@ -83,21 +114,59 @@ BTNode* Script_DefaultEnemyBT::SetupTree()
 	BTNode*					 MoveToTarget			= MEMORY->New<MonsterTask::MoveToTarget>(GetOwner());
 	BTNode*					 PathPlanningToTarget	= MEMORY->New<MonsterTask::PathPlanningToTarget>(GetOwner());
 
+	/// +---------------------------------------------------------------------------------------------------------------
+	///	Create Behavior Tree [MIND CONTROL]
+	/// ---------------------------------------------------------------------------------------------------------------+
+	// -- Root -- 
+
+	// MIND CONTROL BT
+	Sequence_MindControlBT.push_back(MC_CheckMCBT);  
+
+	// 1. CHECK DEATH 
+	MC_Selector_MCBT.push_back(MC_CheckDeath);
+	{
+		// 1-1. [Sequence] ( CHECK ATTACK RANGE, ATTACK )
+		MC_Sequence_1.push_back(MC_CheckAttackRange);	 
+		MC_Sequence_1.push_back(MC_Attack);			
+		BTNode* MC_Sequence_1_Node = MEMORY->New<BTNode_Sequence>(GetOwner(), MC_Sequence_1);
+		MC_Selector_MCBT.push_back(MC_Sequence_1_Node);
+	}
+	// 2. GET HIT 
+	MC_Selector_MCBT.push_back(MC_GetHit);
+	{
+		// 3. [Sequence] { CheckMindControlDetectionRange, [Selector] ( MoveToMindControlInvoker, PathPlanningToTarget ) }
+		MC_Sequence_2.push_back(MC_CheckMindDetectionRange); 
+		{
+			MC_Selector_2_1.push_back(MC_MoveToMindControlInvoker);		   
+			//MC_Selector_2_1.push_back(PathPlanningToTarget); 
+			BTNode* MC_Selector_2_1_Node = MEMORY->New<BTNode_Selector>(GetOwner(), MC_Selector_2_1);
+			MC_Sequence_2.push_back(MC_Selector_2_1_Node);
+		}
+		BTNode* MC_Sequence_2_Node = MEMORY->New<BTNode_Sequence>(GetOwner(), MC_Sequence_2);
+		MC_Selector_MCBT.push_back(MC_Sequence_2_Node);
+	}
+	//MC_Selector_MCBT.push_back(MC_MoveToPath);
+	BTNode* MC_Selector_MindControl = MEMORY->New<BTNode_Selector>(GetOwner(), MC_Selector_MCBT);
+	
+	Sequence_MindControlBT.push_back(MC_Selector_MindControl);
+	BTNode* MC = MEMORY->New<BTNode_Sequence>(GetOwner(), Sequence_MindControlBT);
+
+	Selector_Root.push_back(MC);
 
 	/// +---------------------------------------------------------------------------------------------------------------
 	///	Create Behavior Tree 
 	/// ---------------------------------------------------------------------------------------------------------------+
 	// -- Root -- 
-	Selector_Root.push_back(CheckDeath);  // [0] Check Death
+	Selector_DefaultEnemyBT.push_back(CheckDeath);  // [0] Check Death
 	{
 		// [1] -- Sequence 1 --
 		Sequence_1.push_back(CheckAttackRange);	// [1-1] Check Attack Range 
 		Sequence_1.push_back(Attack);			// [1-2] Attack
 		BTNode* Sequence_1_Node = MEMORY->New<BTNode_Sequence>(GetOwner(), Sequence_1);
-		Selector_Root.push_back(Sequence_1_Node);
+		Selector_DefaultEnemyBT.push_back(Sequence_1_Node);
 	}
 	// [2] -- Get Hit -- 
-	Selector_Root.push_back(GetHit);
+	Selector_DefaultEnemyBT.push_back(GetHit);
 	{	
 		// [3] -- Sequence 2 -- 
 		Sequence_2.push_back(CheckDetectionRange); // [3-0] Check Detection Range 
@@ -109,9 +178,12 @@ BTNode* Script_DefaultEnemyBT::SetupTree()
 			Sequence_2.push_back(Selector_2_1_Node);
 		}
 		BTNode* Sequence_2_Node = MEMORY->New<BTNode_Sequence>(GetOwner(), Sequence_2);
-		Selector_Root.push_back(Sequence_2_Node);
+		Selector_DefaultEnemyBT.push_back(Sequence_2_Node);
 	}
 		
+	BTNode* DeafultEnemyBT = MEMORY->New<BTNode_Selector>(GetOwner(), Selector_DefaultEnemyBT);
+	Selector_Root.push_back(DeafultEnemyBT);
+
 	mRoot = MEMORY->New<BTNode_Selector>(GetOwner(), Selector_Root);
 	mRoot->SetRoot();
 	return mRoot;
@@ -125,57 +197,57 @@ SPtr<Script_Enemy> Script_DefaultEnemyBT::GetScriptEnemy(GameObjectInfo::Type ob
 	{
 
 	case GameObjectInfo::Type::Monster_Ursacetus: {
-		SPtr<Script_Ursacetus> script = GetOwner()->GetScript<Script_Ursacetus>(ScriptInfo::Type::Ursacetus);
+		SPtr<Script_Ursacetus> script = GetOwner()->GetScript<Script_Ursacetus>(ScriptInfo::Type::Stat);
 		enemy = std::static_pointer_cast<Script_Enemy>(script);
 	}
 		break;
 	case GameObjectInfo::Type::Monster_Onyscidus: {
-		SPtr<Script_Onyscidus> script = GetOwner()->GetScript<Script_Onyscidus>(ScriptInfo::Type::Onyscidus);
+		SPtr<Script_Onyscidus> script = GetOwner()->GetScript<Script_Onyscidus>(ScriptInfo::Type::Stat);
 		enemy = std::static_pointer_cast<Script_Enemy>(script);
 	}
 		break;
 	case GameObjectInfo::Type::Monster_AdvancedCombat_5: {
-		SPtr<Script_AdvancedCombatDroid_5> script = GetOwner()->GetScript<Script_AdvancedCombatDroid_5>(ScriptInfo::Type::AdvancedCombatDroid_5);
+		SPtr<Script_AdvancedCombatDroid_5> script = GetOwner()->GetScript<Script_AdvancedCombatDroid_5>(ScriptInfo::Type::Stat);
 		enemy = std::static_pointer_cast<Script_Enemy>(script);
 	}
 		break;
 	case GameObjectInfo::Type::Monster_Anglerox: {
-		SPtr<Script_Anglerox> script = GetOwner()->GetScript<Script_Anglerox>(ScriptInfo::Type::Anglerox);
+		SPtr<Script_Anglerox> script = GetOwner()->GetScript<Script_Anglerox>(ScriptInfo::Type::Stat);
 		enemy = std::static_pointer_cast<Script_Enemy>(script);
 	}
 		break;
 	case GameObjectInfo::Type::Monster_Arack: {
-		SPtr<Script_Arack> script = GetOwner()->GetScript<Script_Arack>(ScriptInfo::Type::Arack);
+		SPtr<Script_Arack> script = GetOwner()->GetScript<Script_Arack>(ScriptInfo::Type::Stat);
 		enemy = std::static_pointer_cast<Script_Enemy>(script);
 	}
 		break;
 	case GameObjectInfo::Type::Monster_Ceratoferox: {
-		SPtr<Script_Ceratoferox> script = GetOwner()->GetScript<Script_Ceratoferox>(ScriptInfo::Type::Ceratoferox);
+		SPtr<Script_Ceratoferox> script = GetOwner()->GetScript<Script_Ceratoferox>(ScriptInfo::Type::Stat);
 		enemy = std::static_pointer_cast<Script_Enemy>(script);
 	}
 		break;
 	case GameObjectInfo::Type::Monster_Gobbler: {
-		SPtr<Script_Gobbler> script = GetOwner()->GetScript<Script_Gobbler>(ScriptInfo::Type::Gobbler);
+		SPtr<Script_Gobbler> script = GetOwner()->GetScript<Script_Gobbler>(ScriptInfo::Type::Stat);
 		enemy = std::static_pointer_cast<Script_Enemy>(script);
 	}
 		break;
 	case GameObjectInfo::Type::Monster_LightBipedMech: {
-		SPtr<Script_LightBipedMech> script = GetOwner()->GetScript<Script_LightBipedMech>(ScriptInfo::Type::LightBipedMech);
+		SPtr<Script_LightBipedMech> script = GetOwner()->GetScript<Script_LightBipedMech>(ScriptInfo::Type::Stat);
 		enemy = std::static_pointer_cast<Script_Enemy>(script);
 	}
 		break;
 	case GameObjectInfo::Type::Monster_MiningMech: {
-		SPtr<Script_MiningMech> script = GetOwner()->GetScript<Script_MiningMech>(ScriptInfo::Type::MiningMech);
+		SPtr<Script_MiningMech> script = GetOwner()->GetScript<Script_MiningMech>(ScriptInfo::Type::Stat);
 		enemy = std::static_pointer_cast<Script_Enemy>(script);
 	}
 		break;
 	case GameObjectInfo::Type::Monster_Rapax: {
-		SPtr<Script_Rapax> script = GetOwner()->GetScript<Script_Rapax>(ScriptInfo::Type::Rapax);
+		SPtr<Script_Rapax> script = GetOwner()->GetScript<Script_Rapax>(ScriptInfo::Type::Stat);
 		enemy = std::static_pointer_cast<Script_Enemy>(script);
 	}
 		break;
 	case GameObjectInfo::Type::Monster_Aranobot: {
-		SPtr<Script_Aranobot> script = GetOwner()->GetScript<Script_Aranobot>(ScriptInfo::Type::Aranabot);
+		SPtr<Script_Aranobot> script = GetOwner()->GetScript<Script_Aranobot>(ScriptInfo::Type::Stat);
 		enemy = std::static_pointer_cast<Script_Enemy>(script);
 	}
 		break;
@@ -220,6 +292,7 @@ bool Script_DefaultEnemyBT::Update()
 {
     Script_BehaviorTree::Update();
 
+
 	if (!mRoot) {
 		return true;
 	}
@@ -231,6 +304,8 @@ bool Script_DefaultEnemyBT::Update()
 		return true;
 
 	if (PrevType != CurrType) {
+
+		
 		/* Send Packet */
 		switch (CurrType)
 		{
@@ -255,6 +330,9 @@ bool Script_DefaultEnemyBT::Update()
 		case FBProtocol::MONSTER_BT_TYPE_IDLE:
 			LOG_MGR->Cout("MONSTER_BT_TYPE_IDLE\n");
 			break;
+		case FBProtocol::MONSTER_BT_TYPE_CHANGE_BT:
+			LOG_MGR->Cout("MONSTER_BT_TYPE_CHANGE_BT\n");
+			break;
 		default:
 			LOG_MGR->Cout("MONSTER BT TYPE ..XXXX \n");
 			break;
@@ -265,12 +343,12 @@ bool Script_DefaultEnemyBT::Update()
 		std::dynamic_pointer_cast<GameMonster>(GetOwner())->Broadcast_SPkt_Mosnter_State(CurrType);
 		mRoot->GetEnemyController()->SetBTType(CurrType);
 
-		bool IsMindControlled = mRoot->GetEnemyController()->IsMindControlled();
+		int monster_id			= GetOwner()->GetID();
+		int target_monster_id	= 0;
+		int target_player_id	= 0;
 
-		int monster_id		  = GetOwner()->GetID();
-		int target_monster_id = 0;
-		int target_player_id  = 0;
 		SPtr<GameObject> target = mRoot->GetEnemyController()->GetTarget();
+		SPtr<GameObject> invoker = mRoot->GetEnemyController()->GetInvoker();
 		if (target) {
 			GameObjectInfo::Type objType = target->GetType();
 			if (objType == GameObjectInfo::Type::GamePlayer) {
@@ -280,14 +358,18 @@ bool Script_DefaultEnemyBT::Update()
 				target_monster_id = target->GetID();
 			}
 		}
+		else if (invoker) {
+			target_player_id = invoker->GetID();
+		}
+
+		if (target_monster_id == -1)
+			int i = 0;
 
 		auto pkt = FBS_FACTORY->SPkt_Monster_Target(monster_id, target_player_id, target_monster_id);
 		GAME_MGR->BroadcastRoom(mRoot->GetEnemyController()->GetOwnerMonster()->GetOwnerNPCController()->GetOwnerRoom()->GetID(), pkt);
 
 		LOG_MGR->Cout("Send Monster Target Packet / target Player : ", target_player_id, '\n');
 	}
-
-	//mRoot->GetEnemyController()->UpdateMonsterCurrBTType();
 
     return true;
 }

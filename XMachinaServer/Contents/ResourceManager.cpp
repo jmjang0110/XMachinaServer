@@ -167,67 +167,67 @@ void BattleScene::Load()
 					{
 					case GameObjectInfo::Type::Monster_Ursacetus: {
 						object->SetMonsterType(FBProtocol::MONSTER_TYPE_URSACETUS);
-						object->AddScript<Script_Ursacetus>(ScriptInfo::Type::Ursacetus);
+						object->AddScript<Script_Ursacetus>(ScriptInfo::Type::Stat);
 
 					}
 						break;
 					case GameObjectInfo::Type::Monster_Onyscidus: {
 						object->SetMonsterType(FBProtocol::MONSTER_TYPE_ONYSCIDUS);
-						object->AddScript<Script_Onyscidus>(ScriptInfo::Type::Onyscidus);
+						object->AddScript<Script_Onyscidus>(ScriptInfo::Type::Stat);
 
 					}
 						break;
 					case GameObjectInfo::Type::Monster_AdvancedCombat_5: {
 						object->SetMonsterType(FBProtocol::MONSTER_TYPE_ADVANCED_COMBAT_DROIR_5);
-						object->AddScript<Script_AdvancedCombatDroid_5>(ScriptInfo::Type::AdvancedCombatDroid_5);
+						object->AddScript<Script_AdvancedCombatDroid_5>(ScriptInfo::Type::Stat);
 
 					}
 						break;
 					case GameObjectInfo::Type::Monster_Anglerox: {
 						object->SetMonsterType(FBProtocol::MONSTER_TYPE_ANGLEROX);
-						object->AddScript<Script_Anglerox>(ScriptInfo::Type::Anglerox);
+						object->AddScript<Script_Anglerox>(ScriptInfo::Type::Stat);
 
 					}
 						break;
 					case GameObjectInfo::Type::Monster_Arack: {
 						object->SetMonsterType(FBProtocol::MONSTER_TYPE_ARACK);
-						object->AddScript<Script_Arack>(ScriptInfo::Type::Arack);
+						object->AddScript<Script_Arack>(ScriptInfo::Type::Stat);
 
 					}
 						break;
 					case GameObjectInfo::Type::Monster_Ceratoferox: {
 						object->SetMonsterType(FBProtocol::MONSTER_TYPE_CERATOFEROX);
-						object->AddScript<Script_Ceratoferox>(ScriptInfo::Type::Ceratoferox);
+						object->AddScript<Script_Ceratoferox>(ScriptInfo::Type::Stat);
 
 					}
 						break;
 					case GameObjectInfo::Type::Monster_Gobbler: {
 						object->SetMonsterType(FBProtocol::MONSTER_TYPE_GOBBLER);
-						object->AddScript<Script_Gobbler>(ScriptInfo::Type::Gobbler);
+						object->AddScript<Script_Gobbler>(ScriptInfo::Type::Stat);
 
 					}
 						break;
 					case GameObjectInfo::Type::Monster_LightBipedMech: {
 						object->SetMonsterType(FBProtocol::MONSTER_TYPE_LIGHTBIPEDMECH);
-						object->AddScript<Script_LightBipedMech>(ScriptInfo::Type::LightBipedMech);
+						object->AddScript<Script_LightBipedMech>(ScriptInfo::Type::Stat);
 
 					}
 						break;
 					case GameObjectInfo::Type::Monster_MiningMech: {
 						object->SetMonsterType(FBProtocol::MONSTER_TYPE_MININGMECH);
-						object->AddScript<Script_MiningMech>(ScriptInfo::Type::MiningMech);
+						object->AddScript<Script_MiningMech>(ScriptInfo::Type::Stat);
 
 					}
 						break;
 					case GameObjectInfo::Type::Monster_Rapax: {
 						object->SetMonsterType(FBProtocol::MONSTER_TYPE_RAPAX);
-						object->AddScript<Script_Rapax>(ScriptInfo::Type::Rapax);
+						object->AddScript<Script_Rapax>(ScriptInfo::Type::Stat);
 
 					}
 						break;
 					case GameObjectInfo::Type::Monster_Aranobot: {
 						object->SetMonsterType(FBProtocol::MONSTER_TYPE_ARANOBOT);
-						object->AddScript<Script_Aranobot>(ScriptInfo::Type::Aranabot);
+						object->AddScript<Script_Aranobot>(ScriptInfo::Type::Stat);
 
 					}
 						break;

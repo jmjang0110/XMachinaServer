@@ -75,7 +75,8 @@ public:
 
 	
 	ViewList UpdateViewList(GamePlayer* player, Vec3 player_pos, float viewRange_radius);
-	ViewList GetViewList(Vec3 pos, float viewRange_radius);
+	ViewList GetViewList(Vec3 pos, float viewRange_radius, bool DoActivate);
+
 
 
 	/// +------------------------------------------------------------

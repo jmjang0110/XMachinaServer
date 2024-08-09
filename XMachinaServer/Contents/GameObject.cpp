@@ -113,6 +113,8 @@ void GameObject::Start()
 
 void GameObject::Activate()
 {
+	GameEntity::Activate();
+
 	mCurrTimePoint = std::chrono::steady_clock::now();
 
 	for (auto& iter : mComponents) {
@@ -126,6 +128,8 @@ void GameObject::Activate()
 
 void GameObject::DeActivate()
 {
+	GameEntity::DeActivate();
+
 	for (auto& iter : mComponents) {
 		iter.second->DeActivate();
 	}
@@ -224,45 +228,61 @@ SPtr<Script> GameObject::AddScript(ScriptInfo::Type key)
 
 	switch (key)
 	{
-	case ScriptInfo::Type::Stat:
-		script = AddScript<Script_Stat>(key);
+	case ScriptInfo::Type::Stat: {
+		switch (mType)
+		{
+		case GameObjectInfo::Type::Monster_Ursacetus:
+			script = AddScript<Script_Ursacetus>(key);
+
+			break;
+		case GameObjectInfo::Type::Monster_Onyscidus:
+			script = AddScript<Script_Onyscidus>(key);
+
+			break;
+		case GameObjectInfo::Type::Monster_AdvancedCombat_5:
+			script = AddScript<Script_AdvancedCombatDroid_5>(key);
+			break;
+		case GameObjectInfo::Type::Monster_Anglerox:
+			script = AddScript<Script_Anglerox>(key);
+
+			break;
+		case GameObjectInfo::Type::Monster_Arack:
+			script = AddScript<Script_Arack>(key);
+
+			break;
+		case GameObjectInfo::Type::Monster_Ceratoferox:
+			script = AddScript<Script_Ceratoferox>(key);
+
+			break;
+		case GameObjectInfo::Type::Monster_Gobbler:
+			script = AddScript<Script_Gobbler>(key);
+
+			break;
+		case GameObjectInfo::Type::Monster_LightBipedMech:
+			script = AddScript<Script_LightBipedMech>(key);
+
+			break;
+		case GameObjectInfo::Type::Monster_MiningMech:
+			script = AddScript<Script_MiningMech>(key);
+
+			break;
+		case GameObjectInfo::Type::Monster_Rapax:
+			script = AddScript<Script_Rapax>(key);
+
+			break;
+		case GameObjectInfo::Type::Monster_Aranobot:
+			script = AddScript<Script_Aranobot>(key);
+
+			break;
+		default:
+			break;
+		}
+	}
 		break;
 	case ScriptInfo::Type::EnemyController:
 		script = AddScript<Script_EnemyController>(key);
 		break;
-	case ScriptInfo::Type::AdvancedCombatDroid_5:
-		script = AddScript<Script_AdvancedCombatDroid_5>(key);
-		break;
-	case ScriptInfo::Type::Onyscidus:
-		script = AddScript<Script_Onyscidus>(key);
-		break;
-	case ScriptInfo::Type::Ursacetus:
-		script = AddScript<Script_Ursacetus>(key);
-		break;
-	case ScriptInfo::Type::Anglerox:
-		script = AddScript<Script_Anglerox>(key);
-		break;
-	case ScriptInfo::Type::Arack:
-		script = AddScript<Script_Arack>(key);
-		break;
-	case ScriptInfo::Type::Aranabot:
-		script = AddScript<Script_Aranobot>(key);
-		break;
-	case ScriptInfo::Type::Ceratoferox:
-		script = AddScript<Script_Ceratoferox>(key);
-		break;
-	case ScriptInfo::Type::Gobbler:
-		script = AddScript<Script_Gobbler>(key);
-		break;
-	case ScriptInfo::Type::LightBipedMech:
-		script = AddScript<Script_LightBipedMech>(key);
-		break;
-	case ScriptInfo::Type::MiningMech:
-		script = AddScript<Script_MiningMech>(key);
-		break;
-	case ScriptInfo::Type::Rapax:
-		script = AddScript<Script_Rapax>(key);
-		break;
+	
 	case ScriptInfo::Type::DefaultEnemyBT:
 		script = AddScript<Script_DefaultEnemyBT>(key);
 		break;

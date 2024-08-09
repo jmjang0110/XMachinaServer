@@ -21,7 +21,7 @@ public:
 
 public:
 	bool TryInsertPlayer(UINT32 key, SPtr<GamePlayer> player);
-	bool TryInsertMonster(UINT32 key, SPtr<GameMonster> monster);
+	bool TryInsertMonster(UINT32 key, SPtr<GameMonster> monster, bool DoActivate = true);
 
 	bool RemovePlayer(UINT32 key);
 	bool RemoveMonster(UINT32 key);

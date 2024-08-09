@@ -17,7 +17,7 @@ bool ViewList::TryInsertPlayer(UINT32 key, SPtr<GamePlayer> player)
 
 }
 
-bool ViewList::TryInsertMonster(UINT32 key, SPtr<GameMonster> monster)
+bool ViewList::TryInsertMonster(UINT32 key, SPtr<GameMonster> monster, bool DoActivate)
 {
 	auto monsterIt = VL_Monsters.find(key);
 	// 이미 존재한다.
@@ -26,7 +26,8 @@ bool ViewList::TryInsertMonster(UINT32 key, SPtr<GameMonster> monster)
 	else
 	{
 		VL_Monsters.insert(std::make_pair(key, monster));
-		monster->Activate();
+		if(DoActivate)
+			monster->Activate();
 	}
 
 	return true;

@@ -17,6 +17,7 @@ protected:
 	float							mAnimTime{};
 	int								mCurrAttackStep{};
 
+
 public:
 	Script_Enemy();
 	Script_Enemy(SPtr<GameObject> owner, ScriptInfo::Type type);
@@ -49,6 +50,7 @@ public:
 	virtual bool Hit(float damage, SPtr_GameObject instigator = nullptr) override;
 
 protected:
+	virtual void AttackCallback();
 	virtual void AttackEndCallback();
 	virtual void DeathEndCallback();
 
