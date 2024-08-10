@@ -224,10 +224,7 @@ bool GamePlayer::OnSkill(FBProtocol::PLAYER_SKILL_TYPE type, SPtr<GameMonster> m
 	case GameSkill::State::Possible:
 	{
 		float currPhero = S_GetPhero();
-		mindControlledMonster->SetMindControlled(true);
-		mindControlledMonster->GetEnemyController()->SetInvoker(std::dynamic_pointer_cast<GamePlayer>(shared_from_this()));
-		mSkills[type]->SetMindControlMonster(mindControlledMonster);
-		bool res = mSkills[type]->OnSkill(currPhero);
+		bool res = mSkills[type]->OnSkill(currPhero, mindControlledMonster);
 		if (res == false)
 			return false;
 	}

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "GameSkill.h"
 #include "GameManager.h"
+#include "Script_EnemyController.h"
 
 
 GameSkill::GameSkill() 
@@ -56,12 +57,12 @@ void GameSkill::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 {
 }
 
-bool GameSkill::OnSkill(float playerTotalPhero)
+bool GameSkill::OnSkill(float playerTotalPhero, SPtr<GameMonster> monster)
 {
 	// 사용 불가 
 	if (playerTotalPhero < mConsumePheroAmount)
 		return false;
-
+	
 	// 사용가능 
 	if (S_GetState() == GameSkill::State::Possible) {
 
@@ -70,13 +71,15 @@ bool GameSkill::OnSkill(float playerTotalPhero)
 		case FBProtocol::PLAYER_SKILL_TYPE_IMPOSSIBLE:
 			break;
 		case FBProtocol::PLAYER_SKILL_TYPE_CLOACKING:
+			InitSkill_Cloaking();
 			break;
 		case FBProtocol::PLAYER_SKILL_TYPE_IR_DETECTOR:
 			break;
 		case FBProtocol::PLAYER_SKILL_TYPE_MIND_CONTROL:
-			InitSkill_MindControl();
+			InitSkill_MindControl(monster);
 			break;
 		case FBProtocol::PLAYER_SKILL_TYPE_SHIELD:
+			InitSkill_Shield();
 			break;
 		default:
 			assert(0);
@@ -95,15 +98,20 @@ bool GameSkill::OnSkill(float playerTotalPhero)
 	return true;
 }
 
-void GameSkill::InitSkill_MindControl()
-{
-	if (mMindControlMonster == nullptr)
-		assert(0);
-
-	//mMindControlMonster->
-
-}
-
 void GameSkill::InitSkill_Shield()
 {
+}
+
+void GameSkill::InitSkill_Cloaking()
+{
+}
+
+void GameSkill::InitSkill_MindControl(SPtr<GameMonster> monster)
+{
+	if (monster == nullptr)
+		assert(0);
+
+	monster->SetMindControlled(true);
+	monster->GetEnemyController()->SetInvoker(std::dynamic_pointer_cast<GamePlayer>(shared_from_this()));
+	SetMindControlMonster(monster);
 }

@@ -35,14 +35,13 @@ BTNodeState MonsterTask::CheckDetectionRange::Evaluate()
 	if (nullptr == target) {
 		target = FindDetectionPlayer();
 	}
-	else {
-		if (target->GetType() == GameObjectInfo::Type::GamePlayer) {
-			SPtr<GamePlayer> player = std::dynamic_pointer_cast<GamePlayer>(target);
-			GameSkill::State IsCloakingOn = player->S_GetSkillState(FBProtocol::PLAYER_SKILL_TYPE_CLOACKING);
-			if (IsCloakingOn == GameSkill::State::Active) {
-				mEnemyController->SetTarget(nullptr);
-				return BTNodeState::Failure;
-			}
+
+	if (target && target->GetType() == GameObjectInfo::Type::GamePlayer) {
+		SPtr<GamePlayer> player = std::dynamic_pointer_cast<GamePlayer>(target);
+		GameSkill::State IsCloakingOn = player->S_GetSkillState(FBProtocol::PLAYER_SKILL_TYPE_CLOACKING);
+		if (IsCloakingOn == GameSkill::State::Active) {
+			mEnemyController->SetTarget(nullptr);
+			return BTNodeState::Failure;
 		}
 	}
 

@@ -46,9 +46,10 @@ public:
 	virtual void Dispatch(class OverlappedObject* overlapped, UINT32 bytes = 0) override;
 
 public:
-	bool OnSkill(float playerTotalPhero);
+	bool OnSkill(float playerTotalPhero, SPtr<GameMonster> monster = nullptr);
 
-	void InitSkill_MindControl();
+	void InitSkill_MindControl(SPtr<GameMonster> monster);
+	void InitSkill_Cloaking();
 	void InitSkill_Shield();
 
 

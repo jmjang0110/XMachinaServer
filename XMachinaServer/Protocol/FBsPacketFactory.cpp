@@ -371,7 +371,9 @@ bool FBsPacketFactory::Process_CPkt_PlayerOnSkill(SPtr_Session session, const FB
 		if (mindControlMonster != nullptr) {
 			gameSession->GetPlayer()->OnSkill(type, mindControlMonster);
 		}
-
+	}
+	else {
+		gameSession->GetPlayer()->OnSkill(type, nullptr);
 	}
 
 
