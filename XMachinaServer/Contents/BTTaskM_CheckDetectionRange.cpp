@@ -31,32 +31,26 @@ BTNodeState MonsterTask::CheckDetectionRange::Evaluate()
 		return BTNodeState::Failure;
 	}
 
-	SPtr<GamePlayer> target = nullptr;
-	mEnemyController->SetTarget(nullptr);
-	if (!mEnemyController->GetTarget()) {
+	SPtr<GameObject> target = mEnemyController->GetTarget();
+	if (nullptr == target) {
 		target = FindDetectionPlayer();
-		if (nullptr == target){
-			mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_IDLE);
-			return BTNodeState::Failure;
-		}
-		else {
-			mEnemyController->SetTarget(target);
-		}
 	}
 	else {
-		target = std::dynamic_pointer_cast<GamePlayer>(mEnemyController->GetTarget());
-	}
-	GameSkill::State IsCloakingOn = target->S_GetSkillState(FBProtocol::PLAYER_SKILL_TYPE_CLOACKING);
-	if (IsCloakingOn == GameSkill::State::Active) {
-		mEnemyController->SetTarget(nullptr);
-		return BTNodeState::Failure;
+		if (target->GetType() == GameObjectInfo::Type::GamePlayer) {
+			SPtr<GamePlayer> player = std::dynamic_pointer_cast<GamePlayer>(target);
+			GameSkill::State IsCloakingOn = player->S_GetSkillState(FBProtocol::PLAYER_SKILL_TYPE_CLOACKING);
+			if (IsCloakingOn == GameSkill::State::Active) {
+				mEnemyController->SetTarget(nullptr);
+				return BTNodeState::Failure;
+			}
+		}
 	}
 
+	mEnemyController->SetTarget(target);
 	MonsterBTTask::mAnimation->GetController()->SetValue("walk", true);
+
 	return BTNodeState::Success;
 }
-
-
 
 MonsterTask::CheckDetectionRange::CheckDetectionRange(SPtr_GameObject owner, std::function<void()> callback)
 	: MonsterBTTask(owner, BTTaskType::MonT_CheckDetectionRange, callback)

@@ -35,6 +35,18 @@ Script_AdvancedCombatDroid_5::~Script_AdvancedCombatDroid_5()
 {
 }
 
+bool Script_AdvancedCombatDroid_5::Start()
+{
+    if (!Script_Enemy::Start()) {
+        return false;
+    }
+
+    GetOwner()->GetAnimation()->GetController()->FindMotionByName(GetStat_Attack1AnimName())->AddCallback(std::bind(&Script_AdvancedCombatDroid_5::AttackCallback, this), 3);
+    GetOwner()->GetAnimation()->GetController()->FindMotionByName(GetStat_Attack1AnimName())->AddCallback(std::bind(&Script_AdvancedCombatDroid_5::AttackCallback, this), 20);
+
+    return true;
+}
+
 void Script_AdvancedCombatDroid_5::Clone(SPtr<Component> other) 
 {
     Script_Enemy::Clone(other);

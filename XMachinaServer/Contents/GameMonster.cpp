@@ -75,28 +75,28 @@ void GameMonster::OnHit(int hitCnt)
 
 	// TODO : TEST Hit Cnt == 5 -> Dead 
 	HitCnt += hitCnt;
-	LOG_MGR->Cout(GetID(), " : OnHit\n");
+	//LOG_MGR->Cout(GetID(), " : OnHit\n");
 	if (HitCnt >= 5) {
 		mEnemyStat->S_SetObjectState(Script_Stat::ObjectState::Dead);
 	}
 
-	// TODO : Test : OnHit ( Mosnter <--> Bullet ) 
-	if (mEnemyStat->S_GetObjectState() == Script_Stat::ObjectState::Dead) {
-		LOG_MGR->Cout(GetID(), " : Dead\n");
-		Vec3 pos = GetTransform()->GetSnapShot().GetPosition();
+	//// TODO : Test : OnHit ( Mosnter <--> Bullet ) 
+	//if (mEnemyStat->S_GetObjectState() == Script_Stat::ObjectState::Dead) {
+	//	LOG_MGR->Cout(GetID(), " : Dead\n");
+	//	Vec3 pos = GetTransform()->GetSnapShot().GetPosition();
 
-		auto pheroDropper = GetScript<Script_PheroDropper>(ScriptInfo::Type::PheroDropper);
-		pheroDropper->SetPherosPos(pos);
+	//	auto pheroDropper = GetScript<Script_PheroDropper>(ScriptInfo::Type::PheroDropper);
+	//	pheroDropper->SetPherosPos(pos);
 
-		if (mSendDeadMonsterPkt.load() == false) {
-			mSendDeadMonsterPkt = true;
-			/// > ¢¹ Send Dead Monster Info ( Dead Point(pos), Pheros Info(string) )
-			auto spkt = FBS_FACTORY->SPkt_DeadMonster(GetID(), pos, GetPheros());
-			GAME_MGR->BroadcastRoom(GetOwnerNPCController()->GetOwnerRoom()->GetID(), spkt);
-		}
+	//	if (mSendDeadMonsterPkt.load() == false) {
+	//		mSendDeadMonsterPkt = true;
+	//		/// > ¢¹ Send Dead Monster Info ( Dead Point(pos), Pheros Info(string) )
+	//		auto spkt = FBS_FACTORY->SPkt_DeadMonster(GetID(), pos, GetPheros());
+	//		GAME_MGR->BroadcastRoom(GetOwnerNPCController()->GetOwnerRoom()->GetID(), spkt);
+	//	}
 
-		return;
-	}
+	//	return;
+	//}
 
 }
 

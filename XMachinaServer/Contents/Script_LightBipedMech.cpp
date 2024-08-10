@@ -35,6 +35,17 @@ Script_LightBipedMech::~Script_LightBipedMech()
 {
 }
 
+bool Script_LightBipedMech::Start()
+{
+    if (!Script_Enemy::Start()) {
+        return false;
+    }
+
+    GetOwner()->GetAnimation()->GetController()->FindMotionByName(GetStat_Attack1AnimName())->AddCallback(std::bind(&Script_LightBipedMech::AttackCallback, this), 20);
+
+    return true;
+}
+
 void Script_LightBipedMech::Clone(SPtr<Component> other)
 {
     Script_Enemy::Clone(other);

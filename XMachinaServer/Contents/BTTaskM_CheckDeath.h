@@ -13,6 +13,7 @@ namespace MonsterTask {
 	private:
 		float mAccTime{};
 		float mRemoveTime{};
+		bool mIsDead{};
 
 	public:
 		virtual BTNodeState Evaluate() override;

@@ -23,8 +23,8 @@ Script_Ceratoferox::Script_Ceratoferox(SPtr<GameObject> owner, ScriptInfo::Type 
     Script_EnemyStat::SetStat_Attack1AnimName("DoubleClawsAttack");
     Script_EnemyStat::SetStat_Attack2AnimName("None");
     Script_EnemyStat::SetStat_Attack3AnimName("None");
-    Script_EnemyStat::SetStat_DeathAnimName("GetHitFront");
-    Script_EnemyStat::SetStat_GetHitName("Death");
+    Script_EnemyStat::SetStat_GetHitName("None");
+    Script_EnemyStat::SetStat_DeathAnimName("Death");
 
 
     owner->SetName("Ceratoferox");
@@ -33,6 +33,17 @@ Script_Ceratoferox::Script_Ceratoferox(SPtr<GameObject> owner, ScriptInfo::Type 
 
 Script_Ceratoferox::~Script_Ceratoferox()
 {
+}
+
+bool Script_Ceratoferox::Start()
+{
+    if (!Script_Enemy::Start()) {
+        return false;
+    }
+
+    GetOwner()->GetAnimation()->GetController()->FindMotionByName(GetStat_Attack1AnimName())->AddCallback(std::bind(&Script_Ceratoferox::AttackCallback, this), 34);
+
+    return true;
 }
 
 void Script_Ceratoferox::Clone(SPtr<Component> other)

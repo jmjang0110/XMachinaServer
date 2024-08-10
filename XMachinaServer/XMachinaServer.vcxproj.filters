@@ -554,6 +554,9 @@
     <ClInclude Include="Contents\BTTaskM_CheckMindControlBT.h">
       <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster BT\BT\MonsterTask\CheckBT</Filter>
     </ClInclude>
+    <ClInclude Include="Contents\BTTaskM_CheckMindControlBTToEnd.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster BT\BT\MonsterTask\Check Detection Range</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp">
@@ -871,6 +874,9 @@
     </ClCompile>
     <ClCompile Include="Contents\BTTaskM_CheckMindControlBT.cpp">
       <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster BT\BT\MonsterTask\CheckBT</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\BTTaskM_CheckMindControlBTToEnd.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster BT\BT\MonsterTask\Check Detection Range</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

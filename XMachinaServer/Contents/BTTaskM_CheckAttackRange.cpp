@@ -46,7 +46,6 @@ BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 			return BTNodeState::Failure;
 		}
 	}
-
 	
 	// 4. Target Player 가 일정 범위에 들어오면 Attack 으로.. 
 	constexpr float minDistance    = 1.f;

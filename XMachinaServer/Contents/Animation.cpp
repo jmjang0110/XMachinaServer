@@ -331,7 +331,6 @@ sptr<AnimatorMotion> AnimatorLayer::FindMotionByName(const std::string& motionNa
 void AnimatorLayer::Animate()
 {
 	mCrntState->Animate();
-
 }
 
 AnimatorStateMachine::AnimatorStateMachine(const std::string& name, const std::vector<sptr<const AnimatorTransition>>& entryTransitions)

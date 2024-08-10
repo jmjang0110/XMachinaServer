@@ -35,6 +35,17 @@ Script_Rapax::~Script_Rapax()
 {
 }
 
+bool Script_Rapax::Start()
+{
+    if (!Script_Enemy::Start()) {
+        return false;
+    }
+
+    GetOwner()->GetAnimation()->GetController()->FindMotionByName(GetStat_Attack1AnimName())->AddCallback(std::bind(&Script_Rapax::AttackCallback, this), 35);
+
+    return true;
+}
+
 void Script_Rapax::Clone(SPtr<Component> other)
 {
     Script_Enemy::Clone(other);

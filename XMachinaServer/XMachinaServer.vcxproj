@@ -165,6 +165,7 @@
     <ClInclude Include="Contents\BTTaskM_CheckDeath.h" />
     <ClInclude Include="Contents\BTTaskM_CheckDetectionRange.h" />
     <ClInclude Include="Contents\BTTaskM_CheckMindControlBT.h" />
+    <ClInclude Include="Contents\BTTaskM_CheckMindControlBTToEnd.h" />
     <ClInclude Include="Contents\BTTaskM_CheckMindDetectionRange.h" />
     <ClInclude Include="Contents\BTTaskM_CheckPatrolRange.h" />
     <ClInclude Include="Contents\BTTaskM_GetHit.h" />
@@ -278,6 +279,7 @@
     <ClCompile Include="Contents\BTNode.cpp" />
     <ClCompile Include="Contents\BTTask.cpp" />
     <ClCompile Include="Contents\BTTaskM_CheckMindControlBT.cpp" />
+    <ClCompile Include="Contents\BTTaskM_CheckMindControlBTToEnd.cpp" />
     <ClCompile Include="Contents\BTTaskM_MoveToMindControlInvoker.cpp" />
     <ClCompile Include="Contents\Collider.cpp" />
     <ClCompile Include="Contents\CollisionManager.cpp" />

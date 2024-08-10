@@ -36,6 +36,17 @@ Script_Aranobot::~Script_Aranobot()
 {
 }
 
+bool Script_Aranobot::Start()
+{
+    if (!Script_Enemy::Start()) {
+        return false;
+    }
+
+    GetOwner()->GetAnimation()->GetController()->FindMotionByName(GetStat_Attack1AnimName())->AddCallback(std::bind(&Script_Aranobot::AttackCallback, this), 6);
+
+    return true;
+}
+
 void Script_Aranobot::Clone(SPtr<Component> other)
 {
     Script_Enemy::Clone(other);

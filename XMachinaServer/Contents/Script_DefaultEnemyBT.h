@@ -10,7 +10,7 @@ class Script_DefaultEnemyBT : public Script_BehaviorTree
 {
 private:
 	BTNode* mRoot{};
-
+	SPtr_GameObject mPrevTarget{};
 
 public:
 	Script_DefaultEnemyBT();

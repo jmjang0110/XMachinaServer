@@ -113,13 +113,16 @@ void Script_Enemy::StartAttack()
 	mEnemyController->RemoveAllAnimation();
 	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK);
 	GetOwner()->GetAnimation()->GetController()->SetValue("Attack", mCurrAttackStep);
-	std::cout << mCurrAttackStep << std::endl;
+
+	if (GetOwner()->GetID() == 10) {
+		LOG_MGR->Cout("MONSTER_BT_TYPE_ATTACK\n");
+	}
 
 	// TODO : 나중에 Monster 가 어떤 플레이어에게 View List 에 들어왔는지 체크해서 그 Player 들에게만 Broadcast 해야함. 
 	auto spkt = FBS_FACTORY->SPkt_Monster_State(GetOwner()->GetID(), FBProtocol::MONSTER_BT_TYPE_ATTACK, mCurrAttackStep);
 	GAME_MGR->BroadcastRoom(mEnemyController->GetOwnerRoom()->GetID(), spkt);
 
-	LOG_MGR->Cout("[", GetOwner()->GetID(), "] : Attack : ", mCurrAttackStep, "\n");
+	//LOG_MGR->Cout("[", GetOwner()->GetID(), "] : Attack : ", mCurrAttackStep, "\n");
 
 
 }
@@ -150,6 +153,7 @@ void Script_Enemy::AttackCallback()
 			Script_Stat::ObjectState state =  statScript->S_GetObjectState();
 			if (state == Script_Stat::ObjectState::Dead) {
 				mEnemyController->SetTarget(nullptr);
+				mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_IDLE);
 			}
 		}
 	}

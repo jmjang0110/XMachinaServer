@@ -20,6 +20,7 @@ BTNodeState MonsterTask::MoveToMindControlInvoker::Evaluate()
 			mEnemyController->SetPathTargetObject(mInvoker);
 		}
 		else {
+			mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_IDLE);
 			return BTNodeState::Failure;
 		}
 	}
@@ -32,6 +33,10 @@ BTNodeState MonsterTask::MoveToMindControlInvoker::Evaluate()
 	Vec3 targetAdjPos = targetTransSnapShot.GetPosition() + targetTransSnapShot.GetUp() * 0.5f;
 
 	Vec3 toTarget = targetAdjPos - objectAdjPos;
+
+	if (toTarget.Length() < mStat->GetStat_AttackRange()) {
+		return BTNodeState::Success;
+	}
 
 	//// Å¸°ÙÀ¸·ÎºÎÅÍ ¿ÀºêÁ§Æ®·Î ±¤¼±À» ½ð´Ù.
 	//Ray r{ objectAdjPos, XMVector3Normalize(toTarget) };
@@ -95,7 +100,7 @@ BTNodeState MonsterTask::MoveToMindControlInvoker::Evaluate()
 		MonsterBTTask::mTransform->Translate(MonsterBTTask::mTransform->GetLook(), mStat->GetStat_MoveSpeed() * GetOwner()->GetDeltaTime());
 	}
 
-	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_MOVE_TO_TARGET);;
+	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_MOVE_TO_TARGET);
 	return BTNodeState::Success;
 }
 

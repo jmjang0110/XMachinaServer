@@ -17,6 +17,7 @@
 #include "BTTaskM_Patrol.h"
 #include "BTTaskM_MoveToMindControlInvoker.h"
 #include "BTTaskM_CheckMindControlBT.h"
+#include "BTTaskM_CheckMindControlBTToEnd.h"
 #include "BTTaskM_CheckMindDetectionRange.h"
 
 
@@ -93,6 +94,7 @@ BTNode* Script_DefaultEnemyBT::SetupTree()
 	
 	BTNode* MC_MoveToPath				= MEMORY->New<MonsterTask::MoveToPath>(GetOwner());
 
+	BTNode* MC_CheckMCBTToEnd			= MEMORY->New<MonsterTask::CheckMindControlBTToEnd>(GetOwner());
 
 	/// +---------------------------------------------------------------------------------------------------------------
 	///	Ready To Create Behavior Tree 
@@ -149,6 +151,7 @@ BTNode* Script_DefaultEnemyBT::SetupTree()
 	BTNode* MC_Selector_MindControl = MEMORY->New<BTNode_Selector>(GetOwner(), MC_Selector_MCBT);
 	
 	Sequence_MindControlBT.push_back(MC_Selector_MindControl);
+	Sequence_MindControlBT.push_back(MC_CheckMCBTToEnd);
 	BTNode* MC = MEMORY->New<BTNode_Sequence>(GetOwner(), Sequence_MindControlBT);
 
 	Selector_Root.push_back(MC);
@@ -292,7 +295,6 @@ bool Script_DefaultEnemyBT::Update()
 {
     Script_BehaviorTree::Update();
 
-
 	if (!mRoot) {
 		return true;
 	}
@@ -305,44 +307,46 @@ bool Script_DefaultEnemyBT::Update()
 
 	if (PrevType != CurrType) {
 
-		
-		/* Send Packet */
-		switch (CurrType)
-		{
-		case FBProtocol::MONSTER_BT_TYPE_DEATH:
-			LOG_MGR->Cout("MONSTER_BT_TYPE_DEATH\n");
-			break;
-		case FBProtocol::MONSTER_BT_TYPE_ATTACK:
-			LOG_MGR->Cout("MONSTER_BT_TYPE_ATTACK\n");
-			break;
-		case FBProtocol::MONSTER_BT_TYPE_GETHIT:
-			LOG_MGR->Cout("MONSTER_BT_TYPE_GETHIT\n");
-			break;
-		case FBProtocol::MONSTER_BT_TYPE_MOVE_TO_TARGET:
-			LOG_MGR->Cout("MONSTER_BT_TYPE_MOVE_TO_TARGET\n");
-			break;
-		case FBProtocol::MONSTER_BT_TYPE_MOVE_TO_PATH:
-			LOG_MGR->Cout("MONSTER_BT_TYPE_MOVE_TO_PATH\n");
-			break;
-		case FBProtocol::MONSTER_BT_TYPE_PATROL:
-			LOG_MGR->Cout("MONSTER_BT_TYPE_PATROL\n");
-			break;
-		case FBProtocol::MONSTER_BT_TYPE_IDLE:
-			LOG_MGR->Cout("MONSTER_BT_TYPE_IDLE\n");
-			break;
-		case FBProtocol::MONSTER_BT_TYPE_CHANGE_BT:
-			LOG_MGR->Cout("MONSTER_BT_TYPE_CHANGE_BT\n");
-			break;
-		default:
-			LOG_MGR->Cout("MONSTER BT TYPE ..XXXX \n");
-			break;
+		if (GetOwner()->GetID() == 10) {
+			/* Send Packet */
+			switch (CurrType)
+			{
+			case FBProtocol::MONSTER_BT_TYPE_DEATH:
+				LOG_MGR->Cout("MONSTER_BT_TYPE_DEATH\n");
+				break;
+			case FBProtocol::MONSTER_BT_TYPE_ATTACK:
+				LOG_MGR->Cout("MONSTER_BT_TYPE_ATTACK\n");
+				break;
+			case FBProtocol::MONSTER_BT_TYPE_GETHIT:
+				LOG_MGR->Cout("MONSTER_BT_TYPE_GETHIT\n");
+				break;
+			case FBProtocol::MONSTER_BT_TYPE_MOVE_TO_TARGET:
+				LOG_MGR->Cout("MONSTER_BT_TYPE_MOVE_TO_TARGET\n");
+				break;
+			case FBProtocol::MONSTER_BT_TYPE_MOVE_TO_PATH:
+				LOG_MGR->Cout("MONSTER_BT_TYPE_MOVE_TO_PATH\n");
+				break;
+			case FBProtocol::MONSTER_BT_TYPE_PATROL:
+				LOG_MGR->Cout("MONSTER_BT_TYPE_PATROL\n");
+				break;
+			case FBProtocol::MONSTER_BT_TYPE_IDLE:
+				LOG_MGR->Cout("MONSTER_BT_TYPE_IDLE\n");
+				break;
+			case FBProtocol::MONSTER_BT_TYPE_CHANGE_BT:
+				LOG_MGR->Cout("MONSTER_BT_TYPE_CHANGE_BT\n");
+				break;
+			default:
+				LOG_MGR->Cout("MONSTER BT TYPE ..XXXX \n");
+				break;
+			}
 		}
-
-
 
 		std::dynamic_pointer_cast<GameMonster>(GetOwner())->Broadcast_SPkt_Mosnter_State(CurrType);
 		mRoot->GetEnemyController()->SetBTType(CurrType);
+		mRoot->mEnemyController->UpdateMonsterCurrBTType();
+	}
 
+	if (mPrevTarget != mRoot->GetEnemyController()->GetTarget()) {
 		int monster_id			= GetOwner()->GetID();
 		int target_monster_id	= 0;
 		int target_player_id	= 0;
@@ -362,13 +366,9 @@ bool Script_DefaultEnemyBT::Update()
 			target_player_id = invoker->GetID();
 		}
 
-		if (target_monster_id == -1)
-			int i = 0;
-
 		auto pkt = FBS_FACTORY->SPkt_Monster_Target(monster_id, target_player_id, target_monster_id);
 		GAME_MGR->BroadcastRoom(mRoot->GetEnemyController()->GetOwnerMonster()->GetOwnerNPCController()->GetOwnerRoom()->GetID(), pkt);
-
-		LOG_MGR->Cout("Send Monster Target Packet / target Player : ", target_player_id, '\n');
+		mPrevTarget = target;
 	}
 
     return true;

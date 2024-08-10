@@ -53,13 +53,13 @@ bool MonsterTask::CheckMindDetectionRange::SetTargetNearestEnemy()
 	SPtr<GameObject>	target			 = nullptr;
 
 	for (auto& iter : monsterVList.VL_Monsters) {
-		if (mStat->S_GetObjectState() == Script_Stat::ObjectState::Dead) {
+		if (iter.second->S_GetObjectState() == Script_Stat::ObjectState::Dead) {
 			continue;
 		}
 
-		if (iter.second->GetID() == mEnemyController->GetOwnerMonster()->GetID())
+		if (iter.second->GetID() == mEnemyController->GetOwnerMonster()->GetID()) {
 			continue;
-
+		}
 
 		Vec3	enemyPos = iter.second->GetTransform()->GetSnapShot().GetPosition();
 		float	distance = Vec3::Distance(monsterPos, enemyPos);

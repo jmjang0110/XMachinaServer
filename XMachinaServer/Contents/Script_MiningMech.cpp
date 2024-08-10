@@ -35,6 +35,16 @@ Script_MiningMech::~Script_MiningMech()
 {
 }
 
+bool Script_MiningMech::Start()
+{
+    if (!Script_Enemy::Start()) {
+        return false;
+    }
+
+
+    return true;
+}
+
 void Script_MiningMech::Clone(SPtr<Component> other)
 {
     Script_Enemy::Clone(other);

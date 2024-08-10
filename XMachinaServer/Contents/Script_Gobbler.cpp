@@ -34,6 +34,17 @@ Script_Gobbler::~Script_Gobbler()
 {
 }
 
+bool Script_Gobbler::Start()
+{
+    if (!Script_Enemy::Start()) {
+        return false;
+    }
+
+    GetOwner()->GetAnimation()->GetController()->FindMotionByName(GetStat_Attack1AnimName())->AddCallback(std::bind(&Script_Gobbler::AttackCallback, this), 20);
+
+    return true;
+}
+
 void Script_Gobbler::Clone(SPtr<Component> other)
 {
     Script_Enemy::Clone(other);

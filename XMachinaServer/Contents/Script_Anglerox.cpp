@@ -35,6 +35,18 @@ Script_Anglerox::~Script_Anglerox()
 {
 }
 
+bool Script_Anglerox::Start()
+{
+    if (!Script_Enemy::Start()) {
+        return false;
+    }
+
+    GetOwner()->GetAnimation()->GetController()->FindMotionByName(GetStat_Attack1AnimName())->AddCallback(std::bind(&Script_Anglerox::AttackCallback, this), 10);
+    GetOwner()->GetAnimation()->GetController()->FindMotionByName(GetStat_Attack1AnimName())->AddCallback(std::bind(&Script_Anglerox::AttackCallback, this), 32);
+
+    return true;
+}
+
 void Script_Anglerox::Clone(SPtr<Component> other)
 {
     Script_Enemy::Clone(other);

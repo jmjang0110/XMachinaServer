@@ -174,10 +174,6 @@ void GameObject::SetAnimation(const std::string& controller)
 
 	SPtr<Animation> animation = AddComponent<Animation>(ComponentInfo::Type::Animation);
 	animation->Load(controller);
-
-	if (GetType() == GameObjectInfo::Type::Monster_Arack && controller == "Ceratoferox") {
-		LOG_MGR->Cout(static_cast<int>(GetType()), " - ", controller, "\n");
-	}
 }
 
 
