@@ -112,6 +112,6 @@ void GameSkill::InitSkill_MindControl(SPtr<GameMonster> monster)
 		assert(0);
 
 	monster->SetMindControlled(true);
-	monster->GetEnemyController()->SetInvoker(std::dynamic_pointer_cast<GamePlayer>(shared_from_this()));
+	monster->GetEnemyController()->SetInvoker(std::dynamic_pointer_cast<GamePlayer>(GetOwnerPlayer()));
 	SetMindControlMonster(monster);
 }

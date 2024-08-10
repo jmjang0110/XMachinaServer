@@ -2,6 +2,10 @@
 #include "BTTaskM_CheckMindControlBT.h"
 #include "BTTask.h"
 
+#include "FBsPacketFactory.h"
+#include "GameManager.h"
+#include "GameRoom.h"
+
 BTNodeState MonsterTask::CheckMindControlBT::Evaluate()
 {
 	bool IsMindControlled = mRoot->GetEnemyController()->GetOwnerMonster()->GetIsMindControlled();
@@ -13,6 +17,21 @@ BTNodeState MonsterTask::CheckMindControlBT::Evaluate()
 		}
 
 		mPrevMindControlled = IsMindControlled;
+
+		mMindControlledTime += GetOwner()->GetDeltaTime();
+
+		if (mMindControlledTime >= mkMaxMindControlledTime) {
+			auto spkt = FBS_FACTORY->SPkt_PlayerOnSkill(mRoot->GetEnemyController()->GetInvoker()->GetID(), FBProtocol::PLAYER_SKILL_TYPE_MIND_CONTROL, 0, GetOwner()->GetID());
+			GAME_MGR->BroadcastRoom(mEnemyController->GetOwnerRoom()->GetID(), spkt);
+
+			mMindControlledTime = 0.f;
+			mRoot->GetEnemyController()->GetOwnerMonster()->SetMindControlled(false);
+			mRoot->GetEnemyController()->SetInvoker(nullptr);
+			mEnemyController->SetTarget(nullptr);
+
+			return BTNodeState::Failure;
+		}
+
 		return BTNodeState::Success;
 	}
 

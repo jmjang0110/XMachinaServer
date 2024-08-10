@@ -14,8 +14,12 @@ namespace MonsterTask {
 	class CheckMindControlBT : public MonsterBTTask
 	{
 	private:
+		static constexpr float mkMaxMindControlledTime = 30.f;
+
 		bool mPrevMindControlled = false;
 		bool mIsMindControlled = false; 
+		float mMindControlledTime{};
+
 	public:
 		virtual BTNodeState Evaluate() override;
 	public:
