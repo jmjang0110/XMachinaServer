@@ -44,12 +44,13 @@ bool ViewList::RemovePlayer(UINT32 key)
 	return false;
 }
 
-bool ViewList::RemoveMonster(UINT32 key)
+bool ViewList::RemoveMonster(UINT32 key, bool DoActivate)
 {
 	auto monsterIt = VL_Monsters.find(key);
 	if (monsterIt != VL_Monsters.end())
 	{
-		monsterIt->second->DeActivate();
+		if(DoActivate)
+			monsterIt->second->DeActivate();
 		VL_Monsters.erase(monsterIt);
 		return true;
 	}

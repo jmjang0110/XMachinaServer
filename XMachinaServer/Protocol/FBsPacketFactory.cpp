@@ -1019,7 +1019,8 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_NewMonster(std::vector<SPtr<GameMonster>>
 	/// ------------------------------------------------------------------------------------------+
 	for (SPtr<GameMonster>& mon : new_monsters) {
 		Script_Stat::ObjectState objState = mon->S_GetObjectState();
-		if (objState == Script_Stat::ObjectState::Dead) {
+		if (objState == Script_Stat::ObjectState::Dead ||
+			objState == Script_Stat::ObjectState::End) {
 			continue;
 		}
 

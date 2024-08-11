@@ -244,6 +244,7 @@ bool GamePlayer::OnSkill(FBProtocol::PLAYER_SKILL_TYPE type, SPtr<GameMonster> m
 		break;
 	case GameSkill::State::Possible:
 	{
+
 		float currPhero = S_GetPhero();
 		bool res = mSkills[type]->OnSkill(currPhero, mindControlledMonster);
 		if (res == false)
@@ -316,7 +317,12 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 		if (objState == Script_Stat::ObjectState::End)
 			continue;
 
-		bool IsSuccess = mVlist.TryInsertMonster(monster[i]->GetID(), monster[i]);
+		bool IsSuccess = false;
+		if (objState == Script_Stat::ObjectState::Dead)
+			IsSuccess = mVlist.TryInsertMonster(monster[i]->GetID(), monster[i], false);
+		else 
+			IsSuccess = mVlist.TryInsertMonster(monster[i]->GetID(), monster[i]);
+
 		if (IsSuccess) {
 			// 새로 들어옴
 			NewMonsters.push_back(monster[i]);
@@ -336,7 +342,15 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 	for (auto& it : ViewList_Prev.VL_Monsters) {
 		// 이전 ViewList에 있던 Monster가 현재 ViewList에 없다면 
 		if (currentMonsterIDs.find(it.first) == currentMonsterIDs.end()) {
-			mVlist.RemoveMonster(it.first);
+			Script_Stat::ObjectState objState = it.second->S_GetObjectState();
+			if (objState == Script_Stat::ObjectState::End)
+				continue;
+
+			bool DoDeactivate = true;
+			if (objState == Script_Stat::ObjectState::Dead)
+				DoDeactivate = false;
+
+			mVlist.RemoveMonster(it.first, DoDeactivate);
 			RemoveMonsters.push_back(it.second);
 
 			//LOG_MGR->Cout("[ ", it.first, " ] : ", it.second, " : DeActivate\n");
@@ -353,6 +367,11 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 		GetSessionOwner()->Send(NewMonster_spkt);
 
 		for (int i = 0; i < NewMonsters.size(); ++i) {
+
+			Script_Stat::ObjectState objState = NewMonsters[i]->S_GetObjectState();
+			if (Script_Stat::ObjectState::Dead == objState ||
+				Script_Stat::ObjectState::End == objState)
+				continue;
 
 			/// > ▷ SEND MOSNTER STATE 
 			auto						script         = NewMonsters[i]->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
