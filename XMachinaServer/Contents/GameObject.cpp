@@ -52,7 +52,6 @@ GameObject::~GameObject()
 
 void GameObject::Update()
 {
-
 	UpdateDeltaTime();
 	// Update all components
 	for (auto& pair : mComponents) {
@@ -91,6 +90,8 @@ void GameObject::Animate()
 
 void GameObject::WakeUp()
 {
+	mCurrTimePoint = std::chrono::steady_clock::now();
+
 	for (auto& iter : mComponents) {
 		iter.second->WakeUp();
 	}
@@ -102,6 +103,8 @@ void GameObject::WakeUp()
 
 void GameObject::Start()
 {
+	mCurrTimePoint = std::chrono::steady_clock::now();
+
 	for (auto& iter : mComponents) {
 		iter.second->Start();
 	}

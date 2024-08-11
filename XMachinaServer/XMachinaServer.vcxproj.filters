@@ -209,6 +209,9 @@
     <Filter Include="Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster BT\BT\MonsterTask\CheckBT">
       <UniqueIdentifier>{ac7590a7-ed70-444a-8622-74163c449743}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Entity\Script\Skill Script">
+      <UniqueIdentifier>{cae785a6-bafc-4440-ae24-6cf2f402d5ed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework.h">
@@ -557,6 +560,18 @@
     <ClInclude Include="Contents\BTTaskM_CheckMindControlBTToEnd.h">
       <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster BT\BT\MonsterTask\Check Detection Range</Filter>
     </ClInclude>
+    <ClInclude Include="Contents\Script_SkillCloaking.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Skill Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Script_SkillMindControl.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Skill Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Script_SkillShield.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Skill Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Script_Skill.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Skill Script</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp">
@@ -877,6 +892,18 @@
     </ClCompile>
     <ClCompile Include="Contents\BTTaskM_CheckMindControlBTToEnd.cpp">
       <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster BT\BT\MonsterTask\Check Detection Range</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Script_SkillCloaking.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Skill Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Script_SkillMindControl.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Skill Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Script_SkillShield.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Skill Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Script_Skill.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Skill Script</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

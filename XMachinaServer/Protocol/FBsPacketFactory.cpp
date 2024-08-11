@@ -360,8 +360,7 @@ bool FBsPacketFactory::Process_CPkt_PlayerOnSkill(SPtr_Session session, const FB
 	/// +---------------------------------------------------------------------------------------
 	/// SEND NEW PLAYER PKT TO SESSIONS IN ROOM ( SESSION->GET ROOM ID ) - EXCEPT ME ( SESSION )
 	/// ---------------------------------------------------------------------------------------+
-	auto spkt = FBS_FACTORY->SPkt_PlayerOnSkill(session->GetID(), type, PheroAmount, mindcontrol_monster_id);
-	GAME_MGR->BroadcastRoom(gameSession->GetPlayer()->GetRoomID(), spkt, gameSession->GetID());
+
 
 	sptr<GameMonster> mindControlMonster = nullptr;
 	if (type == FBProtocol::PLAYER_SKILL_TYPE_MIND_CONTROL) {

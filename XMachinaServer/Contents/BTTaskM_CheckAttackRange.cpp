@@ -40,7 +40,7 @@ BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 			return BTNodeState::Failure;
 		}
 
-		GameSkill::State IsCloakingOn = player->S_GetSkillState(FBProtocol::PLAYER_SKILL_TYPE_CLOACKING);
+		GameSkill::State IsCloakingOn = player->GetSkillState(FBProtocol::PLAYER_SKILL_TYPE_CLOACKING);
 		if (IsCloakingOn == GameSkill::State::Active) {
 			mEnemyController->SetTarget(nullptr);
 			return BTNodeState::Failure;

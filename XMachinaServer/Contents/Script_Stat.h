@@ -29,7 +29,7 @@ private:
 	float mCrntHP       = {};
 	float mPrevHP       = {};
 
-	float mPhero		= {};
+	float mPhero		= 1000.f;
 
 private:
 	ObjectState  mObjectState = ObjectState::Deactive; Lock::SRWLock Lock_State;

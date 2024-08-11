@@ -3,7 +3,7 @@
 #include "GamePlayer.h"
 #include "GameSession.h"
 #include "GameMonster.h"
-
+#include "GameSkill.h"
 
 #include "FBsPacketFactory.h"
 
@@ -26,6 +26,10 @@
 #include "Script_Phero.h"
 #include "Script_PheroDropper.h"
 #include "Script_PlayerStat.h"
+
+#include "Script_SkillCloaking.h"
+#include "Script_SkillMindControl.h"
+#include "Script_SkillShield.h"
 
 
 
@@ -113,29 +117,43 @@ void GamePlayer::Start()
 		switch (skilltype)
 		{
 		case FBProtocol::PLAYER_SKILL_TYPE_CLOACKING: {
-			skill->SetCoolTime(3.f);
-			skill->SetDurationTime(0.f);
+			auto script = skill->AddScript<Script_SkillCloaking>(ScriptInfo::Type::Skill);
+			script->SetSkillOwner(skill.get());
+			skill->SetSkillScript(script.get());
+			skill->SetCoolTime(3.f - 1.f);
+			skill->SetActiveDurationTime(0.f);
 		}
 		break;
 		case FBProtocol::PLAYER_SKILL_TYPE_IR_DETECTOR:{
-			skill->SetCoolTime(10.f);
-			skill->SetDurationTime(30.f);
+			//skill->SetCoolTime(10.f);
+			//skill->SetActiveDurationTime(30.f);
+
 		}
 		break;
 		case FBProtocol::PLAYER_SKILL_TYPE_MIND_CONTROL:{
-			skill->SetCoolTime(2.f);
-			skill->SetDurationTime(10.f);
+			auto script = skill->AddScript<Script_SkillMindControl>(ScriptInfo::Type::Skill);
+			script->SetSkillOwner(skill.get());
+			skill->SetSkillScript(script.get());
+			skill->SetCoolTime(2.f - 1.f);
+			skill->SetActiveDurationTime(10.f - 1.f);
+
 		}
 		break;
 		case FBProtocol::PLAYER_SKILL_TYPE_SHIELD:{
-			skill->SetCoolTime(2.f);
-			skill->SetDurationTime(4.5f);
+			auto script = skill->AddScript<Script_SkillShield>(ScriptInfo::Type::Skill);
+			script->SetSkillOwner(skill.get());
+			skill->SetSkillScript(script.get());
+			skill->SetCoolTime(2.f - 1.f);
+			skill->SetActiveDurationTime(4.5f - 1.f);
+
 		}
 		break;
 		default:
 			break;
 		};
 		mSkills[i] = skill;
+		skill->WakeUp();
+
 	}
 }
 
@@ -164,7 +182,10 @@ void GamePlayer::Exit()
 	mSnapShot.Lock_IsExit.LockWrite();
 	mSnapShot.IsExit = true;
 	mSnapShot.Lock_IsExit.UnlockWrite();
-
+	
+	for (int i = 0; i < static_cast<int>(GameSkill::State::_count); ++i) {
+		mSkills[i]->DeActivate();
+	}
 
 }
 
@@ -213,7 +234,7 @@ int GamePlayer::OnHitEnemy(int32_t monster_id, Vec3& pos, Vec3& ray)
 
 bool GamePlayer::OnSkill(FBProtocol::PLAYER_SKILL_TYPE type, SPtr<GameMonster> mindControlledMonster)
 {
-	GameSkill::State skillState = mSkills[type]->S_GetState();
+	GameSkill::State skillState = mSkills[type]->GetState();
 	switch (skillState)
 	{
 	case GameSkill::State::Impossible:
@@ -227,13 +248,39 @@ bool GamePlayer::OnSkill(FBProtocol::PLAYER_SKILL_TYPE type, SPtr<GameMonster> m
 		bool res = mSkills[type]->OnSkill(currPhero, mindControlledMonster);
 		if (res == false)
 			return false;
+
+
+		int mindcontrol_monster_id = -1;
+		if (mindControlledMonster)
+			mindcontrol_monster_id = mindControlledMonster->GetID();
+		auto spkt = FBS_FACTORY->SPkt_PlayerOnSkill(GetID(), type, currPhero, mindcontrol_monster_id);
+		GAME_MGR->BroadcastRoom(GetRoomID(), spkt, GetID());
+
 	}
 		break;
 	case GameSkill::State::Active:
 	{
+		if (type == FBProtocol::PLAYER_SKILL_TYPE_CLOACKING) {
+			mSkills[type]->SetState(GameSkill::State::CoolTime_Start);
+			float currPhero = S_GetPhero();
+			bool res = mSkills[type]->OnSkill(currPhero, mindControlledMonster);
+			if (res == false)
+				return false;
+
+			int mindcontrol_monster_id = -1;
+			if (mindControlledMonster)
+				mindcontrol_monster_id = mindControlledMonster->GetID();
+			auto spkt = FBS_FACTORY->SPkt_PlayerOnSkill(GetID(), type, currPhero, mindcontrol_monster_id);
+			GAME_MGR->BroadcastRoom(GetRoomID(), spkt, GetID());
+
+		}
 		return false;
 	}
 		break;
+	case GameSkill::State::CoolTime_Start:
+	case GameSkill::State::CoolTime_End:
+		break;
+
 	default:
 		assert(0);
 		break;

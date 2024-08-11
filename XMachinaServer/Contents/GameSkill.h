@@ -9,6 +9,7 @@
 class GameBullet;
 class GamePlayer;
 class GameMonster;
+class Script_Skill;
 class GameSkill : public GameObject
 {
 public:
@@ -18,19 +19,23 @@ public:
 		/* 사용 가능*/
 		Possible ,
 		/* 사용 중*/
-		Active, };
+		Active, 
+		/* 쿨 타임*/
+		CoolTime_Start,
+		CoolTime_End,
+		_count,
+	};
 private:
 	SPtr<GamePlayer>				mOwnerPlayer = nullptr;
 	std::atomic_int					mActivate_Ref	= 0;
 
 private:
 	float							mConsumePheroAmount = 10.f; // test
-	float							mCoolTime           = 0.f;
-	float							mActiveDuration     = 0.f;
+
 	FBProtocol::PLAYER_SKILL_TYPE	mSkillType          = FBProtocol::PLAYER_SKILL_TYPE_END; 
 	GameSkill::State				mSkillState         = GameSkill::State::Possible; Lock::SRWLock Lock_SkillState;
 
-	sptr<GameMonster>				mMindControlMonster   = {};
+	Script_Skill*					mSkillScript = nullptr;
 public:
 	GameSkill();
 	GameSkill(UINT32 sessionID);
@@ -48,30 +53,28 @@ public:
 public:
 	bool OnSkill(float playerTotalPhero, SPtr<GameMonster> monster = nullptr);
 
-	void InitSkill_MindControl(SPtr<GameMonster> monster);
-	void InitSkill_Cloaking();
-	void InitSkill_Shield();
-
-
 public:
 	void DecreaseRef() { mActivate_Ref.fetch_sub(1); if (mActivate_Ref.load() < 0) mActivate_Ref = 0; }
+	void RegisterUpdate(float duration);
 
 
 	/// +-----------------------------------------------------------
 	///		S E T T E R 
 	/// -----------------------------------------------------------+
-	void SetCoolTime(float coolTime)									{ mCoolTime                                = coolTime; }
-	void SetDurationTime(float durationTime)							{ mActiveDuration                          = durationTime; }
-	void SetSkillType(FBProtocol::PLAYER_SKILL_TYPE skilltype)			{ mSkillType                               = skilltype; }
-	void SetMindControlMonster(sptr<GameMonster> mindControlMonster)	{ mMindControlMonster                      = mindControlMonster; }
-	void S_SetState(GameSkill::State state)								{ Lock_SkillState.LockWrite(); mSkillState = state; Lock_SkillState.UnlockWrite(); }
 
+	void SetSkillType(FBProtocol::PLAYER_SKILL_TYPE skilltype)			{ mSkillType                               = skilltype; }
+	void SetState(GameSkill::State state)								{ mSkillState = state; }
+	void SetSkillScript(Script_Skill* script)							{ mSkillScript = script; }
 	/// +-----------------------------------------------------------
 	///		G E T T E R 
 	/// -----------------------------------------------------------+
-	int						GetActivate_RefCnt() { return mActivate_Ref.load(); }
-    SPtr<GamePlayer>		GetOwnerPlayer()	 { return mOwnerPlayer;}
-	GameSkill::State		S_GetState()		 { Lock_SkillState.LockRead(); GameSkill::State state = mSkillState; Lock_SkillState.UnlockRead(); return state; }
+	int								GetActivate_RefCnt() { return mActivate_Ref.load(); }
+    SPtr<GamePlayer>				GetOwnerPlayer()	 { return mOwnerPlayer;}
+	GameSkill::State				GetState()			 { GameSkill::State state = mSkillState;  return state; }
+	FBProtocol::PLAYER_SKILL_TYPE	GetSkillType()		 { return mSkillType; }
+
+	void SetCoolTime(float time);
+	void SetActiveDurationTime(float time);
 
 };
 

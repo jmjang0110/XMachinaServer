@@ -213,6 +213,10 @@
     <ClInclude Include="Contents\Script_LightBipedMech.h" />
     <ClInclude Include="Contents\Script_MiningMech.h" />
     <ClInclude Include="Contents\Script_Rapax.h" />
+    <ClInclude Include="Contents\Script_Skill.h" />
+    <ClInclude Include="Contents\Script_SkillCloaking.h" />
+    <ClInclude Include="Contents\Script_SkillMindControl.h" />
+    <ClInclude Include="Contents\Script_SkillShield.h" />
     <ClInclude Include="Contents\TileMap.h" />
     <ClInclude Include="Contents\HeightMapImage.h" />
     <ClInclude Include="Contents\Key.h" />
@@ -330,6 +334,10 @@
     <ClCompile Include="Contents\Script_LightBipedMech.cpp" />
     <ClCompile Include="Contents\Script_MiningMech.cpp" />
     <ClCompile Include="Contents\Script_Rapax.cpp" />
+    <ClCompile Include="Contents\Script_Skill.cpp" />
+    <ClCompile Include="Contents\Script_SkillCloaking.cpp" />
+    <ClCompile Include="Contents\Script_SkillMindControl.cpp" />
+    <ClCompile Include="Contents\Script_SkillShield.cpp" />
     <ClCompile Include="Contents\TileMap.cpp" />
     <ClCompile Include="Contents\HeightMapImage.cpp" />
     <ClCompile Include="Contents\Key.cpp" />

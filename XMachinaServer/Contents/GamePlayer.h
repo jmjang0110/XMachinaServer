@@ -139,7 +139,9 @@ public:
 	float					S_GetHp();
 	FBProtocol::WEAPON_TYPE	S_GetCurrWeapon()								{ mSnapShot.Lock_Weapon.LockRead();			FBProtocol::WEAPON_TYPE name = mSnapShot.WeaponType; ; mSnapShot.Lock_Weapon.UnlockRead(); return name; }
 	Vec3					S_GetSpineLookDir()							{ mSnapShot.Lock_SpineLookDir.LockRead();	Vec3 spineLookDir            = mSnapShot.SpineLookDir; mSnapShot.Lock_SpineLookDir.UnlockRead(); return spineLookDir; }
-	GameSkill::State		S_GetSkillState(FBProtocol::PLAYER_SKILL_TYPE type)	{ return mSkills[type]->S_GetState(); }
+	GameSkill::State		GetSkillState(FBProtocol::PLAYER_SKILL_TYPE type)	{ return mSkills[type]->GetState(); }
 	ViewList				S_GetViewList()								{ mSnapShot.Lock_VList_SnapShot.LockRead(); ViewList vl = mSnapShot.VList_SnapShot; mSnapShot.Lock_VList_SnapShot.UnlockRead(); return vl; }
+
+	bool S_DecPhero(float decPhero) { mSnapShot.Lock_Phero.LockWrite();	mSnapShot.Phero -= decPhero;  if (mSnapShot.Phero <= 0.f) mSnapShot.Phero = 0.f; float phero = mSnapShot.Phero; mSnapShot.Lock_Phero.UnlockWrite(); return phero != 0; }
 };
 
