@@ -176,7 +176,7 @@ BTNode* Script_DefaultEnemyBT::SetupTree()
 		{
 			// -- Selector 2_1 --
 			Selector_2_1.push_back(MoveToTarget);		  // [3-1] Move To Target 
-			Selector_2_1.push_back(PathPlanningToTarget); // [3-2] Path Planning To Target 
+			//Selector_2_1.push_back(PathPlanningToTarget); // [3-2] Path Planning To Target 
 			BTNode* Selector_2_1_Node = MEMORY->New<BTNode_Selector>(GetOwner(), Selector_2_1);
 			Sequence_2.push_back(Selector_2_1_Node);
 		}

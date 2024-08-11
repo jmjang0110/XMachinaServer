@@ -31,8 +31,6 @@ public:
 	///		Stat :  virtual function 
 	/// ------------------------------+
 	virtual bool Start() override;
-	virtual bool LateUpdate() override;
-	virtual bool Attack() override;
 
 protected:
 	void BasicAttackCallback();

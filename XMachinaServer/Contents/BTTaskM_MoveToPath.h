@@ -14,7 +14,7 @@ namespace MonsterTask {
 	private:
 		float						  mMoveSpeed{};
 		float						  mReturnSpeed{};
-		std::stack<Vec3>* mPath;
+		std::stack<Vec3>* mPaths;
 
 		const AnimatorParameter* mReturnParam{};
 	public:

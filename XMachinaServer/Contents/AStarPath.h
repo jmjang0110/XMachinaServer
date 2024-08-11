@@ -16,7 +16,7 @@ class AStarPath
 private:
 	std::priority_queue<PQNode, std::vector<PQNode>, std::greater<PQNode>> pq;
 
-	std::stack<Vec3>* mPath                = {};
+	std::stack<Vec3>* mPaths                = {};
 	Path::Pos		  mStart               = {};
 	Path::Pos		  mDest                = {};
 

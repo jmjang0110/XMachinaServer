@@ -59,26 +59,6 @@ bool Script_Ursacetus::Start()
     return true;
 }
 
-bool Script_Ursacetus::LateUpdate()
-{
-    if (!Script_Enemy::LateUpdate()) {
-        return false;
-    }
-
-    const auto& motion = GetOwner()->GetAnimation()->GetController()->GetCrntMotion();
-
-    return true;
-}
-
-bool Script_Ursacetus::Attack()
-{
-    if (!Script_Enemy::Attack()) {
-        return false;
-    }
-
-    return true;
-}
-
 void Script_Ursacetus::BasicAttackCallback()
 {
     if (!Script_Enemy::mEnemyController->GetTarget()) {

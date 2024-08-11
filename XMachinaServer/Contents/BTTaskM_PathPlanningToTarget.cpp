@@ -20,7 +20,7 @@ BTNodeState MonsterTask::PathPlanningToTarget::Evaluate()
 	}
 
 	// 경로가 비었다면 경로 재 탐색
-	if (MonsterTask::PathPlanning_AStar::mPath->empty()) {
+	if (MonsterTask::PathPlanning_AStar::mPaths->empty()) {
 		MonsterBTTask::mAnimation->GetController()->SetValue("Return", false);
 
 		// 시작 지점과 목적지 위치 값을 타일 고유 인덱스로 변환
@@ -46,7 +46,7 @@ MonsterTask::PathPlanningToTarget::PathPlanningToTarget(SPtr_GameObject owner, s
 	: PathPlanning_AStar(owner, BTTaskType::MonT_PathPlanningToTarget, callback)
 {
 
-	MonsterTask::PathPlanning_AStar::mPath = mEnemyController->GetPaths();
+	MonsterTask::PathPlanning_AStar::mPaths = mEnemyController->GetPaths();
 
 }
 

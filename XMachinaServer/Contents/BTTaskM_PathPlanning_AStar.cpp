@@ -21,7 +21,7 @@ MonsterTask::PathPlanning_AStar::PathPlanning_AStar(SPtr_GameObject owner, BTTas
 {
 
 
-	MonsterTask::PathPlanning_AStar::mPath = mEnemyController->GetPaths();
+	MonsterTask::PathPlanning_AStar::mPaths = mEnemyController->GetPaths();
 
 }
 
@@ -30,7 +30,7 @@ MonsterTask::PathPlanning_AStar::PathPlanning_AStar(SPtr_GameObject owner, std::
 {
 
 
-	MonsterTask::PathPlanning_AStar::mPath = mEnemyController->GetPaths();
+	MonsterTask::PathPlanning_AStar::mPaths = mEnemyController->GetPaths();
 
 }
 
@@ -142,7 +142,7 @@ bool MonsterTask::PathPlanning_AStar::PathPlanningAStar(Path::Pos start, Path::P
 		Path::Pos dir = mParent[pos] - pos;
 
 		if (prevDir != dir) {
-			mPath->push(RESOURCE_MGR->GetTileMap()->GetTilePosFromUniqueIndex(pos));
+			mPaths->push(RESOURCE_MGR->GetTileMap()->GetTilePosFromUniqueIndex(pos));
 		}
 
 		if (pos == mParent[pos])
@@ -153,11 +153,11 @@ bool MonsterTask::PathPlanning_AStar::PathPlanningAStar(Path::Pos start, Path::P
 	}
 
 	// 자연스러운 움직임을 위해 첫 번째 경로는 삭	제
-	if (!mPath->empty()) {
-		mPath->pop();
+	if (!mPaths->empty()) {
+		mPaths->pop();
 	}
 
-	if (mPath->empty()) {
+	if (mPaths->empty()) {
 		return false;
 	}
 

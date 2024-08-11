@@ -32,6 +32,7 @@
 #include "Script_Ursacetus.h"
 #include "Script_Rapax.h"
 
+#include "BTTask.h"
 
 const std::vector<SPtr<GamePhero>>& GameMonster::GetAllPheros()
 {
@@ -62,7 +63,11 @@ void GameMonster::On_ExitFromViewList()
 
 	GetTransform()->SetLocalRotation(Quaternion::ToQuaternion(mSpawnRot));
 	mEnemyController->Reset();
-	
+
+	if(S_GetObjectState() == Script_Stat::ObjectState::Deactive)
+		mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE::MONSTER_BT_TYPE_IDLE);
+
+
 	auto spkt = FBS_FACTORY->SPkt_Monster_Transform(GetID(), mSpawnPos, mSpawnRot);
 	GAME_MGR->BroadcastRoom(GetOwnerNPCController()->GetOwnerRoom()->GetID(), spkt);
 }
@@ -162,8 +167,6 @@ void GameMonster::Start()
 
 void GameMonster::Activate()
 {
-
-
 	mActivate_Ref.fetch_add(1);
 
 	if (mInfo.owner == nullptr)
@@ -171,6 +174,7 @@ void GameMonster::Activate()
 		mInfo.owner = std::dynamic_pointer_cast<GameMonster>(shared_from_this());
 	}
 	if (mActivate_Ref.load() == 1) {
+		S_SetObjectState(Script_Stat::ObjectState::Active);
 		GameObject::Activate();
 		GameObject::RegisterUpdate();
 	}
@@ -182,6 +186,7 @@ void GameMonster::DeActivate()
 
 	if (mActivate_Ref.load() == 0) {
 		GameObject::DeActivate();
+		S_SetObjectState(Script_Stat::ObjectState::Deactive);
 
 	}
 

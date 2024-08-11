@@ -23,8 +23,8 @@ Script_MiningMech::Script_MiningMech(SPtr<GameObject> owner, ScriptInfo::Type ty
     Script_EnemyStat::SetStat_Attack1AnimName("UppercutDiggerAttack");
     Script_EnemyStat::SetStat_Attack2AnimName("UppercutDrillAttack");
     Script_EnemyStat::SetStat_Attack3AnimName("SmashAttack");
-    Script_EnemyStat::SetStat_DeathAnimName("Deactivation");
     Script_EnemyStat::SetStat_GetHitName("Blocked");
+    Script_EnemyStat::SetStat_DeathAnimName("Deactivation");
 
 
     owner->SetName("MiningMech");
@@ -41,6 +41,9 @@ bool Script_MiningMech::Start()
         return false;
     }
 
+    GetOwner()->GetAnimation()->GetController()->FindMotionByName(GetStat_Attack1AnimName())->AddCallback(std::bind(&Script_MiningMech::AttackCallback, this), 15);
+    GetOwner()->GetAnimation()->GetController()->FindMotionByName(GetStat_Attack2AnimName())->AddCallback(std::bind(&Script_MiningMech::AttackCallback, this), 15);
+    GetOwner()->GetAnimation()->GetController()->FindMotionByName(GetStat_Attack3AnimName())->AddCallback(std::bind(&Script_MiningMech::SmashAttackCallback, this), 20);
 
     return true;
 }
@@ -49,6 +52,18 @@ void Script_MiningMech::Clone(SPtr<Component> other)
 {
     Script_Enemy::Clone(other);
     SPtr<Script_MiningMech> otherScript = std::static_pointer_cast<Script_MiningMech>(other);
+}
 
+void Script_MiningMech::SmashAttackCallback()
+{
+}
+
+void Script_MiningMech::AttackEndCallback()
+{
+    ++mCurrAttackStep;
+    mCurrAttackStep %= MiningMechAttackType::_count;
+
+    GetOwner()->GetAnimation()->GetController()->SetValue("Attack", mCurrAttackStep);
+    mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_IDLE);
 }
 

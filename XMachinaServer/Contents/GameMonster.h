@@ -101,11 +101,8 @@ public:
 	void SetOwnerNPCController(NPCController* nc)					{ mOwnerNC         = nc; }
 	void SetEnemyController(Script_EnemyController* script)			{ mEnemyController = script; }
 	void SetEnemyStat(Script_EnemyStat* script)						{ mEnemyStat       = script; }
-	void SetMindControlled(bool mindControlled)						{ 
-		mIsMindControlled = (mindControlled);
-		int i = 0;
-	}
-
+	void SetMindControlled(bool mindControlled)						{ mIsMindControlled = (mindControlled);}
+	void S_SetObjectState(Script_Stat::ObjectState state)			{ mEnemyStat->S_SetObjectState(state); }
 	/// +-----------------------------------------------------------
 	///		G E T T E R 
 	/// -----------------------------------------------------------+	
