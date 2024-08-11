@@ -10,10 +10,6 @@ BTNodeState MonsterTask::CheckMindControlBT::Evaluate()
 {
 	bool IsMindControlled = mRoot->GetEnemyController()->GetOwnerMonster()->GetIsMindControlled();
 
-	if (GetOwner()->GetID() == 10) {
-		int a = 3;
-	}
-
 	if (IsMindControlled) {
 		if (mPrevMindControlled != IsMindControlled) {
 			mEnemyController->Reset();

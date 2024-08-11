@@ -2,6 +2,10 @@
 #include "Script_SkillMindControl.h"
 #include "GameSkill.h"
 #include "GameObject.h"
+#include "GameMonster.h"
+#include "GamePlayer.h"
+#include "Script_EnemyController.h"
+
 
 
 Script_SkillMindControl::Script_SkillMindControl()
@@ -46,4 +50,15 @@ bool Script_SkillMindControl::Update()
 	}
 
 	return true;
+}
+
+void Script_SkillMindControl::Init(SPtr<GameMonster> monster)
+{
+	if (monster == nullptr)
+		assert(0);
+
+	auto Invoker = mSkillOwner->GetOwnerPlayer();
+	monster->SetMindControlled(true);
+	monster->GetEnemyController()->SetInvoker(Invoker);
+	SetMindControlMonster(monster);
 }

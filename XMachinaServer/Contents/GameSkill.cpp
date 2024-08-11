@@ -9,6 +9,9 @@
 #include "Script_SkillMindControl.h"
 #include "Script_SkillShield.h"
 
+#include "GameMonster.h"
+
+
 
 
 
@@ -82,10 +85,14 @@ bool GameSkill::OnSkill(float playerTotalPhero, SPtr<GameMonster> monster)
 	case GameSkill::State::Possible: {
 		SetState(GameSkill::State::Active);
 		Activate();
+
+		if (mSkillType == FBProtocol::PLAYER_SKILL_TYPE_MIND_CONTROL) {
+			if (monster) {
+				auto mindC = dynamic_cast<Script_SkillMindControl*>(mSkillScript);
+				mindC->Init(monster);
+			}
+		}
 	}
-		break;
-	case GameSkill::State::Impossible:
-	case GameSkill::State::Active: 
 		break;
 	default:
 		break;
@@ -111,15 +118,3 @@ void GameSkill::SetActiveDurationTime(float time)
 {
 	mSkillScript->SetDurationTime(time);
 }
-
-
-
-//void GameSkill::InitSkill_MindControl(SPtr<GameMonster> monster)
-//{
-//	if (monster == nullptr)
-//		assert(0);
-//
-//	monster->SetMindControlled(true);
-//	monster->GetEnemyController()->SetInvoker(std::dynamic_pointer_cast<GamePlayer>(GetOwnerPlayer()));
-//	SetMindControlMonster(monster);
-//}

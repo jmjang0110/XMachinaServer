@@ -249,7 +249,6 @@ bool GamePlayer::OnSkill(FBProtocol::PLAYER_SKILL_TYPE type, SPtr<GameMonster> m
 		if (res == false)
 			return false;
 
-
 		int mindcontrol_monster_id = -1;
 		if (mindControlledMonster)
 			mindcontrol_monster_id = mindControlledMonster->GetID();

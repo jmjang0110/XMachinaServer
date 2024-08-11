@@ -20,6 +20,10 @@ public:
 	virtual bool Update();
 
 public:
+	void Init(SPtr<GameMonster> monster);
+
+
+public:
 	void SetMindControlMonster(SPtr<GameMonster> mindControlMonster) { mMindControlMonster = mindControlMonster; }
 	SPtr<GameMonster> GetMindControlMonster() { return mMindControlMonster; }
 };
