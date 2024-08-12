@@ -9,7 +9,6 @@ Script_Deus_Phase_1::Script_Deus_Phase_1(SPtr<GameObject> owner, ScriptInfo::Typ
     :Script_Enemy(owner, type)
 {
     Script_EnemyStat::SetID(owner->GetID());
-
     Script_EnemyStat::SetStat_EnemyLevel(7);
     Script_EnemyStat::SetStat_PheroLevel(6);
     Script_EnemyStat::SetStat_MoveSpeed(5.5);
@@ -20,15 +19,12 @@ Script_Deus_Phase_1::Script_Deus_Phase_1(SPtr<GameObject> owner, ScriptInfo::Typ
     Script_EnemyStat::SetStat_AttackRange(5);
     Script_EnemyStat::SetStat_AttackCoolTime(0);
     Script_EnemyStat::SetMaxHP(1500);
-    Script_EnemyStat::SetStat_Attack1AnimName("UppercutDiggerAttack");
-    Script_EnemyStat::SetStat_Attack2AnimName("UppercutDrillAttack");
-    Script_EnemyStat::SetStat_Attack3AnimName("SmashAttack");
-    Script_EnemyStat::SetStat_GetHitName("Blocked");
-    Script_EnemyStat::SetStat_DeathAnimName("Deactivation");
-
-
-    owner->SetName("MiningMech");
-
+    Script_EnemyStat::SetStat_Attack1AnimName("Attack_01");
+    Script_EnemyStat::SetStat_Attack2AnimName("Shot_01");
+    Script_EnemyStat::SetStat_Attack3AnimName("Shot_02");
+    Script_EnemyStat::SetStat_GetHitName("Get_Hit");
+    Script_EnemyStat::SetStat_DeathAnimName("Dead_02");
+    owner->SetName("Deus_Phase_1");
 }
 
 Script_Deus_Phase_1::~Script_Deus_Phase_1()

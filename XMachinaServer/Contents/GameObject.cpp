@@ -34,6 +34,8 @@
 #include "Script_Rapax.h"
 #include "Script_Anglerox.h"
 #include "Script_MiningMech.h"
+#include "Script_Deus_Phase_1.h"
+#include "Script_Deus_Phase_2.h"
 
 
 GameObject::GameObject()
@@ -271,6 +273,14 @@ SPtr<Script> GameObject::AddScript(ScriptInfo::Type key)
 			break;
 		case GameObjectInfo::Type::Monster_Aranobot:
 			script = AddScript<Script_Aranobot>(key);
+
+			break;
+		case GameObjectInfo::Type::Montser_Deus_Phase_1:
+			script = AddScript<Script_Deus_Phase_1>(key);
+
+			break;
+		case GameObjectInfo::Type::Monster_Deus_Phase_2:
+			script = AddScript<Script_Deus_Phase_2>(key);
 
 			break;
 		default:

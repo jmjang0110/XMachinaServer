@@ -12,7 +12,8 @@
 #include "Script_Rapax.h"
 #include "Script_Anglerox.h"
 #include "Script_MiningMech.h"
-
+#include "Script_Deus_Phase_1.h"
+#include "Script_Deus_Phase_2.h"
 /* Script */
 
 /// +----------------------------------------------------------------------------------
@@ -60,6 +61,11 @@ SPtr<Script_Enemy> BTTask::GetStat(GameObjectInfo::Type enemyType)
 	else if (enemyType == GameObjectInfo::Type::Monster_Rapax)
 		stat = GetOwner()->GetScript<Script_Rapax>(ScriptInfo::Type::Stat);
 
+	else if (enemyType == GameObjectInfo::Type::Montser_Deus_Phase_1)
+		stat = GetOwner()->GetScript<Script_Deus_Phase_1>(ScriptInfo::Type::Stat);
+
+	else if (enemyType == GameObjectInfo::Type::Monster_Deus_Phase_2)
+		stat = GetOwner()->GetScript<Script_Deus_Phase_2>(ScriptInfo::Type::Stat);
 	return stat;
 }
 

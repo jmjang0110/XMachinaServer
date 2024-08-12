@@ -55,8 +55,6 @@ public:
 	virtual void Start();
 
 	virtual void Dispatch(class OverlappedObject* overlapped, UINT32 bytes = 0) override;
-
-
 	/* 초기화 - Room/NPCController가 Sector에 Monster를 추가한다. */
 public:
 	void Init(Coordinate Index, SectorInfo::Type type = SectorInfo::Type::None);
@@ -65,6 +63,7 @@ public:
 	bool AddNPC(UINT32 id, SPtr<GameNPC> npc);
 	bool AddBuilding(UINT32 id, SPtr<GameObject> building);
 
+	void RemoveMonster(UINT32 id);
 	
 public:
 	/// +---------------------------------------------------------

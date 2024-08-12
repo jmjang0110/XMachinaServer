@@ -61,8 +61,13 @@ void NPCController::InitMonsters(Coordinate maxSectorIdx)
 		// NPC
 		enemy->SetOwnerNPCController(this);
 		AddMonster(enemy->GetID(), enemy);
+
+		if (enemy->GetType() == GameObjectInfo::Type::Montser_Deus_Phase_1)
+			int i = 0;
+
 		// SECTOR
 		Coordinate SectorIndex = SectorController::GetSectorIdxByPosition(enemy->GetTransform()->GetPosition());
+		enemy->SetSectorIndex(SectorIndex);
 		sc->AddMonsterInSector(SectorIndex, enemy->GetID(), enemy);
 		
 		// INIT

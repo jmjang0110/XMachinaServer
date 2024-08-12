@@ -274,14 +274,12 @@ void BattleScene::AddMonster(SPtr<GameObject> object)
 	}
 	break;
 	case GameObjectInfo::Type::Montser_Deus_Phase_1: {
-		return;
 		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_DEUS_PHASE_1);
 		monsterObject->AddScript<Script_Deus_Phase_1>(ScriptInfo::Type::Stat);
 
 	}
 	break;
 	case GameObjectInfo::Type::Monster_Deus_Phase_2: {
-		return;
 		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_DEUS_PHASE_2);
 		monsterObject->AddScript<Script_Deus_Phase_2>(ScriptInfo::Type::Stat);
 

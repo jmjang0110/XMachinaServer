@@ -40,6 +40,8 @@
 #include "Script_Rapax.h"
 #include "Script_Anglerox.h"
 #include "Script_MiningMech.h"
+#include "Script_Deus_Phase_1.h"
+#include "Script_Deus_Phase_2.h"
 #include "FBsPacketFactory.h"
 #include "GameManager.h"
 #include "NPCController.h"
@@ -203,57 +205,68 @@ SPtr<Script_Enemy> Script_DefaultEnemyBT::GetScriptEnemy(GameObjectInfo::Type ob
 		SPtr<Script_Ursacetus> script = GetOwner()->GetScript<Script_Ursacetus>(ScriptInfo::Type::Stat);
 		enemy = std::static_pointer_cast<Script_Enemy>(script);
 	}
-		break;
+												break;
 	case GameObjectInfo::Type::Monster_Onyscidus: {
 		SPtr<Script_Onyscidus> script = GetOwner()->GetScript<Script_Onyscidus>(ScriptInfo::Type::Stat);
 		enemy = std::static_pointer_cast<Script_Enemy>(script);
 	}
-		break;
+												break;
 	case GameObjectInfo::Type::Monster_AdvancedCombat_5: {
 		SPtr<Script_AdvancedCombatDroid_5> script = GetOwner()->GetScript<Script_AdvancedCombatDroid_5>(ScriptInfo::Type::Stat);
 		enemy = std::static_pointer_cast<Script_Enemy>(script);
 	}
-		break;
+													   break;
 	case GameObjectInfo::Type::Monster_Anglerox: {
 		SPtr<Script_Anglerox> script = GetOwner()->GetScript<Script_Anglerox>(ScriptInfo::Type::Stat);
 		enemy = std::static_pointer_cast<Script_Enemy>(script);
 	}
-		break;
+											   break;
 	case GameObjectInfo::Type::Monster_Arack: {
 		SPtr<Script_Arack> script = GetOwner()->GetScript<Script_Arack>(ScriptInfo::Type::Stat);
 		enemy = std::static_pointer_cast<Script_Enemy>(script);
 	}
-		break;
+											break;
 	case GameObjectInfo::Type::Monster_Ceratoferox: {
 		SPtr<Script_Ceratoferox> script = GetOwner()->GetScript<Script_Ceratoferox>(ScriptInfo::Type::Stat);
 		enemy = std::static_pointer_cast<Script_Enemy>(script);
 	}
-		break;
+												  break;
 	case GameObjectInfo::Type::Monster_Gobbler: {
 		SPtr<Script_Gobbler> script = GetOwner()->GetScript<Script_Gobbler>(ScriptInfo::Type::Stat);
 		enemy = std::static_pointer_cast<Script_Enemy>(script);
 	}
-		break;
+											  break;
 	case GameObjectInfo::Type::Monster_LightBipedMech: {
 		SPtr<Script_LightBipedMech> script = GetOwner()->GetScript<Script_LightBipedMech>(ScriptInfo::Type::Stat);
 		enemy = std::static_pointer_cast<Script_Enemy>(script);
 	}
-		break;
+													 break;
 	case GameObjectInfo::Type::Monster_MiningMech: {
 		SPtr<Script_MiningMech> script = GetOwner()->GetScript<Script_MiningMech>(ScriptInfo::Type::Stat);
 		enemy = std::static_pointer_cast<Script_Enemy>(script);
 	}
-		break;
+												 break;
 	case GameObjectInfo::Type::Monster_Rapax: {
 		SPtr<Script_Rapax> script = GetOwner()->GetScript<Script_Rapax>(ScriptInfo::Type::Stat);
 		enemy = std::static_pointer_cast<Script_Enemy>(script);
 	}
-		break;
+											break;
 	case GameObjectInfo::Type::Monster_Aranobot: {
 		SPtr<Script_Aranobot> script = GetOwner()->GetScript<Script_Aranobot>(ScriptInfo::Type::Stat);
 		enemy = std::static_pointer_cast<Script_Enemy>(script);
 	}
-		break;
+											   break;
+	case GameObjectInfo::Type::Montser_Deus_Phase_1: {
+		SPtr<Script_Deus_Phase_1> script = GetOwner()->GetScript<Script_Deus_Phase_1>(ScriptInfo::Type::Stat);
+		enemy = std::static_pointer_cast<Script_Enemy>(script);
+	}
+												   break;
+
+	case GameObjectInfo::Type::Monster_Deus_Phase_2: {
+		SPtr<Script_Deus_Phase_2> script = GetOwner()->GetScript<Script_Deus_Phase_2>(ScriptInfo::Type::Stat);
+		enemy = std::static_pointer_cast<Script_Enemy>(script);
+	}
+												   break;
 	default:
 		break;
 	}
