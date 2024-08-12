@@ -27,6 +27,8 @@ namespace GameObjectInfo
 		Monster_MiningMech,
 		Monster_Rapax,
 		Monster_Aranobot,
+		Montser_Deus_Phase_1,
+		Monster_Deus_Phase_2,
 
 		/// +------------------------
 		///		 BUILDING 

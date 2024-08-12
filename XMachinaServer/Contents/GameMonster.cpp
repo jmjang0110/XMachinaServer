@@ -234,45 +234,6 @@ SPtr<GameMonster> GameMonster::Clone()
 ScriptInfo::Type GameMonster::GetScriptInfoType() {
 	FBProtocol::MONSTER_TYPE type = mInfo.Type;
 	ScriptInfo::Type t = ScriptInfo::Type::Stat;
-	//switch (type)
-	//{
-	//case FBProtocol::MONSTER_TYPE_ADVANCED_COMBAT_DROIR_5:
-	//	t = ScriptInfo::Type::AdvancedCombatDroid_5;
-	//	break;
-	//case FBProtocol::MONSTER_TYPE_ANGLEROX:
-	//	t = ScriptInfo::Type::Anglerox;
-	//	break;
-	//case FBProtocol::MONSTER_TYPE_ARACK:
-	//	t = ScriptInfo::Type::Arack;
-	//	break;
-	//case FBProtocol::MONSTER_TYPE_ARANOBOT:
-	//	t = ScriptInfo::Type::Aranabot;
-	//	break;
-	//case FBProtocol::MONSTER_TYPE_CERATOFEROX:
-	//	t = ScriptInfo::Type::Ceratoferox;
-	//	break;
-	//case FBProtocol::MONSTER_TYPE_GOBBLER:
-	//	t = ScriptInfo::Type::Gobbler;
-	//	break;
-	//case FBProtocol::MONSTER_TYPE_LIGHTBIPEDMECH:
-	//	t = ScriptInfo::Type::LightBipedMech;
-	//	break;
-	//case FBProtocol::MONSTER_TYPE_MININGMECH:
-	//	t = ScriptInfo::Type::MiningMech;
-	//	break;
-	//case FBProtocol::MONSTER_TYPE_ONYSCIDUS:
-	//	t = ScriptInfo::Type::Onyscidus;
-	//	break;
-	//case FBProtocol::MONSTER_TYPE_URSACETUS:
-	//	t = ScriptInfo::Type::Ursacetus;
-	//	break;
-	//case FBProtocol::MONSTER_TYPE_RAPAX:
-	//	t = ScriptInfo::Type::Rapax;
-	//	break;
-	//default:
-	//	assert(0);
-	//	break;
-	//}
 	return t;
 }
 

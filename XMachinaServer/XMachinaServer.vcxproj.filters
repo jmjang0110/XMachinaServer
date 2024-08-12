@@ -578,6 +578,12 @@
     <ClInclude Include="Contents\GameItem.h">
       <Filter>Framework\Contents\GameWorld\GameObject\NPC\Item</Filter>
     </ClInclude>
+    <ClInclude Include="Contents\Script_Deus_Phase_1.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Enemy Script\Monster Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Script_Deus_Phase_2.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Enemy Script\Monster Script</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp">
@@ -913,6 +919,12 @@
     </ClCompile>
     <ClCompile Include="Contents\GameItem.cpp">
       <Filter>Framework\Contents\GameWorld\GameObject\NPC\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Script_Deus_Phase_1.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Enemy Script\Monster Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Script_Deus_Phase_2.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Enemy Script\Monster Script</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

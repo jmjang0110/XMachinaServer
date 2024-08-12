@@ -24,6 +24,8 @@
 #include "Script_Rapax.h"
 #include "Script_Anglerox.h"
 #include "Script_MiningMech.h"
+#include "Script_Deus_Phase_1.h"
+#include "Script_Deus_Phase_2.h"
 
 #include "Script_BehaviorTree.h"
 #include "Script_DefaultEnemyBT.h"
@@ -87,6 +89,11 @@ void BattleScene::Load()
 					objectType = GameObjectInfo::Type::Monster_Rapax;
 				else if (modelName == "Aranobot")
 					objectType = GameObjectInfo::Type::Monster_Aranobot;
+				else if (modelName == "Deus_Phase_1")
+					objectType = GameObjectInfo::Type::Montser_Deus_Phase_1;
+				else if (modelName == "Deus_Phase_2")
+					objectType = GameObjectInfo::Type::Monster_Deus_Phase_2;
+
 				else
 					assert(0);
 			}
@@ -130,6 +137,9 @@ void BattleScene::Load()
 				case GameObjectInfo::Type::Monster_MiningMech:
 				case GameObjectInfo::Type::Monster_Rapax:
 				case GameObjectInfo::Type::Monster_Aranobot:
+				case GameObjectInfo::Type::Montser_Deus_Phase_1:
+				case GameObjectInfo::Type::Monster_Deus_Phase_2:
+					
 					isGameMonster = true;
 					break;
 			}
@@ -270,6 +280,20 @@ void BattleScene::AddMonster(SPtr<GameObject> object)
 
 	}
 	break;
+	case GameObjectInfo::Type::Montser_Deus_Phase_1: {
+		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_DEUS_PHASE_1);
+		monsterObject->AddScript<Script_Deus_Phase_1>(ScriptInfo::Type::Stat);
+
+	}
+	break;
+	case GameObjectInfo::Type::Monster_Deus_Phase_2: {
+		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_DEUS_PHASE_2);
+		monsterObject->AddScript<Script_Deus_Phase_2>(ScriptInfo::Type::Stat);
+
+	}
+	break;
+
+
 	default:
 		assert(0);
 		break;

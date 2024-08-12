@@ -210,6 +210,8 @@
     <ClInclude Include="Contents\Script_Building.h" />
     <ClInclude Include="Contents\Script_Bullet.h" />
     <ClInclude Include="Contents\Script_Ceratoferox.h" />
+    <ClInclude Include="Contents\Script_Deus_Phase_1.h" />
+    <ClInclude Include="Contents\Script_Deus_Phase_2.h" />
     <ClInclude Include="Contents\Script_Gobbler.h" />
     <ClInclude Include="Contents\Script_LightBipedMech.h" />
     <ClInclude Include="Contents\Script_MiningMech.h" />
@@ -332,6 +334,8 @@
     <ClCompile Include="Contents\Script_Building.cpp" />
     <ClCompile Include="Contents\Script_Bullet.cpp" />
     <ClCompile Include="Contents\Script_Ceratoferox.cpp" />
+    <ClCompile Include="Contents\Script_Deus_Phase_1.cpp" />
+    <ClCompile Include="Contents\Script_Deus_Phase_2.cpp" />
     <ClCompile Include="Contents\Script_Gobbler.cpp" />
     <ClCompile Include="Contents\Script_LightBipedMech.cpp" />
     <ClCompile Include="Contents\Script_MiningMech.cpp" />
