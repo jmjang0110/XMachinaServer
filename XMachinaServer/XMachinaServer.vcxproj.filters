@@ -212,6 +212,9 @@
     <Filter Include="Framework\Contents\GameWorld\Entity\Script\Skill Script">
       <UniqueIdentifier>{cae785a6-bafc-4440-ae24-6cf2f402d5ed}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\Contents\GameWorld\GameObject\NPC\Item">
+      <UniqueIdentifier>{bddd8c2e-8fef-4d63-b5ae-fc11b0366e07}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework.h">
@@ -572,6 +575,9 @@
     <ClInclude Include="Contents\Script_Skill.h">
       <Filter>Framework\Contents\GameWorld\Entity\Script\Skill Script</Filter>
     </ClInclude>
+    <ClInclude Include="Contents\GameItem.h">
+      <Filter>Framework\Contents\GameWorld\GameObject\NPC\Item</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp">
@@ -904,6 +910,9 @@
     </ClCompile>
     <ClCompile Include="Contents\Script_Skill.cpp">
       <Filter>Framework\Contents\GameWorld\Entity\Script\Skill Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\GameItem.cpp">
+      <Filter>Framework\Contents\GameWorld\GameObject\NPC\Item</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

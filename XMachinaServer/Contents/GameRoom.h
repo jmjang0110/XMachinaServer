@@ -12,7 +12,6 @@ namespace RoomInfo
 };
 class GameRoom : public GameEntity
 {
-
 private:
 	int					mID = -1; /* ROOM ID */
 

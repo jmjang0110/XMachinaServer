@@ -157,6 +157,18 @@ struct CPkt_Bullet_OnCollisionBuilder;
 struct SPkt_Bullet_OnCollision;
 struct SPkt_Bullet_OnCollisionBuilder;
 
+struct CPkt_Item_Interact;
+struct CPkt_Item_InteractBuilder;
+
+struct SPkt_Item_Interact;
+struct SPkt_Item_InteractBuilder;
+
+struct CPkt_Item_ThrowAway;
+struct CPkt_Item_ThrowAwayBuilder;
+
+struct SPkt_Item_ThrowAway;
+struct SPkt_Item_ThrowAwayBuilder;
+
 /// +-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ///	¢º	LOG IN / LOG OUT ( BROADCAST NEW PLAYER / REMOVE PLAYER ) 
 /// -------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -2561,6 +2573,244 @@ inline ::flatbuffers::Offset<SPkt_Bullet_OnCollision> CreateSPkt_Bullet_OnCollis
   builder_.add_bullet_id(bullet_id);
   builder_.add_player_id(player_id);
   builder_.add_gun_id(gun_id);
+  return builder_.Finish();
+}
+
+/// +-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+///	¢º¢º¢º¢º¢º	ITEM  
+/// -------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+struct CPkt_Item_Interact FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
+  typedef CPkt_Item_InteractBuilder Builder;
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
+    VT_ITEM_ID = 4,
+    VT_ITEM_TYPE = 6
+  };
+  uint32_t item_id() const {
+    return GetField<uint32_t>(VT_ITEM_ID, 0);
+  }
+  FBProtocol::ITEM_TYPE item_type() const {
+    return static_cast<FBProtocol::ITEM_TYPE>(GetField<uint8_t>(VT_ITEM_TYPE, 0));
+  }
+  bool Verify(::flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<uint32_t>(verifier, VT_ITEM_ID, 4) &&
+           VerifyField<uint8_t>(verifier, VT_ITEM_TYPE, 1) &&
+           verifier.EndTable();
+  }
+};
+
+struct CPkt_Item_InteractBuilder {
+  typedef CPkt_Item_Interact Table;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_item_id(uint32_t item_id) {
+    fbb_.AddElement<uint32_t>(CPkt_Item_Interact::VT_ITEM_ID, item_id, 0);
+  }
+  void add_item_type(FBProtocol::ITEM_TYPE item_type) {
+    fbb_.AddElement<uint8_t>(CPkt_Item_Interact::VT_ITEM_TYPE, static_cast<uint8_t>(item_type), 0);
+  }
+  explicit CPkt_Item_InteractBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  ::flatbuffers::Offset<CPkt_Item_Interact> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = ::flatbuffers::Offset<CPkt_Item_Interact>(end);
+    return o;
+  }
+};
+
+inline ::flatbuffers::Offset<CPkt_Item_Interact> CreateCPkt_Item_Interact(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    uint32_t item_id = 0,
+    FBProtocol::ITEM_TYPE item_type = FBProtocol::ITEM_TYPE_STATIC_ITEM) {
+  CPkt_Item_InteractBuilder builder_(_fbb);
+  builder_.add_item_id(item_id);
+  builder_.add_item_type(item_type);
+  return builder_.Finish();
+}
+
+struct SPkt_Item_Interact FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
+  typedef SPkt_Item_InteractBuilder Builder;
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
+    VT_PLAYER_ID = 4,
+    VT_ITEM_ID = 6,
+    VT_ITEM_TYPE = 8
+  };
+  uint32_t player_id() const {
+    return GetField<uint32_t>(VT_PLAYER_ID, 0);
+  }
+  uint32_t item_id() const {
+    return GetField<uint32_t>(VT_ITEM_ID, 0);
+  }
+  FBProtocol::ITEM_TYPE item_type() const {
+    return static_cast<FBProtocol::ITEM_TYPE>(GetField<uint8_t>(VT_ITEM_TYPE, 0));
+  }
+  bool Verify(::flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<uint32_t>(verifier, VT_PLAYER_ID, 4) &&
+           VerifyField<uint32_t>(verifier, VT_ITEM_ID, 4) &&
+           VerifyField<uint8_t>(verifier, VT_ITEM_TYPE, 1) &&
+           verifier.EndTable();
+  }
+};
+
+struct SPkt_Item_InteractBuilder {
+  typedef SPkt_Item_Interact Table;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_player_id(uint32_t player_id) {
+    fbb_.AddElement<uint32_t>(SPkt_Item_Interact::VT_PLAYER_ID, player_id, 0);
+  }
+  void add_item_id(uint32_t item_id) {
+    fbb_.AddElement<uint32_t>(SPkt_Item_Interact::VT_ITEM_ID, item_id, 0);
+  }
+  void add_item_type(FBProtocol::ITEM_TYPE item_type) {
+    fbb_.AddElement<uint8_t>(SPkt_Item_Interact::VT_ITEM_TYPE, static_cast<uint8_t>(item_type), 0);
+  }
+  explicit SPkt_Item_InteractBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  ::flatbuffers::Offset<SPkt_Item_Interact> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = ::flatbuffers::Offset<SPkt_Item_Interact>(end);
+    return o;
+  }
+};
+
+inline ::flatbuffers::Offset<SPkt_Item_Interact> CreateSPkt_Item_Interact(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    uint32_t player_id = 0,
+    uint32_t item_id = 0,
+    FBProtocol::ITEM_TYPE item_type = FBProtocol::ITEM_TYPE_STATIC_ITEM) {
+  SPkt_Item_InteractBuilder builder_(_fbb);
+  builder_.add_item_id(item_id);
+  builder_.add_player_id(player_id);
+  builder_.add_item_type(item_type);
+  return builder_.Finish();
+}
+
+struct CPkt_Item_ThrowAway FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
+  typedef CPkt_Item_ThrowAwayBuilder Builder;
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
+    VT_ITEM_ID = 4,
+    VT_ITEM_TYPE = 6
+  };
+  uint32_t item_id() const {
+    return GetField<uint32_t>(VT_ITEM_ID, 0);
+  }
+  FBProtocol::ITEM_TYPE item_type() const {
+    return static_cast<FBProtocol::ITEM_TYPE>(GetField<uint8_t>(VT_ITEM_TYPE, 0));
+  }
+  bool Verify(::flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<uint32_t>(verifier, VT_ITEM_ID, 4) &&
+           VerifyField<uint8_t>(verifier, VT_ITEM_TYPE, 1) &&
+           verifier.EndTable();
+  }
+};
+
+struct CPkt_Item_ThrowAwayBuilder {
+  typedef CPkt_Item_ThrowAway Table;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_item_id(uint32_t item_id) {
+    fbb_.AddElement<uint32_t>(CPkt_Item_ThrowAway::VT_ITEM_ID, item_id, 0);
+  }
+  void add_item_type(FBProtocol::ITEM_TYPE item_type) {
+    fbb_.AddElement<uint8_t>(CPkt_Item_ThrowAway::VT_ITEM_TYPE, static_cast<uint8_t>(item_type), 0);
+  }
+  explicit CPkt_Item_ThrowAwayBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  ::flatbuffers::Offset<CPkt_Item_ThrowAway> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = ::flatbuffers::Offset<CPkt_Item_ThrowAway>(end);
+    return o;
+  }
+};
+
+inline ::flatbuffers::Offset<CPkt_Item_ThrowAway> CreateCPkt_Item_ThrowAway(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    uint32_t item_id = 0,
+    FBProtocol::ITEM_TYPE item_type = FBProtocol::ITEM_TYPE_STATIC_ITEM) {
+  CPkt_Item_ThrowAwayBuilder builder_(_fbb);
+  builder_.add_item_id(item_id);
+  builder_.add_item_type(item_type);
+  return builder_.Finish();
+}
+
+struct SPkt_Item_ThrowAway FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
+  typedef SPkt_Item_ThrowAwayBuilder Builder;
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
+    VT_PLAYER_ID = 4,
+    VT_ITEM_ID = 6,
+    VT_ITEM_TYPE = 8,
+    VT_DROP_POS = 10
+  };
+  uint32_t player_id() const {
+    return GetField<uint32_t>(VT_PLAYER_ID, 0);
+  }
+  uint32_t item_id() const {
+    return GetField<uint32_t>(VT_ITEM_ID, 0);
+  }
+  FBProtocol::ITEM_TYPE item_type() const {
+    return static_cast<FBProtocol::ITEM_TYPE>(GetField<uint8_t>(VT_ITEM_TYPE, 0));
+  }
+  const FBProtocol::Vector3 *drop_pos() const {
+    return GetPointer<const FBProtocol::Vector3 *>(VT_DROP_POS);
+  }
+  bool Verify(::flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<uint32_t>(verifier, VT_PLAYER_ID, 4) &&
+           VerifyField<uint32_t>(verifier, VT_ITEM_ID, 4) &&
+           VerifyField<uint8_t>(verifier, VT_ITEM_TYPE, 1) &&
+           VerifyOffset(verifier, VT_DROP_POS) &&
+           verifier.VerifyTable(drop_pos()) &&
+           verifier.EndTable();
+  }
+};
+
+struct SPkt_Item_ThrowAwayBuilder {
+  typedef SPkt_Item_ThrowAway Table;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_player_id(uint32_t player_id) {
+    fbb_.AddElement<uint32_t>(SPkt_Item_ThrowAway::VT_PLAYER_ID, player_id, 0);
+  }
+  void add_item_id(uint32_t item_id) {
+    fbb_.AddElement<uint32_t>(SPkt_Item_ThrowAway::VT_ITEM_ID, item_id, 0);
+  }
+  void add_item_type(FBProtocol::ITEM_TYPE item_type) {
+    fbb_.AddElement<uint8_t>(SPkt_Item_ThrowAway::VT_ITEM_TYPE, static_cast<uint8_t>(item_type), 0);
+  }
+  void add_drop_pos(::flatbuffers::Offset<FBProtocol::Vector3> drop_pos) {
+    fbb_.AddOffset(SPkt_Item_ThrowAway::VT_DROP_POS, drop_pos);
+  }
+  explicit SPkt_Item_ThrowAwayBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  ::flatbuffers::Offset<SPkt_Item_ThrowAway> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = ::flatbuffers::Offset<SPkt_Item_ThrowAway>(end);
+    return o;
+  }
+};
+
+inline ::flatbuffers::Offset<SPkt_Item_ThrowAway> CreateSPkt_Item_ThrowAway(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    uint32_t player_id = 0,
+    uint32_t item_id = 0,
+    FBProtocol::ITEM_TYPE item_type = FBProtocol::ITEM_TYPE_STATIC_ITEM,
+    ::flatbuffers::Offset<FBProtocol::Vector3> drop_pos = 0) {
+  SPkt_Item_ThrowAwayBuilder builder_(_fbb);
+  builder_.add_drop_pos(drop_pos);
+  builder_.add_item_id(item_id);
+  builder_.add_player_id(player_id);
+  builder_.add_item_type(item_type);
   return builder_.Finish();
 }
 

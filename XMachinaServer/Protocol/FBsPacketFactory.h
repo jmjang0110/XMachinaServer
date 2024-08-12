@@ -68,7 +68,9 @@ private:
 	static bool Process_CPkt_Bullet_OnHitEnemy(SPtr_Session session, const FBProtocol::CPkt_Bullet_OnHitEnemy& pkt);
 	static bool Process_CPkt_Bullet_OnCollision(SPtr_Session session, const FBProtocol::CPkt_Bullet_OnCollision& pkt);
 
-
+	/* ITEM */
+	static bool Process_CPkt_Item_Interact(SPtr_Session session, const FBProtocol::CPkt_Item_Interact& pkt);
+	static bool Process_CPpkt_Item_ThrowAway(SPtr_Session session, const FBProtocol::CPkt_Item_ThrowAway& pkt);
 
 public:
 	/* LOGIN, LATENCY, CHAT */
@@ -87,7 +89,6 @@ public:
 	SPtr_SendPktBuf SPkt_Player_AimRotation(uint32_t player_id, float aim_rotation, float spine_angle);
 	SPtr_SendPktBuf SPKt_Player_State(uint32_t player_id, float hp, float phero, FBProtocol::PLAYER_STATE_TYPE state);
 
-
 	/* MONSTER */
 	SPtr_SendPktBuf SPkt_NewMonster(std::vector<SPtr<GameMonster>>& new_monsters);
 	SPtr_SendPktBuf SPkt_DeadMonster(uint32_t monster_id, Vec3 dead_point, std::string pheros);
@@ -104,6 +105,13 @@ public:
 	SPtr_SendPktBuf SPkt_Bullet_OnShoot(uint32_t player_id, FBProtocol::WEAPON_TYPE  gun_id, uint32_t bullet_id, Vec3 fire_pos, Vec3 ray);
 	SPtr_SendPktBuf SPkt_Bullet_OnHitEnemy(uint32_t player_id, FBProtocol::WEAPON_TYPE  gun_id, uint32_t bullet_id, Vec3 ray);
 	SPtr_SendPktBuf SPkt_Bullet_OnCollision(uint32_t player_id, FBProtocol::WEAPON_TYPE gun_id, uint32_t bullet_id);
+
+	/* ITEM */
+	SPtr_SendPktBuf SPkt_Item_Interact(uint32_t player_id, uint32_t item_id, FBProtocol::ITEM_TYPE item_type);
+	SPtr_SendPktBuf SPkt_Item_ThrowAway(uint32_t player_id, uint32_t item_id, FBProtocol::ITEM_TYPE item_type);
+
+
+
 
 private:
 	static Vec3 GetVector3(const FBProtocol::Vector3* vec3);

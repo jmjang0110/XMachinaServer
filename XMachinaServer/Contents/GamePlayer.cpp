@@ -261,6 +261,7 @@ bool GamePlayer::OnSkill(FBProtocol::PLAYER_SKILL_TYPE type, SPtr<GameMonster> m
 	case GameSkill::State::Active:
 	{
 		if (type == FBProtocol::PLAYER_SKILL_TYPE_CLOACKING) {
+
 			mSkills[type]->SetState(GameSkill::State::CoolTime_Start);
 			float currPhero = S_GetPhero();
 			bool res = mSkills[type]->OnSkill(currPhero, mindControlledMonster);

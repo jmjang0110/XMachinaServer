@@ -645,6 +645,25 @@ bool FBsPacketFactory::Process_CPkt_Bullet_OnCollision(SPtr_Session session, con
 	return true;
 }
 
+bool FBsPacketFactory::Process_CPkt_Item_Interact(SPtr_Session session, const FBProtocol::CPkt_Item_Interact& pkt)
+{
+	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
+	
+	uint32_t item_id = pkt.item_id();
+	
+
+	return true;
+}
+
+bool FBsPacketFactory::Process_CPpkt_Item_ThrowAway(SPtr_Session session, const FBProtocol::CPkt_Item_ThrowAway& pkt)
+{
+	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
+
+	uint32_t item_id = pkt.item_id();
+
+	return true;
+}
+
 
 /// ¡Ú---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ///	¢Â PROCESS [ PHERO ] Client PACKET ¢Â
@@ -1225,6 +1244,29 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_Bullet_OnCollision(uint32_t player_id, FB
 	auto serverPacket = FBProtocol::CreateSPkt_Bullet_OnCollision(builder, player_id, gun_id, bullet_id);
 	builder.Finish(serverPacket);
 	SPtr_SendPktBuf sendBuffer = SEND_FACTORY->CreatePacket(builder.GetBufferPointer(), static_cast<uint16_t>(builder.GetSize()), FBsProtocolID::SPkt_Bullet_OnCollision);
+	return sendBuffer;
+}
+
+SPtr_SendPktBuf FBsPacketFactory::SPkt_Item_Interact(uint32_t player_id, uint32_t item_id, FBProtocol::ITEM_TYPE item_type)
+{
+	flatbuffers::FlatBufferBuilder builder{};
+
+
+	auto serverPacket = FBProtocol::CreateSPkt_Item_Interact(builder, player_id, item_id, item_type);
+	builder.Finish(serverPacket);
+	SPtr_SendPktBuf sendBuffer = SEND_FACTORY->CreatePacket(builder.GetBufferPointer(), static_cast<uint16_t>(builder.GetSize()), FBsProtocolID::SPkt_Item_Interact);
+	return sendBuffer;
+}
+
+SPtr_SendPktBuf FBsPacketFactory::SPkt_Item_ThrowAway(uint32_t player_id, uint32_t item_id, FBProtocol::ITEM_TYPE item_type, Vec3 drop_pos)
+{
+	flatbuffers::FlatBufferBuilder builder{};
+
+	auto DropPosition = FBProtocol::CreateVector3(builder, drop_pos.x, drop_pos.y, drop_pos.z);
+
+	auto serverPacket = FBProtocol::CreateSPkt_Item_ThrowAway(builder, player_id, item_id, DropPosition);
+	builder.Finish(serverPacket);
+	SPtr_SendPktBuf sendBuffer = SEND_FACTORY->CreatePacket(builder.GetBufferPointer(), static_cast<uint16_t>(builder.GetSize()), FBsProtocolID::SPkt_Item_ThrowAway);
 	return sendBuffer;
 }
 

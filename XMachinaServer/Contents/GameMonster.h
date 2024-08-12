@@ -47,20 +47,20 @@ private:
 	Coordinate				mSectorIndex;				// 어느 섹터에 속해있는가?
 	MonsterSnapShot			mInfo; 
 	
-	std::atomic_int			mActivate_Ref = 0;
+	std::atomic_int			mActivate_Ref		= 0;
 
 private:
-	double					mTimer			 = 0.f;
-											 
-	Vec3					mSpawnPos		 = {};
-	Vec3					mSpawnRot		 = {};
+	double					mTimer				= 0.f;
+												
+	Vec3					mSpawnPos			= {};
+	Vec3					mSpawnRot			= {};
 	
-	Script_EnemyController* mEnemyController = nullptr;
-	Script_EnemyStat*		mEnemyStat       = nullptr; // HP, IsDead
-	int						HitCnt           = 0;
+	Script_EnemyController* mEnemyController	= nullptr;
+	Script_EnemyStat*		mEnemyStat			= nullptr; // HP, IsDead
+	int						HitCnt				= 0;
 
-	std::atomic_bool	mSendDeadMonsterPkt = false;
-	bool				mIsMindControlled   = false;
+	std::atomic_bool		mSendDeadMonsterPkt = false;
+	bool					mIsMindControlled   = false;
 
 	// For Get Script
 
@@ -94,15 +94,16 @@ public:
 	/// +-----------------------------------------------------------
 	///		S E T T E R 
 	/// -----------------------------------------------------------+
-	void SetMonsterID(uint32_t id)									{ mInfo.ID         = id; }
-	void SetMonsterType(FBProtocol::MONSTER_TYPE type)				{ mInfo.Type       = type; }
-	void SetSectorIndex(Coordinate sectorIdx)						{ mSectorIndex     = sectorIdx; }
-	void SetPheros(std::string pheros)								{ mInfo.Pheros     = pheros; }
-	void SetOwnerNPCController(NPCController* nc)					{ mOwnerNC         = nc; }
-	void SetEnemyController(Script_EnemyController* script)			{ mEnemyController = script; }
-	void SetEnemyStat(Script_EnemyStat* script)						{ mEnemyStat       = script; }
+	void SetMonsterID(uint32_t id)									{ mInfo.ID          = id; }
+	void SetMonsterType(FBProtocol::MONSTER_TYPE type)				{ mInfo.Type        = type; }
+	void SetSectorIndex(Coordinate sectorIdx)						{ mSectorIndex      = sectorIdx; }
+	void SetPheros(std::string pheros)								{ mInfo.Pheros      = pheros; }
+	void SetOwnerNPCController(NPCController* nc)					{ mOwnerNC          = nc; }
+	void SetEnemyController(Script_EnemyController* script)			{ mEnemyController  = script; }
+	void SetEnemyStat(Script_EnemyStat* script)						{ mEnemyStat        = script; }
 	void SetMindControlled(bool mindControlled)						{ mIsMindControlled = (mindControlled);}
 	void S_SetObjectState(Script_Stat::ObjectState state)			{ mEnemyStat->S_SetObjectState(state); }
+	
 	/// +-----------------------------------------------------------
 	///		G E T T E R 
 	/// -----------------------------------------------------------+	
@@ -121,9 +122,9 @@ public:
 	SPtr<GamePlayer>					 GetInvoker();
 
 	// Snap Shot ( in Script )
-	Script_Stat::ObjectState	S_GetObjectState() { return mEnemyStat->S_GetObjectState(); } // Lock
-	float	S_GetHp()		{ return mEnemyStat->S_GetHp();  } // Lock
-	float	GetAttack()		{ return mEnemyStat->GetStat_AttackRate(); }
+	Script_Stat::ObjectState	S_GetObjectState()	{ return mEnemyStat->S_GetObjectState(); } // Lock
+	float						S_GetHp()			{ return mEnemyStat->S_GetHp();  } // Lock
+	float						GetAttack()			{ return mEnemyStat->GetStat_AttackRate(); }
 public:
 	GameMonster();
 	GameMonster(UINT32 id, Coordinate sectorIdx); /* Monster 생성 아이디 - (생성되고 소멸될 때 까지 임시 아이디)*/

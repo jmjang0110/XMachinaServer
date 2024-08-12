@@ -3,6 +3,7 @@
 #include "GameBullet.h"
 #include "GameNPC.h"
 #include "GameRoom.h"
+#include "GameItem.h"
 
 /// +-------------------------------
 ///		   NPCController
@@ -21,10 +22,12 @@ private:
 
 private:
 	/* Room 안의 모든 GameObject (NPC) 관리 */
-	std::unordered_map<UINT32, SPtr<GameMonster>> mMonsters;
-	std::unordered_map<UINT32, SPtr<GameBullet>>  mBullets;
-	std::unordered_map<UINT32, SPtr<GameNPC>>     mNPCs;
-	
+	std::unordered_map<UINT32, SPtr<GameMonster>>	mMonsters;
+	std::unordered_map<UINT32, SPtr<GameBullet>>	mBullets;
+	std::unordered_map<UINT32, SPtr<GameNPC>>		mNPCs;
+
+	std::unordered_map<UINT32, SPtr<GameItem>>		mStaticItems;	// Client Scene과 동기화 ( 이미 만들어짐 )
+	std::unordered_map<UINT32, SPtr<GameItem>>		mDynamicItems;  // Server 에서만 관리  
 
 public:
 	NPCController();
@@ -35,6 +38,7 @@ public:
 
 	/* sectorIdx 에 따라서 다른 몬스터 종류를 생성 - monTypes에 있는 MonsterType 몬스터 생성*/
 	void InitMonsters(Coordinate maxSectorIdx);
+	void InitItems(Coordinate maxSectorIdx);
 	void InitBullets();
 	void InitNPCs();
 

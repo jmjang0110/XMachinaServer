@@ -19,6 +19,7 @@
 class GameObject;
 class AnimationClip;
 class AnimatorController;
+class GameItem;
 
 enum class ObjectTag { None, Building, Enemy };
 
@@ -97,9 +98,9 @@ public:
 
 class BattleScene {
 private:
-	std::vector<SPtr<GameObject>> mBuildings{};
-	std::vector<SPtr<GameMonster>> mEnemies{};
-	std::vector<SPtr<GameItem>> mItems{};
+	std::vector<SPtr<GameObject>>	mBuildings{};
+	std::vector<SPtr<GameMonster>>	mEnemies{};
+	std::vector<SPtr<GameItem>>		mItems{};
 
 public:
 	void Load();

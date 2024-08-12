@@ -28,9 +28,6 @@
 #include "Script_DefaultEnemyBT.h"
 #include "Script_PheroDropper.h"
 
-
-
-
 namespace {
 	const std::string kTerrainDataPath = "Contents/Resource/Terrain.bin";
 	const std::string kModelDataPath = "Contents/Resource/Models/";

@@ -190,6 +190,7 @@
     <ClInclude Include="Contents\GameBullet.h" />
     <ClInclude Include="Contents\GameEntity.h" />
     <ClInclude Include="Contents\Gameinfo.h" />
+    <ClInclude Include="Contents\GameItem.h" />
     <ClInclude Include="Contents\GameManager.h" />
     <ClInclude Include="Contents\GameMonster.h" />
     <ClInclude Include="Contents\GameNPC.h" />
@@ -299,6 +300,7 @@
     <ClCompile Include="Contents\GameBullet.cpp" />
     <ClCompile Include="Contents\GameEntity.cpp" />
     <ClCompile Include="Contents\Gameinfo.cpp" />
+    <ClCompile Include="Contents\GameItem.cpp" />
     <ClCompile Include="Contents\GameManager.cpp" />
     <ClCompile Include="Contents\GameMonster.cpp" />
     <ClCompile Include="Contents\GameNPC.cpp" />
