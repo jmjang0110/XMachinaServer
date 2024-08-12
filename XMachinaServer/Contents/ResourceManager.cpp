@@ -102,7 +102,6 @@ void BattleScene::Load()
 			else {
 				objectTag = ObjectTag::None;
 				objectType = GameObjectInfo::Type::None;
-				LOG_MGR->Cout("[MDH_Warning] untagged(", tag, ") : ", modelName, "\n");
 			}
 
 			if (objectTag != ObjectTag::None) {
@@ -117,172 +116,211 @@ void BattleScene::Load()
 		}
 
 		if (sameObjectCnt > 0) {
+			assert(model);
+
+			bool isGameMonster{};
+			switch (objectType) {
+				case GameObjectInfo::Type::Monster_Onyscidus:
+				case GameObjectInfo::Type::Monster_Ursacetus:
+				case GameObjectInfo::Type::Monster_AdvancedCombat_5:
+				case GameObjectInfo::Type::Monster_Anglerox:
+				case GameObjectInfo::Type::Monster_Arack:
+				case GameObjectInfo::Type::Monster_Ceratoferox:
+				case GameObjectInfo::Type::Monster_Gobbler:
+				case GameObjectInfo::Type::Monster_LightBipedMech:
+				case GameObjectInfo::Type::Monster_MiningMech:
+				case GameObjectInfo::Type::Monster_Rapax:
+				case GameObjectInfo::Type::Monster_Aranobot:
+					isGameMonster = true;
+					break;
+			}
+
+			SPtr<GameObject> object;
+			if (isGameMonster) {
+				object = std::make_shared<GameMonster>();
+				object->SetAnimation(model->mAnimatorController);
+			}
+			else {
+				object = std::make_shared<GameObject>();
+			}
+
+			object->SetType(objectType);
+			object->SetName(model->mName);
+
+			/// +---------------------------------------------------
+			///	¡å Component : Tarnsform 
+			/// ---------------------------------------------------+
+			{
+				FileIO::ReadString(file, token);	// <Transform>:
+				Matrix transformMatrix = FileIO::ReadVal<Matrix>(file);
+				model->mTransform = transformMatrix;
+
+				FileIO::ReadString(file, token);	// </Transform>: or <ScriptExporter>:
+				if (Hash(token) == Hash("<ScriptExporter>:"))
+				{
+					LoadScriptExporter(file, object);
+					FileIO::ReadString(file); // </Transform>:
+				}
+					
+				SPtr<Transform> transform = object->AddComponent<Transform>(ComponentInfo::Type::Transform);
+				transform->SetLocalTransform(transformMatrix);
+				transform->SetPosition(Transform::GetPosition(transformMatrix));
+			}
+
+
+			/// +---------------------------------------------------
+			///	¡å Component : Collider 
+			/// ---------------------------------------------------+
+			const auto& collider = object->AddComponent<Collider>(ComponentInfo::Type::Collider);
+			collider->SetBS(model->mBS);
+
 			/// +---------------------------------------------------
 			///	¢º Game Monster 
 			/// ---------------------------------------------------+
-			if (objectType == GameObjectInfo::Type::Monster_Onyscidus ||
-				objectType == GameObjectInfo::Type::Monster_Ursacetus ||
-				objectType == GameObjectInfo::Type::Monster_AdvancedCombat_5 ||
-				objectType == GameObjectInfo::Type::Monster_Anglerox ||
-				objectType == GameObjectInfo::Type::Monster_Arack ||
-				objectType == GameObjectInfo::Type::Monster_Ceratoferox || 
-				objectType == GameObjectInfo::Type::Monster_Gobbler ||
-				objectType == GameObjectInfo::Type::Monster_LightBipedMech ||
-				objectType == GameObjectInfo::Type::Monster_MiningMech ||
-				objectType == GameObjectInfo::Type::Monster_Rapax ||
-				objectType == GameObjectInfo::Type::Monster_Aranobot )
+			if (isGameMonster)
 			{
-				SPtr<GameMonster> object = std::make_shared<GameMonster>();
-				object->SetType(objectType);
-
-				if (model) {
-					object->SetName(model->mName);
-					Matrix transformMatrix = FileIO::ReadVal<Matrix>(file);
-
-					/// +---------------------------------------------------
-					///	¡å Component : Tarnsform 
-					/// ---------------------------------------------------+
-					SPtr<Transform> transform = object->AddComponent<Transform>(ComponentInfo::Type::Transform);
-					transform->SetWorldTransform(transformMatrix);
-					Vec3 Rot = Quaternion::ToEuler(transform->GetLocalRotation());
-
-					/// +---------------------------------------------------
-					///	¡å Component : Collider 
-					/// ---------------------------------------------------+
-					const auto& collider = object->AddComponent<Collider>(ComponentInfo::Type::Collider);
-					collider->SetBS(model->mBS);
-
-					object->SetAnimation(model->mAnimatorController);
-
-					UINT32 ID = static_cast<UINT32>(mEnemies.size() + 1);
-					object->SetID(ID);
-					object->SetMonsterID(ID);
-
-
-					/// +---------------------------------------------------
-					///	¡å Script  
-					/// ---------------------------------------------------+
-					object->AddScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
-					switch (objectType)
-					{
-					case GameObjectInfo::Type::Monster_Ursacetus: {
-						object->SetMonsterType(FBProtocol::MONSTER_TYPE_URSACETUS);
-						object->AddScript<Script_Ursacetus>(ScriptInfo::Type::Stat);
-
-					}
-						break;
-					case GameObjectInfo::Type::Monster_Onyscidus: {
-						object->SetMonsterType(FBProtocol::MONSTER_TYPE_ONYSCIDUS);
-						object->AddScript<Script_Onyscidus>(ScriptInfo::Type::Stat);
-
-					}
-						break;
-					case GameObjectInfo::Type::Monster_AdvancedCombat_5: {
-						object->SetMonsterType(FBProtocol::MONSTER_TYPE_ADVANCED_COMBAT_DROIR_5);
-						object->AddScript<Script_AdvancedCombatDroid_5>(ScriptInfo::Type::Stat);
-
-					}
-						break;
-					case GameObjectInfo::Type::Monster_Anglerox: {
-						object->SetMonsterType(FBProtocol::MONSTER_TYPE_ANGLEROX);
-						object->AddScript<Script_Anglerox>(ScriptInfo::Type::Stat);
-
-					}
-						break;
-					case GameObjectInfo::Type::Monster_Arack: {
-						object->SetMonsterType(FBProtocol::MONSTER_TYPE_ARACK);
-						object->AddScript<Script_Arack>(ScriptInfo::Type::Stat);
-
-					}
-						break;
-					case GameObjectInfo::Type::Monster_Ceratoferox: {
-						object->SetMonsterType(FBProtocol::MONSTER_TYPE_CERATOFEROX);
-						object->AddScript<Script_Ceratoferox>(ScriptInfo::Type::Stat);
-
-					}
-						break;
-					case GameObjectInfo::Type::Monster_Gobbler: {
-						object->SetMonsterType(FBProtocol::MONSTER_TYPE_GOBBLER);
-						object->AddScript<Script_Gobbler>(ScriptInfo::Type::Stat);
-
-					}
-						break;
-					case GameObjectInfo::Type::Monster_LightBipedMech: {
-						object->SetMonsterType(FBProtocol::MONSTER_TYPE_LIGHTBIPEDMECH);
-						object->AddScript<Script_LightBipedMech>(ScriptInfo::Type::Stat);
-
-					}
-						break;
-					case GameObjectInfo::Type::Monster_MiningMech: {
-						object->SetMonsterType(FBProtocol::MONSTER_TYPE_MININGMECH);
-						object->AddScript<Script_MiningMech>(ScriptInfo::Type::Stat);
-
-					}
-						break;
-					case GameObjectInfo::Type::Monster_Rapax: {
-						object->SetMonsterType(FBProtocol::MONSTER_TYPE_RAPAX);
-						object->AddScript<Script_Rapax>(ScriptInfo::Type::Stat);
-
-					}
-						break;
-					case GameObjectInfo::Type::Monster_Aranobot: {
-						object->SetMonsterType(FBProtocol::MONSTER_TYPE_ARANOBOT);
-						object->AddScript<Script_Aranobot>(ScriptInfo::Type::Stat);
-
-					}
-						break;
-					}
-
-
-					object->AddScript<Script_DefaultEnemyBT>(ScriptInfo::Type::DefaultEnemyBT);
-					const auto& pherodropper = object->AddScript<Script_PheroDropper>(ScriptInfo::Type::PheroDropper);
-					pherodropper->Init();
-
-					mEnemies.push_back(object);
-
-				}
+				AddMonster(object);
 			}
 			else if(objectType == GameObjectInfo::Type::Building){
-
-				SPtr<GameObject> object = std::make_shared<GameObject>();
-				object->SetType(objectType);
-
-				if (model) {
-					object->SetName(model->mName);
-					Matrix transformMatrix = FileIO::ReadVal<Matrix>(file);
-					model->mTransform = transformMatrix;
-
-					/// +---------------------------------------------------
-					///	¡å Component : Tarnsform 
-					/// ---------------------------------------------------+
-					SPtr<Transform> transform = object->AddComponent<Transform>(ComponentInfo::Type::Transform);
-					transform->SetLocalTransform(transformMatrix);
-					transform->SetPosition(Transform::GetPosition(transformMatrix));
-
-					/// +---------------------------------------------------
-					///	¡å Component : Collider 
-					/// ---------------------------------------------------+
-					const auto& collider = object->AddComponent<Collider>(ComponentInfo::Type::Collider);
-					collider->SetBS(model->mBS);
-
-					UINT32 ID = static_cast<UINT32>(mBuildings.size());
-					object->SetID(ID);
-
-					const auto& BuildingScript = object->AddScript<Script_Building>(ScriptInfo::Type::Building);
-					Coordinate SectorIdx       = SectorController::GetSectorIdxByPosition(Transform::GetPosition(transformMatrix));
-					mBuildings.push_back(object);
-
-					RESOURCE_MGR->GetTileMap()->UpdateTiles(TileMapInfo::TileType::Static, mBuildings[i].get());
-
-				}
+				AddBuilding(object);
 			}
-			
 
 			--sameObjectCnt;
 		}
 	}
+
+	UpdateTiles();
 }
 
+void BattleScene::AddMonster(SPtr<GameObject> object)
+{
+	sptr<GameMonster> monsterObject = std::static_pointer_cast<GameMonster>(object);
+	UINT32 ID = static_cast<UINT32>(mEnemies.size() + 1);
+	monsterObject->SetID(ID);
+	monsterObject->SetMonsterID(ID);
+
+	/// +---------------------------------------------------
+	///	¡å Script  
+	/// ---------------------------------------------------+
+	monsterObject->AddScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
+	switch (object->GetType())
+	{
+	case GameObjectInfo::Type::Monster_Ursacetus: {
+		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_URSACETUS);
+		monsterObject->AddScript<Script_Ursacetus>(ScriptInfo::Type::Stat);
+
+	}
+	break;
+	case GameObjectInfo::Type::Monster_Onyscidus: {
+		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_ONYSCIDUS);
+		monsterObject->AddScript<Script_Onyscidus>(ScriptInfo::Type::Stat);
+
+	}
+	break;
+	case GameObjectInfo::Type::Monster_AdvancedCombat_5: {
+		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_ADVANCED_COMBAT_DROIR_5);
+		monsterObject->AddScript<Script_AdvancedCombatDroid_5>(ScriptInfo::Type::Stat);
+
+	}
+	break;
+	case GameObjectInfo::Type::Monster_Anglerox: {
+		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_ANGLEROX);
+		monsterObject->AddScript<Script_Anglerox>(ScriptInfo::Type::Stat);
+
+	}
+	break;
+	case GameObjectInfo::Type::Monster_Arack: {
+		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_ARACK);
+		monsterObject->AddScript<Script_Arack>(ScriptInfo::Type::Stat);
+
+	}
+	break;
+	case GameObjectInfo::Type::Monster_Ceratoferox: {
+		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_CERATOFEROX);
+		monsterObject->AddScript<Script_Ceratoferox>(ScriptInfo::Type::Stat);
+
+	}
+	break;
+	case GameObjectInfo::Type::Monster_Gobbler: {
+		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_GOBBLER);
+		monsterObject->AddScript<Script_Gobbler>(ScriptInfo::Type::Stat);
+
+	}
+	break;
+	case GameObjectInfo::Type::Monster_LightBipedMech: {
+		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_LIGHTBIPEDMECH);
+		monsterObject->AddScript<Script_LightBipedMech>(ScriptInfo::Type::Stat);
+
+	}
+	break;
+	case GameObjectInfo::Type::Monster_MiningMech: {
+		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_MININGMECH);
+		monsterObject->AddScript<Script_MiningMech>(ScriptInfo::Type::Stat);
+
+	}
+	break;
+	case GameObjectInfo::Type::Monster_Rapax: {
+		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_RAPAX);
+		monsterObject->AddScript<Script_Rapax>(ScriptInfo::Type::Stat);
+
+	}
+	break;
+	case GameObjectInfo::Type::Monster_Aranobot: {
+		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_ARANOBOT);
+		monsterObject->AddScript<Script_Aranobot>(ScriptInfo::Type::Stat);
+
+	}
+	break;
+	default:
+		assert(0);
+		break;
+	}
+
+	object->AddScript<Script_DefaultEnemyBT>(ScriptInfo::Type::DefaultEnemyBT);
+	const auto& pherodropper = object->AddScript<Script_PheroDropper>(ScriptInfo::Type::PheroDropper);
+	pherodropper->Init();
+
+	mEnemies.push_back(monsterObject);
+}
+
+void BattleScene::AddBuilding(SPtr<GameObject> object)
+{
+	UINT32 ID = static_cast<UINT32>(mBuildings.size());
+	object->SetID(ID);
+
+	const auto& BuildingScript = object->AddScript<Script_Building>(ScriptInfo::Type::Building);
+	Coordinate SectorIdx = SectorController::GetSectorIdxByPosition(object->GetTransform()->GetPosition());
+	mBuildings.push_back(object);
+}
+
+void BattleScene::UpdateTiles() const
+{
+	for (const auto& building : mBuildings) {
+		RESOURCE_MGR->GetTileMap()->UpdateTiles(TileMapInfo::TileType::Static, building.get());
+	}
+}
+
+void BattleScene::LoadScriptExporter(std::ifstream& file, SPtr<GameItem> object)
+{
+	ScriptExporter exporter;
+	exporter.Load(file);
+
+	switch (Hash(exporter.GetName())) {
+	case Hash("WeaponCrate"):
+	case Hash("WeaponCrat2"):
+	{
+		std::string weaponName{};
+		int id;
+		exporter.GetData("ID", id);
+		exporter.GetData("WeaponName", weaponName);
+
+		object->SetID(id);
+		object->SetType();
+	}
+		break;
+	}
+
+}
 
 
 ResourceManager::ResourceManager()
@@ -353,5 +391,47 @@ void ResourceManager::LoadAnimatorControllers()
 	for (const auto& file : std::filesystem::directory_iterator(kAnimatorControllerDataPath)) {
 		const std::string fileName = file.path().filename().string();
 		mAnimatorControllers[FileIO::RemoveExtension(fileName)] = FileIO::LoadAnimatorController(kAnimatorControllerDataPath + fileName);
+	}
+}
+
+void ScriptExporter::Load(std::ifstream& file)
+{
+	std::string token{};
+
+	FileIO::ReadString(file, token);	// <ScriptName>:
+	FileIO::ReadString(file, mName);
+
+	FileIO::ReadString(file, token);	// <ScriptInfo>:
+	int cnt = FileIO::ReadVal<int>(file);
+
+	for (int i = 0; i < cnt; ++i) {
+		std::string key = FileIO::ReadString(file);
+		char type = key.back();
+		key.pop_back();
+
+		ScriptParameter param;
+		switch (type) {
+		case 'i':
+			param.Type = ScriptParameter::Type::Int;
+			FileIO::ReadVal(file, param.Val.i);
+			break;
+		case 'f':
+			param.Type = ScriptParameter::Type::Float;
+			FileIO::ReadVal(file, param.Val.f);
+			break;
+		case 'b':
+			param.Type = ScriptParameter::Type::Bool;
+			FileIO::ReadVal(file, param.Val.b);
+			break;
+		case 's':
+			param.Type = ScriptParameter::Type::String;
+			FileIO::ReadString(file, param.Str);
+			break;
+		default:
+			assert(0);
+			break;
+		}
+
+		mData[key] = param;
 	}
 }
