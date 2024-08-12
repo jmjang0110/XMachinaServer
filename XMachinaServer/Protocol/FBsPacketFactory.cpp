@@ -655,7 +655,7 @@ bool FBsPacketFactory::Process_CPkt_Item_Interact(SPtr_Session session, const FB
 	return true;
 }
 
-bool FBsPacketFactory::Process_CPpkt_Item_ThrowAway(SPtr_Session session, const FBProtocol::CPkt_Item_ThrowAway& pkt)
+bool FBsPacketFactory::Process_CPkt_Item_ThrowAway(SPtr_Session session, const FBProtocol::CPkt_Item_ThrowAway& pkt)
 {
 	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
 
@@ -1264,7 +1264,7 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_Item_ThrowAway(uint32_t player_id, uint32
 
 	auto DropPosition = FBProtocol::CreateVector3(builder, drop_pos.x, drop_pos.y, drop_pos.z);
 
-	auto serverPacket = FBProtocol::CreateSPkt_Item_ThrowAway(builder, player_id, item_id, DropPosition);
+	auto serverPacket = FBProtocol::CreateSPkt_Item_ThrowAway(builder, player_id, item_id, item_type, DropPosition);
 	builder.Finish(serverPacket);
 	SPtr_SendPktBuf sendBuffer = SEND_FACTORY->CreatePacket(builder.GetBufferPointer(), static_cast<uint16_t>(builder.GetSize()), FBsProtocolID::SPkt_Item_ThrowAway);
 	return sendBuffer;

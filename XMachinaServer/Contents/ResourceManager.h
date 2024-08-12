@@ -21,7 +21,7 @@ class AnimationClip;
 class AnimatorController;
 class GameItem;
 
-enum class ObjectTag { None, Building, Enemy };
+enum class ObjectTag { None, Building, Enemy, Item };
 
 struct ScriptParameter {
 	enum class Type : BYTE {
@@ -84,7 +84,6 @@ public:
 	std::string		 mName{};
 	MyBoundingSphere mBS{};
 	std::vector<MyBoundingOrientedBox>	mBoxList{};
-	SPtr<ScriptExporter> mExporter{};
 
 public:
 
@@ -120,7 +119,7 @@ private:
 	void AddBuilding(SPtr<GameObject> object);
 	void UpdateTiles() const;
 
-	void LoadScriptExporter(std::ifstream& file, SPtr<GameItem> object);
+	void LoadScriptExporter(std::ifstream& file, SPtr<GameObject> object);
 };
 
 

@@ -44,6 +44,7 @@ namespace GameObjectInfo
 		BoxCollider,
 		SphereCollider,
 		ObjectCollider,
+		Crate,
 		END,
 	};
 }

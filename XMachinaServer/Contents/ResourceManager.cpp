@@ -3,6 +3,7 @@
 
 #include "FileIO.h"
 #include "GameObject.h"
+#include "GameItem.h"
 #include "Collider.h"
 #include "Transform.h"
 #include "SectorController.h"
@@ -88,13 +89,14 @@ void BattleScene::Load()
 					objectType = GameObjectInfo::Type::Monster_Aranobot;
 				else
 					assert(0);
-
-
-
 			}
 			else if(tag == "Building" || tag == "Dissolve_Building") {
 				objectTag = ObjectTag::Building;
 				objectType = GameObjectInfo::Type::Building;
+			}
+			else if (tag == "Crate") {
+				objectTag = ObjectTag::Item;
+				objectType = GameObjectInfo::Type::Crate;
 			}
 			else {
 				objectTag = ObjectTag::None;
@@ -297,26 +299,34 @@ void BattleScene::UpdateTiles() const
 	}
 }
 
-void BattleScene::LoadScriptExporter(std::ifstream& file, SPtr<GameItem> object)
+void BattleScene::LoadScriptExporter(std::ifstream& file, SPtr<GameObject> object)
 {
 	ScriptExporter exporter;
 	exporter.Load(file);
 
 	switch (Hash(exporter.GetName())) {
 	case Hash("WeaponCrate"):
-	case Hash("WeaponCrat2"):
 	{
 		std::string weaponName{};
 		int id;
 		exporter.GetData("ID", id);
-		exporter.GetData("WeaponName", weaponName);
+		exporter.GetData("Name", weaponName);
 
 		object->SetID(id);
-		object->SetType();
+
+		SPtr<GameItem> crateObject = std::static_pointer_cast<GameItem>(object);
+		SPtr<GameItem> weaponObject = std::make_shared<GameItem>();
+		weaponObject->SetID(id + 1);
+		crateObject->SetChildItem(weaponObject.get());
+
+		mItems.push_back(crateObject);
+		mItems.push_back(weaponObject);
 	}
 		break;
+	default:
+		assert(0);
+		break;
 	}
-
 }
 
 

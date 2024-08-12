@@ -70,7 +70,7 @@ private:
 
 	/* ITEM */
 	static bool Process_CPkt_Item_Interact(SPtr_Session session, const FBProtocol::CPkt_Item_Interact& pkt);
-	static bool Process_CPpkt_Item_ThrowAway(SPtr_Session session, const FBProtocol::CPkt_Item_ThrowAway& pkt);
+	static bool Process_CPkt_Item_ThrowAway(SPtr_Session session, const FBProtocol::CPkt_Item_ThrowAway& pkt);
 
 public:
 	/* LOGIN, LATENCY, CHAT */
@@ -108,7 +108,7 @@ public:
 
 	/* ITEM */
 	SPtr_SendPktBuf SPkt_Item_Interact(uint32_t player_id, uint32_t item_id, FBProtocol::ITEM_TYPE item_type);
-	SPtr_SendPktBuf SPkt_Item_ThrowAway(uint32_t player_id, uint32_t item_id, FBProtocol::ITEM_TYPE item_type);
+	SPtr_SendPktBuf SPkt_Item_ThrowAway(uint32_t player_id, uint32_t item_id, FBProtocol::ITEM_TYPE item_type, Vec3 drop_pos);
 
 
 
