@@ -106,23 +106,16 @@ void BattleScene::Load()
 				objectType = GameObjectInfo::Type::Crate;
 			}
 			else {
-				objectTag = ObjectTag::None;
-				objectType = GameObjectInfo::Type::None;
+				assert(0);
 			}
 
-			if (objectTag != ObjectTag::None) {
-				model = RESOURCE_MGR->GetModel(modelName);
-			}
-			else {
-				model = nullptr;
-			}
+			model = RESOURCE_MGR->GetModel(modelName);
 
 			FileIO::ReadString(file, token); // <Transforms>:
 			sameObjectCnt = FileIO::ReadVal<int>(file);
 		}
 
 		if (sameObjectCnt > 0) {
-			assert(model);
 
 			bool isGameMonster{};
 			switch (objectType) {
@@ -281,12 +274,14 @@ void BattleScene::AddMonster(SPtr<GameObject> object)
 	}
 	break;
 	case GameObjectInfo::Type::Montser_Deus_Phase_1: {
+		return;
 		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_DEUS_PHASE_1);
 		monsterObject->AddScript<Script_Deus_Phase_1>(ScriptInfo::Type::Stat);
 
 	}
 	break;
 	case GameObjectInfo::Type::Monster_Deus_Phase_2: {
+		return;
 		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_DEUS_PHASE_2);
 		monsterObject->AddScript<Script_Deus_Phase_2>(ScriptInfo::Type::Stat);
 
