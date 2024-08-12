@@ -1320,8 +1320,8 @@ struct CPkt_Player_Weapon FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_WEAPON_TYPE = 4
   };
-  FBProtocol::WEAPON_TYPE weapon_type() const {
-    return static_cast<FBProtocol::WEAPON_TYPE>(GetField<uint8_t>(VT_WEAPON_TYPE, 0));
+  FBProtocol::ITEM_TYPE weapon_type() const {
+    return static_cast<FBProtocol::ITEM_TYPE>(GetField<uint8_t>(VT_WEAPON_TYPE, 0));
   }
   bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
@@ -1334,7 +1334,7 @@ struct CPkt_Player_WeaponBuilder {
   typedef CPkt_Player_Weapon Table;
   ::flatbuffers::FlatBufferBuilder &fbb_;
   ::flatbuffers::uoffset_t start_;
-  void add_weapon_type(FBProtocol::WEAPON_TYPE weapon_type) {
+  void add_weapon_type(FBProtocol::ITEM_TYPE weapon_type) {
     fbb_.AddElement<uint8_t>(CPkt_Player_Weapon::VT_WEAPON_TYPE, static_cast<uint8_t>(weapon_type), 0);
   }
   explicit CPkt_Player_WeaponBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
@@ -1350,7 +1350,7 @@ struct CPkt_Player_WeaponBuilder {
 
 inline ::flatbuffers::Offset<CPkt_Player_Weapon> CreateCPkt_Player_Weapon(
     ::flatbuffers::FlatBufferBuilder &_fbb,
-    FBProtocol::WEAPON_TYPE weapon_type = FBProtocol::WEAPON_TYPE_H_LOOK) {
+    FBProtocol::ITEM_TYPE weapon_type = FBProtocol::ITEM_TYPE_NONE) {
   CPkt_Player_WeaponBuilder builder_(_fbb);
   builder_.add_weapon_type(weapon_type);
   return builder_.Finish();
@@ -1365,8 +1365,8 @@ struct SPkt_Player_Weapon FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table
   uint32_t player_id() const {
     return GetField<uint32_t>(VT_PLAYER_ID, 0);
   }
-  FBProtocol::WEAPON_TYPE weapon_type() const {
-    return static_cast<FBProtocol::WEAPON_TYPE>(GetField<uint8_t>(VT_WEAPON_TYPE, 0));
+  FBProtocol::ITEM_TYPE weapon_type() const {
+    return static_cast<FBProtocol::ITEM_TYPE>(GetField<uint8_t>(VT_WEAPON_TYPE, 0));
   }
   bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
@@ -1383,7 +1383,7 @@ struct SPkt_Player_WeaponBuilder {
   void add_player_id(uint32_t player_id) {
     fbb_.AddElement<uint32_t>(SPkt_Player_Weapon::VT_PLAYER_ID, player_id, 0);
   }
-  void add_weapon_type(FBProtocol::WEAPON_TYPE weapon_type) {
+  void add_weapon_type(FBProtocol::ITEM_TYPE weapon_type) {
     fbb_.AddElement<uint8_t>(SPkt_Player_Weapon::VT_WEAPON_TYPE, static_cast<uint8_t>(weapon_type), 0);
   }
   explicit SPkt_Player_WeaponBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
@@ -1400,7 +1400,7 @@ struct SPkt_Player_WeaponBuilder {
 inline ::flatbuffers::Offset<SPkt_Player_Weapon> CreateSPkt_Player_Weapon(
     ::flatbuffers::FlatBufferBuilder &_fbb,
     uint32_t player_id = 0,
-    FBProtocol::WEAPON_TYPE weapon_type = FBProtocol::WEAPON_TYPE_H_LOOK) {
+    FBProtocol::ITEM_TYPE weapon_type = FBProtocol::ITEM_TYPE_NONE) {
   SPkt_Player_WeaponBuilder builder_(_fbb);
   builder_.add_player_id(player_id);
   builder_.add_weapon_type(weapon_type);
@@ -2525,8 +2525,8 @@ struct SPkt_Bullet_OnCollision FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::
   uint32_t player_id() const {
     return GetField<uint32_t>(VT_PLAYER_ID, 0);
   }
-  FBProtocol::WEAPON_TYPE gun_id() const {
-    return static_cast<FBProtocol::WEAPON_TYPE>(GetField<uint8_t>(VT_GUN_ID, 0));
+  FBProtocol::ITEM_TYPE gun_id() const {
+    return static_cast<FBProtocol::ITEM_TYPE>(GetField<uint8_t>(VT_GUN_ID, 0));
   }
   uint32_t bullet_id() const {
     return GetField<uint32_t>(VT_BULLET_ID, 0);
@@ -2547,7 +2547,7 @@ struct SPkt_Bullet_OnCollisionBuilder {
   void add_player_id(uint32_t player_id) {
     fbb_.AddElement<uint32_t>(SPkt_Bullet_OnCollision::VT_PLAYER_ID, player_id, 0);
   }
-  void add_gun_id(FBProtocol::WEAPON_TYPE gun_id) {
+  void add_gun_id(FBProtocol::ITEM_TYPE gun_id) {
     fbb_.AddElement<uint8_t>(SPkt_Bullet_OnCollision::VT_GUN_ID, static_cast<uint8_t>(gun_id), 0);
   }
   void add_bullet_id(uint32_t bullet_id) {
@@ -2567,7 +2567,7 @@ struct SPkt_Bullet_OnCollisionBuilder {
 inline ::flatbuffers::Offset<SPkt_Bullet_OnCollision> CreateSPkt_Bullet_OnCollision(
     ::flatbuffers::FlatBufferBuilder &_fbb,
     uint32_t player_id = 0,
-    FBProtocol::WEAPON_TYPE gun_id = FBProtocol::WEAPON_TYPE_H_LOOK,
+    FBProtocol::ITEM_TYPE gun_id = FBProtocol::ITEM_TYPE_NONE,
     uint32_t bullet_id = 0) {
   SPkt_Bullet_OnCollisionBuilder builder_(_fbb);
   builder_.add_bullet_id(bullet_id);
@@ -2623,7 +2623,7 @@ struct CPkt_Item_InteractBuilder {
 inline ::flatbuffers::Offset<CPkt_Item_Interact> CreateCPkt_Item_Interact(
     ::flatbuffers::FlatBufferBuilder &_fbb,
     uint32_t item_id = 0,
-    FBProtocol::ITEM_TYPE item_type = FBProtocol::ITEM_TYPE_STATIC_ITEM) {
+    FBProtocol::ITEM_TYPE item_type = FBProtocol::ITEM_TYPE_NONE) {
   CPkt_Item_InteractBuilder builder_(_fbb);
   builder_.add_item_id(item_id);
   builder_.add_item_type(item_type);
@@ -2635,7 +2635,8 @@ struct SPkt_Item_Interact FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_PLAYER_ID = 4,
     VT_ITEM_ID = 6,
-    VT_ITEM_TYPE = 8
+    VT_ITEM_TYPE = 8,
+    VT_DROP_POS = 10
   };
   uint32_t player_id() const {
     return GetField<uint32_t>(VT_PLAYER_ID, 0);
@@ -2646,11 +2647,16 @@ struct SPkt_Item_Interact FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table
   FBProtocol::ITEM_TYPE item_type() const {
     return static_cast<FBProtocol::ITEM_TYPE>(GetField<uint8_t>(VT_ITEM_TYPE, 0));
   }
+  const FBProtocol::Vector3 *drop_pos() const {
+    return GetPointer<const FBProtocol::Vector3 *>(VT_DROP_POS);
+  }
   bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<uint32_t>(verifier, VT_PLAYER_ID, 4) &&
            VerifyField<uint32_t>(verifier, VT_ITEM_ID, 4) &&
            VerifyField<uint8_t>(verifier, VT_ITEM_TYPE, 1) &&
+           VerifyOffset(verifier, VT_DROP_POS) &&
+           verifier.VerifyTable(drop_pos()) &&
            verifier.EndTable();
   }
 };
@@ -2668,6 +2674,9 @@ struct SPkt_Item_InteractBuilder {
   void add_item_type(FBProtocol::ITEM_TYPE item_type) {
     fbb_.AddElement<uint8_t>(SPkt_Item_Interact::VT_ITEM_TYPE, static_cast<uint8_t>(item_type), 0);
   }
+  void add_drop_pos(::flatbuffers::Offset<FBProtocol::Vector3> drop_pos) {
+    fbb_.AddOffset(SPkt_Item_Interact::VT_DROP_POS, drop_pos);
+  }
   explicit SPkt_Item_InteractBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
@@ -2683,8 +2692,10 @@ inline ::flatbuffers::Offset<SPkt_Item_Interact> CreateSPkt_Item_Interact(
     ::flatbuffers::FlatBufferBuilder &_fbb,
     uint32_t player_id = 0,
     uint32_t item_id = 0,
-    FBProtocol::ITEM_TYPE item_type = FBProtocol::ITEM_TYPE_STATIC_ITEM) {
+    FBProtocol::ITEM_TYPE item_type = FBProtocol::ITEM_TYPE_NONE,
+    ::flatbuffers::Offset<FBProtocol::Vector3> drop_pos = 0) {
   SPkt_Item_InteractBuilder builder_(_fbb);
+  builder_.add_drop_pos(drop_pos);
   builder_.add_item_id(item_id);
   builder_.add_player_id(player_id);
   builder_.add_item_type(item_type);
@@ -2735,7 +2746,7 @@ struct CPkt_Item_ThrowAwayBuilder {
 inline ::flatbuffers::Offset<CPkt_Item_ThrowAway> CreateCPkt_Item_ThrowAway(
     ::flatbuffers::FlatBufferBuilder &_fbb,
     uint32_t item_id = 0,
-    FBProtocol::ITEM_TYPE item_type = FBProtocol::ITEM_TYPE_STATIC_ITEM) {
+    FBProtocol::ITEM_TYPE item_type = FBProtocol::ITEM_TYPE_NONE) {
   CPkt_Item_ThrowAwayBuilder builder_(_fbb);
   builder_.add_item_id(item_id);
   builder_.add_item_type(item_type);
@@ -2804,7 +2815,7 @@ inline ::flatbuffers::Offset<SPkt_Item_ThrowAway> CreateSPkt_Item_ThrowAway(
     ::flatbuffers::FlatBufferBuilder &_fbb,
     uint32_t player_id = 0,
     uint32_t item_id = 0,
-    FBProtocol::ITEM_TYPE item_type = FBProtocol::ITEM_TYPE_STATIC_ITEM,
+    FBProtocol::ITEM_TYPE item_type = FBProtocol::ITEM_TYPE_NONE,
     ::flatbuffers::Offset<FBProtocol::Vector3> drop_pos = 0) {
   SPkt_Item_ThrowAwayBuilder builder_(_fbb);
   builder_.add_drop_pos(drop_pos);

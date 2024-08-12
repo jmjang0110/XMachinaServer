@@ -39,7 +39,7 @@ struct PlayerSnapShot : public ObjectSnapShot
 	
 	ViewList				VList_SnapShot  = {};	 Lock::SRWLock Lock_VList_SnapShot;		
 	float					Phero           = 1000;	 Lock::SRWLock Lock_Phero;				
-	FBProtocol::WEAPON_TYPE	WeaponType      = {};	 Lock::SRWLock Lock_Weapon;				
+	FBProtocol::ITEM_TYPE	WeaponType      = {};	 Lock::SRWLock Lock_Weapon;				
 	float					Velocity        = {};	 Lock::SRWLock Lock_Velocity;			
 	Vec3					SpineLookDir    = {};    Lock::SRWLock Lock_SpineLookDir;		
 
@@ -121,7 +121,7 @@ public:
 	void S_SetVelocity(float vel)											{ mSnapShot.Lock_Velocity.LockWrite();		mSnapShot.Velocity     = vel;				 mSnapShot.Lock_Velocity.UnlockWrite(); }
 	void S_SetSpineLookDir(Vec3 spineLookDir)								{ mSnapShot.Lock_SpineLookDir.LockWrite();	mSnapShot.SpineLookDir = spineLookDir;   mSnapShot.Lock_SpineLookDir.UnlockWrite(); }
 	void S_SetPhero(float phero)											{ mSnapShot.Lock_Phero.LockWrite();			mSnapShot.Phero        = phero;				 mSnapShot.Lock_Phero.UnlockWrite(); }
-	void S_SetEquipWeapon(FBProtocol::WEAPON_TYPE weaponType)				{ mSnapShot.Lock_Weapon.LockWrite();		mSnapShot.WeaponType   = weaponType;		 mSnapShot.Lock_Weapon.UnlockWrite(); return; }
+	void S_SetEquipWeapon(FBProtocol::ITEM_TYPE weaponType)					{ mSnapShot.Lock_Weapon.LockWrite();		mSnapShot.WeaponType   = weaponType;		 mSnapShot.Lock_Weapon.UnlockWrite(); return; }
 public:
 	/// +-----------------------------------------------------------
 	///		G E T T E R 
@@ -137,7 +137,7 @@ public:
 	float					S_GetVelocity()								{ mSnapShot.Lock_Velocity.LockRead();		float vel                    = mSnapShot.Velocity; mSnapShot.Lock_Velocity.UnlockRead(); return vel; }
 	float					S_GetPhero()									{ mSnapShot.Lock_Phero.LockRead();			float phero                  = mSnapShot.Phero; mSnapShot.Lock_Phero.UnlockRead(); return phero; }
 	float					S_GetHp();
-	FBProtocol::WEAPON_TYPE	S_GetCurrWeapon()								{ mSnapShot.Lock_Weapon.LockRead();			FBProtocol::WEAPON_TYPE name = mSnapShot.WeaponType; ; mSnapShot.Lock_Weapon.UnlockRead(); return name; }
+	FBProtocol::ITEM_TYPE	S_GetCurrWeapon()								{ mSnapShot.Lock_Weapon.LockRead();			FBProtocol::ITEM_TYPE name = mSnapShot.WeaponType; ; mSnapShot.Lock_Weapon.UnlockRead(); return name; }
 	Vec3					S_GetSpineLookDir()							{ mSnapShot.Lock_SpineLookDir.LockRead();	Vec3 spineLookDir            = mSnapShot.SpineLookDir; mSnapShot.Lock_SpineLookDir.UnlockRead(); return spineLookDir; }
 	GameSkill::State		GetSkillState(FBProtocol::PLAYER_SKILL_TYPE type)	{ return mSkills[type]->GetState(); }
 	ViewList				S_GetViewList()								{ mSnapShot.Lock_VList_SnapShot.LockRead(); ViewList vl = mSnapShot.VList_SnapShot; mSnapShot.Lock_VList_SnapShot.UnlockRead(); return vl; }

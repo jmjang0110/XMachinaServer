@@ -215,13 +215,13 @@ table SPkt_Player_Animation
 
 table CPkt_Player_Weapon
 {
-	weapon_type : WEAPON_TYPE;	// 1 byte
+	weapon_type : ITEM_TYPE;	// 1 byte
 }
 
 table SPkt_Player_Weapon
 {
 	player_id	: uint;			// 8 bytes
-	weapon_type : WEAPON_TYPE;	// 1 byte
+	weapon_type : ITEM_TYPE;	// 1 byte
 }
 
 
@@ -430,7 +430,7 @@ table CPkt_Bullet_OnCollision
 table SPkt_Bullet_OnCollision
 {
 	player_id : uint; // 4 bytes - 어떤 플레이어가 
-	gun_id    : WEAPON_TYPE; // 4 bytes - 어떤 총이고 
+	gun_id    : ITEM_TYPE; // 4 bytes - 어떤 총이고 
 	bullet_id : uint; // 4 bytes - 어떤 총알이 충돌했는가?
 }
 
@@ -454,6 +454,8 @@ table SPkt_Item_Interact
 	player_id	: uint;			// 4 bytes - 어떤 플레이어가 
 	item_id		: uint;			// 어떤 아이템을 먹었는가?
 	item_type	: ITEM_TYPE;	// 어떤 아이템이랑 상호작용했는지.
+	drop_pos	: Vector3;		// 드랍된 위치 
+
 }
 
 

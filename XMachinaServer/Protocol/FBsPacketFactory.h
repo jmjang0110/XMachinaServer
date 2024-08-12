@@ -85,7 +85,7 @@ public:
 	SPtr_SendPktBuf SPkt_PlayerOnSkill(uint32_t player_id, FBProtocol::PLAYER_SKILL_TYPE skill_type, float phero_amount, int mindcontrol_monster_id);
 	SPtr_SendPktBuf SPkt_Player_Transform(uint32_t player_id, int32_t move_state, long long latency, float velocity, Vec3 movedir, Vec3 pos, Vec3 rot, Vec3 spine_look, float animparam_h, float animparam_v);
 	SPtr_SendPktBuf SPkt_Player_Animation(uint32_t player_id, int anim_upper_idx, int anim_lower_idx, float anim_param_h, float anim_param_v);
-	SPtr_SendPktBuf SPkt_Player_Weapon(uint32_t player_id, FBProtocol::WEAPON_TYPE weapon_type);
+	SPtr_SendPktBuf SPkt_Player_Weapon(uint32_t player_id, FBProtocol::ITEM_TYPE weapon_type);
 	SPtr_SendPktBuf SPkt_Player_AimRotation(uint32_t player_id, float aim_rotation, float spine_angle);
 	SPtr_SendPktBuf SPKt_Player_State(uint32_t player_id, float hp, float phero, FBProtocol::PLAYER_STATE_TYPE state);
 
@@ -102,12 +102,12 @@ public:
 	SPtr_SendPktBuf SPkt_GetPhero(uint32_t phero_id, uint32_t player_id);
 
 	/* BULLET */
-	SPtr_SendPktBuf SPkt_Bullet_OnShoot(uint32_t player_id, FBProtocol::WEAPON_TYPE  gun_id, uint32_t bullet_id, Vec3 fire_pos, Vec3 ray);
-	SPtr_SendPktBuf SPkt_Bullet_OnHitEnemy(uint32_t player_id, FBProtocol::WEAPON_TYPE  gun_id, uint32_t bullet_id, Vec3 ray);
-	SPtr_SendPktBuf SPkt_Bullet_OnCollision(uint32_t player_id, FBProtocol::WEAPON_TYPE gun_id, uint32_t bullet_id);
+	SPtr_SendPktBuf SPkt_Bullet_OnShoot(uint32_t player_id, FBProtocol::ITEM_TYPE  gun_id, uint32_t bullet_id, Vec3 fire_pos, Vec3 ray);
+	SPtr_SendPktBuf SPkt_Bullet_OnHitEnemy(uint32_t player_id, FBProtocol::ITEM_TYPE  gun_id, uint32_t bullet_id, Vec3 ray);
+	SPtr_SendPktBuf SPkt_Bullet_OnCollision(uint32_t player_id, FBProtocol::ITEM_TYPE gun_id, uint32_t bullet_id);
 
 	/* ITEM */
-	SPtr_SendPktBuf SPkt_Item_Interact(uint32_t player_id, uint32_t item_id, FBProtocol::ITEM_TYPE item_type);
+	SPtr_SendPktBuf SPkt_Item_Interact(uint32_t player_id, uint32_t item_id, FBProtocol::ITEM_TYPE item_type, Vec3 drop_pos);
 	SPtr_SendPktBuf SPkt_Item_ThrowAway(uint32_t player_id, uint32_t item_id, FBProtocol::ITEM_TYPE item_type, Vec3 drop_pos);
 
 

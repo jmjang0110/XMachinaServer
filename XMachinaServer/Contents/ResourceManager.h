@@ -1,4 +1,6 @@
 #pragma once
+#undef max
+#include "Enum_generated.h"
 
 #include "HeightMapImage.h"
 #include "TileMap.h"
@@ -99,7 +101,9 @@ class BattleScene {
 private:
 	std::vector<SPtr<GameObject>>	mBuildings{};
 	std::vector<SPtr<GameMonster>>	mEnemies{};
-	std::vector<SPtr<GameItem>>		mItems{};
+	std::vector<SPtr<GameItem>>		mStaticItems{};
+	std::vector<SPtr<GameItem>>		mDynamicItems{};
+
 
 public:
 	void Load();
@@ -114,12 +118,24 @@ public:
 		return &mEnemies;
 	}
 
+	// Getter for mStaticItems
+	const std::vector<SPtr<GameItem>>* GetStaticItems() const {
+		return &mStaticItems;
+	}
+
+	// Getter for mDynamicItems
+	const std::vector<SPtr<GameItem>>* GetDynamicItems() const {
+		return &mDynamicItems;
+	}
+
 private:
 	void AddMonster(SPtr<GameObject> object);
 	void AddBuilding(SPtr<GameObject> object);
 	void UpdateTiles() const;
 
 	void LoadScriptExporter(std::ifstream& file, SPtr<GameObject> object);
+	FBProtocol::ITEM_TYPE GetItemType(std::string itemname);
+
 };
 
 

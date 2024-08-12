@@ -21,8 +21,8 @@ struct  BulletSnapShot : public ObjectSnapShot
 	SPtr<GamePlayer>		PlayerOwner       = nullptr;
 	SPtr<GameBullet>		BulletOwner       = nullptr;
 
-	FBProtocol::WEAPON_TYPE	WeaponType        = FBProtocol::WEAPON_TYPE_MIN;	// 어떤 무기의 총알인가? 
-	bool					IsActive          = false;							Lock::SRWLock Lock_IsActive;
+	FBProtocol::ITEM_TYPE	WeaponType        = FBProtocol::ITEM_TYPE_NONE;	// 어떤 무기의 총알인가? 
+	bool					IsActive          = false;	Lock::SRWLock Lock_IsActive;
 };
 
 class GameBullet : public GameObject	
@@ -65,7 +65,7 @@ private:
 
 public:
 	void DecreaseRef() { mActivate_Ref.fetch_sub(1); if (mActivate_Ref.load() < 0) mActivate_Ref = 0; }
-	void BulletUpdate(FBProtocol::WEAPON_TYPE weaponType);
+	void BulletUpdate(FBProtocol::ITEM_TYPE weaponType);
 	void CheckCollision_WithPlayerViewList();
 	void CheckCollision_WithHitMonsterID_Ray();
 
@@ -74,7 +74,7 @@ public:
 	/// +-----------------------------------------------------------
 	///		S E T T E R 
 	/// -----------------------------------------------------------+
-	void SetWeaponType(FBProtocol::WEAPON_TYPE type)		{ mInfo.WeaponType = type;  }
+	void SetWeaponType(FBProtocol::ITEM_TYPE type)		{ mInfo.WeaponType = type;  }
 	void SetOnShootDir(Vec3& dir)							{ mOnShootDir       = dir; }
 	void SetHitMonsterID(int32_t id)						{ mHitMonsterID     = id; }
 	void SetSpeed(float speed)								{ mSpeed            = speed; }
@@ -83,7 +83,7 @@ public:
 	// Getters
 	int						GetActivate_RefCnt() { return mActivate_Ref.load(); }
     SPtr<GamePlayer>		GetOwnerPlayer()	 { return mOwnerPlayer;}
-    FBProtocol::WEAPON_TYPE GetWeaponType()		 { return mInfo.WeaponType; }
+    FBProtocol::ITEM_TYPE   GetWeaponType()		 { return mInfo.WeaponType; }
     bool					GetIsActive()		 { mInfo.Lock_IsActive.LockRead();  bool active = mInfo.IsActive;  mInfo.Lock_IsActive.UnlockRead();    return active; }
 
 

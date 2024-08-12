@@ -52,7 +52,7 @@ void GameBullet::Update()
 
 
 	// Update By Weapon Type 
-	FBProtocol::WEAPON_TYPE weaponType = GetWeaponType();
+	FBProtocol::ITEM_TYPE weaponType = GetWeaponType();
 	BulletUpdate(weaponType);
 
 
@@ -167,24 +167,23 @@ void GameBullet::BulletUpdate_Air_Strike()
 
 }
 
-void GameBullet::BulletUpdate(FBProtocol::WEAPON_TYPE weaponType)
+void GameBullet::BulletUpdate(FBProtocol::ITEM_TYPE weaponType)
 {
 	switch (weaponType)
 	{
-	case FBProtocol::WEAPON_TYPE_H_LOOK:
-	case FBProtocol::WEAPON_TYPE_DBMS:
-	case FBProtocol::WEAPON_TYPE_STUART:
-	case FBProtocol::WEAPON_TYPE_DESCRIPTOR:
-	case FBProtocol::WEAPON_TYPE_T_12:
-	case FBProtocol::WEAPON_TYPE_PIPELINE:
-	case FBProtocol::WEAPON_TYPE_DIRECT_DRAIN:
-	case FBProtocol::WEAPON_TYPE_SKYLINE:
+	case FBProtocol::ITEM_TYPE_WEAPON_H_LOOK:
+	case FBProtocol::ITEM_TYPE_WEAPON_DBMS:
+	case FBProtocol::ITEM_TYPE_WEAPON_STUART:
+	case FBProtocol::ITEM_TYPE_WEAPON_DESCRIPTOR:
+	case FBProtocol::ITEM_TYPE_WEAPON_T_12:
+	case FBProtocol::ITEM_TYPE_WEAPON_PIPELINE:
+	case FBProtocol::ITEM_TYPE_WEAPON_SKYLINE:
 		CheckCollision_WithHitMonsterID_Ray();
 		break;
-	case FBProtocol::WEAPON_TYPE_BURNOUT://
+	case FBProtocol::ITEM_TYPE_WEAPON_BURNOUT://
 		CheckCollision_WithPlayerViewList();
 		break;
-	case FBProtocol::WEAPON_TYPE_AIR_STRIKE:
+	case FBProtocol::ITEM_TYPE_WEAPON_AIR_STRIKE:
 		BulletUpdate_Air_Strike();
 		break;
 	default: {

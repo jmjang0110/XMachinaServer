@@ -13,22 +13,6 @@ enum OBJECT_TYPE : ubyte {
 }
 
 
-// +------------------------
-//		 WEAPON TYPE 
-// ------------------------+
-enum WEAPON_TYPE : ubyte {
-	H_LOOK,
-	DBMS,
-	STUART,
-	DESCRIPTOR,
-	T_12,
-	PIPELINE,
-	BURNOUT,
-	DIRECT_DRAIN,
-	SKYLINE,
-	AIR_STRIKE,
-	END
-}
 
 // +------------------------
 //		 MONSTER_TYPE 
@@ -116,6 +100,7 @@ enum PLAYER_SKILL_TYPE : ubyte {
 //      ITEM TYPE
 // ------------------------+
 enum ITEM_TYPE : ubyte{
+	NONE,
 	STATIC_ITEM,
 	DYNAMIC_ITEM,
 

@@ -138,13 +138,28 @@ void BattleScene::Load()
 			}
 
 			SPtr<GameObject> object;
-			if (isGameMonster) {
+			switch (objectTag)
+			{
+			case ObjectTag::None:
+				break;
+			case ObjectTag::Building: {
+				object = std::make_shared<GameObject>();
+			}
+				break;
+			case ObjectTag::Enemy: {
 				object = std::make_shared<GameMonster>();
 				object->SetAnimation(model->mAnimatorController);
 			}
-			else {
-				object = std::make_shared<GameObject>();
+				break;
+			case ObjectTag::Item: {
+				object = std::make_shared<GameItem>();
 			}
+				break;
+			default:
+				assert(0);
+				break;
+			}
+
 
 			object->SetType(objectType);
 			object->SetName(model->mName);
@@ -157,16 +172,16 @@ void BattleScene::Load()
 				Matrix transformMatrix = FileIO::ReadVal<Matrix>(file);
 				model->mTransform = transformMatrix;
 
+				SPtr<Transform> transform = object->AddComponent<Transform>(ComponentInfo::Type::Transform);
+				transform->SetLocalTransform(transformMatrix);
+				transform->SetPosition(Transform::GetPosition(transformMatrix));
+
 				FileIO::ReadString(file, token);	// </Transform>: or <ScriptExporter>:
 				if (Hash(token) == Hash("<ScriptExporter>:"))
 				{
 					LoadScriptExporter(file, object);
 					FileIO::ReadString(file); // </Transform>:
 				}
-					
-				SPtr<Transform> transform = object->AddComponent<Transform>(ComponentInfo::Type::Transform);
-				transform->SetLocalTransform(transformMatrix);
-				transform->SetPosition(Transform::GetPosition(transformMatrix));
 			}
 
 
@@ -330,16 +345,28 @@ void BattleScene::LoadScriptExporter(std::ifstream& file, SPtr<GameObject> objec
 		int id;
 		exporter.GetData("ID", id);
 		exporter.GetData("Name", weaponName);
+		LOG_MGR->Cout(weaponName, '\n');
 
-		object->SetID(id);
-
+	
 		SPtr<GameItem> crateObject = std::static_pointer_cast<GameItem>(object);
+		crateObject->SetID(id);
+		crateObject->SetItemType(FBProtocol::ITEM_TYPE_STATIC_ITEM_CRATE);
+		crateObject->SetItemState(GameItem::State::InCrate);
+		
 		SPtr<GameItem> weaponObject = std::make_shared<GameItem>();
-		weaponObject->SetID(id + 1);
-		crateObject->SetChildItem(weaponObject.get());
+		weaponObject->SetItemType(GetItemType(weaponName));
+		
+		weaponObject->AddComponent<Transform>(ComponentInfo::Type::Transform);
+		weaponObject->GetTransform()->SetLocalTransform(crateObject->GetTransform()->GetLocalTransform());
+		weaponObject->GetTransform()->SetPosition(crateObject->GetTransform()->GetPosition());
 
-		mItems.push_back(crateObject);
-		mItems.push_back(weaponObject);
+
+		weaponObject->SetID(id + 1);
+		crateObject->SetChildItemID(id + 1);
+		weaponObject->SetParentItemID(id);
+
+		mStaticItems.push_back(crateObject);
+		mDynamicItems.push_back(weaponObject);
 	}
 		break;
 	default:
@@ -348,6 +375,24 @@ void BattleScene::LoadScriptExporter(std::ifstream& file, SPtr<GameObject> objec
 	}
 }
 
+FBProtocol::ITEM_TYPE BattleScene::GetItemType(std::string itemname)
+{
+	FBProtocol::ITEM_TYPE type{};
+
+	if (itemname == "SkyLine") {
+		type = FBProtocol::ITEM_TYPE_WEAPON_SKYLINE;
+	}
+	else if (itemname == "DBMS") {
+		type = FBProtocol::ITEM_TYPE_WEAPON_DBMS;
+	}
+	else if (itemname == "PipeLine") {
+		type = FBProtocol::ITEM_TYPE_WEAPON_PIPELINE;
+	}
+	else if (itemname == "Burnout") {
+		type = FBProtocol::ITEM_TYPE_WEAPON_BURNOUT;
+	}
+	return type;
+}
 
 ResourceManager::ResourceManager()
 {

@@ -13,7 +13,7 @@
 #include "Contents/NPCController.h"
 #include "Contents/PlayerController.h"
 #include "Contents/GameRoom.h"	
-
+#include "Contents/GameItem.h"
 #include "Contents/Collider.h"
 
 
@@ -192,6 +192,23 @@ bool FBsPacketFactory::ProcessFBsPacket(SPtr_Session session, BYTE* packetBuf, U
 		const FBProtocol::CPkt_Bullet_OnCollision* packet = flatbuffers::GetRoot<FBProtocol::CPkt_Bullet_OnCollision>(DataPtr);
 		if (!packet) return false;
 		Process_CPkt_Bullet_OnCollision(session, *packet);
+		break;
+	}
+	/// +--------------------------------
+	///		 PROCESS CPKT ITEM
+	/// --------------------------------+
+	case FBsProtocolID::CPkt_Item_Interact:
+	{
+		const FBProtocol::CPkt_Item_Interact* packet = flatbuffers::GetRoot<FBProtocol::CPkt_Item_Interact>(DataPtr);
+		if (!packet) return false;
+		Process_CPkt_Item_Interact(session, *packet);
+		break;
+	}
+	case FBsProtocolID::CPkt_Item_ThrowAway:
+	{
+		const FBProtocol::CPkt_Item_ThrowAway* packet = flatbuffers::GetRoot<FBProtocol::CPkt_Item_ThrowAway>(DataPtr);
+		if (!packet) return false;
+		Process_CPkt_Item_ThrowAway(session, *packet);
 		break;
 	}
 	default:
@@ -464,7 +481,7 @@ bool FBsPacketFactory::Process_CPkt_Player_Weapon(SPtr_Session session, const FB
 	///>●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
 	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
 
-	FBProtocol::WEAPON_TYPE weaponType = pkt.weapon_type();
+	FBProtocol::ITEM_TYPE weaponType = pkt.weapon_type();
 	gameSession->GetPlayer()->S_SetEquipWeapon(weaponType);
 
 	LOG_MGR->Cout(gameSession->GetID(), " - WEAPON TYPE : ", static_cast<int>(weaponType), "\n");
@@ -601,9 +618,9 @@ bool FBsPacketFactory::Process_CPkt_Bullet_OnShoot(SPtr_Session session, const F
 	int  player_id   = gameSession->GetID(); // 플레이어 아이디
 	auto gun_id      = gameSession->GetPlayer()->S_GetCurrWeapon();
 	Vec3 ray         = GetVector3(pkt.ray());
-	Vec3 firePos = GetVector3(pkt.pos());
+	Vec3 firePos     = GetVector3(pkt.pos());
 
-	if (gun_id == FBProtocol::WEAPON_TYPE_AIR_STRIKE) {
+	if (gun_id == FBProtocol::ITEM_TYPE_WEAPON_AIR_STRIKE) {
 		// PQCS->Bullet Update Start(Worker Thread  에게 업데이트를 떠넘긴다)
 		// server 에서 simulation 한다. 
 		gameSession->GetPlayer()->OnShoot(firePos, ray);
@@ -648,9 +665,16 @@ bool FBsPacketFactory::Process_CPkt_Bullet_OnCollision(SPtr_Session session, con
 bool FBsPacketFactory::Process_CPkt_Item_Interact(SPtr_Session session, const FBProtocol::CPkt_Item_Interact& pkt)
 {
 	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
-	
-	uint32_t item_id = pkt.item_id();
-	
+	SPtr<GamePlayer> player = gameSession->GetPlayer();
+
+	uint32_t				item_id   = pkt.item_id();
+	FBProtocol::ITEM_TYPE	item_type = pkt.item_type();
+
+	auto npcC = player->GetOwnerPlayerController()->GetOwnerRoom()->GetNPCController();
+	auto item = npcC->GetItem(item_id);
+	if (item) {
+		item->DoInteract(player);
+	}
 
 	return true;
 }
@@ -658,9 +682,16 @@ bool FBsPacketFactory::Process_CPkt_Item_Interact(SPtr_Session session, const FB
 bool FBsPacketFactory::Process_CPkt_Item_ThrowAway(SPtr_Session session, const FBProtocol::CPkt_Item_ThrowAway& pkt)
 {
 	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
+	SPtr<GamePlayer> player = gameSession->GetPlayer();
 
-	uint32_t item_id = pkt.item_id();
+	uint32_t				item_id = pkt.item_id();
+	FBProtocol::ITEM_TYPE	item_type = pkt.item_type();
 
+	auto npcC = player->GetOwnerPlayerController()->GetOwnerRoom()->GetNPCController();
+	auto item = npcC->GetItem(item_id);
+	if (item) {
+		item->DoInteract(player);
+	}
 	return true;
 }
 
@@ -968,7 +999,7 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_Player_Animation(uint32_t player_id, int 
 	return sendBuffer;
 }
 
-SPtr_SendPktBuf FBsPacketFactory::SPkt_Player_Weapon(uint32_t player_id, FBProtocol::WEAPON_TYPE weapon_type)
+SPtr_SendPktBuf FBsPacketFactory::SPkt_Player_Weapon(uint32_t player_id, FBProtocol::ITEM_TYPE weapon_type)
 {
 	/// > ○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○
 	/// > table SPkt_Player_Weapon
@@ -1189,7 +1220,7 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_GetPhero(uint32_t phero_id, uint32_t play
 ///	◈ SEND [ BULLET ] PACKET ◈
 /// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------★
 
-SPtr_SendPktBuf FBsPacketFactory::SPkt_Bullet_OnShoot(uint32_t player_id, FBProtocol::WEAPON_TYPE gun_id, uint32_t bullet_id, Vec3 fire_pos, Vec3 ray)
+SPtr_SendPktBuf FBsPacketFactory::SPkt_Bullet_OnShoot(uint32_t player_id, FBProtocol::ITEM_TYPE gun_id, uint32_t bullet_id, Vec3 fire_pos, Vec3 ray)
 {
 
 	/// > ○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○
@@ -1214,7 +1245,7 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_Bullet_OnShoot(uint32_t player_id, FBProt
 	return sendBuffer;
 }
 
-SPtr_SendPktBuf FBsPacketFactory::SPkt_Bullet_OnHitEnemy(uint32_t player_id, FBProtocol::WEAPON_TYPE gun_id, uint32_t bullet_id, Vec3 ray)
+SPtr_SendPktBuf FBsPacketFactory::SPkt_Bullet_OnHitEnemy(uint32_t player_id, FBProtocol::ITEM_TYPE gun_id, uint32_t bullet_id, Vec3 ray)
 {
 
 	flatbuffers::FlatBufferBuilder builder{};
@@ -1227,7 +1258,7 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_Bullet_OnHitEnemy(uint32_t player_id, FBP
 	return sendBuffer;
 }
 
-SPtr_SendPktBuf FBsPacketFactory::SPkt_Bullet_OnCollision(uint32_t player_id, FBProtocol::WEAPON_TYPE gun_id, uint32_t bullet_id)
+SPtr_SendPktBuf FBsPacketFactory::SPkt_Bullet_OnCollision(uint32_t player_id, FBProtocol::ITEM_TYPE gun_id, uint32_t bullet_id)
 {
 	///> ○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○
 	///> table SPkt_Bullet_OnCollision
@@ -1247,12 +1278,13 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_Bullet_OnCollision(uint32_t player_id, FB
 	return sendBuffer;
 }
 
-SPtr_SendPktBuf FBsPacketFactory::SPkt_Item_Interact(uint32_t player_id, uint32_t item_id, FBProtocol::ITEM_TYPE item_type)
+SPtr_SendPktBuf FBsPacketFactory::SPkt_Item_Interact(uint32_t player_id, uint32_t item_id, FBProtocol::ITEM_TYPE item_type, Vec3 drop_pos)
 {
 	flatbuffers::FlatBufferBuilder builder{};
 
+	auto DropPosition = FBProtocol::CreateVector3(builder, drop_pos.x, drop_pos.y, drop_pos.z);
 
-	auto serverPacket = FBProtocol::CreateSPkt_Item_Interact(builder, player_id, item_id, item_type);
+	auto serverPacket = FBProtocol::CreateSPkt_Item_Interact(builder, player_id, item_id, item_type, DropPosition);
 	builder.Finish(serverPacket);
 	SPtr_SendPktBuf sendBuffer = SEND_FACTORY->CreatePacket(builder.GetBufferPointer(), static_cast<uint16_t>(builder.GetSize()), FBsProtocolID::SPkt_Item_Interact);
 	return sendBuffer;
