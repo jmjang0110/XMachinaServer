@@ -41,6 +41,39 @@ bool CollisionManager::CollideCheck(ColliderSnapShot& A, ColliderSnapShot& B)
 	return false;
 }
 
+bool CollisionManager::CollideCheck_Sphere(ColliderSnapShot& A, ColliderSnapShot& B)
+{
+	if (A.BS.Intersects(B.BS)) {
+		return true;
+	}
+
+	return false;
+}
+
+bool CollisionManager::CollideCheck_Box(ColliderSnapShot& A, ColliderSnapShot& B)
+{
+	/* Box - Box */
+	for (auto& a : A.BoundingBoxList) {
+		for (auto& b : B.BoundingBoxList) {
+			if (a.Intersects(b))
+				return true;
+		}
+	}
+
+	return false;
+}
+
+bool CollisionManager::CollideCheck_Sphere_Box(ColliderSnapShot& A_sphere, ColliderSnapShot& B_box)
+{
+	/* Box - Sphere */
+	for (auto& b : B_box.BoundingBoxList) {
+		if (b.Intersects(A_sphere.BS))
+			return true;
+	}
+
+	return false;
+}
+
 bool CollisionManager::CollideCheck(ColliderSnapShot& A, Ray& R, float dist)
 {
 	if (!A.BS.Intersects(_VECTOR(R.Position), XMVector3Normalize(_VECTOR(R.Direction)), dist)) {

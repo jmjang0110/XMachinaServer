@@ -73,6 +73,7 @@ void GameItem::DoInteract(SPtr<GamePlayer> gamePlayer)
 	case FBProtocol::ITEM_TYPE_WEAPON_BURNOUT:
 	case FBProtocol::ITEM_TYPE_WEAPON_DIRECT_DRAIN:
 	case FBProtocol::ITEM_TYPE_WEAPON_SKYLINE:
+	case FBProtocol::ITEM_TYPE_WEAPON_MINE_LAUNCHER:
 	case FBProtocol::ITEM_TYPE_WEAPON_AIR_STRIKE:
 	{
 		if (mItemState == GameItem::State::Dropped) {

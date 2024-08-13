@@ -94,12 +94,16 @@ void GamePlayer::Start()
 	///		CREATE GAME BULLETS
 	/// -------------------------------------------------------------------------------+
 	for (int i = 0; i < GameObjectInfo::maxBulletsNum; ++i) {
-		
+
 		SPtr<GameBullet> bullet = MEMORY->Make_Shared<GameBullet>(i, std::dynamic_pointer_cast<GamePlayer>(shared_from_this()));
 		
 		bullet->AddComponent<Transform>(ComponentInfo::Type::Transform);
-		bullet->AddComponent<Collider>(ComponentInfo::Type::Collider); 
+		auto col = bullet->AddComponent<Collider>(ComponentInfo::Type::Collider); 
+		MyBoundingSphere bs;
+		bs.Radius = 0.5f;
+		col->SetBS(bs);
 		bullet->AddScript<Script_Bullet>(ScriptInfo::Type::Bullet);
+
 
 		mBullets[i] = bullet;
 		mPossibleBulletIndex.push(i);
@@ -177,11 +181,7 @@ void GamePlayer::Exit()
 {
 	/* Exit Room Clear Data */
 	mVlist.Clear();
-
-
-	mSnapShot.Lock_IsExit.LockWrite();
 	mSnapShot.IsExit = true;
-	mSnapShot.Lock_IsExit.UnlockWrite();
 	
 	for (int i = 0; i < static_cast<int>(GameSkill::State::_count); ++i) {
 		mSkills[i]->DeActivate();
@@ -196,11 +196,13 @@ int GamePlayer::OnShoot(Vec3& pos, Vec3& ray)
 		
 		if (0 <= possibleIndex && possibleIndex < GameObjectInfo::maxBulletsNum) {
 			
+			FBProtocol::ITEM_TYPE weaponType = S_GetCurrWeapon();
 			mBullets[possibleIndex]->GetTransform()->SetPosition(pos);
+			mBullets[possibleIndex]->GetTransform()->SetRight(Vector3::Right);
 			mBullets[possibleIndex]->GetTransform()->SetLook(ray);
 
 			mBullets[possibleIndex]->SetOnShootDir(ray);
-			mBullets[possibleIndex]->SetWeaponType(S_GetCurrWeapon());	// 총알 종류 설정 
+			mBullets[possibleIndex]->SetWeaponType(weaponType);	// 총알 종류 설정 
 
 			mBullets[possibleIndex]->Activate();						// PQCS - Register Update !
 			
@@ -349,10 +351,14 @@ void GamePlayer::UpdateViewList(std::vector<SPtr<GamePlayer>> players, std::vect
 			if (objState == Script_Stat::ObjectState::Dead)
 				DoDeactivate = false;
 
-			mVlist.RemoveMonster(it.first, DoDeactivate);
-			RemoveMonsters.push_back(it.second);
-
-			//LOG_MGR->Cout("[ ", it.first, " ] : ", it.second, " : DeActivate\n");
+			Vec3	Monster_Pos	= it.second->GetTransform()->GetPosition();
+			Vec3	Player_Pos     = GetTransform()->GetPosition();
+			float	dist          = (Monster_Pos - Player_Pos).Length();
+			
+			if (dist > mViewRangeRadius){
+				mVlist.RemoveMonster(it.first, DoDeactivate);
+				RemoveMonsters.push_back(it.second);
+			}
 		}
 	}
 

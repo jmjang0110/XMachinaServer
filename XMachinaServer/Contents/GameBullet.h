@@ -44,7 +44,13 @@ private:
 	float		    mCurrMoveDist = 0.f;
 
 	float			mSpeed		  = 20.f;
+	float			mUpSpeed	  = 10.f;
 
+	float			mMass{};
+	float			mDrag{};
+	float			mRotationSpeed{};
+	float			mPlantY{};
+	bool			mIsPlanted{};
 
 public:
 	GameBullet();
@@ -61,20 +67,26 @@ public:
 
 private:
 	void BulletUpdate_Air_Strike();
+	void BulletUpdate_SpiderMine();
 
+	bool CollideCheck_SplashDamage(float onHitDamage, float min_y, bool underGroundIsHit);
 
 public:
 	void DecreaseRef() { mActivate_Ref.fetch_sub(1); if (mActivate_Ref.load() < 0) mActivate_Ref = 0; }
+	void BulletInit(FBProtocol::ITEM_TYPE weaponType);
 	void BulletUpdate(FBProtocol::ITEM_TYPE weaponType);
 	void CheckCollision_WithPlayerViewList();
 	void CheckCollision_WithHitMonsterID_Ray();
+	bool CheckCollision_WithBuildings();
+
+	void Plant();
 
 	
 public:
 	/// +-----------------------------------------------------------
 	///		S E T T E R 
 	/// -----------------------------------------------------------+
-	void SetWeaponType(FBProtocol::ITEM_TYPE type)		{ mInfo.WeaponType = type;  }
+	void SetWeaponType(FBProtocol::ITEM_TYPE type)			{ mInfo.WeaponType = type; BulletInit(type); }
 	void SetOnShootDir(Vec3& dir)							{ mOnShootDir       = dir; }
 	void SetHitMonsterID(int32_t id)						{ mHitMonsterID     = id; }
 	void SetSpeed(float speed)								{ mSpeed            = speed; }

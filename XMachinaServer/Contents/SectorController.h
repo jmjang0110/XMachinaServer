@@ -82,12 +82,12 @@ public:
 	/// +------------------------------------------------------------
 	///		GET
 	/// -------------------------------------------------------------+
-	Coordinate	     GetSectorIdx(Vec3 Pos); // Position 에 따른 Index 를 받는다 .
-	Coordinate	     GetTotalSectorSize() 	{ return mTotalSectorSize; }
-	Coordinate	     GetSectorSize()		{ return mSectorSize; }
-	Coordinate	     GetMaxSectorIndex()	{ return Coordinate(static_cast<int>(mSectors[0].size()), static_cast<int>(mSectors.size())); }
-	SectorInfo::Type GetSectorType(Coordinate idx);
-	SPtr<GameRoom>   GetOwnerRoom()			{ return mOwnerRoom; }
+	Coordinate				GetSectorIdx(Vec3 Pos); // Position 에 따른 Index 를 받는다 .
+	Coordinate				GetTotalSectorSize() 	{ return mTotalSectorSize; }
+	Coordinate				GetSectorSize()		{ return mSectorSize; }
+	Coordinate				GetMaxSectorIndex()	{ return Coordinate(static_cast<int>(mSectors[0].size()), static_cast<int>(mSectors.size())); }
+	SectorInfo::Type		GetSectorType(Coordinate idx);
+	SPtr<GameRoom>			GetOwnerRoom()			{ return mOwnerRoom; }
 	static Coordinate		GetSectorStartPos(Coordinate sectorIdx);
 
 
@@ -99,6 +99,7 @@ public:
 	///		Collision ray 
 	/// -------------------------------------------------------------+
 	float CollideCheckRay_MinimumDist(Coordinate sectorIdx, const Ray& ray, GameObjectInfo::Type targetType) const;
+	bool  CollideCheck_WithBuildings(Vec3& pos, ColliderSnapShot& other);
 
 
 public:

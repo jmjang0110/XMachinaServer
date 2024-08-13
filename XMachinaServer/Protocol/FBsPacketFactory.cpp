@@ -620,10 +620,17 @@ bool FBsPacketFactory::Process_CPkt_Bullet_OnShoot(SPtr_Session session, const F
 	Vec3 ray         = GetVector3(pkt.ray());
 	Vec3 firePos     = GetVector3(pkt.pos());
 
-	if (gun_id == FBProtocol::ITEM_TYPE_WEAPON_AIR_STRIKE) {
-		// PQCS->Bullet Update Start(Worker Thread  에게 업데이트를 떠넘긴다)
+
+	switch (gun_id)
+	{
+	case FBProtocol::ITEM_TYPE_WEAPON_MINE_LAUNCHER:
+	case FBProtocol::ITEM_TYPE_WEAPON_AIR_STRIKE: {
 		// server 에서 simulation 한다. 
 		gameSession->GetPlayer()->OnShoot(firePos, ray);
+	}
+		break;
+	default:
+		break;
 	}
 	
 	int  bullet_id = {}; // 의미 없어짐. 
@@ -1075,10 +1082,10 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_NewMonster(std::vector<SPtr<GameMonster>>
 		}
 
 
-		auto transSNS = mon.get()->GetTransform()->GetSnapShot();
-		Vec3 transPos = transSNS.GetPosition();
-		Vec3 transRot = transSNS.GetRotation();
-		Vec3 transLook = transSNS.GetLook();
+		auto transSNS	= mon.get()->GetTransform()->GetSnapShot();
+		Vec3 transPos	= transSNS.GetPosition();
+		Vec3 transRot	= transSNS.GetRotation();
+		Vec3 transLook	= transSNS.GetLook();
 
 		auto pos		= FBProtocol::CreatePosition_Vec2(builder, transPos.x, transPos.z);
 		auto bt_Type	= mon->GetEnemyController()->GetMonsterBTType(); /* Lock Read */

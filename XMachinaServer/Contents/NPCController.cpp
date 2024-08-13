@@ -145,6 +145,10 @@ void NPCController::AddStaticItem(UINT32 id, SPtr<GameItem> item)
 	}
 }
 
+void NPCController::AddBuilding(UINT32 id, SPtr<GameBuilding> buildings)
+{
+}
+
 SPtr<GameMonster> NPCController::GetMonster(UINT32 monsterID)
 {
 	const auto& iter = mMonsters.find(monsterID);
@@ -186,4 +190,6 @@ SPtr<GameItem> NPCController::GetItem(UINT32 item_id)
 	item = GetStaticItem(item_id);
 	return item;
 }
+
+
 

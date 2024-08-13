@@ -78,12 +78,14 @@ public:
 	SectorInfo::Type				GetSectorType()					{ return mType; }
 	SectorController*				GetOwnerSectorController()		{ return mOwnerSC; }
 	std::vector<SPtr<GameMonster>>	GetMonstersInViewRange(Vec3 player_pos, float viewRange_radius);
+	SPtr<GameObject>				GetBuilding(UINT32 id);
+
 
 	/// +---------------------------------------------------------
 	///	  C O L L I S I O N 
 	/// ---------------------------------------------------------+
 	float CollideCheckRay_MinimumDist(const Ray& ray, GameObjectInfo::Type targetType) ;
-
+	bool  CollideCheck_WithBuildings(ColliderSnapShot& other);
 
 
 };

@@ -415,7 +415,19 @@ table SPkt_Bullet_OnHitEnemy
 	ray       : Vector3; // 12 bytes (4bytes * 3) - 총구 방향은 어떠한가? 
 }
 
+// +------------------------
+//	   BULLET PLANT
+// ------------------------+
 
+table CPkt_Bullet_Plant
+{
+	
+}
+
+table SPkt_Bullet_Plant
+{
+
+}
 
 
 // +------------------------

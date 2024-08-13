@@ -81,7 +81,7 @@ void GameMonster::OnHit(int hitCnt)
 	// TODO : TEST Hit Cnt == 5 -> Dead 
 	HitCnt += hitCnt;
 	//LOG_MGR->Cout(GetID(), " : OnHit\n");
-	if (HitCnt >= 5) {
+	if (HitCnt >= 10) {
 		mEnemyStat->S_SetObjectState(Script_Stat::ObjectState::Dead);
 	}
 

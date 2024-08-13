@@ -96,7 +96,7 @@ void BattleScene::Load()
 				else
 					assert(0);
 			}
-			else if(tag == "Building" || tag == "Dissolve_Building") {
+			else if(tag == "Building" || tag == "Dissolve_Building" || tag == "Bound") {
 				objectTag = ObjectTag::Building;
 				objectType = GameObjectInfo::Type::Building;
 			}
@@ -187,18 +187,24 @@ void BattleScene::Load()
 			/// +---------------------------------------------------
 			///	¡å Component : Collider 
 			/// ---------------------------------------------------+
-			const auto& collider = object->AddComponent<Collider>(ComponentInfo::Type::Collider);
-			collider->SetBS(model->mBS);
-
-			/// +---------------------------------------------------
-			///	¢º Game Monster 
-			/// ---------------------------------------------------+
-			if (isGameMonster)
-			{
-				AddMonster(object);
-			}
-			else if(objectType == GameObjectInfo::Type::Building){
+			if (object->GetComponent<Collider>(ComponentInfo::Type::Collider)) {
 				AddBuilding(object);
+			}
+			else {
+				const auto& collider = object->AddComponent<Collider>(ComponentInfo::Type::Collider);
+				collider->SetBS(model->mBS);
+
+				/// +---------------------------------------------------
+				///	¢º Game Monster 
+				/// ---------------------------------------------------+
+				if (isGameMonster)
+				{
+					AddMonster(object);
+				}
+				else if(objectType == GameObjectInfo::Type::Building) {
+					collider->SetBoundingBoxList(model->mBoxList);
+					AddBuilding(object);
+				}
 			}
 
 			--sameObjectCnt;
@@ -347,7 +353,8 @@ void BattleScene::LoadScriptExporter(std::ifstream& file, SPtr<GameObject> objec
 		crateObject->SetItemState(GameItem::State::InCrate);
 		
 		SPtr<GameItem> weaponObject = std::make_shared<GameItem>();
-		weaponObject->SetItemType(GetItemType(weaponName));
+		//weaponObject->SetItemType(GetItemType(weaponName));
+		weaponObject->SetItemType(GetItemType("MineLauncher"));
 		
 		weaponObject->AddComponent<Transform>(ComponentInfo::Type::Transform);
 		weaponObject->GetTransform()->SetLocalTransform(crateObject->GetTransform()->GetLocalTransform());
@@ -360,6 +367,36 @@ void BattleScene::LoadScriptExporter(std::ifstream& file, SPtr<GameObject> objec
 
 		mStaticItems.push_back(crateObject);
 		mDynamicItems.push_back(weaponObject);
+	}
+		break;
+	case Hash("Bound"):
+	{
+		const auto& collider = object->AddComponent<Collider>(ComponentInfo::Type::Collider);
+
+		// sphere
+		{
+			MyBoundingSphere bs;
+			exporter.GetData("rad", bs.Radius);
+			collider->SetBS(bs);
+		}
+
+		// box list
+		{
+			int boundingCnt{};
+			exporter.GetData("Size", boundingCnt);
+			std::vector<MyBoundingOrientedBox> boxList{};
+			for (int i = 0; i < boundingCnt; ++i) {
+				const std::string& idx = std::to_string(i);
+				MyBoundingOrientedBox box;
+				exporter.GetData(idx + "x", box.Extents.x);
+				exporter.GetData(idx + "y", box.Extents.y);
+				exporter.GetData(idx + "z", box.Extents.z);
+				boxList.push_back(box);
+			}
+			collider->SetBoundingBoxList(boxList);
+		}
+		collider->UpdateTransform();
+		collider->UpdateColliderSnapShot();
 	}
 		break;
 	default:
@@ -383,6 +420,9 @@ FBProtocol::ITEM_TYPE BattleScene::GetItemType(std::string itemname)
 	}
 	else if (itemname == "Burnout") {
 		type = FBProtocol::ITEM_TYPE_WEAPON_BURNOUT;
+	}
+	else if (itemname == "MineLauncher") {
+		type = FBProtocol::ITEM_TYPE_WEAPON_MINE_LAUNCHER;
 	}
 	return type;
 }

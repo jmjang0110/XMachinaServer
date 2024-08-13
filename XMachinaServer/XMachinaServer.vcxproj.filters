@@ -215,6 +215,9 @@
     <Filter Include="Framework\Contents\GameWorld\GameObject\NPC\Item">
       <UniqueIdentifier>{bddd8c2e-8fef-4d63-b5ae-fc11b0366e07}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Entity\Script\Bullet Script">
+      <UniqueIdentifier>{b9792db6-a37d-434e-9f9d-9d4c4406d2bd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework.h">
@@ -479,9 +482,6 @@
     <ClInclude Include="Contents\Script_Rapax.h">
       <Filter>Framework\Contents\GameWorld\Entity\Script\Enemy Script\Monster Script</Filter>
     </ClInclude>
-    <ClInclude Include="Contents\Script_Bullet.h">
-      <Filter>Framework\Contents\GameWorld\Entity\Script</Filter>
-    </ClInclude>
     <ClInclude Include="Contents\Script_Aranobot.h">
       <Filter>Framework\Contents\GameWorld\Entity\Script\Enemy Script\Monster Script</Filter>
     </ClInclude>
@@ -583,6 +583,12 @@
     </ClInclude>
     <ClInclude Include="Contents\Script_Deus_Phase_2.h">
       <Filter>Framework\Contents\GameWorld\Entity\Script\Enemy Script\Monster Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Script_MissileLauncher.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Bullet Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Script_Bullet.h">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Bullet Script</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -821,9 +827,6 @@
     <ClCompile Include="Contents\Script_Rapax.cpp">
       <Filter>Framework\Contents\GameWorld\Entity\Script\Enemy Script\Monster Script</Filter>
     </ClCompile>
-    <ClCompile Include="Contents\Script_Bullet.cpp">
-      <Filter>Framework\Contents\GameWorld\Entity\Script</Filter>
-    </ClCompile>
     <ClCompile Include="Contents\Script_Aranobot.cpp">
       <Filter>Framework\Contents\GameWorld\Entity\Script\Enemy Script\Monster Script</Filter>
     </ClCompile>
@@ -925,6 +928,12 @@
     </ClCompile>
     <ClCompile Include="Contents\Script_Deus_Phase_2.cpp">
       <Filter>Framework\Contents\GameWorld\Entity\Script\Enemy Script\Monster Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Script_MissileLauncher.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Bullet Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Script_Bullet.cpp">
+      <Filter>Framework\Contents\GameWorld\Entity\Script\Bullet Script</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

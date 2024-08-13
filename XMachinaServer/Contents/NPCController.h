@@ -42,17 +42,18 @@ public:
 	void InitBullets();
 	void InitNPCs();
 
-	SPtr<GameMonster> CreateMonster(UINT32 id, Coordinate sectorIdx, MonsterType monType);
 	void AddMonster(UINT32 id, SPtr<GameMonster> monster);
 	void AddDynamicItem(UINT32 id, SPtr<GameItem> item);
 	void AddStaticItem(UINT32 id, SPtr<GameItem> item);
+	void AddBuilding(UINT32 id, SPtr<GameBuilding> buildings);
+
 
 	SPtr<GameRoom>  GetOwnerRoom() { return mOwnerRoom; }
 
-	SPtr<GameMonster> GetMonster(UINT32 monsterID);
-	SPtr<GameItem> GetStaticItem(UINT32 item_id);
-	SPtr<GameItem> GetDynamicItem(UINT32 item_id);
-	SPtr<GameItem> GetItem(UINT32 item_id);
+	SPtr<GameMonster>	GetMonster(UINT32 monsterID);
+	SPtr<GameItem>		GetStaticItem(UINT32 item_id);
+	SPtr<GameItem>		GetDynamicItem(UINT32 item_id);
+	SPtr<GameItem>		GetItem(UINT32 item_id);
 
 
 	std::vector<SPtr<GameMonster>> GetMonstersInViewRange(Vec3 palyer_pos, float viewRange_radius);

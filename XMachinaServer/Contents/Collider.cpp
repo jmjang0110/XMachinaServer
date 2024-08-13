@@ -42,6 +42,10 @@ void Collider::Clone(SPtr<Component> other)
     this->mBoundingBoxList.resize(collider->mBoundingBoxList.size());
     std::memcpy(collider->mBoundingBoxList.data(), collider->mBoundingBoxList.data(), collider->mBoundingBoxList.size() * sizeof(MyBoundingOrientedBox));
 
+
+    mColliderSnapShot[0].BoundingBoxList = mBoundingBoxList;
+    mColliderSnapShot[1].BoundingBoxList = mBoundingBoxList;
+
     this->SetType(ComponentInfo::Type::Collider);
 }
 
@@ -96,4 +100,8 @@ void Collider::SetBoundingBoxList(const std::vector<MyBoundingOrientedBox>& boxL
     for (auto& box : mBoundingBoxList) {
         box.Transform(GetOwner()->GetTransform()->GetWorldTransform());
     }
+
+    mColliderSnapShot[0].BoundingBoxList = mBoundingBoxList;
+    mColliderSnapShot[1].BoundingBoxList = mBoundingBoxList;
+
 }

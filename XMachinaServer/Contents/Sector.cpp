@@ -140,6 +140,8 @@ std::vector<SPtr<GameMonster>> Sector::GetMonstersInViewRange(Vec3 player_pos, f
 	return monstersInView;
 }
 
+
+
 float Sector::CollideCheckRay_MinimumDist(const Ray& ray, GameObjectInfo::Type targetType)
 {
 	float minDist = 999.f;
@@ -153,6 +155,20 @@ float Sector::CollideCheckRay_MinimumDist(const Ray& ray, GameObjectInfo::Type t
 
 	}
 	return minDist;
+}
+
+bool Sector::CollideCheck_WithBuildings(ColliderSnapShot& other)
+{
+	bool Result = false;
+	for (auto& iter : mBuildings) {
+		ColliderSnapShot col = iter.second->GetCollider()->GetColliderSnapShot();
+
+		Result = COLLISION_MGR->CollideCheck_Sphere_Box(other, col);
+		if (Result)
+			return true;
+	}
+	
+	return false;
 }
 
 

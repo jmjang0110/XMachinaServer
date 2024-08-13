@@ -36,7 +36,6 @@ bool Script_SkillCloaking::Update()
 	if (skillCurrState == GameSkill::State::CoolTime_Start) {
 		mSkillOwner->RegisterUpdate(mCoolTime);
 		mSkillOwner->SetState(GameSkill::State::CoolTime_End);
-
 		return true;
 	}
 	else if (skillCurrState == GameSkill::State::CoolTime_End) {
@@ -49,8 +48,6 @@ bool Script_SkillCloaking::Update()
 	if (skillCurrState == GameSkill::State::Active) {
 		float deltatime = mSkillOwner->GetDeltaTime();
 		mTimer += deltatime;
-
-		LOG_MGR->Cout("Cloaking On : ", mTimer, '\n');
 		bool checkOnSkill = mSkillOwner->GetOwnerPlayer()->S_DecPhero(deltatime * mPheroCost);
 		if (checkOnSkill == true) {
 			mSkillOwner->RegisterUpdate(0.f);

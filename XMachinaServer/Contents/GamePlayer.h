@@ -35,7 +35,7 @@ struct PlayerSnapShot : public ObjectSnapShot
 	UINT32					RoomID			= -1;								// Owner Room ID 
 	std::vector<Coordinate>	CurSectorID		= {};								// Current Secotr Indexes
 
-	bool					IsExit			= false; Lock::SRWLock Lock_IsExit;				
+	bool					IsExit			= false; 				
 	
 	ViewList				VList_SnapShot  = {};	 Lock::SRWLock Lock_VList_SnapShot;		
 	float					Phero           = 1000;	 Lock::SRWLock Lock_Phero;				
@@ -93,7 +93,7 @@ public:
 	int		OnHitEnemy(int32_t monster_id, Vec3& pos, Vec3& ray);
 	bool	OnSkill(FBProtocol::PLAYER_SKILL_TYPE type, SPtr<GameMonster> mindControlledMonster);
 	void	Exit();
-	bool	IsExit() { mSnapShot.Lock_IsExit.LockWrite(); bool isExit = mSnapShot.IsExit; mSnapShot.Lock_IsExit.UnlockWrite(); return isExit; };
+	bool	IsExit() {  bool isExit = mSnapShot.IsExit; return isExit; };
 	
 
 

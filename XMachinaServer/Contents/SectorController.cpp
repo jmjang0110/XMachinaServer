@@ -68,7 +68,7 @@ bool SectorController::Init(SPtr_GameRoom owner)
     const std::vector<SPtr_GameObject>* BuildingResources = RESOURCE_MGR->GetBattleScene()->GetBuildings();
     for (int i = 0; i < BuildingResources->size(); ++i) {
         
-        SPtr<GameObject> building            = (*BuildingResources)[i]; // 원본 그대로 가져온다. ( 건물은 Read Only )  
+        SPtr<GameObject> building            = (*BuildingResources)[i]; // 원본 그대로 가져온다. ( 건물은 Read Only ) 
         Vec3             Pos                 = building->GetTransform()->GetPosition();
         Coordinate       SectorIndex         = SectorController::GetSectorIdxByPosition(Pos);
         building->GetScript<Script_Building>(ScriptInfo::Type::Building)->SetSectorIdx(SectorIndex);
@@ -252,6 +252,15 @@ bool SectorController::AddMonsterInSector(Coordinate sectorIdx, int monster_id ,
 float SectorController::CollideCheckRay_MinimumDist(Coordinate sectorIdx, const Ray& ray,GameObjectInfo::Type targetType) const
 {
    return mSectors[sectorIdx.z][sectorIdx.x]->CollideCheckRay_MinimumDist(ray, targetType);
+}
+
+bool SectorController::CollideCheck_WithBuildings(Vec3& pos, ColliderSnapShot& other)
+{
+    Coordinate sectorIdx = GetSectorIdxByPosition(pos);
+    if (sectorIdx.x < 0 || sectorIdx.x >= mTotalSectorSize.x || sectorIdx.z >= mTotalSectorSize.z) 
+        return false;
+    bool Result = mSectors[sectorIdx.z][sectorIdx.x]->CollideCheck_WithBuildings(other);
+    return Result;
 }
 
 Coordinate SectorController::GetSectorIdxByPosition(Vec3 Pos)

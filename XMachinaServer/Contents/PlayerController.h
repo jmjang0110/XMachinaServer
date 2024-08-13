@@ -40,7 +40,7 @@ public:
 
 	std::vector<SPtr<GamePlayer>>			GetPlayersInViewRange(Vec3 player_pos, float viewrange_radius);
 
-
+ 
 	UINT32									GetPlayersSize()	{ return mCurrPlayerCnt.load(); }
 	SPtr<GameRoom>							GetOwnerRoom()		{ return mOwnerRoom; }
 	SPtr<GamePlayer>						GetPlayer(UINT32 ID);
