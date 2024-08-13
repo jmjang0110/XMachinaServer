@@ -46,11 +46,3 @@ bool Script_Anglerox::Start()
 
     return true;
 }
-
-void Script_Anglerox::Clone(SPtr<Component> other)
-{
-    Script_Enemy::Clone(other);
-    SPtr<Script_Anglerox> otherScript = std::static_pointer_cast<Script_Anglerox>(other);
-
-}
-

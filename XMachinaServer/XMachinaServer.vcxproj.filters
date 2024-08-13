@@ -419,7 +419,7 @@
     <ClInclude Include="Contents\Script_BehaviorTree.h">
       <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree</Filter>
     </ClInclude>
-    <ClInclude Include="Contents\Script_DefaultEnemyBT.h">
+    <ClInclude Include="Contents\Script_BehaviorTrees.h">
       <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster BT</Filter>
     </ClInclude>
     <ClInclude Include="Contents\Script_EnemyController.h">
@@ -761,7 +761,7 @@
     <ClCompile Include="Contents\Script_BehaviorTree.cpp">
       <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree</Filter>
     </ClCompile>
-    <ClCompile Include="Contents\Script_DefaultEnemyBT.cpp">
+    <ClCompile Include="Contents\Script_BehaviorTrees.cpp">
       <Filter>Framework\Contents\GameWorld\Entity\Script\Behavior Tree\Monster BT</Filter>
     </ClCompile>
     <ClCompile Include="Contents\Script_EnemyController.cpp">

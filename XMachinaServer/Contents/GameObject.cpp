@@ -12,7 +12,7 @@
 /* Script Headers */
 #include  "Script_BehaviorTree.h"
 #include "Script_Building.h"
-#include "Script_DefaultEnemyBT.h"
+#include "Script_BehaviorTrees.h"
 #include "Script_Enemy.h"
 #include "Script_EnemyController.h"
 #include "Script_EnemyStat.h"
@@ -34,6 +34,8 @@
 #include "Script_Rapax.h"
 #include "Script_Anglerox.h"
 #include "Script_MiningMech.h"
+#include "Script_Deus_Phase_1.h"
+#include "Script_Deus_Phase_2.h"
 
 
 GameObject::GameObject()
@@ -232,46 +234,42 @@ SPtr<Script> GameObject::AddScript(ScriptInfo::Type key)
 		{
 		case GameObjectInfo::Type::Monster_Ursacetus:
 			script = AddScript<Script_Ursacetus>(key);
-
 			break;
 		case GameObjectInfo::Type::Monster_Onyscidus:
 			script = AddScript<Script_Onyscidus>(key);
-
 			break;
 		case GameObjectInfo::Type::Monster_AdvancedCombat_5:
 			script = AddScript<Script_AdvancedCombatDroid_5>(key);
 			break;
 		case GameObjectInfo::Type::Monster_Anglerox:
 			script = AddScript<Script_Anglerox>(key);
-
 			break;
 		case GameObjectInfo::Type::Monster_Arack:
 			script = AddScript<Script_Arack>(key);
-
 			break;
 		case GameObjectInfo::Type::Monster_Ceratoferox:
 			script = AddScript<Script_Ceratoferox>(key);
-
 			break;
 		case GameObjectInfo::Type::Monster_Gobbler:
 			script = AddScript<Script_Gobbler>(key);
-
 			break;
 		case GameObjectInfo::Type::Monster_LightBipedMech:
 			script = AddScript<Script_LightBipedMech>(key);
-
 			break;
 		case GameObjectInfo::Type::Monster_MiningMech:
 			script = AddScript<Script_MiningMech>(key);
-
 			break;
 		case GameObjectInfo::Type::Monster_Rapax:
 			script = AddScript<Script_Rapax>(key);
-
 			break;
 		case GameObjectInfo::Type::Monster_Aranobot:
 			script = AddScript<Script_Aranobot>(key);
-
+			break;
+		case GameObjectInfo::Type::Montser_Deus_Phase_1:
+			script = AddScript<Script_Deus_Phase_1>(key);
+			break;
+		case GameObjectInfo::Type::Monster_Deus_Phase_2:
+			script = AddScript<Script_Deus_Phase_2>(key);
 			break;
 		default:
 			break;
@@ -281,9 +279,14 @@ SPtr<Script> GameObject::AddScript(ScriptInfo::Type key)
 	case ScriptInfo::Type::EnemyController:
 		script = AddScript<Script_EnemyController>(key);
 		break;
-	
 	case ScriptInfo::Type::DefaultEnemyBT:
 		script = AddScript<Script_DefaultEnemyBT>(key);
+		break;
+	case ScriptInfo::Type::MindControlledEnemyBT:
+		script = AddScript<Script_MindControlledEnemyBT>(key);
+		break;
+	case ScriptInfo::Type::DeusPhase1BT:
+		script = AddScript<Script_DeusPhase1BT>(key);
 		break;
 	case ScriptInfo::Type::Phero:
 		script = AddScript<Script_Phero>(key);

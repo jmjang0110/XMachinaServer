@@ -31,9 +31,10 @@ BTNodeState MonsterTask::CheckDetectionRange::Evaluate()
 		return BTNodeState::Failure;
 	}
 
-	SPtr<GameObject> target = mEnemyController->GetTarget();
+	SPtr<GameObject> target = FindDetectionPlayer();
 	if (nullptr == target) {
-		target = FindDetectionPlayer();
+		mEnemyController->SetTarget(nullptr);
+		return BTNodeState::Failure;
 	}
 
 	if (target && target->GetType() == GameObjectInfo::Type::GamePlayer) {

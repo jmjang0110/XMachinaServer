@@ -41,12 +41,6 @@ Script_Ursacetus::~Script_Ursacetus()
 {
 }
 
-void Script_Ursacetus::Clone(SPtr<Component> other) 
-{
-    Script_Enemy::Clone(other);
-    SPtr<Script_Ursacetus> otherScript = std::static_pointer_cast<Script_Ursacetus>(other);
-}
-
 bool Script_Ursacetus::Start()
 {
     if (!Script_Enemy::Start()) {

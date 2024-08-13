@@ -125,7 +125,6 @@ bool Sector::AddBuilding(UINT32 id, SPtr<GameObject> building)
 std::vector<SPtr<GameMonster>> Sector::GetMonstersInViewRange(Vec3 player_pos, float viewRange_radius)
 {
 	std::vector<SPtr<GameMonster>> monstersInView;
-
 	for (auto& Mon : mMonsters) {
 		Vec3 pos = Mon.second->GetTransform()->GetSnapShot().GetPosition(); /* Snap Shot - Position */
 

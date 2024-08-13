@@ -46,11 +46,3 @@ bool Script_Aranobot::Start()
 
     return true;
 }
-
-void Script_Aranobot::Clone(SPtr<Component> other)
-{
-    Script_Enemy::Clone(other);
-    SPtr<Script_Aranobot> otherScript = std::static_pointer_cast<Script_Aranobot>(other);
-
-}
-

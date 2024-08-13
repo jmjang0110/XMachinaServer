@@ -14,10 +14,6 @@ private:
 	~Script_Onyscidus();
 
 public:
-	/// +------------------------------
-	///		  virtual function 
-	/// ------------------------------+
 	virtual bool Start() override;
-	virtual void Clone(SPtr<Component> other) override;
 };
 

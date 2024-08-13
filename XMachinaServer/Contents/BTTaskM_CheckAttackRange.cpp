@@ -59,7 +59,7 @@ BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 		float	Angle       = Vector3::Angle(GetOwner()->GetTransform()->GetLook(), ToTargetDir);
 		
 		// 너무 가까우면 계속 돈다 그래서 적당히 가까우면 Attack State 로 바꾼다.
-		if (distance < minDistance || Angle < 80.f) {
+		if (distance < minDistance || Angle < 10.f) {
 			mStat->StartAttack();
 
 			return BTNodeState::Success;

@@ -20,11 +20,7 @@ public:
 	~Script_MiningMech();
 
 public:
-	/// +------------------------------
-	///		  virtual function 
-	/// ------------------------------+
 	virtual bool Start() override;
-	virtual void Clone(SPtr<Component> other);
 
 protected:
 	void SmashAttackCallback();

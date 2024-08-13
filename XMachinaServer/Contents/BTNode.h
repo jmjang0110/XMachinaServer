@@ -68,7 +68,7 @@ public:
 
 public:
 	BTNode_Sequence(SPtr_GameObject owner) : BTNode(owner) {};
-	BTNode_Sequence(SPtr_GameObject owner, std::vector<BTNode*>& children) : BTNode(owner, children) {};
+	BTNode_Sequence(SPtr_GameObject owner, std::vector<BTNode*> children) : BTNode(owner, children) {};
 };
 
 /// +-------------------------------------------------------------------------
@@ -85,7 +85,7 @@ public:
 
 public:
 	BTNode_Selector(SPtr_GameObject owner) : BTNode(owner) {};
-	BTNode_Selector(SPtr_GameObject owner, std::vector<BTNode*>& children) : BTNode(owner, children) {};
+	BTNode_Selector(SPtr_GameObject owner, std::vector<BTNode*> children) : BTNode(owner, children) {};
 };
 
 /// +-------------------------------------------------------------------------

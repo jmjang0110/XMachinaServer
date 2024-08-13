@@ -21,7 +21,7 @@
 #include "GameManager.h"
 #include "PlayerController.h"
 
-#include "Script_DefaultEnemyBT.h"
+#include "Script_BehaviorTrees.h"
 #include "Script_EnemyController.h"
 #include "Script_Phero.h"
 #include "Script_PheroDropper.h"
@@ -244,7 +244,6 @@ bool GamePlayer::OnSkill(FBProtocol::PLAYER_SKILL_TYPE type, SPtr<GameMonster> m
 		break;
 	case GameSkill::State::Possible:
 	{
-
 		float currPhero = S_GetPhero();
 		bool res = mSkills[type]->OnSkill(currPhero, mindControlledMonster);
 		if (res == false)
@@ -255,7 +254,6 @@ bool GamePlayer::OnSkill(FBProtocol::PLAYER_SKILL_TYPE type, SPtr<GameMonster> m
 			mindcontrol_monster_id = mindControlledMonster->GetID();
 		auto spkt = FBS_FACTORY->SPkt_PlayerOnSkill(GetID(), type, currPhero, mindcontrol_monster_id);
 		GAME_MGR->BroadcastRoom(GetRoomID(), spkt, GetID());
-
 	}
 		break;
 	case GameSkill::State::Active:

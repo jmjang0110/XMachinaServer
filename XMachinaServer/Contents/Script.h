@@ -12,7 +12,9 @@ namespace ScriptInfo {
 
 		Skill,
 		DefaultEnemyBT,
-		
+		MindControlledEnemyBT,
+		DeusPhase1BT,
+
 		Phero,
 		PheroDropper,
 

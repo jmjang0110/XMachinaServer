@@ -138,6 +138,7 @@ void GameMonster::Update()
 {
 	GameObject::Update(); // Component, SCript Update
 
+	
 	mTimer += GetDeltaTime();
 	if (mTimer >= 1.f / 2.f) {
 
