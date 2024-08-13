@@ -353,8 +353,7 @@ void BattleScene::LoadScriptExporter(std::ifstream& file, SPtr<GameObject> objec
 		crateObject->SetItemState(GameItem::State::InCrate);
 		
 		SPtr<GameItem> weaponObject = std::make_shared<GameItem>();
-		//weaponObject->SetItemType(GetItemType(weaponName));
-		weaponObject->SetItemType(GetItemType("MineLauncher"));
+		weaponObject->SetItemType(GetItemType(weaponName));
 		
 		weaponObject->AddComponent<Transform>(ComponentInfo::Type::Transform);
 		weaponObject->GetTransform()->SetLocalTransform(crateObject->GetTransform()->GetLocalTransform());

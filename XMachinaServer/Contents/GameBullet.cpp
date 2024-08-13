@@ -140,7 +140,9 @@ void GameBullet::BulletUpdate(FBProtocol::ITEM_TYPE weaponType)
 	switch (weaponType)
 	{
 	case FBProtocol::ITEM_TYPE_WEAPON_H_LOOK:
-	case FBProtocol::ITEM_TYPE_WEAPON_DBMS:
+	case FBProtocol::ITEM_TYPE_WEAPON_DBMS: {
+		CheckCollision_WithHitMonsterID_Ray();
+	}
 	case FBProtocol::ITEM_TYPE_WEAPON_STUART:
 	case FBProtocol::ITEM_TYPE_WEAPON_DESCRIPTOR:
 	case FBProtocol::ITEM_TYPE_WEAPON_T_12:
@@ -228,10 +230,11 @@ bool GameBullet::CollideCheck_SplashDamage(float onHitDamage, float min_y, bool 
 	int		HitID        = -1;
 	bool	IsHit        = false;
 	Vec3	bulletPos    = GetTransform()->GetPosition();
-	float	splashDamage = 4.f;
+	float	splashDamage = 5.f;
 
 	// 바로 터진다. 
-	if (bulletPos.y <= min_y) IsHit = underGroundIsHit;
+	if (bulletPos.y <= min_y) 
+		IsHit = underGroundIsHit;
 
 	if (IsHit == true) {
 		// Check Splash Damage
@@ -255,44 +258,44 @@ bool GameBullet::CollideCheck_SplashDamage(float onHitDamage, float min_y, bool 
 		return Result;
 	}
 
-	for (auto& iter : player_VL.VL_Monsters) {
+	//for (auto& iter : player_VL.VL_Monsters) {
 
-		if (iter.second->S_GetObjectState() == Script_Stat::ObjectState::Dead) {
-			continue;
-		}
+	//	if (iter.second->S_GetObjectState() == Script_Stat::ObjectState::Dead) {
+	//		continue;
+	//	}
 
-		Vec3	monsterPos = iter.second->GetTransform()->GetSnapShot().GetPosition();
+	//	Vec3	monsterPos = iter.second->GetTransform()->GetSnapShot().GetPosition();
 
-		/* Monster(View List) <-- Collide Check --> Bullet */
-		bool IsCollide = COLLISION_MGR->CollideCheck(bulletPos, monsterPos, 0.f);
-		if (IsCollide) {
-			iter.second->OnHit(static_cast<int>(onHitDamage));
-			DeActivate();
-			LOG_MGR->Cout(iter.second->GetID(), "AIR_STRIKE HIT!\n");
-			IsHit = true;
-			HitID = iter.second->GetID();
-			Result = true;
-			break;
-		}
-	}
+	//	/* Monster(View List) <-- Collide Check --> Bullet */
+	//	bool IsCollide = COLLISION_MGR->CollideCheck(bulletPos, monsterPos, 0.f);
+	//	if (IsCollide) {
+	//		iter.second->OnHit(static_cast<int>(onHitDamage));
+	//		DeActivate();
+	//		LOG_MGR->Cout(iter.second->GetID(), "AIR_STRIKE HIT!\n");
+	//		IsHit = true;
+	//		HitID = iter.second->GetID();
+	//		Result = true;
+	//		break;
+	//	}
+	//}
 
-	if (IsHit == true) {
-		// Check Splash Damage
-		for (auto& iter : player_VL.VL_Monsters) {
-			if (iter.second->S_GetObjectState() == Script_Stat::ObjectState::Dead ||
-				iter.second->GetID() == HitID) {
-				continue;
-			}
+	//if (IsHit == true) {
+	//	// Check Splash Damage
+	//	for (auto& iter : player_VL.VL_Monsters) {
+	//		if (iter.second->S_GetObjectState() == Script_Stat::ObjectState::Dead ||
+	//			iter.second->GetID() == HitID) {
+	//			continue;
+	//		}
 
-			Vec3	monsterPos = iter.second->GetTransform()->GetSnapShot().GetPosition();
-			bool IsCollide = COLLISION_MGR->CollideCheck(bulletPos, monsterPos, splashDamage);
-			if (IsCollide) {
-				iter.second->OnHit(static_cast<int>(onHitDamage));
-				Result = true;
-				LOG_MGR->Cout(iter.second->GetID(), " monID -> AIR_STRIKE HIT! ( Splash )\n");
-			}
-		}
-	}
+	//		Vec3	monsterPos = iter.second->GetTransform()->GetSnapShot().GetPosition();
+	//		bool IsCollide = COLLISION_MGR->CollideCheck(bulletPos, monsterPos, splashDamage);
+	//		if (IsCollide) {
+	//			iter.second->OnHit(static_cast<int>(onHitDamage));
+	//			Result = true;
+	//			LOG_MGR->Cout(iter.second->GetID(), " monID -> AIR_STRIKE HIT! ( Splash )\n");
+	//		}
+	//	}
+	//}
 
 	return Result;
 }
@@ -330,19 +333,21 @@ void GameBullet::CheckCollision_WithHitMonsterID_Ray()
 	
 	if (iter != player_VL.VL_Monsters.end()) {
 		if (iter->second->S_GetObjectState() == Script_Stat::ObjectState::Dead) {
+			DeActivate();
 			return;
 		}
-
-		Ray		  R = {};
-		R.Direction = mOnShootDir;					 // Bullet Move Dir  
-		R.Position  = GetTransform()->GetPosition();  // Bullet Curr Pos  
-		ColliderSnapShot A = iter->second->GetCollider()->GetColliderSnapShot(); // Monster Collider SnapShot
 		
-		/* Monster(View List) <-- Collide Check --> Bullet */
-		bool IsCollide = COLLISION_MGR->CollideCheck(A, R, 0.f);
-		if (IsCollide) {
-			iter->second->OnHit();
-		}
+		iter->second->OnHit(5);
+		//Ray		  R = {};
+		//R.Direction = mOnShootDir;					 // Bullet Move Dir  
+		//R.Position  = GetTransform()->GetPosition();  // Bullet Curr Pos  
+		//ColliderSnapShot A = iter->second->GetCollider()->GetColliderSnapShot(); // Monster Collider SnapShot
+		//
+		///* Monster(View List) <-- Collide Check --> Bullet */
+		//bool IsCollide = COLLISION_MGR->CollideCheck(A, R, 0.f);
+		//if (IsCollide) {
+		//	iter->second->OnHit();
+		//}
 	}
 
 	DeActivate();

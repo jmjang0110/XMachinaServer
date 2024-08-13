@@ -3,7 +3,7 @@
 
 namespace GameObjectInfo
 {
-	constexpr int maxBulletsNum = 20;
+	constexpr int maxBulletsNum = 100;
 
 	enum class Type : UINT16 {
 		None,
