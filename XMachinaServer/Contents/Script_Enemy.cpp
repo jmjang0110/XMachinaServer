@@ -10,7 +10,7 @@
 #include "Script_Enemy.h"
 #include "Script_EnemyController.h"
 #include "Script_EnemyStat.h"
-#include "Script_DefaultEnemyBT.h"
+#include "Script_BehaviorTrees.h"
 #include "Script_Phero.h"
 #include "Script_PheroDropper.h"
 
@@ -116,6 +116,7 @@ void Script_Enemy::StartAttack()
 
 	auto spkt = FBS_FACTORY->SPkt_Monster_State(GetOwner()->GetID(), FBProtocol::MONSTER_BT_TYPE_ATTACK, mCurrAttackStep);
 	GAME_MGR->BroadcastRoom(mEnemyController->GetOwnerRoom()->GetID(), spkt);
+	std::cout << mCurrAttackStep << std::endl;
 }
 
 bool Script_Enemy::Attack()

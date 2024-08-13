@@ -46,11 +46,3 @@ bool Script_AdvancedCombatDroid_5::Start()
 
     return true;
 }
-
-void Script_AdvancedCombatDroid_5::Clone(SPtr<Component> other) 
-{
-    Script_Enemy::Clone(other);
-    SPtr<Script_AdvancedCombatDroid_5> otherScript = std::static_pointer_cast<Script_AdvancedCombatDroid_5>(other);
-
-}
-

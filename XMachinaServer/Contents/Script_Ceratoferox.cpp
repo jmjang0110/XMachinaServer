@@ -45,11 +45,3 @@ bool Script_Ceratoferox::Start()
 
     return true;
 }
-
-void Script_Ceratoferox::Clone(SPtr<Component> other)
-{
-    Script_Enemy::Clone(other);
-    SPtr<Script_Ceratoferox> otherScript = std::static_pointer_cast<Script_Ceratoferox>(other);
-
-}
-

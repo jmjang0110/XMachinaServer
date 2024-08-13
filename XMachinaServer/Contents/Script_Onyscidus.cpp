@@ -44,11 +44,3 @@ bool Script_Onyscidus::Start()
 
     return true;
 }
-
-void Script_Onyscidus::Clone(SPtr<Component> other)
-{
-	Script_Enemy::Clone(other);
-	SPtr<Script_Onyscidus> otherScript = std::static_pointer_cast<Script_Onyscidus>(other);
-
-}
-

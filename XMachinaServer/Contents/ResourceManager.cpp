@@ -28,7 +28,7 @@
 #include "Script_Deus_Phase_2.h"
 
 #include "Script_BehaviorTree.h"
-#include "Script_DefaultEnemyBT.h"
+#include "Script_BehaviorTrees.h"
 #include "Script_PheroDropper.h"
 
 namespace {
@@ -40,7 +40,6 @@ namespace {
 }
 
 DEFINE_SINGLETON(ResourceManager);
-
 
 void BattleScene::Load()
 {
@@ -205,96 +204,92 @@ void BattleScene::AddMonster(SPtr<GameObject> object)
 	///	¡å Script  
 	/// ---------------------------------------------------+
 	monsterObject->AddScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
+	monsterObject->AddScript<Script_PheroDropper>(ScriptInfo::Type::PheroDropper)->Init();
+
 	switch (object->GetType())
 	{
 	case GameObjectInfo::Type::Monster_Ursacetus: {
 		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_URSACETUS);
 		monsterObject->AddScript<Script_Ursacetus>(ScriptInfo::Type::Stat);
-
+		monsterObject->AddScript<Script_MindControlledEnemyBT>(ScriptInfo::Type::MindControlledEnemyBT);
 	}
 	break;
 	case GameObjectInfo::Type::Monster_Onyscidus: {
 		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_ONYSCIDUS);
 		monsterObject->AddScript<Script_Onyscidus>(ScriptInfo::Type::Stat);
-
+		monsterObject->AddScript<Script_MindControlledEnemyBT>(ScriptInfo::Type::MindControlledEnemyBT);
 	}
 	break;
 	case GameObjectInfo::Type::Monster_AdvancedCombat_5: {
 		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_ADVANCED_COMBAT_DROIR_5);
 		monsterObject->AddScript<Script_AdvancedCombatDroid_5>(ScriptInfo::Type::Stat);
-
+		monsterObject->AddScript<Script_MindControlledEnemyBT>(ScriptInfo::Type::MindControlledEnemyBT);
 	}
 	break;
 	case GameObjectInfo::Type::Monster_Anglerox: {
 		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_ANGLEROX);
 		monsterObject->AddScript<Script_Anglerox>(ScriptInfo::Type::Stat);
-
+		monsterObject->AddScript<Script_MindControlledEnemyBT>(ScriptInfo::Type::MindControlledEnemyBT);
 	}
 	break;
 	case GameObjectInfo::Type::Monster_Arack: {
 		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_ARACK);
 		monsterObject->AddScript<Script_Arack>(ScriptInfo::Type::Stat);
-
+		monsterObject->AddScript<Script_MindControlledEnemyBT>(ScriptInfo::Type::MindControlledEnemyBT);
 	}
 	break;
 	case GameObjectInfo::Type::Monster_Ceratoferox: {
 		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_CERATOFEROX);
 		monsterObject->AddScript<Script_Ceratoferox>(ScriptInfo::Type::Stat);
-
+		monsterObject->AddScript<Script_MindControlledEnemyBT>(ScriptInfo::Type::MindControlledEnemyBT);
 	}
 	break;
 	case GameObjectInfo::Type::Monster_Gobbler: {
 		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_GOBBLER);
 		monsterObject->AddScript<Script_Gobbler>(ScriptInfo::Type::Stat);
-
+		monsterObject->AddScript<Script_MindControlledEnemyBT>(ScriptInfo::Type::MindControlledEnemyBT);
 	}
 	break;
 	case GameObjectInfo::Type::Monster_LightBipedMech: {
 		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_LIGHTBIPEDMECH);
 		monsterObject->AddScript<Script_LightBipedMech>(ScriptInfo::Type::Stat);
-
+		monsterObject->AddScript<Script_MindControlledEnemyBT>(ScriptInfo::Type::MindControlledEnemyBT);
 	}
 	break;
 	case GameObjectInfo::Type::Monster_MiningMech: {
 		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_MININGMECH);
 		monsterObject->AddScript<Script_MiningMech>(ScriptInfo::Type::Stat);
-
+		monsterObject->AddScript<Script_MindControlledEnemyBT>(ScriptInfo::Type::MindControlledEnemyBT);
 	}
 	break;
 	case GameObjectInfo::Type::Monster_Rapax: {
 		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_RAPAX);
 		monsterObject->AddScript<Script_Rapax>(ScriptInfo::Type::Stat);
-
+		monsterObject->AddScript<Script_MindControlledEnemyBT>(ScriptInfo::Type::MindControlledEnemyBT);
 	}
 	break;
 	case GameObjectInfo::Type::Monster_Aranobot: {
 		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_ARANOBOT);
 		monsterObject->AddScript<Script_Aranobot>(ScriptInfo::Type::Stat);
-
+		monsterObject->AddScript<Script_MindControlledEnemyBT>(ScriptInfo::Type::MindControlledEnemyBT);
 	}
 	break;
 	case GameObjectInfo::Type::Montser_Deus_Phase_1: {
 		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_DEUS_PHASE_1);
 		monsterObject->AddScript<Script_Deus_Phase_1>(ScriptInfo::Type::Stat);
-
+		monsterObject->AddScript<Script_DeusPhase1BT>(ScriptInfo::Type::DeusPhase1BT);
 	}
 	break;
 	case GameObjectInfo::Type::Monster_Deus_Phase_2: {
 		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_DEUS_PHASE_2);
 		monsterObject->AddScript<Script_Deus_Phase_2>(ScriptInfo::Type::Stat);
-
+		monsterObject->AddScript<Script_DeusPhase1BT>(ScriptInfo::Type::DeusPhase1BT);
 	}
 	break;
-
-
 	default:
 		assert(0);
 		break;
 	}
-
-	object->AddScript<Script_DefaultEnemyBT>(ScriptInfo::Type::DefaultEnemyBT);
-	const auto& pherodropper = object->AddScript<Script_PheroDropper>(ScriptInfo::Type::PheroDropper);
-	pherodropper->Init();
 
 	mEnemies.push_back(monsterObject);
 }

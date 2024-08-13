@@ -24,7 +24,7 @@ BTNodeState MonsterTask::Attack::Evaluate()
 	Vec3 TargetPos          = transSNS.GetPosition(); 
 	
 	// 1. Target Player 를 향해 회전한다.
-	MonsterBTTask::mTransform->RotateTargetAxisY(TargetPos, 500.f);
+	//MonsterBTTask::mTransform->RotateTargetAxisY(TargetPos, 500.f);
 	mStat->UpdatePrevHP();
 	ExecuteCallback();
 

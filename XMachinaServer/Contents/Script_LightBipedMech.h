@@ -14,9 +14,5 @@ public:
 	~Script_LightBipedMech();
 
 public:
-	/// +------------------------------
-	///		  virtual function 
-	/// ------------------------------+
 	virtual bool Start() override;
-	virtual void Clone(SPtr<Component> other) override;
 };

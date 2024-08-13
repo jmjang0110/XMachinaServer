@@ -5,6 +5,10 @@
 class GameObject;
 class Script_Deus_Phase_1 : public Script_Enemy
 {
+private:
+	static constexpr float mkMeleeAttackRange = 3.f;
+	static constexpr float mkExplodeAttackRate = 30.f;
+
 protected:
 	struct ScriptDeusPhase1AttackType : AttackType {
 		static constexpr int MeleeAttack = 1;
@@ -15,18 +19,17 @@ protected:
 	};
 
 public:
-	Script_Deus_Phase_1();
 	Script_Deus_Phase_1(SPtr<GameObject> owner, ScriptInfo::Type type);
-	virtual ~Script_Deus_Phase_1();
+	virtual ~Script_Deus_Phase_1() = default;
 
 public:
-	/// +------------------------------
-	///		  virtual function 
-	/// ------------------------------+
 	virtual bool Start() override;
-	virtual void Clone(SPtr<Component> other);
+	virtual void StartAttack() override;
 
 protected:
-	void SmashAttackCallback();
-	void AttackEndCallback();
+	void MeleeAttack();
+	void RangeAttack();
+
+	//void SmashAttackCallback();
+	//void AttackEndCallback();
 };

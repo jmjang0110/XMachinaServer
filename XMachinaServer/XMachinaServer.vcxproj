@@ -230,7 +230,7 @@
     <ClInclude Include="Contents\Script.h" />
     <ClInclude Include="Contents\Script_AdvancedCombatDroid_5.h" />
     <ClInclude Include="Contents\Script_BehaviorTree.h" />
-    <ClInclude Include="Contents\Script_DefaultEnemyBT.h" />
+    <ClInclude Include="Contents\Script_BehaviorTrees.h" />
     <ClInclude Include="Contents\Script_Enemy.h" />
     <ClInclude Include="Contents\Script_EnemyController.h" />
     <ClInclude Include="Contents\Script_EnemyStat.h" />
@@ -354,7 +354,7 @@
     <ClCompile Include="Contents\Script.cpp" />
     <ClCompile Include="Contents\Script_AdvancedCombatDroid_5.cpp" />
     <ClCompile Include="Contents\Script_BehaviorTree.cpp" />
-    <ClCompile Include="Contents\Script_DefaultEnemyBT.cpp" />
+    <ClCompile Include="Contents\Script_BehaviorTrees.cpp" />
     <ClCompile Include="Contents\Script_Enemy.cpp" />
     <ClCompile Include="Contents\Script_EnemyController.cpp" />
     <ClCompile Include="Contents\Script_EnemyStat.cpp" />

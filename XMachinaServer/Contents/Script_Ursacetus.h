@@ -23,13 +23,6 @@ public:
 	virtual ~Script_Ursacetus();
 
 public:
-	/// +------------------------------
-	///		  virtual function 
-	/// ------------------------------+
-	virtual void Clone(SPtr<Component> other) ;
-	/// +------------------------------
-	///		Stat :  virtual function 
-	/// ------------------------------+
 	virtual bool Start() override;
 
 protected:
