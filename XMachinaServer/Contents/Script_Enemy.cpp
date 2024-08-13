@@ -116,7 +116,6 @@ void Script_Enemy::StartAttack()
 
 	auto spkt = FBS_FACTORY->SPkt_Monster_State(GetOwner()->GetID(), FBProtocol::MONSTER_BT_TYPE_ATTACK, mCurrAttackStep);
 	GAME_MGR->BroadcastRoom(mEnemyController->GetOwnerRoom()->GetID(), spkt);
-	std::cout << mCurrAttackStep << std::endl;
 }
 
 bool Script_Enemy::Attack()

@@ -60,7 +60,6 @@ void Script_Deus_Phase_2::StartAttack()
     mEnemyController->RemoveAllAnimation();
     mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK);
     GetOwner()->GetAnimation()->GetController()->SetValue("Attack", mCurrAttackStep);
-    std::cout << mCurrAttackStep << std::endl;
 
     auto spkt = FBS_FACTORY->SPkt_Monster_State(GetOwner()->GetID(), FBProtocol::MONSTER_BT_TYPE_ATTACK, mCurrAttackStep);
     GAME_MGR->BroadcastRoom(mEnemyController->GetOwnerRoom()->GetID(), spkt);

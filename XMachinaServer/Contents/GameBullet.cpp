@@ -48,9 +48,6 @@ void GameBullet::Update()
 
 	Vec3 pos = GetTransform()->GetPosition();
 
-	LOG_MGR->Cout("[", GetID(), "] : pos - ", pos.x, " ,", pos.y, ", ", pos.z, "\n");
-
-
 	// Update By Weapon Type 
 	FBProtocol::ITEM_TYPE weaponType = GetWeaponType();
 	BulletUpdate(weaponType);
