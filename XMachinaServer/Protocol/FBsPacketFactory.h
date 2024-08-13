@@ -66,6 +66,7 @@ private:
 	/* BULLET */
 	static bool Process_CPkt_Bullet_OnShoot(SPtr_Session session, const FBProtocol::CPkt_Bullet_OnShoot& pkt);
 	static bool Process_CPkt_Bullet_OnHitEnemy(SPtr_Session session, const FBProtocol::CPkt_Bullet_OnHitEnemy& pkt);
+	static bool Process_CPkt_Bullet_OnHitExpEnemy(SPtr_Session session, const FBProtocol::CPkt_Bullet_OnHitExpEnemy& pkt);
 	static bool Process_CPkt_Bullet_OnCollision(SPtr_Session session, const FBProtocol::CPkt_Bullet_OnCollision& pkt);
 
 	/* ITEM */

@@ -172,7 +172,6 @@ void GameBullet::BulletUpdate_Air_Strike()
 {
 	// Bullet Move ! 
 	float deltaTime = GetDeltaTime();
-	mCurrLifeTime += deltaTime;
 	mCurrMoveDist = deltaTime * mSpeed;
 	GetTransform()->MoveForward(mCurrMoveDist);
 
@@ -244,7 +243,7 @@ bool GameBullet::CollideCheck_SplashDamage(float onHitDamage, float min_y, bool 
 			Vec3 monsterPos = iter.second->GetTransform()->GetSnapShot().GetPosition();
 			bool IsCollide = COLLISION_MGR->CollideCheck(bulletPos, monsterPos, splashDamage);
 			if (IsCollide) {
-				iter.second->OnHit(static_cast<int>(onHitDamage));
+				iter.second->OnHit(static_cast<int >(onHitDamage));
 
 				LOG_MGR->Cout(iter.second->GetID(), "AIR_STRIKE HIT! ( Splash )\n");
 				IsHit = true;

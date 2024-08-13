@@ -91,6 +91,8 @@ public:
 public:
 	int		OnShoot(Vec3& pos, Vec3& ray);
 	int		OnHitEnemy(int32_t monster_id, Vec3& pos, Vec3& ray);
+	int OnHitExpEnemy(int32_t monster_id);
+
 	bool	OnSkill(FBProtocol::PLAYER_SKILL_TYPE type, SPtr<GameMonster> mindControlledMonster);
 	void	Exit();
 	bool	IsExit() {  bool isExit = mSnapShot.IsExit; return isExit; };

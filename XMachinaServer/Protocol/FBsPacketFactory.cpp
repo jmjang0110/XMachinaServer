@@ -187,6 +187,13 @@ bool FBsPacketFactory::ProcessFBsPacket(SPtr_Session session, BYTE* packetBuf, U
 		Process_CPkt_Bullet_OnHitEnemy(session, *packet);
 		break;
 	}
+	case FBsProtocolID::CPkt_Bullet_OnHitExpEnemy:
+	{
+		const FBProtocol::CPkt_Bullet_OnHitExpEnemy* packet = flatbuffers::GetRoot<FBProtocol::CPkt_Bullet_OnHitExpEnemy>(DataPtr);
+		if (!packet) return false;
+		Process_CPkt_Bullet_OnHitExpEnemy(session, *packet);
+		break;
+	}
 	case FBsProtocolID::CPkt_Bullet_OnCollision:
 	{
 		const FBProtocol::CPkt_Bullet_OnCollision* packet = flatbuffers::GetRoot<FBProtocol::CPkt_Bullet_OnCollision>(DataPtr);
@@ -656,6 +663,19 @@ bool FBsPacketFactory::Process_CPkt_Bullet_OnHitEnemy(SPtr_Session session, cons
 	int  bullet_id		= gameSession->GetPlayer()->OnHitEnemy(monster_id, fire_pos, ray); // PQCS -> Bullet Update Start ( Worker Thread  에게 업데이트를 떠넘긴다 ) 
 
 	return true;
+}
+
+bool FBsPacketFactory::Process_CPkt_Bullet_OnHitExpEnemy(SPtr_Session session, const FBProtocol::CPkt_Bullet_OnHitExpEnemy& pkt)
+{
+	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
+
+	int monster_id  = pkt.monster_id();
+	
+	
+	gameSession->GetPlayer()->OnHitExpEnemy(monster_id); // PQCS -> Bullet Update Start ( Worker Thread  에게 업데이트를 떠넘긴다 ) 
+
+
+	return false;
 }
 
 bool FBsPacketFactory::Process_CPkt_Bullet_OnCollision(SPtr_Session session, const FBProtocol::CPkt_Bullet_OnCollision& pkt)

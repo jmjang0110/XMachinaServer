@@ -234,6 +234,18 @@ int GamePlayer::OnHitEnemy(int32_t monster_id, Vec3& pos, Vec3& ray)
 	return -1;
 }
 
+int GamePlayer::OnHitExpEnemy(int32_t monster_id)
+{
+	auto vlist = S_GetViewList();
+	auto monster = vlist.VL_Monsters.find(monster_id);
+
+	if (monster->second) {
+		monster->second->OnHit(10);
+	}
+
+	return 0;
+}
+
 bool GamePlayer::OnSkill(FBProtocol::PLAYER_SKILL_TYPE type, SPtr<GameMonster> mindControlledMonster)
 {
 	GameSkill::State skillState = mSkills[type]->GetState();

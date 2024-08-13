@@ -416,19 +416,17 @@ table SPkt_Bullet_OnHitEnemy
 }
 
 // +------------------------
-//	   BULLET PLANT
+//	   BULLET ON Explode   
 // ------------------------+
 
-table CPkt_Bullet_Plant
+table CPkt_Bullet_OnHitExpEnemy
 {
-	
+	monster_id	: int;
 }
 
-table SPkt_Bullet_Plant
+table SPkt_Bullet_OnHitExpEnemy
 {
-
 }
-
 
 // +------------------------
 //	   BULLET ON COLLISION   
