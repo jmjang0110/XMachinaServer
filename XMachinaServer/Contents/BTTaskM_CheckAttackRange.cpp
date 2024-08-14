@@ -36,12 +36,16 @@ BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 	SPtr<GameObject> target = mEnemyController->GetTarget();
 	if (auto player = std::dynamic_pointer_cast<GamePlayer>(target)) {
 		if (player->IsExit() == true) {
+			mEnemyController->RemoveAllAnimation();
+			mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_IDLE);
 			mEnemyController->SetTarget(nullptr);
 			return BTNodeState::Failure;
 		}
 
 		GameSkill::State IsCloakingOn = player->GetSkillState(FBProtocol::PLAYER_SKILL_TYPE_CLOACKING);
 		if (IsCloakingOn == GameSkill::State::Active) {
+			mEnemyController->RemoveAllAnimation();
+			mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_IDLE);
 			mEnemyController->SetTarget(nullptr);
 			return BTNodeState::Failure;
 		}

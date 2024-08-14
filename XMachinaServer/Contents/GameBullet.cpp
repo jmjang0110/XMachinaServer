@@ -139,20 +139,21 @@ void GameBullet::BulletUpdate(FBProtocol::ITEM_TYPE weaponType)
 {
 	switch (weaponType)
 	{
+	case FBProtocol::ITEM_TYPE_WEAPON_DBMS:
+		CheckCollision_WithHitMonsterID_Ray(5);
+		break;
+	case FBProtocol::ITEM_TYPE_WEAPON_PIPELINE:
+		CheckCollision_WithHitMonsterID_Ray(10);
+		break;
 	case FBProtocol::ITEM_TYPE_WEAPON_H_LOOK:
-	case FBProtocol::ITEM_TYPE_WEAPON_DBMS: {
-		CheckCollision_WithHitMonsterID_Ray();
-	}
 	case FBProtocol::ITEM_TYPE_WEAPON_STUART:
 	case FBProtocol::ITEM_TYPE_WEAPON_DESCRIPTOR:
 	case FBProtocol::ITEM_TYPE_WEAPON_T_12:
-	case FBProtocol::ITEM_TYPE_WEAPON_PIPELINE:
+	case FBProtocol::ITEM_TYPE_WEAPON_SKYLINE:
+		CheckCollision_WithHitMonsterID_Ray(1);
 		break;
 	case FBProtocol::ITEM_TYPE_WEAPON_MINE_LAUNCHER:
 		BulletUpdate_SpiderMine();
-		break;
-	case FBProtocol::ITEM_TYPE_WEAPON_SKYLINE:
-		CheckCollision_WithHitMonsterID_Ray();
 		break;
 	case FBProtocol::ITEM_TYPE_WEAPON_BURNOUT:// Missile
 		CheckCollision_WithPlayerViewList();
@@ -326,7 +327,7 @@ void GameBullet::CheckCollision_WithPlayerViewList()
 
 }
 
-void GameBullet::CheckCollision_WithHitMonsterID_Ray()
+void GameBullet::CheckCollision_WithHitMonsterID_Ray(int hitcount)
 {
 	ViewList player_VL = mOwnerPlayer->S_GetViewList(); // Lock : Player View List 
 	const auto& iter = player_VL.VL_Monsters.find(static_cast<UINT32>(mHitMonsterID));
@@ -337,7 +338,7 @@ void GameBullet::CheckCollision_WithHitMonsterID_Ray()
 			return;
 		}
 		
-		iter->second->OnHit(5);
+		iter->second->OnHit(hitcount);
 		//Ray		  R = {};
 		//R.Direction = mOnShootDir;					 // Bullet Move Dir  
 		//R.Position  = GetTransform()->GetPosition();  // Bullet Curr Pos  

@@ -33,6 +33,8 @@ BTNodeState MonsterTask::CheckDetectionRange::Evaluate()
 
 	SPtr<GameObject> target = FindDetectionPlayer();
 	if (nullptr == target) {
+		mEnemyController->RemoveAllAnimation();
+		mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_IDLE);
 		mEnemyController->SetTarget(nullptr);
 		return BTNodeState::Failure;
 	}
@@ -42,6 +44,8 @@ BTNodeState MonsterTask::CheckDetectionRange::Evaluate()
 		GameSkill::State IsCloakingOn = player->GetSkillState(FBProtocol::PLAYER_SKILL_TYPE_CLOACKING);
 		if (IsCloakingOn == GameSkill::State::Active) {
 			mEnemyController->SetTarget(nullptr);
+			mEnemyController->RemoveAllAnimation();
+			mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_IDLE);
 			return BTNodeState::Failure;
 		}
 	}

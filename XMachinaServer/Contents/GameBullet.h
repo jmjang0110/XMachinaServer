@@ -76,7 +76,7 @@ public:
 	void BulletInit(FBProtocol::ITEM_TYPE weaponType);
 	void BulletUpdate(FBProtocol::ITEM_TYPE weaponType);
 	void CheckCollision_WithPlayerViewList();
-	void CheckCollision_WithHitMonsterID_Ray();
+	void CheckCollision_WithHitMonsterID_Ray(int hitcount);
 	bool CheckCollision_WithBuildings();
 
 	void Plant();

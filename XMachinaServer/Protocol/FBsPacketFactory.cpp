@@ -633,7 +633,7 @@ bool FBsPacketFactory::Process_CPkt_Bullet_OnShoot(SPtr_Session session, const F
 	case FBProtocol::ITEM_TYPE_WEAPON_MINE_LAUNCHER:
 	case FBProtocol::ITEM_TYPE_WEAPON_AIR_STRIKE: {
 		// server 에서 simulation 한다. 
-		gameSession->GetPlayer()->OnShoot(firePos, ray);
+		//gameSession->GetPlayer()->OnShoot(firePos, ray);
 	}
 		break;
 	default:
