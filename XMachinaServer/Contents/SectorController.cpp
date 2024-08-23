@@ -4,15 +4,18 @@
 #include "ResourceManager.h"
 #include "HeightMapImage.h"
 #include "Sector.h"
+#include "ViewList.h"
 
 #include "GameRoom.h"
 #include "NPCController.h"
-#include "GameMonster.h"
 #include "GameObject.h"
+#include "Collider.h"
 #include "Transform.h"
 #include "PlayerController.h"
 
 #include "Script_Building.h"
+#include "Script_Player.h"
+
 
 Coordinate SectorController::Total_SectorSize = {};
 Coordinate SectorController::Each_SectorSize  = {};
@@ -35,7 +38,7 @@ SectorController::~SectorController()
 }
 
 
-bool SectorController::Init(SPtr_GameRoom owner)
+bool SectorController::Init(SPtr<GameRoom> owner)
 {
     mOwnerRoom                 = owner;
 
@@ -65,13 +68,14 @@ bool SectorController::Init(SPtr_GameRoom owner)
     ///      BUILDINGS 
     /// -------------------------------------------------------------+
     // Resource 에 있는 Buildings를 섹터에 따라 분리한다. ( 이때 Resource의 포인터만을 저장. ) Buildings는 움직이거나 하면 안됨! 바꾸는건 ResourceMAnager 에서...
-    const std::vector<SPtr_GameObject>* BuildingResources = RESOURCE_MGR->GetBattleScene()->GetBuildings();
+    const std::vector<SPtr<GameObject>>* BuildingResources = RESOURCE_MGR->GetBattleScene()->GetBuildings();
     for (int i = 0; i < BuildingResources->size(); ++i) {
         
         SPtr<GameObject> building            = (*BuildingResources)[i]; // 원본 그대로 가져온다. ( 건물은 Read Only ) 
         Vec3             Pos                 = building->GetTransform()->GetPosition();
         Coordinate       SectorIndex         = SectorController::GetSectorIdxByPosition(Pos);
-        building->GetScript<Script_Building>(ScriptInfo::Type::Building)->SetSectorIdx(SectorIndex);
+
+        building->GetScriptEntity<Script_Building>()->SetSectorIdx(SectorIndex);
         mSectors[SectorIndex.z][SectorIndex.x]->AddBuilding(building->GetID(), building);
     }
 
@@ -80,7 +84,7 @@ bool SectorController::Init(SPtr_GameRoom owner)
 }
 
 
-ViewList SectorController::UpdateViewList(GamePlayer* player, Vec3 player_pos, float viewRange_radius)
+ViewList SectorController::UpdateViewList(GameObject* player, Vec3 player_pos, float viewRange_radius)
 {
     ViewList vList;
 
@@ -131,8 +135,8 @@ ViewList SectorController::UpdateViewList(GamePlayer* player, Vec3 player_pos, f
 
 
     //LOG_MGR->Cout("Sector Size : ", mSectorSize.z, mSectorSize.x, "  -- curSectorIdx : ", " z :", curSectorIdx.z, " x : ", curSectorIdx.x, '\n');
-    std::vector<SPtr<GameMonster>> AllView_Monsters;
-    std::vector<SPtr<GamePlayer>> AllView_Players;
+    std::vector<SPtr<GameObject>> AllView_Monsters;
+    std::vector<SPtr<GameObject>> AllView_Players;
 
     for (int i = 0; i < sectors.size(); ++i) {
         if (sectors[i].x == -1)
@@ -140,8 +144,8 @@ ViewList SectorController::UpdateViewList(GamePlayer* player, Vec3 player_pos, f
 
         // 해당 섹터에서 Monster 와 Player 들을 확인한다.
         //LOG_MGR->Cout(player->GetID(), " player : -- SECTORS IDX : ", " z :", sectors[i].z, " x : ", sectors[i].x, '\n');
-        std::vector<SPtr<GameMonster>> VL_Monsters = mSectors[sectors[i].z][sectors[i].x]->GetMonstersInViewRange(player_pos, viewRange_radius);
-        std::vector<SPtr<GamePlayer>>  VL_Players  = mOwnerRoom->GetPlayerController()->GetPlayersInViewRange(player_pos, viewRange_radius);
+        std::vector<SPtr<GameObject>> VL_Monsters = mSectors[sectors[i].z][sectors[i].x]->GetMonstersInViewRange(player_pos, viewRange_radius);
+        std::vector<SPtr<GameObject>>  VL_Players  = mOwnerRoom->GetPlayerController()->GetPlayersInViewRange(player_pos, viewRange_radius);
 
         for (int i = 0; i < VL_Monsters.size(); ++i) {
             AllView_Monsters.push_back(VL_Monsters[i]);
@@ -153,7 +157,7 @@ ViewList SectorController::UpdateViewList(GamePlayer* player, Vec3 player_pos, f
      // LOG_MGR->Cout("--------------------------------------------\n");
 
 
-    player->UpdateViewList(AllView_Players, AllView_Monsters);
+    player->GetScriptEntity<Script_Player>()->UpdateViewList(AllView_Players, AllView_Monsters);
 
  
     return vList;
@@ -212,8 +216,8 @@ ViewList SectorController::GetViewList(Vec3 pos, float viewRange_radius, bool Do
         if (sectors[i].x == -1)
             continue;
 
-        std::vector<SPtr<GameMonster>> VL_Monsters = mSectors[sectors[i].z][sectors[i].x]->GetMonstersInViewRange(pos, viewRange_radius);
-        std::vector<SPtr<GamePlayer>>  VL_Players = mOwnerRoom->GetPlayerController()->GetPlayersInViewRange(pos, viewRange_radius);
+        std::vector<SPtr<GameObject>> VL_Monsters = mSectors[sectors[i].z][sectors[i].x]->GetMonstersInViewRange(pos, viewRange_radius);
+        std::vector<SPtr<GameObject>>  VL_Players = mOwnerRoom->GetPlayerController()->GetPlayersInViewRange(pos, viewRange_radius);
 
         for (int i = 0; i < VL_Monsters.size(); ++i) {
             vList.TryInsertMonster(VL_Monsters[i]->GetID(), VL_Monsters[i], DoActivate);
@@ -243,15 +247,15 @@ SectorInfo::Type SectorController::GetSectorType(Coordinate idx)
     return mSectors[idx.z][idx.x]->GetSectorType();
 }
 
-bool SectorController::AddMonsterInSector(Coordinate sectorIdx, int monster_id , SPtr<GameMonster> monster)
+bool SectorController::AddMonsterInSector(Coordinate sectorIdx, int monster_id , SPtr<GameObject> monster)
 {
     return mSectors[sectorIdx.z][sectorIdx.x]->AddMonster(monster_id, monster);
 
 }
 
-float SectorController::CollideCheckRay_MinimumDist(Coordinate sectorIdx, const Ray& ray,GameObjectInfo::Type targetType) const
+float SectorController::CollideCheckRay_MinimumDist(Coordinate sectorIdx, const Ray& ray) const
 {
-   return mSectors[sectorIdx.z][sectorIdx.x]->CollideCheckRay_MinimumDist(ray, targetType);
+   return mSectors[sectorIdx.z][sectorIdx.x]->CollideCheckRay_MinimumDist(ray);
 }
 
 bool SectorController::CollideCheck_WithBuildings(Vec3& pos, ColliderSnapShot& other)

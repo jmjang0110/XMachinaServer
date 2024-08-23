@@ -1,11 +1,16 @@
 #include "pch.h"
 #include "BTTaskM_CheckMindControlBTToEnd.h"
 #include "BTTask.h"
+#include "BTNode.h"
+
+#include "Script_Enemy.h"
+#include "Script_EnemyController.h"
+
+
 
 BTNodeState MonsterTask::CheckMindControlBTToEnd::Evaluate()
 {
-	bool IsMindControlled = mRoot->GetEnemyController()->GetOwnerMonster()->GetIsMindControlled();
-
+	bool IsMindControlled = mEnemyController->IsMindControlled();
 	if (IsMindControlled) {
 		return BTNodeState::Success;
 	}
@@ -13,7 +18,7 @@ BTNodeState MonsterTask::CheckMindControlBTToEnd::Evaluate()
 	return BTNodeState::Failure;
 }
 
-MonsterTask::CheckMindControlBTToEnd::CheckMindControlBTToEnd(SPtr_GameObject owner, std::function<void()> callback)
+MonsterTask::CheckMindControlBTToEnd::CheckMindControlBTToEnd(SPtr<GameObject> owner, std::function<void()> callback)
 	: MonsterBTTask(owner, BTTaskType::MonT_CheckMindControlBT, callback)
 {
 }

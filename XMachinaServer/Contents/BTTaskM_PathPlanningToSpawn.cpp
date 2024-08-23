@@ -1,16 +1,18 @@
 #include "pch.h"
 #include "BTTaskM_PathPlanningToSpawn.h"
-
 #include "BTTask.h"
-#include "Transform.h"
-#include "GameObject.h"
 #include "BTNode.h"
-#include "Script_Player.h"
-#include "ResourceManager.h"
 
-#include "Script_AdvancedCombatDroid_5.h"
-#include "Script_Onyscidus.h"
-#include "Script_Ursacetus.h"
+#include "ResourceManager.h"
+#include "GameObject.h"
+#include "Transform.h"
+#include "Animation.h"
+#include "Rigidbody.h"
+#include "Collider.h"
+
+#include "Script_Player.h"
+#include "Script_Enemy.h"
+#include "Script_EnemyController.h"
 
 /// +-------------------------------------------------------------------------
 ///	> ▶▶▶ Task Path Planning To Spawn 
@@ -24,7 +26,7 @@ BTNodeState MonsterTask::PathPlanningToSapwn::Evaluate()
 
 
 		// 시작 지점과 목적지 위치 값을 타일 고유 인덱스로 변환
-		Path::Pos start = RESOURCE_MGR->GetTileMap()->GetTileUniqueIndexFromPos(GetOwner()->GetTransform()->GetPosition());
+		Path::Pos start = RESOURCE_MGR->GetTileMap()->GetTileUniqueIndexFromPos(mOwner->GetTransform()->GetPosition());
 		Path::Pos dest  = RESOURCE_MGR->GetTileMap()->GetTileUniqueIndexFromPos(mSpawnPos);
 
 		// 경로 계획에 실패했다면 Failure를 호출하여 다음 노드로 넘어감 b
@@ -37,7 +39,7 @@ BTNodeState MonsterTask::PathPlanningToSapwn::Evaluate()
 }
 
 
-MonsterTask::PathPlanningToSapwn::PathPlanningToSapwn(SPtr_GameObject owner, std::function<void()> callback)
+MonsterTask::PathPlanningToSapwn::PathPlanningToSapwn(SPtr<GameObject> owner, std::function<void()> callback)
 	: PathPlanning_AStar(owner, BTTaskType::MonT_PathPlanningToSpawn, callback)
 {
 	mSpawnPos = owner->GetTransform()->GetPosition();

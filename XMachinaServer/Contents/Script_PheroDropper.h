@@ -1,8 +1,8 @@
 #pragma once
 #include "Script.h"
 
-class GamePhero;
-
+class Component;
+class GameObject;
 namespace PheroDropInfo {
 	constexpr int Max_Phero_Drop_Num = 30;
 	constexpr int Min_Phero_Drop_Num = 5;
@@ -13,46 +13,33 @@ namespace PheroDropInfo {
 class GameObject;
 class Script_PheroDropper : public Script
 {
-public:
-
 private:
-    std::vector<SPtr<GamePhero>> mPheros{};
+	std::string						mPherosString = {};
+	std::vector<SPtr<GameObject>>	mPheros       = {};
 
 public:
 	Script_PheroDropper();
-	Script_PheroDropper(SPtr<GameObject> owner, ScriptInfo::Type type);
-	~Script_PheroDropper();
+	Script_PheroDropper(SPtr<GameObject> owner);
+	virtual ~Script_PheroDropper();
 
 public:
-	/// +------------------------------
-	///		  virtual function 
-	/// ------------------------------+
-	virtual void Clone(SPtr<Component> other) ;
 
-	virtual void Activate(); 
-	virtual void DeActivate();
-
-	virtual bool WakeUp();
-	virtual bool Start();
-	virtual bool Update();
-	virtual void OnDestroy();
+	virtual SPtr<Component> Clone(SPtr<Component> target);
+	virtual void Clone(SPtr<GameObject> target);
 
 
+public:
 	void Init();
+	int	CalculatePercentage(int totalNumber, double percentage);
 
-public:
-	void OnCollisionWithPlayer(int PlayerID);
-
-	int CalculatePercentage(int totalNumber, double percentage);
-	const std::vector<SPtr<GamePhero>>& GetPheros()  {return mPheros;}
+	/// ----------------- Get -----------------
+	const std::vector<SPtr<GameObject>>& GetPheros()  {return mPheros;}
+	std::string GetPherosString() { return mPherosString; }
+	/// ----------------- Set -----------------
 	void SetPherosPos(Vec3& monsterDeadPoint);
 
 private:
-
-    void Shuffle_OdffsetDistIndexList();
-	int CreateUniquePheroID(int monster_id, int phero_index);
-
-
-
+    void	Shuffle_OdffsetDistIndexList();
+	int		CreateUniquePheroID(int monster_id, int phero_index);
 };
 

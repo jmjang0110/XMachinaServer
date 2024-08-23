@@ -1,13 +1,23 @@
 #include "pch.h"
 #include "Script_Ceratoferox.h"
+#include "GameObject.h"
+#include "Animation.h"
+#include "Transform.h"
+#include "Collider.h"
+#include "Rigidbody.h"
+#include "Script_BehaviorTrees.h"
 
 Script_Ceratoferox::Script_Ceratoferox()
 {
+    mType = FBProtocol::MONSTER_TYPE_CERATOFEROX;
+
 }
 
-Script_Ceratoferox::Script_Ceratoferox(SPtr<GameObject> owner, ScriptInfo::Type type)
-    :Script_Enemy(owner, type)
+Script_Ceratoferox::Script_Ceratoferox(SPtr<GameObject> owner)
+    :Script_Enemy(owner)
 {
+    mType = FBProtocol::MONSTER_TYPE_CERATOFEROX;
+
     Script_EnemyStat::SetID(owner->GetID());
 
     Script_EnemyStat::SetStat_EnemyLevel(3);
@@ -28,20 +38,44 @@ Script_Ceratoferox::Script_Ceratoferox(SPtr<GameObject> owner, ScriptInfo::Type 
 
 
     owner->SetName("Ceratoferox");
-
 }
 
 Script_Ceratoferox::~Script_Ceratoferox()
 {
 }
 
-bool Script_Ceratoferox::Start()
+SPtr<Component> Script_Ceratoferox::Clone(SPtr<Component> target)
 {
-    if (!Script_Enemy::Start()) {
-        return false;
+    // Try to cast the target to Script_Anglerox
+    auto clonedScript = std::dynamic_pointer_cast<Script_Ceratoferox>(target);
+    if (clonedScript)
+    {
+        // Call the base class Clone method first
+        Script_Enemy::Clone(clonedScript);
+        return clonedScript;
     }
+    else
+    {
+        std::cout << "Clone failed: target is not of type Script_Ceratoferox" << std::endl;
+        return nullptr;
+    }
+}
 
-    GetOwner()->GetAnimation()->GetController()->FindMotionByName(GetStat_Attack1AnimName())->AddCallback(std::bind(&Script_Ceratoferox::AttackCallback, this), 34);
+void Script_Ceratoferox::Clone(SPtr<GameObject> target)
+{
+    // Add a new Script_Anglerox instance to the GameObject
+    auto clonedScript = target->SetScriptEntity<Script_Ceratoferox>();
+    // Clone the current script into the new script
+    this->Clone(std::dynamic_pointer_cast<Script_Ceratoferox>(clonedScript));
 
-    return true;
+    clonedScript->SetOwner(target);
+}
+
+void Script_Ceratoferox::Start()
+{
+    Script_Enemy::Start();
+
+    auto AnimController = OwnerAnimation()->GetController();
+    AnimController->FindMotionByName(GetStat_Attack1AnimName())->AddCallback(std::bind(&Script_Ceratoferox::AttackCallback, this), 34);
+
 }

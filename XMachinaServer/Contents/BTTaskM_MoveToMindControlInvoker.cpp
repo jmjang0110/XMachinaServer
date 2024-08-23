@@ -4,8 +4,16 @@
 #include "SectorController.h"
 #include "NPCController.h"
 #include "GameRoom.h"
-#include "TimeManager.h"
-#include "ServerLib/ThreadManager.h"
+
+#include "GameObject.h"
+#include "Animation.h"
+#include "Transform.h"
+#include "Collider.h"
+#include "Rigidbody.h"
+
+
+#include "Script_EnemyController.h"
+#include "Script_Enemy.h"
 
 
 BTNodeState MonsterTask::MoveToMindControlInvoker::Evaluate()
@@ -97,7 +105,7 @@ BTNodeState MonsterTask::MoveToMindControlInvoker::Evaluate()
 		MonsterBTTask::mAnimation->GetController()->SetValue("Return", false);
 
 		MonsterBTTask::mTransform->RotateTargetAxisY(targetTransSnapShot.GetPosition(), 500.f);
-		MonsterBTTask::mTransform->Translate(MonsterBTTask::mTransform->GetLook(), mStat->GetStat_MoveSpeed() * GetOwner()->GetDeltaTime());
+		MonsterBTTask::mTransform->Translate(MonsterBTTask::mTransform->GetLook(), mStat->GetStat_MoveSpeed() * mOwner->DeltaTime());
 	}
 
 	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_MOVE_TO_TARGET);
@@ -121,7 +129,7 @@ bool MonsterTask::MoveToMindControlInvoker::isXInterceptPositive(const Vec3& To,
 	return xIntercept > 0;
 }
 
-MonsterTask::MoveToMindControlInvoker::MoveToMindControlInvoker(SPtr_GameObject owner, std::function<void()> callback)
+MonsterTask::MoveToMindControlInvoker::MoveToMindControlInvoker(SPtr<GameObject> owner, std::function<void()> callback)
 	: MonsterBTTask(owner, BTTaskType::MonT_MoveToMindControlInvoker, callback)
 
 {

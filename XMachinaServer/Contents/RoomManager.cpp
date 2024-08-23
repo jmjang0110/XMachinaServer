@@ -1,18 +1,19 @@
 #include "pch.h"
-#include "GameManager.h"
+#include "RoomManager.h"
 #include "GameRoom.h"
+#include "GameObject.h"
 #include "Framework.h"
 #include "ServerLib/NetworkInterface.h"
 #include "ServerLib/ServerNetwork.h"
 
-DEFINE_SINGLETON(GameManager);
+DEFINE_SINGLETON(RoomManager);
 
-GameManager::GameManager()
+RoomManager::RoomManager()
 {
 
 }
 
-GameManager::~GameManager()
+RoomManager::~RoomManager()
 {
 	for (UINT32 i = 0; i < mRooms.size(); ++i) {
 		mRooms[i] = nullptr;
@@ -20,7 +21,7 @@ GameManager::~GameManager()
 	mRooms.clear();
 }
 
-void GameManager::Init()
+void RoomManager::Init()
 {
 	mRoomMaxCnt = MAX_SESSION_NUM / static_cast<UINT32>(RoomInfo::MaxSessionSize);
 
@@ -28,7 +29,7 @@ void GameManager::Init()
 	auto start = std::chrono::high_resolution_clock::now();
 
 	for (UINT32 i = 0; i < mRoomMaxCnt; ++i) {
-		SPtr_GameRoom room = std::make_shared<GameRoom>();
+		SPtr<GameRoom> room = std::make_shared<GameRoom>();
 		room->Init(i);
 		mRooms.push_back(room);
 	}
@@ -36,23 +37,19 @@ void GameManager::Init()
 
 	auto end = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> duration = end - start;
-	std::cout << "GameManager - Room Init " << duration.count() << " seconds" << std::endl;
+	std::cout << "RoomManager - Room Init " << duration.count() << " seconds" << std::endl;
 
 }
 
 
-bool GameManager::EnterInRoom(SPtr_GamePlayer player, int roomid)
+bool RoomManager::EnterInRoom(SPtr<GameObject> player, int roomid)
 {
 	// ENTER IN ANY POSSIBLE ROOM 
-	//mSRWLock.LockWrite();
-
 	if (roomid == -1) {
-		for (UINT32 i = 0; i < mRoomMaxCnt; ++i) {
+		for (UINT32 i = 0; i < mRooms.size(); ++i) {
 			bool checkin = mRooms[i].get()->IsPossibleToEnter();
 			if (checkin) {
 				mRooms[i].get()->EnterPlayer(player);
-
-				//mSRWLock.UnlockWrite();
 				return true;
 			}
 		}
@@ -63,55 +60,39 @@ bool GameManager::EnterInRoom(SPtr_GamePlayer player, int roomid)
 		bool checkin = mRooms[roomid].get()->IsPossibleToEnter();
 		if (checkin) {
 			mRooms[roomid].get()->EnterPlayer(player);
-			//mSRWLock.UnlockWrite();
 			return true;
 
 		}
 	}
-
-	//mSRWLock.UnlockWrite();
 	return false;
 }
 
-bool GameManager::ExitInRoom(SPtr_GamePlayer player)
+bool RoomManager::ExitInRoom(SPtr<GameObject> player)
 {
-	//mSRWLock.LockWrite();
-
-	mRooms[player->GetRoomID()].get()->ExitPlayer(player->GetID());
-
-	//mSRWLock.UnlockWrite();
-
+	mRooms[player->GetOwnerRoom()->GetID()].get()->ExitPlayer(player->GetID());
 	return true;
 }
 
-void GameManager::BroadcastRoom(int roomid, SPtr_SendPktBuf& pkt, int exceptsessionid)
+void RoomManager::BroadcastRoom(int roomid, SPtr_SendPktBuf& pkt, int exceptsessionid)
 {
-	//mSRWLock.LockRead();
-
 	mRooms[roomid].get()->Broadcast(pkt, exceptsessionid);
-
-	//mSRWLock.UnlockRead();
 }
 
-void GameManager::BroadcastAllRoom(SPtr_SendPktBuf& pkt)
+void RoomManager::BroadcastAllRoom(SPtr_SendPktBuf& pkt)
 {
-	//mSRWLock.LockRead();
-
 	for (int i = 0; i < mRooms.size(); ++i) {
 		mRooms[i].get()->Broadcast(pkt);
 	}
-
-	//mSRWLock.UnlockRead();
 }
 
-void GameManager::Send(SPtr_SendPktBuf& pkt, int roomID, int sessionID)
+void RoomManager::Send(SPtr_SendPktBuf& pkt, int roomID, int sessionID)
 {
 	mRooms[roomID]->SendPacket(static_cast<UINT32>(sessionID), pkt);
 }
 
-std::vector<SPtr<GamePlayer>> GameManager::GetAllPlayersInRoom(int roomID)
+std::vector<SPtr<GameObject>> RoomManager::GetAllPlayersInRoom(int roomID)
 {
-	std::vector<SPtr<GamePlayer>> players = mRooms[roomID]->GetallPlayers();
+	std::vector<SPtr<GameObject>> players = mRooms[roomID]->GetallPlayers();
 	return players;
 }
 

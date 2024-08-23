@@ -1,56 +1,49 @@
 #include "pch.h"
 #include "Script_Building.h"
+#include "GameObject.h"
 
 Script_Building::Script_Building()
 {
+    mKey = uint32_t_ScriptKey(ScriptKey::Building);
+
 }
 
-Script_Building::Script_Building(SPtr<GameObject> owner, ScriptInfo::Type type)
+Script_Building::Script_Building(SPtr<GameObject> owner)
+    : Script_Entity(owner, uint32_t_ScriptKey(ScriptKey::Building))
 {
+    owner->EnableTag(ObjectTag::Building);
+    
 }
 
 Script_Building::~Script_Building()
 {
 }
 
-void Script_Building::Clone(SPtr<Component> other) 
+SPtr<Component> Script_Building::Clone(SPtr<Component> target)
 {
-    Script::Clone(other);
+    // Try to cast the target to Script_Building
+    auto clonedScript = std::dynamic_pointer_cast<Script_Building>(target);
+    if (clonedScript)
+    {
+        // Call the base class Clone method first
+        Script_Entity::Clone(clonedScript);
 
-    SPtr<Script_Building> otherScript = std::static_pointer_cast<Script_Building>(other);
+        // Copy the specific member variables
+        clonedScript->mSectorIdx = this->mSectorIdx;
 
-    this->mSectorIdx = otherScript->mSectorIdx;
+        return clonedScript;
+    }
+    else
+    {
+        std::cout << "Clone failed: target is not of type Script_Building" << std::endl;
+        return nullptr;
+    }
 }
 
-void Script_Building::Activate()
+void Script_Building::Clone(SPtr<GameObject> target)
 {
-    Script::Activate();
-}
+    auto clonedScript = target->AddScript<Script_Building>();
+    this->Clone(clonedScript);   
+    clonedScript->SetOwner(target);
 
-void Script_Building::DeActivate()
-{
-    Script::DeActivate();
-}
-
-bool Script_Building::WakeUp()
-{
-    Script::WakeUp();
-    return true;
-}
-
-bool Script_Building::Start()
-{
-    Script::Start();
-    return true;
-}
-
-bool Script_Building::Update()
-{
-    Script::Update();
-    return true;
-}
-
-void Script_Building::OnDestroy()
-{
-    Script::OnDestroy();
 }

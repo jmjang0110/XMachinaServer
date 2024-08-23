@@ -7,11 +7,20 @@
 
 #include "FBsPacketFactory.h"
 #include "GameRoom.h"
-#include "GameManager.h"
+#include "RoomManager.h"
+#include "GameObject.h"
+#include "Animation.h"
+#include "Transform.h"
+#include "Collider.h"
+#include "Rigidbody.h"
 
-Script_Deus_Phase_2::Script_Deus_Phase_2(SPtr<GameObject> owner, ScriptInfo::Type type)
-    :Script_Enemy(owner, type)
+#include "Script_BehaviorTrees.h"
+
+Script_Deus_Phase_2::Script_Deus_Phase_2(SPtr<GameObject> owner)
+    :Script_Enemy(owner)
 {
+    mType = FBProtocol::MONSTER_TYPE_DEUS_PHASE_2;
+
     Script_EnemyStat::SetID(owner->GetID());
     Script_EnemyStat::SetStat_EnemyLevel(7);
     Script_EnemyStat::SetStat_PheroLevel(6);
@@ -31,13 +40,35 @@ Script_Deus_Phase_2::Script_Deus_Phase_2(SPtr<GameObject> owner, ScriptInfo::Typ
     owner->SetName("Deus_Phase_2");
 }
 
-bool Script_Deus_Phase_2::Start()
+SPtr<Component> Script_Deus_Phase_2::Clone(SPtr<Component> target)
 {
-    if (!Script_Enemy::Start()) {
-        return false;
+    // Try to cast the target to Script_AdvancedCombatDroid_5
+    auto clonedScript = std::dynamic_pointer_cast<Script_Deus_Phase_2>(target);
+    if (clonedScript)
+    {
+        Script_Enemy::Clone(clonedScript);
+        return clonedScript;
     }
+    else
+    {
+        std::cout << "Clone failed: target is not of type Script_Deus_Phase_2" << std::endl;
+        return nullptr;
+    }
+}
 
-    return true;
+void Script_Deus_Phase_2::Clone(SPtr<GameObject> target)
+{
+    // Add a new Script_AdvancedCombatDroid_5 instance to the GameObject
+    auto clonedScript = target->SetScriptEntity<Script_Deus_Phase_2>();
+    // Clone the current script into the new script
+    this->Clone(std::dynamic_pointer_cast<Script_Deus_Phase_2>(clonedScript));
+
+    clonedScript->SetOwner(target);
+}
+void Script_Deus_Phase_2::Start()
+{
+    Script_Enemy::Start();
+
 }
 
 void Script_Deus_Phase_2::StartAttack()
@@ -46,7 +77,7 @@ void Script_Deus_Phase_2::StartAttack()
         return;
     }
 
-    const Vec3 myPos = GetOwner()->GetTransform()->GetPosition();
+    const Vec3 myPos = OwnerTransform()->GetPosition();
     const Vec3 targetPos = mEnemyController->GetTarget()->GetTransform()->GetSnapShot().GetPosition();
     float distance = Vec3::Distance(myPos, targetPos);
 
@@ -59,10 +90,10 @@ void Script_Deus_Phase_2::StartAttack()
 
     mEnemyController->RemoveAllAnimation();
     mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK);
-    GetOwner()->GetAnimation()->GetController()->SetValue("Attack", mCurrAttackStep);
+    OwnerAnimation()->GetController()->SetValue("Attack", mCurrAttackStep);
 
-    auto spkt = FBS_FACTORY->SPkt_Monster_State(GetOwner()->GetID(), FBProtocol::MONSTER_BT_TYPE_ATTACK, mCurrAttackStep);
-    GAME_MGR->BroadcastRoom(mEnemyController->GetOwnerRoom()->GetID(), spkt);
+    auto spkt = FBS_FACTORY->SPkt_Monster_State(GetID(), FBProtocol::MONSTER_BT_TYPE_ATTACK, mCurrAttackStep);
+    ROOM_MGR->BroadcastRoom(mOwner->GetOwnerRoom()->GetID(), spkt);
 }
 
 void Script_Deus_Phase_2::MeleeAttack()

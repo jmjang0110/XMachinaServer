@@ -6,6 +6,11 @@ NetworkObject::NetworkObject()
 
 }
 
+NetworkObject::NetworkObject(UINT32 id, std::string name)
+	: mID(id), mName(name)
+{
+}
+
 NetworkObject::~NetworkObject()
 {
 	mSocketData.Close();

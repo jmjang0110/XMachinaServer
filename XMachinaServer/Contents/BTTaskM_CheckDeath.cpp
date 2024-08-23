@@ -1,18 +1,23 @@
 #include "pch.h"
 #include "BTTaskM_CheckDeath.h"
-
 #include "BTTask.h"
-#include "Script_AdvancedCombatDroid_5.h"
-#include "Script_Onyscidus.h"
-#include "Script_Ursacetus.h"
 #include "ServerLib/ThreadManager.h"
 #include "Script_PheroDropper.h"
 
+
+#include "Script_Enemy.h"
+#include "Script_EnemyController.h"
+
 #include "FBsPacketFactory.h"
 #include "NPCController.h"
-#include "GameManager.h"
+#include "RoomManager.h"
+
 #include "GameObject.h"
-#include "GameMonster.h"
+#include "Transform.h"
+#include "Animation.h"
+#include "Rigidbody.h"
+#include "Collider.h"
+
 
 /// +-------------------------------------------------------------------------
 ///	> ¢º¢º¢º Task Check Death  
@@ -21,7 +26,8 @@
 BTNodeState MonsterTask::CheckDeath::Evaluate()
 {
 	if (auto target = mEnemyController->GetTarget()) {
-		if (target->GetScript<Script_Stat>(ScriptInfo::Type::Stat)->S_GetObjectState() == Script_Stat::ObjectState::Dead) {
+		auto script_stat = target->GetScriptEntity<Script_Stat>();
+		if (script_stat->S_GetObjectState() == Script_Stat::ObjectState::Dead) {
 			mEnemyController->SetTarget(nullptr);
 		}
 	}
@@ -31,17 +37,17 @@ BTNodeState MonsterTask::CheckDeath::Evaluate()
 	}
 
 	if (!mIsDead) {
-		Vec3 pos = GetOwner()->GetTransform()->GetPosition();
-		auto pheroDropper = GetOwner()->GetScript<Script_PheroDropper>(ScriptInfo::Type::PheroDropper);
-		pheroDropper->SetPherosPos(pos);
+		Vec3 pos = mOwner->GetTransform()->GetPosition();
+		auto pheroDropper = mOwner->GetScript<Script_PheroDropper>();
 
-		auto spkt = FBS_FACTORY->SPkt_DeadMonster(GetOwner()->GetID(), pos, mRoot->GetEnemyController()->GetOwnerMonster()->GetPheros());
-		GAME_MGR->BroadcastRoom(mRoot->GetEnemyController()->GetOwnerMonster()->GetOwnerNPCController()->GetOwnerRoom()->GetID(), spkt);
+		pheroDropper->SetPherosPos(pos);
+		auto spkt = FBS_FACTORY->SPkt_DeadMonster(mOwner->GetID(), pos, pheroDropper->GetPherosString());
+		ROOM_MGR->BroadcastRoom(mOwner->GetOwnerRoom()->GetID(), spkt);
 
 		mIsDead = true;
 	}
 
-	mAccTime += GetOwner()->GetDeltaTime();
+	mAccTime += mOwner->DeltaTime();
 
 	mEnemyController->RemoveAllAnimation();
 	MonsterBTTask::mAnimation->GetController()->SetValue("Death", true);
@@ -53,7 +59,7 @@ BTNodeState MonsterTask::CheckDeath::Evaluate()
 	return BTNodeState::Success;
 }
 
-MonsterTask::CheckDeath::CheckDeath(SPtr_GameObject owner, std::function<void()> callback)
+MonsterTask::CheckDeath::CheckDeath(SPtr<GameObject> owner, std::function<void()> callback)
 	: MonsterBTTask(owner, BTTaskType::MonT_CheckDeath, callback)
 
 {

@@ -1,5 +1,4 @@
 #pragma once
-#include "Gameinfo.h"
 #include "Collider.h"
 
 #define COLLISION_MGR CollisionManager::GetInst()

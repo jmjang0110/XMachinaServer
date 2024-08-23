@@ -1,24 +1,29 @@
 #include "pch.h"
 #include "FBsPacketFactory.h"
-#include "ServerLib/PacketHeader.h"
+#include "Framework.h"
 
-#include "../Framework.h"
-#include "../ServerLib/SendBuffersFactory.h"
-#include "../Contents/GameSession.h"
-#include "../ServerLib/SocketData.h"
-#include "Contents/GamePlayer.h"
-#include "Contents/GameMonster.h"
-#include "Contents/GameManager.h"
-#include "Contents/GameSkill.h"
+#include "ServerLib/SendBuffersFactory.h"
+#include "ServerLib/PacketHeader.h"
+#include "ServerLib/SocketData.h"
+
+#include "Contents/GameSession.h"
+
+#include "Contents/RoomManager.h"
 #include "Contents/NPCController.h"
 #include "Contents/PlayerController.h"
 #include "Contents/GameRoom.h"	
-#include "Contents/GameItem.h"
+
+#include "Contents/GameObject.h"
+#include "Contents/Transform.h"
+#include "Contents/Component.h"
+#include "Contents/Animation.h"
 #include "Contents/Collider.h"
 
 
 #include "Contents/Script_EnemyController.h"
+#include "Contents/Script_Enemy.h"
 #include "Contents/Script_Player.h"
+#include "Contents/Script_Weapon.h"
 
 DEFINE_SINGLETON(FBsPacketFactory);
 
@@ -249,7 +254,7 @@ bool FBsPacketFactory::Process_CPkt_LogIn(SPtr_Session session, const FBProtocol
 	return true;
 #endif
 
-	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
+	SPtr<GameSession> gameSession = std::static_pointer_cast<GameSession>(session);
 
 	gameSession->GetPlayer()->GetTransform()->SetPosition(Vec3(65, 0, 240));
 
@@ -282,11 +287,11 @@ bool FBsPacketFactory::Process_CPkt_EnterGame(SPtr_Session session, const FBProt
 	///}
 	/// ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
 
-	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
+	SPtr<GameSession> gameSession = std::static_pointer_cast<GameSession>(session);
 	
 	int								ID             = pkt.player_id();
-	SPtr<GamePlayer>				MyPlayer       = gameSession->GetPlayer();
-	std::vector<SPtr<GamePlayer>>	RemotePlayers  = GAME_MGR->GetAllPlayersInRoom(MyPlayer->GetRoomID());
+	SPtr<GameObject>				MyPlayer       = gameSession->GetPlayer();
+	std::vector<SPtr<GameObject>>	RemotePlayers  = ROOM_MGR->GetAllPlayersInRoom(MyPlayer->GetOwnerRoom()->GetID());
 
 	auto SendSPkt_EnterGame = FBS_FACTORY->SPkt_EnterGame(MyPlayer, RemotePlayers);
 	session->Send(SendSPkt_EnterGame);
@@ -295,7 +300,7 @@ bool FBsPacketFactory::Process_CPkt_EnterGame(SPtr_Session session, const FBProt
 	/// SEND NEW PLAYER PKT TO SESSIONS IN ROOM ( SESSION->GET ROOM ID ) - EXCEPT ME ( SESSION )
 	/// ---------------------------------------------------------------------------------------+
 	auto SendPkt_NewPlayer = FBS_FACTORY->SPkt_NewPlayer(MyPlayer);
-	GAME_MGR->BroadcastRoom(gameSession->GetPlayer()->GetRoomID(), SendPkt_NewPlayer, gameSession->GetID());
+	ROOM_MGR->BroadcastRoom(gameSession->GetPlayer()->GetOwnerRoom()->GetID(), SendPkt_NewPlayer, gameSession->GetID());
 	return true;
 }
 
@@ -307,10 +312,10 @@ bool FBsPacketFactory::Process_CPkt_Chat(SPtr_Session session, const FBProtocol:
 	///>	message: string;	// 가변 크기
 	///> }
 	///> ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
-	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
+	SPtr<GameSession> gameSession = std::static_pointer_cast<GameSession>(session);
 	std::string message = pkt.message()->c_str();
 	auto spkt = FBS_FACTORY->SPkt_Chat(session->GetID(), message);
-	GAME_MGR->BroadcastRoom(gameSession->GetPlayer()->GetRoomID(), spkt, session->GetID());
+	ROOM_MGR->BroadcastRoom(gameSession->GetPlayer()->GetOwnerRoom()->GetID(), spkt, session->GetID());
 
 	return true;
 }
@@ -324,7 +329,7 @@ bool FBsPacketFactory::Process_CPkt_NetworkLatency(SPtr_Session session, const F
 	///> }
 	///>  ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
 
-	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
+	SPtr<GameSession> gameSession = std::static_pointer_cast<GameSession>(session);
 
 
 	// 패킷으로부터 long long으로 시간을 받음
@@ -334,7 +339,7 @@ bool FBsPacketFactory::Process_CPkt_NetworkLatency(SPtr_Session session, const F
 	auto spkt = FBS_FACTORY->SPkt_NetworkLatency(timestamp);
 
 	session->Send(spkt);
-	GAME_MGR->Send(spkt, gameSession->GetPlayer()->GetRoomID(), session->GetID());
+	ROOM_MGR->Send(spkt, gameSession->GetPlayer()->GetOwnerRoom()->GetID(), session->GetID());
 
 	return true;
 }
@@ -374,29 +379,27 @@ bool FBsPacketFactory::Process_CPkt_PlayerOnSkill(SPtr_Session session, const FB
 	///> 
 	///> }s
 	///> ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
-	SPtr_GameSession gameSession                          = std::static_pointer_cast<GameSession>(session);
+	SPtr<GameSession> gameSession                          = std::static_pointer_cast<GameSession>(session);
 
 	FBProtocol::PLAYER_SKILL_TYPE	type				  =  pkt.skill_type();
-	auto							playerScript          = gameSession->GetPlayer()->GetScript<Script_Player>(ScriptInfo::Type::Stat);
+	auto							playerScript          = gameSession->GetPlayer()->GetScriptEntity<Script_Player>();
 	float							PheroAmount           = playerScript->GetPhero();
 	int								mindcontrol_monster_id = pkt.mindcontrol_monster_id();
 
 	/// +---------------------------------------------------------------------------------------
 	/// SEND NEW PLAYER PKT TO SESSIONS IN ROOM ( SESSION->GET ROOM ID ) - EXCEPT ME ( SESSION )
 	/// ---------------------------------------------------------------------------------------+
-
-
-	sptr<GameMonster> mindControlMonster = nullptr;
+	sptr<GameObject> mindControlMonster = nullptr;
 	if (type == FBProtocol::PLAYER_SKILL_TYPE_MIND_CONTROL) {
-		auto npcController = gameSession->GetPlayer()->GetOwnerPlayerController()->GetOwnerRoom()->GetNPCController();
+		auto npcController = gameSession->GetPlayer()->GetOwnerRoom()->GetNPCController();
 
 		mindControlMonster = npcController->GetMonster(mindcontrol_monster_id);
 		if (mindControlMonster != nullptr) {
-			gameSession->GetPlayer()->OnSkill(type, mindControlMonster);
+			gameSession->GetPlayer()->GetScriptEntity<Script_Player>()->OnSkill(type, mindControlMonster);
 		}
 	}
 	else {
-		gameSession->GetPlayer()->OnSkill(type, nullptr);
+		gameSession->GetPlayer()->GetScriptEntity<Script_Player>()->OnSkill(type, nullptr);
 	}
 
 
@@ -422,7 +425,7 @@ bool FBsPacketFactory::Process_CPkt_Player_Transform(SPtr_Session session, const
 	/// > }
 	/// > ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
 
-	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
+	SPtr<GameSession> gameSession = std::static_pointer_cast<GameSession>(session);
 	UINT32 id = session->GetID();
 
 	int32_t					move_state  = pkt.move_state();
@@ -439,7 +442,7 @@ bool FBsPacketFactory::Process_CPkt_Player_Transform(SPtr_Session session, const
 
 	/* Boradcast Player's Transform Update */
 	SPtr_SendPktBuf SendPkt = FBS_FACTORY->SPkt_Player_Transform(id, move_state, latency, velocity, movedir, pos, rot, spine_look, animparam_h, animparam_v);
-	GAME_MGR->BroadcastRoom(gameSession->GetPlayer()->GetRoomID(), SendPkt, id);
+	ROOM_MGR->BroadcastRoom(gameSession->GetPlayer()->GetOwnerRoom()->GetID(), SendPkt, id);
 
 
 	/* Player Info Update */
@@ -461,7 +464,7 @@ bool FBsPacketFactory::Process_CPkt_Player_Animation(SPtr_Session session, const
 	/// > 	animation_param_v		: float;	// 4 bytes
 	/// > }
 	/// ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
-	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
+	SPtr<GameSession> gameSession = std::static_pointer_cast<GameSession>(session);
 
 	int		ObjectID                = session->GetID();
 
@@ -473,7 +476,7 @@ bool FBsPacketFactory::Process_CPkt_Player_Animation(SPtr_Session session, const
 
 	/* 클라이언트의 패킷을 그대로 다시 보낸다. */
 	auto spkt = FBS_FACTORY->SPkt_Player_Animation(ObjectID, animation_upper_idx, animation_lower_idx, animation_param_h, animation_param_v);
-	GAME_MGR->BroadcastRoom(gameSession->GetPlayer()->GetRoomID(), spkt, ObjectID);
+	ROOM_MGR->BroadcastRoom(gameSession->GetPlayer()->GetOwnerRoom()->GetID(), spkt, ObjectID);
 
 	return true;
 }
@@ -486,16 +489,16 @@ bool FBsPacketFactory::Process_CPkt_Player_Weapon(SPtr_Session session, const FB
 	///> 	weapon_type: WEAPON_TYPE;	// 1 byte
 	///> }
 	///>●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
-	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
+	SPtr<GameSession> gameSession = std::static_pointer_cast<GameSession>(session);
 
 	FBProtocol::ITEM_TYPE weaponType = pkt.weapon_type();
-	gameSession->GetPlayer()->S_SetEquipWeapon(weaponType);
+	auto weapon = gameSession->GetPlayer()->GetScriptEntity<Script_Player>()->GetWeapon();
 
 	LOG_MGR->Cout(gameSession->GetID(), " - WEAPON TYPE : ", static_cast<int>(weaponType), "\n");
 
 
 	auto spkt = FBS_FACTORY->SPkt_Player_Weapon(session->GetID(), weaponType);
-	GAME_MGR->BroadcastRoom(gameSession->GetPlayer()->GetRoomID(), spkt, session->GetID());
+	ROOM_MGR->BroadcastRoom(gameSession->GetPlayer()->GetOwnerRoom()->GetID(), spkt, session->GetID());
 
 	return true;
 }
@@ -504,18 +507,18 @@ bool FBsPacketFactory::Process_CPkt_Player_AimRotation(SPtr_Session session, con
 {
 	///>●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
 	///> table CPkt_Player_AimRotation
-	///> {
+	///> {B
 	///> 	aim_rotation			: float; // Y rotation Euler
 	///> }
 	///>●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
 
-	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
+	SPtr<GameSession> gameSession = std::static_pointer_cast<GameSession>(session);
 
 	float aim_rotation = pkt.aim_rotation();
 	float spine_angle  = pkt.spine_angle();
 	auto spkt          = FBS_FACTORY->SPkt_Player_AimRotation(session->GetID(), aim_rotation, spine_angle);
 
-	GAME_MGR->BroadcastRoom(gameSession->GetPlayer()->GetRoomID(), spkt, gameSession->GetID());
+	ROOM_MGR->BroadcastRoom(gameSession->GetPlayer()->GetOwnerRoom()->GetID(), spkt, gameSession->GetID());
 
 	//LOG_MGR->Cout(session->GetID(), " : AIM : ", aim_rotation, '\n');
 	return true;
@@ -523,15 +526,15 @@ bool FBsPacketFactory::Process_CPkt_Player_AimRotation(SPtr_Session session, con
 
 bool FBsPacketFactory::Process_CPkt_Player_State(SPtr_Session session, const FBProtocol::CPkt_Player_State& pkt)
 {
-	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
+	SPtr<GameSession> gameSession = std::static_pointer_cast<GameSession>(session);
 	
-	SPtr<GamePlayer>			  gamePlayer   = gameSession->GetPlayer();
-	float						  hp           = gamePlayer->S_GetHp();
-	float						  phero        = gamePlayer->S_GetPhero();
+	SPtr<GameObject>			  GameObject   = gameSession->GetPlayer();
+	float						  hp           = GameObject->GetScriptEntity<Script_Stat>()->S_GetHp();
+	float						  phero        = GameObject->GetScriptEntity<Script_Stat>()->GetPhero();
 	FBProtocol::PLAYER_STATE_TYPE state        = pkt.state_type();
 
 	auto spkt = FBS_FACTORY->SPKt_Player_State(session->GetID(), hp, phero, state);
-	GAME_MGR->BroadcastRoom(gameSession->GetPlayer()->GetRoomID(), spkt, session->GetID());
+	ROOM_MGR->BroadcastRoom(gameSession->GetPlayer()->GetOwnerRoom()->GetID(), spkt, session->GetID());
 
 	return true;
 }
@@ -620,59 +623,50 @@ bool FBsPacketFactory::Process_CPkt_Bullet_OnShoot(SPtr_Session session, const F
 	/// >}
 	/// >●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
 	
-	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
+	SPtr<GameSession> gameSession = std::static_pointer_cast<GameSession>(session);
 
 	int  player_id   = gameSession->GetID(); // 플레이어 아이디
-	auto gun_id      = gameSession->GetPlayer()->S_GetCurrWeapon();
 	Vec3 ray         = GetVector3(pkt.ray());
 	Vec3 firePos     = GetVector3(pkt.pos());
+	// On Shoot ! 
+	gameSession->GetPlayerEntity()->OnShoot(firePos, ray); 
 
-
-	switch (gun_id)
-	{
-	case FBProtocol::ITEM_TYPE_WEAPON_MINE_LAUNCHER:
-	case FBProtocol::ITEM_TYPE_WEAPON_AIR_STRIKE: {
-		// server 에서 simulation 한다. 
-		//gameSession->GetPlayer()->OnShoot(firePos, ray);
-	}
-		break;
-	default:
-		break;
-	}
-	
-	int  bullet_id = {}; // 의미 없어짐. 
-	//LOG_MGR->Cout("[", player_id, "]RAY : ", ray.x, " ", ray.y, " ", ray.z, " ---> ", bullet_id, "\n");
+	auto weapon = gameSession->GetPlayer()->GetScriptEntity<Script_Player>()->GetWeapon();
+	auto gun_id = weapon->GetScriptEntity<Script_Item>()->GetItemType();
+	int bullet_id = -1; 
 
 	/// 플레이어가 Shot 했다는 것을 플레이어들에게 알린다. 
 	auto spkt = FBS_FACTORY->SPkt_Bullet_OnShoot(player_id, gun_id, bullet_id, firePos, ray);
-	GAME_MGR->BroadcastRoom(gameSession->GetPlayer()->GetRoomID(), spkt, player_id);
+	ROOM_MGR->BroadcastRoom(gameSession->GetPlayer()->GetOwnerRoom()->GetID(), spkt, player_id);
 
 	return true;
 }
 
 bool FBsPacketFactory::Process_CPkt_Bullet_OnHitEnemy(SPtr_Session session, const FBProtocol::CPkt_Bullet_OnHitEnemy& pkt)
 {
-	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
+	SPtr<GameSession> gameSession = std::static_pointer_cast<GameSession>(session);
 
 	int  player_id = gameSession->GetID(); // 플레이어 아이디
-	auto gun_id = gameSession->GetPlayer()->S_GetCurrWeapon();
-	
+	auto equiped_weapon = gameSession->GetPlayer()->GetScriptEntity<Script_Player>()->GetWeapon();
+	equiped_weapon->GetScriptEntity<Script_Weapon>();
+
+
 	int32_t monster_id	= pkt.monster_id();
 	Vec3 ray			= GetVector3(pkt.ray());
 	Vec3 fire_pos       = GetVector3(pkt.fire_pos());
-	int  bullet_id		= gameSession->GetPlayer()->OnHitEnemy(monster_id, fire_pos, ray); // PQCS -> Bullet Update Start ( Worker Thread  에게 업데이트를 떠넘긴다 ) 
+	int  bullet_id		= gameSession->GetPlayer()->GetScriptEntity<Script_Player>()->OnHitEnemy(monster_id, fire_pos, ray); // PQCS -> Bullet Update Start ( Worker Thread  에게 업데이트를 떠넘긴다 ) 
 
 	return true;
 }
 
 bool FBsPacketFactory::Process_CPkt_Bullet_OnHitExpEnemy(SPtr_Session session, const FBProtocol::CPkt_Bullet_OnHitExpEnemy& pkt)
 {
-	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
+	SPtr<GameSession> gameSession = std::static_pointer_cast<GameSession>(session);
 
 	int monster_id  = pkt.monster_id();
 	
 	
-	gameSession->GetPlayer()->OnHitExpEnemy(monster_id); // PQCS -> Bullet Update Start ( Worker Thread  에게 업데이트를 떠넘긴다 ) 
+	gameSession->GetPlayer()->GetScriptEntity<Script_Player>()->OnHitExpEnemy(monster_id); // PQCS -> Bullet Update Start ( Worker Thread  에게 업데이트를 떠넘긴다 ) 
 
 
 	return false;
@@ -691,34 +685,34 @@ bool FBsPacketFactory::Process_CPkt_Bullet_OnCollision(SPtr_Session session, con
 
 bool FBsPacketFactory::Process_CPkt_Item_Interact(SPtr_Session session, const FBProtocol::CPkt_Item_Interact& pkt)
 {
-	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
-	SPtr<GamePlayer> player = gameSession->GetPlayer();
+	SPtr<GameSession> gameSession = std::static_pointer_cast<GameSession>(session);
+	SPtr<GameObject> player = gameSession->GetPlayer();
 
 	uint32_t				item_id   = pkt.item_id();
 	FBProtocol::ITEM_TYPE	item_type = pkt.item_type();
 
-	auto npcC = player->GetOwnerPlayerController()->GetOwnerRoom()->GetNPCController();
+	auto npcC = player->GetOwnerRoom()->GetNPCController();
 	auto item = npcC->GetItem(item_id);
-	if (item) {
-		item->DoInteract(player);
-	}
+	//if (item) {
+	//	item->DoInteract(player);
+	//}
 
 	return true;
 }
 
 bool FBsPacketFactory::Process_CPkt_Item_ThrowAway(SPtr_Session session, const FBProtocol::CPkt_Item_ThrowAway& pkt)
 {
-	SPtr_GameSession gameSession = std::static_pointer_cast<GameSession>(session);
-	SPtr<GamePlayer> player = gameSession->GetPlayer();
+	SPtr<GameSession> gameSession = std::static_pointer_cast<GameSession>(session);
+	SPtr<GameObject> player = gameSession->GetPlayer();
 
 	uint32_t				item_id = pkt.item_id();
 	FBProtocol::ITEM_TYPE	item_type = pkt.item_type();
 
-	auto npcC = player->GetOwnerPlayerController()->GetOwnerRoom()->GetNPCController();
+	auto npcC = player->GetOwnerRoom()->GetNPCController();
 	auto item = npcC->GetItem(item_id);
-	if (item) {
-		item->DoInteract(player);
-	}
+	//if (item) {
+	//	item->DoInteract(player);
+	//}
 	return true;
 }
 
@@ -797,7 +791,7 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_Chat(uint32_t player_id, std::string msg)
 	return SEND_FACTORY->CreatePacket(bufferPtr, serializedDataSize, FBsProtocolID::SPkt_Chat);
 }
 
-SPtr_SendPktBuf FBsPacketFactory::SPkt_EnterGame(SPtr<GamePlayer>& myinfo, std::vector<SPtr<GamePlayer>>& players)
+SPtr_SendPktBuf FBsPacketFactory::SPkt_EnterGame(SPtr<GameObject>& myinfo, std::vector<SPtr<GameObject>>& players)
 {
 	flatbuffers::FlatBufferBuilder builder;
 
@@ -825,7 +819,7 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_EnterGame(SPtr<GamePlayer>& myinfo, std::
 		auto transSNS          = p->GetTransform()->GetSnapShot();
 		Vec3 transPos          = transSNS.GetPosition();
 		Vec3 transRot          = transSNS.GetRotation();
-		Vec3 transSpineLookDir = p->S_GetSpineLookDir();
+		Vec3 transSpineLookDir = p->GetTransform()->GetLook(); // ??? 
 
 		auto ID             = p->GetID();
 		auto name           = builder.CreateString(p->GetName());
@@ -878,7 +872,7 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_NetworkLatency(long long timestamp)
 ///	◈ SEND [ PLAYER ] PACKET ◈
 /// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------★
 
-SPtr_SendPktBuf FBsPacketFactory::SPkt_NewPlayer(SPtr<GamePlayer>& newPlayer)
+SPtr_SendPktBuf FBsPacketFactory::SPkt_NewPlayer(SPtr<GameObject>& newPlayer)
 {
 	/// > ○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○
 	/// > table SPkt_NewPlayer
@@ -1065,7 +1059,7 @@ SPtr_SendPktBuf FBsPacketFactory::SPKt_Player_State(uint32_t player_id, float hp
 ///	◈ SEND [ MONSTER ] PACKET ◈
 /// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------★
 
-SPtr_SendPktBuf FBsPacketFactory::SPkt_NewMonster(std::vector<SPtr<GameMonster>>& new_monsters)
+SPtr_SendPktBuf FBsPacketFactory::SPkt_NewMonster(std::vector<SPtr<GameObject>>& new_monsters)
 {
 	///  >  ▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽
 	/// > table Phero{
@@ -1094,8 +1088,8 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_NewMonster(std::vector<SPtr<GameMonster>>
 	/// +------------------------------------------------------------------------------------------
 	///	Monster 정보 저장 
 	/// ------------------------------------------------------------------------------------------+
-	for (SPtr<GameMonster>& mon : new_monsters) {
-		Script_Stat::ObjectState objState = mon->S_GetObjectState();
+	for (SPtr<GameObject>& mon : new_monsters) {
+		Script_Stat::ObjectState objState = mon->GetScriptEntity<Script_Stat>()->S_GetObjectState();
 		if (objState == Script_Stat::ObjectState::Dead ||
 			objState == Script_Stat::ObjectState::End) {
 			continue;
@@ -1108,9 +1102,9 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_NewMonster(std::vector<SPtr<GameMonster>>
 		Vec3 transLook	= transSNS.GetLook();
 
 		auto pos		= FBProtocol::CreatePosition_Vec2(builder, transPos.x, transPos.z);
-		auto bt_Type	= mon->GetEnemyController()->GetMonsterBTType(); /* Lock Read */
+		auto bt_Type	= mon->GetScript<Script_EnemyController>()->GetMonsterBTType(); /* Lock Read */
 		float rot_y		= Vector3::SignedAngle(Vector3::Forward, transLook, Vector3::Up);
-		auto Monster	= FBProtocol::CreateMonster(builder, mon->GetID(), mon->GetMonsterType(), bt_Type, pos, rot_y);
+		auto Monster	= FBProtocol::CreateMonster(builder, mon->GetID(), mon->GetScriptEntity<Script_Enemy>()->GetMonsterType(), bt_Type, pos, rot_y);
 		MonsterSnapShots_Vector.push_back(Monster);
 	}
 

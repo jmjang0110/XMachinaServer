@@ -1,27 +1,30 @@
 #include "pch.h"
 #include "BTTaskM_MoveToPath.h"
-
 #include "BTTask.h"
-#include "Script_AdvancedCombatDroid_5.h"
-#include "Script_Onyscidus.h"
-#include "Script_Ursacetus.h"
-#include "Animation.h"
 
-#include "ServerLib/ThreadManager.h"
+#include "GameObject.h"
+#include "Animation.h"
+#include "Transform.h"
+#include "Collider.h"
+#include "Rigidbody.h"
+
+
+#include "Script_Enemy.h"
+#include "Script_EnemyController.h"
+
 
 /// +-------------------------------------------------------------------------
 ///	> ▶▶▶ Task Move To Path  
 /// __________________________________________________________________________
 
-MonsterTask::MoveToPath::MoveToPath(SPtr_GameObject owner, std::function<void()> callback)
+MonsterTask::MoveToPath::MoveToPath(SPtr<GameObject> owner, std::function<void()> callback)
 	: MonsterBTTask(owner, BTTaskType::MonT_MoveToPath, callback)
 {
 
-	mMoveSpeed = mStat->GetStat_MoveSpeed();
+	mMoveSpeed   = mStat->GetStat_MoveSpeed();
 	mReturnSpeed = 1.7f * mMoveSpeed;
-	mPaths = mEnemyController->GetPaths();
-
-	mReturnParam = GetOwner()->GetAnimation()->GetController()->GetParam("Return");
+	mPaths       = mEnemyController->GetPaths();
+	mReturnParam = mOwner->GetAnimation()->GetController()->GetParam("Return");
 }
 
 MonsterTask::MoveToPath::~MoveToPath()
@@ -55,7 +58,7 @@ BTNodeState MonsterTask::MoveToPath::Evaluate()
 	MonsterBTTask::mAnimation->GetController()->SetValue("Walk", true);
 
 	// 다음 경로까지의 벡터
-	Vec3 pos = GetOwner()->GetTransform()->GetPosition();
+	Vec3 pos = mOwner->GetTransform()->GetPosition();
 	Vec3 nextPos = (mPaths->top() - pos).xz();
 
 	// 현재 복귀 상태라면 스피드를 올린다.
@@ -71,7 +74,7 @@ BTNodeState MonsterTask::MoveToPath::Evaluate()
 
 	// 다음 경로를 향해 이동 및 회전
 	MonsterBTTask::mTransform->RotateTargetAxisY(mPaths->top(), mStat->GetStat_RotationSpeed());
-	MonsterBTTask::mTransform->Translate(XMVector3Normalize(nextPos), speed * GetOwner()->GetDeltaTime());
+	MonsterBTTask::mTransform->Translate(XMVector3Normalize(nextPos), speed * mOwner->DeltaTime());
 
 	// 다음 경로에 도착 시 해당 경로 삭제
 	const float kMinDistance = 0.1f;

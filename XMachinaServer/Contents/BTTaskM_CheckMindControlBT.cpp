@@ -2,13 +2,22 @@
 #include "BTTaskM_CheckMindControlBT.h"
 #include "BTTask.h"
 
+#include "GameObject.h"
+#include "Transform.h"
+#include "Animation.h"
+#include "Collider.h"
+#include "Rigidbody.h"
+
 #include "FBsPacketFactory.h"
-#include "GameManager.h"
+#include "RoomManager.h"
 #include "GameRoom.h"
+
+#include "Script_Enemy.h"
+#include "Script_EnemyController.h"
 
 BTNodeState MonsterTask::CheckMindControlBT::Evaluate()
 {
-	bool IsMindControlled = mRoot->GetEnemyController()->GetOwnerMonster()->GetIsMindControlled();
+	bool IsMindControlled = mEnemyController->IsMindControlled();
 
 	if (IsMindControlled) {
 		if (mPrevMindControlled != IsMindControlled) {
@@ -18,15 +27,15 @@ BTNodeState MonsterTask::CheckMindControlBT::Evaluate()
 
 		mPrevMindControlled = IsMindControlled;
 
-		mMindControlledTime += GetOwner()->GetDeltaTime();
+		mMindControlledTime += mOwner->DeltaTime();
 
 		if (mMindControlledTime >= mkMaxMindControlledTime) {
-			auto spkt = FBS_FACTORY->SPkt_PlayerOnSkill(mRoot->GetEnemyController()->GetInvoker()->GetID(), FBProtocol::PLAYER_SKILL_TYPE_MIND_CONTROL, 0, GetOwner()->GetID());
-			GAME_MGR->BroadcastRoom(mEnemyController->GetOwnerRoom()->GetID(), spkt);
+			auto spkt = FBS_FACTORY->SPkt_PlayerOnSkill(mEnemyController->GetInvoker()->GetID(), FBProtocol::PLAYER_SKILL_TYPE_MIND_CONTROL, 0, mOwner->GetID());
+			ROOM_MGR->BroadcastRoom(mEnemyController->GetOwnerRoom()->GetID(), spkt);
 
 			mMindControlledTime = 0.f;
-			mRoot->GetEnemyController()->GetOwnerMonster()->SetMindControlled(false);
-			mRoot->GetEnemyController()->SetInvoker(nullptr);
+			mEnemyController->OffMindControl();
+			mEnemyController->SetInvoker(nullptr);
 			mEnemyController->SetTarget(nullptr);
 
 			return BTNodeState::Failure;
@@ -39,7 +48,7 @@ BTNodeState MonsterTask::CheckMindControlBT::Evaluate()
 	return BTNodeState::Failure;
 }
 
-MonsterTask::CheckMindControlBT::CheckMindControlBT(SPtr_GameObject owner, std::function<void()> callback)
+MonsterTask::CheckMindControlBT::CheckMindControlBT(SPtr<GameObject> owner, std::function<void()> callback)
 	: MonsterBTTask(owner, BTTaskType::MonT_CheckMindControlBT, callback)
 {
 }

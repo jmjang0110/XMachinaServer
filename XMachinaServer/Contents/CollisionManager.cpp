@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "CollisionManager.h"
-
+#include "Collider.h"
 
 DEFINE_SINGLETON(CollisionManager);
 

@@ -1,13 +1,20 @@
 #include "pch.h"
 #include "Script_AdvancedCombatDroid_5.h"
+#include "Script_BehaviorTrees.h"
+
+#include "GameObject.h"
 
 Script_AdvancedCombatDroid_5::Script_AdvancedCombatDroid_5()
 {
+    mType = FBProtocol::MONSTER_TYPE_ADVANCED_COMBAT_DROIR_5;
+
 }
 
-Script_AdvancedCombatDroid_5::Script_AdvancedCombatDroid_5(SPtr<GameObject> owner, ScriptInfo::Type type)
-    :Script_Enemy(owner, type)
+Script_AdvancedCombatDroid_5::Script_AdvancedCombatDroid_5(SPtr<GameObject> owner)
+    :Script_Enemy(owner)
 {
+    mType = FBProtocol::MONSTER_TYPE_ADVANCED_COMBAT_DROIR_5;
+
     Script_EnemyStat::SetID(owner->GetID());
     
     Script_EnemyStat::SetStat_EnemyLevel(3);
@@ -27,22 +34,49 @@ Script_AdvancedCombatDroid_5::Script_AdvancedCombatDroid_5(SPtr<GameObject> owne
     Script_EnemyStat::SetStat_GetHitName("IdleCombat");
 
    owner->SetName("AdvancedCombatDroid_5");
-
-
 }
 
 Script_AdvancedCombatDroid_5::~Script_AdvancedCombatDroid_5()
 {
 }
 
-bool Script_AdvancedCombatDroid_5::Start()
+SPtr<Component> Script_AdvancedCombatDroid_5::Clone(SPtr<Component> target)
 {
-    if (!Script_Enemy::Start()) {
-        return false;
+    // Try to cast the target to Script_AdvancedCombatDroid_5
+    auto clonedScript = std::dynamic_pointer_cast<Script_AdvancedCombatDroid_5>(target);
+    if (clonedScript)
+    {
+        Script_Enemy::Clone(clonedScript);
+        return clonedScript;
     }
+    else
+    {
+        std::cout << "Clone failed: target is not of type Script_AdvancedCombatDroid_5" << std::endl;
+        return nullptr;
+    }
+}
 
-    GetOwner()->GetAnimation()->GetController()->FindMotionByName(GetStat_Attack1AnimName())->AddCallback(std::bind(&Script_AdvancedCombatDroid_5::AttackCallback, this), 3);
-    GetOwner()->GetAnimation()->GetController()->FindMotionByName(GetStat_Attack1AnimName())->AddCallback(std::bind(&Script_AdvancedCombatDroid_5::AttackCallback, this), 20);
+void Script_AdvancedCombatDroid_5::Clone(SPtr<GameObject> target)
+{
+    // Add a new Script_AdvancedCombatDroid_5 instance to the GameObject
+    auto clonedScript = target->SetScriptEntity<Script_AdvancedCombatDroid_5>();
+    // Clone the current script into the new script
+    this->Clone(std::dynamic_pointer_cast<Script_AdvancedCombatDroid_5>(clonedScript));
 
-    return true;
+    clonedScript->SetOwner(target);
+}
+
+void Script_AdvancedCombatDroid_5::Start()
+{
+    Script_Enemy::Start();
+ 
+
+    auto AnimController = OwnerAnimation()->GetController();
+    AnimController->FindMotionByName(mAttack1AnimName)->AddCallback(std::bind(&Script_AdvancedCombatDroid_5::AttackCallback, this), 3);
+    AnimController->FindMotionByName(mAttack1AnimName)->AddCallback(std::bind(&Script_AdvancedCombatDroid_5::AttackCallback, this), 20);
+
+}
+
+void Script_AdvancedCombatDroid_5::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
+{
 }

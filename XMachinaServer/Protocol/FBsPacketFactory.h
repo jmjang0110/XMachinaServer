@@ -14,9 +14,6 @@
 #include "Struct_generated.h"
 #include "Transform_generated.h"
 
-#include "Contents/GamePlayer.h"
-#include "Contents/GameMonster.h"
-
 using FBSPKT_FACTORY = class FBsPacketFactory;
 
 #define FBS_FACTORY FBsPacketFactory::GetInst()
@@ -27,6 +24,7 @@ namespace PLAYER_MOVE_STATE {
 	constexpr int32_t End      = 2;
 }
 
+class GameObject;
 class FBsPacketFactory
 {
 	DECLARE_SINGLETON(FBsPacketFactory);
@@ -76,12 +74,12 @@ private:
 public:
 	/* LOGIN, LATENCY, CHAT */
 	SPtr_SendPktBuf SPkt_LogIn(bool success);
-	SPtr_SendPktBuf SPkt_EnterGame(SPtr<GamePlayer>& myinfo, std::vector<SPtr<GamePlayer>>& players);
+	SPtr_SendPktBuf SPkt_EnterGame(SPtr<GameObject>& myinfo, std::vector<SPtr<GameObject>>& players);
 	SPtr_SendPktBuf SPkt_NetworkLatency(long long timestamp);
 	SPtr_SendPktBuf SPkt_Chat(uint32_t player_id, std::string msg);
 
 	/* PLAYER */
-	SPtr_SendPktBuf SPkt_NewPlayer(SPtr<GamePlayer>& newplayer);
+	SPtr_SendPktBuf SPkt_NewPlayer(SPtr<GameObject>& newplayer);
 	SPtr_SendPktBuf SPkt_RemovePlayer(uint32_t player_id);
 	SPtr_SendPktBuf SPkt_PlayerOnSkill(uint32_t player_id, FBProtocol::PLAYER_SKILL_TYPE skill_type, float phero_amount, int mindcontrol_monster_id);
 	SPtr_SendPktBuf SPkt_Player_Transform(uint32_t player_id, int32_t move_state, long long latency, float velocity, Vec3 movedir, Vec3 pos, Vec3 rot, Vec3 spine_look, float animparam_h, float animparam_v);
@@ -91,7 +89,7 @@ public:
 	SPtr_SendPktBuf SPKt_Player_State(uint32_t player_id, float hp, float phero, FBProtocol::PLAYER_STATE_TYPE state);
 
 	/* MONSTER */
-	SPtr_SendPktBuf SPkt_NewMonster(std::vector<SPtr<GameMonster>>& new_monsters);
+	SPtr_SendPktBuf SPkt_NewMonster(std::vector<SPtr<GameObject>>& new_monsters);
 	SPtr_SendPktBuf SPkt_DeadMonster(uint32_t monster_id, Vec3 dead_point, std::string pheros);
 	SPtr_SendPktBuf SPkt_RemoveMonster(uint32_t monster_id);
 	SPtr_SendPktBuf SPkt_Monster_Transform(uint32_t monster_id, Vec3 pos, Vec3 look);

@@ -1,12 +1,5 @@
 #pragma once
 #include "BTNode.h"
-#include "Script_Enemy.h"
-#include "Script_EnemyController.h"
-#include "GameObject.h"
-#include "Animation.h"
-
-
-
 enum class BTTaskType : UINT16 {
 	/* Monster Task */
 	MonT_Attack,
@@ -32,6 +25,11 @@ enum class BTTaskType : UINT16 {
 
 };
 
+class GameObject;
+class Transform;
+class Animation;
+class Script_EnemyController;
+class Script_Enemy;
 class BTTask : public BTNode_Action
 {
 private:
@@ -42,11 +40,10 @@ public:
 
 public:
 	BTTaskType GetType() { return mType; }
-	SPtr<Script_Enemy> GetStat(GameObjectInfo::Type enemyType);
 
 
 public:
-	BTTask(SPtr_GameObject owner, BTTaskType type, std::function<void()> callback = nullptr);
+	BTTask(SPtr<GameObject> owner, BTTaskType type, std::function<void()> callback = nullptr);
 	~BTTask();
 
 };
@@ -59,7 +56,7 @@ protected:
 	SPtr<Animation>				  mAnimation;
 	SPtr<Transform>				  mTransform;
 public:
-	MonsterBTTask(SPtr_GameObject owner, BTTaskType type, std::function<void()> callback = nullptr);
+	MonsterBTTask(SPtr<GameObject> owner, BTTaskType type, std::function<void()> callback = nullptr);
 	~MonsterBTTask();
 };
 

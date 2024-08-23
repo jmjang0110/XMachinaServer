@@ -1,8 +1,6 @@
 #pragma once
 
 #include "BTTask.h"
-#include "Script_Enemy.h"
-#include "Script_EnemyController.h"
 namespace MonsterTask {
 
 	/// +-------------------------------------------------------------------------
@@ -12,17 +10,15 @@ namespace MonsterTask {
 
 	class CheckDetectionRange : public MonsterBTTask {
 	private:
-		SPtr<GamePlayer>			mTargetPlayer;
-		SPtr<GameMonster>			mTargetMonster;
+		SPtr<GameObject>			mTargetPlayer;
+		SPtr<GameObject>			mTargetMonster;
 
 	public:
 		virtual BTNodeState Evaluate() override;
 
-		SPtr<GamePlayer> FindDetectionPlayer();
-
-
+		SPtr<GameObject> FindDetectionPlayer();
 	public:
-		CheckDetectionRange(SPtr_GameObject owner, std::function<void()> callback = nullptr);
+		CheckDetectionRange(SPtr<GameObject> owner, std::function<void()> callback = nullptr);
 		~CheckDetectionRange();
 	};
 

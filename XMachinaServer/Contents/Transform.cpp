@@ -31,8 +31,8 @@ Transform::Transform(const Transform& other)
 {
 
 }
-Transform::Transform(SPtr<GameObject> owner, ComponentInfo::Type Type)
-	: Component(owner, ComponentInfo::Type::Transform, static_cast<UINT32>(ComponentInfo::Type::Transform))
+Transform::Transform(SPtr<GameObject> owner, Component::Type Type)
+	: Component(owner, Component::Type::Transform, static_cast<UINT32>(Component::Type::Transform))
 {
 }
 Transform::~Transform()
@@ -40,56 +40,51 @@ Transform::~Transform()
 }
 
 
-void Transform::Clone(SPtr<Component> other) 
+SPtr<Component> Transform::Clone(SPtr<Component> target)
 {
-	Component::Clone(other);
+	// Use the base class's Clone function to copy common Component data
+	Component::Clone(target);
 
-	SPtr<Transform> otherTransform = std::static_pointer_cast<Transform>(other);
-	// Create a new Transform object
+	// Cast the target component to a Transform object
+	SPtr<Transform> clonedTransform = std::static_pointer_cast<Transform>(target);
 
 	// Copy primitive data members
-	this->mIndex          = otherTransform->mIndex;
-	this->mWorldTransform = otherTransform->mWorldTransform;
-	this->mLocalTransform = otherTransform->mLocalTransform;
-	this->mPrevTransform  = otherTransform->mPrevTransform;
-	this->mPosition       = otherTransform->mPosition;
-	this->mRight          = otherTransform->mRight;
-	this->mUp             = otherTransform->mUp;
-	this->mLook           = otherTransform->mLook;
-	this->mObject         = otherTransform->mObject;  // Note: Depending on what mObject is, you might need a deep copy
+	clonedTransform->mIndex          = this->mIndex;
+	clonedTransform->mWorldTransform = this->mWorldTransform;
+	clonedTransform->mLocalTransform = this->mLocalTransform;
+	clonedTransform->mPrevTransform  = this->mPrevTransform;
+	clonedTransform->mPosition       = this->mPosition;
+	clonedTransform->mRight          = this->mRight;
+	clonedTransform->mUp             = this->mUp;
+	clonedTransform->mLook           = this->mLook;
+	clonedTransform->mObject         = this->mObject;  // Copy the object reference (deep copy may be needed if applicable)
+	clonedTransform->mUseObjCB       = this->mUseObjCB;
+	clonedTransform->mObjCBCount     = this->mObjCBCount;
+	clonedTransform->mObjCBIndices   = this->mObjCBIndices;
+	clonedTransform->mObjectCB       = this->mObjectCB;
 
-	// Copy mutable data members
-	mUseObjCB     = otherTransform->mUseObjCB;
-	mObjCBCount   = otherTransform->mObjCBCount;
-	mObjCBIndices = otherTransform->mObjCBIndices;
-	mObjectCB     = otherTransform->mObjectCB;
+	// Parent, Child, and Sibling relationships are not copied to avoid cyclic references
+	clonedTransform->mParent		 = nullptr;
+	clonedTransform->mChild			 = nullptr;
+	clonedTransform->mSibling		 = nullptr;
 
-	// Set the parent, child, and sibling relationships to nullptr for the new transform
-	mParent  = nullptr;
-	mChild   = nullptr;
-	mSibling = nullptr;
-
-	// Associate the new Transform with the copyOwner
-	SetType(ComponentInfo::Type::Transform);
+	return clonedTransform;
 
 }
-bool Transform::WakeUp()
+
+void Transform::Start()
 {
-	return true;
+	SyncSnapShot();
+
 }
-bool Transform::Start()
-{
-	mTransformSnapShot[mSnapShotIndex].WorldTransform = mWorldTransform;
-	return true;
-}
-bool Transform::Update()
+
+void Transform::Update()
 {
 	Component::Update();
 
-	return true;
 }
 
-bool Transform::LateUpdate()
+void Transform::LateUpdate()
 {
 	Component::LateUpdate();
 
@@ -97,9 +92,6 @@ bool Transform::LateUpdate()
 
 	/* Update Snap Shot */
 	UpdateTransofrmSnapShot();
-	SwapSnapShotIndex();
-
-	return true;
 }
 
 TransformSnapShot Transform::GetSnapShot()
@@ -108,17 +100,18 @@ TransformSnapShot Transform::GetSnapShot()
 	return snapShot;
 }
 
-void Transform::SwapSnapShotIndex()
-{
-	// [SnapShot Index] Swap!!!!
-	mSnapShotIndex = !mSnapShotIndex.load();
-}
 
 void Transform::UpdateTransofrmSnapShot()
 {
 	std::memcpy(&mTransformSnapShot[mSnapShotIndex].WorldTransform, &GetWorldTransform(), sizeof(Matrix));
+	mSnapShotIndex = !mSnapShotIndex.load(); // Swap SnapShot Index 
 }
 
+void Transform::SyncSnapShot()
+{
+	mTransformSnapShot[0].WorldTransform = mWorldTransform;
+	mTransformSnapShot[1].WorldTransform = mWorldTransform;
+}
 
 Quat Transform::GetLocalRotation() const
 {
@@ -221,16 +214,16 @@ void Transform::SetAxis(const Matrix& axisMatrix)
 void Transform::SetRight(const Vec3& right)
 {
 	mRight = Vector3::Normalized(right);
-	mUp = Vector3::Normalized(mLook.Cross(mRight));
-	mLook = Vector3::Normalized(mRight.Cross(mUp));
+	mUp    = Vector3::Normalized(mLook.Cross(mRight));
+	mLook  = Vector3::Normalized(mRight.Cross(mUp));
 
 	UpdateLocalTransform();
 }
 
 void Transform::SetLook(const Vec3& look)
 {
-	mLook = Vector3::Normalized(look);
-	mUp = Vector3::Normalized(mLook.Cross(mRight));
+	mLook  = Vector3::Normalized(look);
+	mUp    = Vector3::Normalized(mLook.Cross(mRight));
 	mRight = Vector3::Normalized(mLook.Cross(mUp));
 
 	UpdateLocalTransform();
@@ -238,9 +231,9 @@ void Transform::SetLook(const Vec3& look)
 
 void Transform::SetUp(const Vec3& up)
 {
-	mUp = Vector3::Normalized(up);
+	mUp    = Vector3::Normalized(up);
 	mRight = Vector3::Normalized(mLook.Cross(mUp));
-	mLook = Vector3::Normalized(mRight.Cross(mUp));
+	mLook  = Vector3::Normalized(mRight.Cross(mUp));
 
 	UpdateLocalTransform();
 }
@@ -470,7 +463,7 @@ bool Transform::RotateTargetAxisY(const Vec3& target, float rotationSpeed)
 	rotationSpeed *= t;
 
 	const float rotationValue = Math::Sign(angle) * rotationSpeed;
-	float rotationAngle = rotationValue * GetOwner()->GetDeltaTime();
+	float rotationAngle = rotationValue * DeltaTime();
 
 	if (fabs(rotationAngle) > fabs(angle)) {
 		rotationAngle = angle;

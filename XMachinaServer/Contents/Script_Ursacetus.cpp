@@ -3,21 +3,30 @@
 #include "GameObject.h"
 #include "Script_EnemyController.h"
 #include "Animation.h"
-#include "GameMonster.h"
 #include "GameRoom.h"
 
 #include "NPCController.h"
+#include "GameObject.h"
+#include "Animation.h"
+#include "Transform.h"
+#include "Collider.h"
+#include "Rigidbody.h"
+#include "Script_BehaviorTrees.h"
 
 
 Script_Ursacetus::Script_Ursacetus()
     : Script_Enemy()
 
 {
+    mType = FBProtocol::MONSTER_TYPE_URSACETUS;
+
 }
 
-Script_Ursacetus::Script_Ursacetus(SPtr<GameObject> owner, ScriptInfo::Type type)
-    : Script_Enemy(owner,  type)
+Script_Ursacetus::Script_Ursacetus(SPtr<GameObject> owner)
+    : Script_Enemy(owner)
 {
+    mType = FBProtocol::MONSTER_TYPE_URSACETUS;
+
     Script_EnemyStat::SetStat_EnemyLevel(4);
     Script_EnemyStat::SetStat_PheroLevel(5);
     Script_EnemyStat::SetStat_MoveSpeed(5);
@@ -41,16 +50,43 @@ Script_Ursacetus::~Script_Ursacetus()
 {
 }
 
-bool Script_Ursacetus::Start()
+SPtr<Component> Script_Ursacetus::Clone(SPtr<Component> target)
 {
-    if (!Script_Enemy::Start()) {
-        return false;
+    // Try to cast the target to Script_Anglerox
+    auto clonedScript = std::dynamic_pointer_cast<Script_Ursacetus>(target);
+    if (clonedScript)
+    {
+        // Call the base class Clone method first
+        Script_Enemy::Clone(clonedScript);
+        return clonedScript;
     }
- 
-    GetOwner()->GetAnimation()->GetController()->FindMotionByName(GetStat_Attack1AnimName())->AddCallback(std::bind(&Script_Ursacetus::BasicAttackCallback, this), 57);
-    GetOwner()->GetAnimation()->GetController()->FindMotionByName(GetStat_Attack3AnimName())->AddCallback(std::bind(&Script_Ursacetus::SpecialAttackCallback, this),65);
+    else
+    {
+        std::cout << "Clone failed: target is not of type Script_Ursacetus" << std::endl;
+        return nullptr;
+    }
+}
 
-    return true;
+void Script_Ursacetus::Clone(SPtr<GameObject> target)
+{
+    // Add a new Script_Anglerox instance to the GameObject
+    auto clonedScript = target->SetScriptEntity<Script_Ursacetus>();
+    // Clone the current script into the new script
+    this->Clone(std::dynamic_pointer_cast<Script_Ursacetus>(clonedScript));
+
+    clonedScript->SetOwner(target);
+
+}
+
+
+void Script_Ursacetus::Start()
+{
+    Script_Enemy::Start();
+
+    auto animController = OwnerAnimation()->GetController();
+    animController->FindMotionByName(mAttack1AnimName)->AddCallback(std::bind(&Script_Ursacetus::BasicAttackCallback, this), 57);
+    animController->FindMotionByName(mAttack3AnimName)->AddCallback(std::bind(&Script_Ursacetus::SpecialAttackCallback, this),65);
+
 }
 
 void Script_Ursacetus::BasicAttackCallback()
@@ -88,6 +124,6 @@ void Script_Ursacetus::AttackEndCallback()
     ++mCurrAttackStep;
     mCurrAttackStep %= UrsacetusAttackType::_count;
 
-    GetOwner()->GetAnimation()->GetController()->SetValue("Attack", mCurrAttackStep);
+    OwnerAnimation()->GetController()->SetValue("Attack", mCurrAttackStep);
     mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_IDLE);
 }

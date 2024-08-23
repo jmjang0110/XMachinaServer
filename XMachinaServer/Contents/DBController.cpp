@@ -2,6 +2,12 @@
 #include "DBController.h"
 #include "ServerLib/MemoryManager.h"
 
+#include "GameObject.h"
+#include "Transform.h"
+#include "Collider.h"
+#include "Rigidbody.h"
+#include "Animation.h"
+
 DEFINE_SINGLETON(DBController);
 
 DBController::DBController()
@@ -12,17 +18,17 @@ DBController::DBController()
 DBController::~DBController()
 {
 	SQLFreeHandle(SQL_HANDLE_ENV, hEnv);
-	MEMORY->Delete(mX_Machina_DB.MonsterDB);
-	MEMORY->Delete(mX_Machina_DB.NPCDB);
-	MEMORY->Delete(mX_Machina_DB.PlayerDB);
+	//MEMORY->Delete(mX_Machina_DB.MonsterDB);
+	//MEMORY->Delete(mX_Machina_DB.NPCDB);
+	//MEMORY->Delete(mX_Machina_DB.PlayerDB);
 
 }
 
 void DBController::Init()
 {
-	mX_Machina_DB.MonsterDB = MEMORY->New<DB_Monster>();
-	mX_Machina_DB.NPCDB     = MEMORY->New<DB_NPC>();
-	mX_Machina_DB.PlayerDB  = MEMORY->New<DB_Player>();
+	//mX_Machina_DB.MonsterDB = MEMORY->New<DB_Monster>();
+	//mX_Machina_DB.NPCDB     = MEMORY->New<DB_NPC>();
+	//mX_Machina_DB.PlayerDB  = MEMORY->New<DB_Player>();
 
 }
 
@@ -168,16 +174,16 @@ void DBController::CheckSQLReturn(SQLRETURN ret, SQLSMALLINT handleType, SQLHAND
 		PrintSQLError(handleType, handle);
 	}
 	else if (ret == SQL_ERROR) {
-		std::cerr << "Error in operation." << std::endl;
+		std::cout << "Error in operation." << std::endl;
 		PrintSQLError(handleType, handle);
 	}
 	else if (ret == SQL_INVALID_HANDLE) {
-		std::cerr << "Invalid handle." << std::endl;
+		std::cout << "Invalid handle." << std::endl;
 	}
 	else if (ret == SQL_NO_DATA) {
-		std::cerr << "No data found." << std::endl;
+		std::cout << "No data found." << std::endl;
 	}
 	else {
-		std::cerr << "Unknown return code: " << ret << std::endl;
+		std::cout << "Unknown return code: " << ret << std::endl;
 	}
 }

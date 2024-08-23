@@ -32,65 +32,42 @@ namespace PlayerInfo
 
 class Script_PlayerStat : public Script_Stat
 {
-private:
-	SPtr<GamePlayer> mPlayerOwner = nullptr;
-
-private:
-
-	/// +-------------------------------------------
-	///	 >> ▶▶▶▶▶ Player Info 
-	/// -------------------------------------------+
-	SPtr<GameObject>	mTarget           = {};		// self GameObject
+protected:
 	Vec3				mRespawn_Position = {};		// 리스폰 지점
 	int					mScore            = {};
 
 	/// +-------------------------------------------
 	///	 >> Phero
-	/// -------------------------------------------+
-	float mStartPheroAmount{};
-	float mMaxPheroAmount{};
+	/// -------------------------------------------+	
+	float mStartPheroAmount		= {};
+	float mMaxPheroAmount		= {};
 
-	float mCurrPheroAmount{};	Lock::SRWLock Lock_CurrPheroAmount;
-	float mPheroRegenRate{};
-
-	/// +-------------------------------------------
-	///	 >> Weapon
-	/// -------------------------------------------+
-	int mCrntWeaponNum{};
-	int mNextWeaponNum{};
+	float mCurrPheroAmount		= {};	Lock::SRWLock Lock_CurrPheroAmount;
+	float mPheroRegenRate		= {};
 
 	/// +-------------------------------------------
-	///	 >> Skill
-	/// -------------------------------------------+
-
+	///	 >> Speed
+	/// -------------------------------------------+	
+	float	mVelocity			= {};
 
 public:
-
 	Script_PlayerStat();
-	Script_PlayerStat(SPtr<GameObject> owner, ScriptInfo::Type type);
-	~Script_PlayerStat();
+	Script_PlayerStat(SPtr<GameObject> owner);
+	virtual ~Script_PlayerStat();
 
 
 public:
+	virtual SPtr<Component> Clone(SPtr<Component> target);
+	virtual void Clone(SPtr<GameObject> target);
 
-	/// +------------------------------
-	///			virtual function 
-	/// ------------------------------+
-	virtual void Clone(SPtr<Component> other) ;
-
-
-	virtual bool Start();
-
-	/// +------------------------------
-	///		 Stat : virtual function 
-	/// ------------------------------+
+	virtual void Start();
 
 public:
 	// player를 [pos]로 위치시키고 해당 위치를 리스폰 지점으로 설정한다.
 	void SetSpawn(const Vec3& pos);
+	void SetVelocity(float velocity) { mVelocity = velocity; }
 
-
-
+	float GetVelocity() { return mVelocity; }
 public:
 	/// +-------------------------------------------
 	///	 >> Phero
@@ -98,13 +75,9 @@ public:
 	virtual void AddPheroAmount(float pheroAmount);
 	virtual bool ReducePheroAmount(float pheroCost);
 
-	void S_SetCurrPheroAmount(float phero);
+	void  S_SetCurrPheroAmount(float phero);
 	float S_GetCurrPheroAmount();
 
-
-	/// +-------------------------------------------
-	///	 >> Weapon
-	/// -------------------------------------------+
 	
 };
 

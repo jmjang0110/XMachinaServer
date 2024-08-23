@@ -19,7 +19,7 @@ Session::Session() : NetworkObject()
 	sockdata.CreateSocket();
 	NetworkObject::SetSocketData(sockdata);
 
-	NetworkObject::ID = static_cast<UINT32>(sockdata.GetSocket());
+	NetworkObject::mID = static_cast<UINT32>(sockdata.GetSocket());
 
 }
 
@@ -228,7 +228,7 @@ void Session::ProcessIO(OverlappedIO::Type IoType, INT32 BytesTransferred)
 		mOverlapped.Disconnect.DecRef_NetObj(); // Shared_ptr -> release 
 
 		OnDisconnected();
-		GetOwnerNI()->DeleteSession(NetworkObject::ID); /* ID : protected */
+		GetOwnerNI()->DeleteSession(NetworkObject::mID); /* ID : protected */
 		//GetOwnerNI()->ReleaseSession(std::static_pointer_cast<Session>(shared_from_this()));
 
 	}

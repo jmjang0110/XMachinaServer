@@ -1,16 +1,19 @@
 #include "pch.h"
 #include "PlayerController.h"
 #include "GameRoom.h"
+#include "GameObject.h"
 #include "GameSession.h"
-#include "ServerLib/ThreadManager.h"
 
-SPtr<GamePlayer> PlayerController::GetPlayer(UINT32 ID)
+/* Player Script */
+#include "Script_Player.h"
+
+SPtr<GameObject> PlayerController::GetPlayer(UINT32 ID)
 {
 
 	mSRWLock.LockRead();
 
-	auto it = mGamePlayers.find(ID);
-	if (it != mGamePlayers.end()) {
+	auto it = mPlayers.find(ID);
+	if (it != mPlayers.end()) {
 		mSRWLock.UnlockRead();
 		return it->second;
 	}
@@ -19,12 +22,12 @@ SPtr<GamePlayer> PlayerController::GetPlayer(UINT32 ID)
 	return nullptr;
 }
 
-std::vector<SPtr<GamePlayer>> PlayerController::GetAllPlayers()
+std::vector<SPtr<GameObject>> PlayerController::GetAllPlayers()
 {
-	std::vector<SPtr<GamePlayer>> allPlayers;
+	std::vector<SPtr<GameObject>> allPlayers;
 	mSRWLock.LockRead();
 
-	for (auto& iter : mGamePlayers) {
+	for (auto& iter : mPlayers) {
 		allPlayers.push_back(iter.second);
 	}
 
@@ -35,7 +38,7 @@ std::vector<SPtr<GamePlayer>> PlayerController::GetAllPlayers()
 std::vector<std::pair<UINT32, Vec3>> PlayerController::GetPlayersPosition()
 {
 	std::vector<std::pair<UINT32, Vec3>> result;
-	for (auto& iter : mGamePlayers) { 
+	for (auto& iter : mPlayers) { 
 
 		int  id                       = iter.second->GetID();
 		auto playerTransformSnapShot  = iter.second->GetTransform()->GetSnapShot();
@@ -55,18 +58,22 @@ PlayerController::~PlayerController()
 }
 
 
-bool PlayerController::EnterPlayer(SPtr_GamePlayer player)
+bool PlayerController::EnterPlayer(SPtr<GameObject> player)
 {
 	mCurrPlayerCnt.fetch_add(1);
 
 	{
 		mSRWLock.LockWrite();
 
-		mGamePlayers[player->GetID()] = player;
+		player->SetOwnerRoom(mOwnerRoom);
+		auto player_entity = player->GetScriptEntity<Script_Player>();
+		if (player_entity) {
+			mPlayers[player->GetID()] = player;
+			player->Start();
+		}
+		else
+			assert(0);
 
-		player->setRoomID(mRoomID);
-		player->SetOwnerPlayerController(this);
-		player->Start();
 
 		mSRWLock.UnlockWrite();
 	}
@@ -80,7 +87,7 @@ bool PlayerController::EnterPlayer(SPtr_GamePlayer player)
 	return true;
 }
 
-void PlayerController::Init(int roomID, SPtr_GameRoom owner)
+void PlayerController::Init(int roomID, SPtr<GameRoom> owner)
 {
 	mRoomID    = roomID;
 	mOwnerRoom = owner;
@@ -93,8 +100,9 @@ bool PlayerController::ExitPlayer(UINT32 sessionID)
 
 	{
 		mSRWLock.LockWrite();
-		mGamePlayers[sessionID]->Exit();
-		mGamePlayers.unsafe_erase(sessionID);
+		SPtr<Script_Player> player_entity = mPlayers[sessionID]->GetScriptEntity<Script_Player>();
+		player_entity->SetState(PlayerState::Exit);
+		mPlayers.unsafe_erase(sessionID);
 		mSRWLock.UnlockWrite();
 	}
 
@@ -106,13 +114,13 @@ bool PlayerController::ExitPlayer(UINT32 sessionID)
 	return true;
 }
 
-SPtr_GamePlayer PlayerController::FindPlayer(UINT32 sessionID)
+SPtr<GameObject> PlayerController::FindPlayer(UINT32 sessionID)
 {
 	//mSRWLock.LockRead();
 
-	size_t size = mGamePlayers.size();
-	auto obj = mGamePlayers.find(sessionID);
-	if (obj == mGamePlayers.end())
+	size_t size = mPlayers.size();
+	auto obj = mPlayers.find(sessionID);
+	if (obj == mPlayers.end())
 	{
 		//mSRWLock.UnlockRead();
 		return nullptr;
@@ -126,11 +134,12 @@ void PlayerController::Broadcast(SPtr_SendPktBuf spkt, UINT32 exceptSessionID)
 {
 	mSRWLock.LockRead();
 
-	for (auto& player : mGamePlayers) {
+	for (auto& player : mPlayers) {
 		if (player.first == exceptSessionID) continue;
-		SPtr_GameSession session = player.second->GetSessionOwner();
-		session->Send(spkt);
-
+		auto player_entity = player.second->GetScriptEntity<Script_Player>();
+		SPtr<GameSession> session = player_entity->GetSessionOwner();
+		if(session)
+			session->Send(spkt);
 	}
 
 	mSRWLock.UnlockRead();
@@ -140,9 +149,11 @@ void PlayerController::SendPacket(UINT32 sessionID, SPtr_SendPktBuf sendPkt)
 {
 	mSRWLock.LockRead();
 
-	const auto& iter = mGamePlayers.find(sessionID);
-	if (iter != mGamePlayers.end()) {
-		SPtr_GameSession session = iter->second->GetSessionOwner();
+	const auto& iter = mPlayers.find(sessionID);
+	if (iter != mPlayers.end()) {
+
+		auto			  player_entity = iter->second->GetScriptEntity<Script_Player>();
+		SPtr<GameSession> session       = player_entity->GetSessionOwner();
 		if (sendPkt != nullptr)
 			session->Send(sendPkt);
 	}
@@ -152,10 +163,10 @@ void PlayerController::SendPacket(UINT32 sessionID, SPtr_SendPktBuf sendPkt)
 
 
 
-std::vector<SPtr<GamePlayer>> PlayerController::GetPlayersInViewRange(Vec3 player_pos, float viewrange_radius)
+std::vector<SPtr<GameObject>> PlayerController::GetPlayersInViewRange(Vec3 player_pos, float viewrange_radius)
 {
-	std::vector<SPtr<GamePlayer>> playersInView;
-	for (auto& player : mGamePlayers) {
+	std::vector<SPtr<GameObject>> playersInView;
+	for (auto& player : mPlayers) {
 
 		/* Player Transform Snap Shot */
 		auto PlayerTransformSnapShot = player.second->GetTransform()->GetSnapShot();

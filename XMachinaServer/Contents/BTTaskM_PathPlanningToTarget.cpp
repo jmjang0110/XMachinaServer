@@ -1,14 +1,20 @@
 #include "pch.h"
 #include "BTTaskM_PathPlanningToTarget.h"
-
 #include "BTTask.h"
+
 #include "ResourceManager.h"
 #include "TileMap.h"
+
 #include "GameObject.h"
 #include "Transform.h"
-#include "Script_AdvancedCombatDroid_5.h"
-#include "Script_Onyscidus.h"
-#include "Script_Ursacetus.h"
+#include "Animation.h"
+#include "Rigidbody.h"
+#include "Collider.h"
+
+#include "Script_EnemyController.h"
+#include "Script_Enemy.h"
+
+
 /// +-------------------------------------------------------------------------
 ///	> ¢º¢º¢º Task Planning To Target  
 /// __________________________________________________________________________
@@ -42,7 +48,7 @@ BTNodeState MonsterTask::PathPlanningToTarget::Evaluate()
 	return BTNodeState::Failure;
 }
 
-MonsterTask::PathPlanningToTarget::PathPlanningToTarget(SPtr_GameObject owner, std::function<void()> callback)
+MonsterTask::PathPlanningToTarget::PathPlanningToTarget(SPtr<GameObject> owner, std::function<void()> callback)
 	: PathPlanning_AStar(owner, BTTaskType::MonT_PathPlanningToTarget, callback)
 {
 

@@ -24,6 +24,7 @@
 #include <numeric>
 #include <filesystem>
 #include <chrono>
+#include <cstdint> 
 
 /* STL */
 #include <vector>
@@ -42,25 +43,23 @@
 #include <concurrent_unordered_set.h>
 #include <atomic>
 
+
+template<typename T>
+using SPtr = std::shared_ptr<T>;
+
 /* My Utility Hedaers */
+#undef max
+#include "Enum_generated.h"
 #include "ServerLib/UtilityMacro.h"
 #include "Contents/LogManager.h"
 #include "Contents/TimeManager.h"
 #include "ServerLib/MemoryManager.h"
 #include "Contents/Util/Common.h"
-#include "Contents/Gameinfo.h"
+#include "Contents/EntityTag.h"
+#include "Contents/ScriptKey.h"
+#include "Contents/ObjectTag.h"
+#include "ServerLib/NetworkObject.h"
 
-template<typename T>
-using SPtr = std::shared_ptr<T>;
-
-
-using SPtr_GameSession   = std::shared_ptr<class GameSession>;
-using SPtr_GameRoom      = std::shared_ptr<class GameRoom>;
-using SPtr_GamePlayer    = std::shared_ptr<class GamePlayer>;
-using SPtr_GameMonster   = std::shared_ptr<class GameMonster>;
-using SPtr_GameBuilding = std::shared_ptr<class GameBuilding>;
-using SPtr_GameBullet    = std::shared_ptr<class GameBullet>;
-using SPtr_GameObject    = std::shared_ptr<class GameObject>;
 
 
 constexpr UINT32 MAX_SESSION_NUM = 50;

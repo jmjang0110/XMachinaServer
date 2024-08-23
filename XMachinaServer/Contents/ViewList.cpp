@@ -1,26 +1,21 @@
 #include "pch.h"
 #include "ViewList.h"
-#include "GameMonster.h"	
-#include "GamePlayer.h"
+#include "GameObject.h"
 
-
-bool ViewList::TryInsertPlayer(UINT32 key, SPtr<GamePlayer> player)
+bool ViewList::TryInsertPlayer(UINT32 key, SPtr<GameObject> player)
 {
 	auto monsterIt = VL_Players.find(key);
-	// 이미 존재한다.
 	if (monsterIt != VL_Players.end())
 		return false;
 	else
 		VL_Players.insert(std::make_pair(key, player));
 
 	return true;
-
 }
 
-bool ViewList::TryInsertMonster(UINT32 key, SPtr<GameMonster> monster, bool DoActivate)
+bool ViewList::TryInsertMonster(UINT32 key, SPtr<GameObject> monster, bool DoActivate)
 {
 	auto monsterIt = VL_Monsters.find(key);
-	// 이미 존재한다.
 	if (monsterIt != VL_Monsters.end())
 		return false;
 	else
@@ -29,7 +24,6 @@ bool ViewList::TryInsertMonster(UINT32 key, SPtr<GameMonster> monster, bool DoAc
 		if(DoActivate)
 			monster->Activate();
 	}
-
 	return true;
 }
 
@@ -60,8 +54,7 @@ bool ViewList::RemoveMonster(UINT32 key, bool DoActivate)
 void ViewList::Clear()
 {
 	for (auto& it : VL_Monsters)
-		it.second->DecreaseRef();
-
+		it.second->DecreaseActivateRef();
 	VL_Monsters.clear();
 	VL_Players.clear();
 }

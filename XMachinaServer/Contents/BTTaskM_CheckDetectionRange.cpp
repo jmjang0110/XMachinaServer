@@ -1,25 +1,27 @@
 #include "pch.h"
 #include "BTTaskM_CheckDetectionRange.h"
-
 #include "BTTask.h"
-#include "Transform.h"
-#include "GameObject.h"
 #include "BTNode.h"
-#include "Script_Player.h"
-#include "ResourceManager.h"
-#include "Script_AdvancedCombatDroid_5.h"
-#include "Script_Onyscidus.h"
-#include "Script_Ursacetus.h"
 
+#include "Script_Enemy.h"
+#include "Script_EnemyController.h"
+
+#include "GameObject.h"
+#include "Transform.h"
+#include "Animation.h"
+#include "Rigidbody.h"
+#include "Collider.h"
+
+#include "FBsPacketFactory.h"
+#include "ResourceManager.h"
 #include "NPCController.h"
 #include "PlayerController.h"
 #include "SectorController.h"
+#include "RoomManager.h"
 #include "GameRoom.h"
-#include "GameManager.h"
 
-#include "FBsPacketFactory.h"
-
-
+#include "Script_Player.h"
+#include "Script_Skill.h"
 
 /// +-------------------------------------------------------------------------
 ///	> ¢º¢º¢º Task Check Detection Range 
@@ -39,10 +41,11 @@ BTNodeState MonsterTask::CheckDetectionRange::Evaluate()
 		return BTNodeState::Failure;
 	}
 
-	if (target && target->GetType() == GameObjectInfo::Type::GamePlayer) {
-		SPtr<GamePlayer> player = std::dynamic_pointer_cast<GamePlayer>(target);
-		GameSkill::State IsCloakingOn = player->GetSkillState(FBProtocol::PLAYER_SKILL_TYPE_CLOACKING);
-		if (IsCloakingOn == GameSkill::State::Active) {
+	if (target) {
+		auto player_entity    = target->GetScriptEntity<Script_Player>();
+		auto cloaking_entity  = player_entity->GetSkillEntity(FBProtocol::PLAYER_SKILL_TYPE_CLOACKING);
+
+		if (cloaking_entity->GetCurrSkillState() == SkillState::Active) {
 			mEnemyController->SetTarget(nullptr);
 			mEnemyController->RemoveAllAnimation();
 			mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_IDLE);
@@ -56,23 +59,20 @@ BTNodeState MonsterTask::CheckDetectionRange::Evaluate()
 	return BTNodeState::Success;
 }
 
-MonsterTask::CheckDetectionRange::CheckDetectionRange(SPtr_GameObject owner, std::function<void()> callback)
+MonsterTask::CheckDetectionRange::CheckDetectionRange(SPtr<GameObject> owner, std::function<void()> callback)
 	: MonsterBTTask(owner, BTTaskType::MonT_CheckDetectionRange, callback)
-
 {
-
 }
 
 MonsterTask::CheckDetectionRange::~CheckDetectionRange()
 {
 	mEnemyController = nullptr;
-
 }
 
-SPtr<GamePlayer> MonsterTask::CheckDetectionRange::FindDetectionPlayer()
+SPtr<GameObject> MonsterTask::CheckDetectionRange::FindDetectionPlayer()
 {
-	Vec3 EnemyPos                                  = GetOwner()->GetTransform()->GetPosition();
-	PlayerController* PC                           = mEnemyController->GetOwnerMonster()->GetOwnerNPCController()->GetOwnerRoom()->GetPlayerController();
+	Vec3 EnemyPos                                  = mOwner->GetTransform()->GetPosition();
+	PlayerController* PC                           = mOwner->GetOwnerRoom()->GetPlayerController();
 	std::vector<std::pair<UINT32, Vec3>> playerPos = PC->GetPlayersPosition(); /* Lock */
 
 	int closestPlayerID = -1;
@@ -95,10 +95,11 @@ SPtr<GamePlayer> MonsterTask::CheckDetectionRange::FindDetectionPlayer()
 		}
 	}
 
-	SPtr<GamePlayer>	target = nullptr;
+	SPtr<GameObject> target = nullptr;
 	if (closestPlayerID != -1) {
 		target = PC->GetPlayer(closestPlayerID);
-		if (target->IsExit() == true) {
+		auto player_entity = target->GetScriptEntity<Script_Player>();
+		if (player_entity->GetCurrState() == PlayerState::Exit) {
 			target = nullptr;
 		}
 	}

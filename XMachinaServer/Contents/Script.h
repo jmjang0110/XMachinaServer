@@ -1,59 +1,36 @@
 #pragma once
 #include "Component.h"
 
-
-namespace ScriptInfo {
-
-	enum class Type : UINT16 {
-		None, 
-
-		Stat, // Enemy, Player 
-		EnemyController,
-
-		Skill,
-		DefaultEnemyBT,
-		MindControlledEnemyBT,
-		DeusPhase1BT,
-
-		Phero,
-		PheroDropper,
-
-		Building,
-
-		Bullet,
-
-		End,
-	};
-
-	
-}
- 
-
+class Transform;
+class Collider;
+class Animation;
+class Rigidbody;
+class GameObject;
 class Script : public Component
 {
-private:
-	ScriptInfo::Type mType = ScriptInfo::Type::None;
-
+protected:
+	UINT32	mKey   = -1;
 
 public:
 	Script();
-	Script(SPtr<GameObject> owner, ScriptInfo::Type type, UINT32 id);
+	Script(SPtr<GameObject> owner, UINT32 key);
 	virtual ~Script();
 
 public:
-	virtual void Clone(SPtr<Component> other) ;
+	virtual void Clone(SPtr<GameObject> target);
+	virtual SPtr<Component> Clone(SPtr<Component> target);
+	template<typename T>
+	SPtr<T> GetDerivedScript() { return std::dynamic_pointer_cast<T>(shared_from_this()); }
 
-	virtual void Activate();
-	virtual void DeActivate();
+	virtual void Dispatch(class OverlappedObject* overlapped, UINT32 bytes = 0);
 
-	virtual void OnEnable();
-	virtual void OnDisable();
 
-	virtual bool WakeUp();
-	virtual bool Start();
-	virtual bool Update();
-	virtual bool LateUpdate();
-	virtual void OnDestroy();
+public:
+	SPtr<Transform> OwnerTransform();
+	SPtr<Collider>	OwnerCollider()	;
+	SPtr<Animation> OwnerAnimation();
+	SPtr<Rigidbody>	OwnerRigidbody();
 
+	UINT32 GetKey() { return mKey; }
 };
 

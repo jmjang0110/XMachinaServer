@@ -1,80 +1,92 @@
 #include "pch.h"
 #include "GameObject.h"
-#include "Transform.h"
-#include "ServerLib/ServerNetwork.h"
-#include "Framework.h"
 #include "Component.h"
+#include "GameTimer.h"
 #include "Script.h"
-#include "Transform.h"
-#include "Collider.h"
-#include "Animation.h"
-
-/* Script Headers */
-#include  "Script_BehaviorTree.h"
-#include "Script_Building.h"
-#include "Script_BehaviorTrees.h"
-#include "Script_Enemy.h"
-#include "Script_EnemyController.h"
-#include "Script_EnemyStat.h"
-#include "Script_Phero.h"
-#include "Script_PheroDropper.h"
-#include "Script_Player.h"
-#include "Script_PlayerStat.h"
-#include "Script_Stat.h"
-#include "Script_Bullet.h"
-
-#include "Script_AdvancedCombatDroid_5.h"
-#include "Script_Ursacetus.h"
-#include "Script_Onyscidus.h"
-#include "Script_Arack.h"
-#include "Script_Aranobot.h"
-#include "Script_Ceratoferox.h"
-#include "Script_Gobbler.h"
-#include "Script_LightBipedMech.h"
-#include "Script_Rapax.h"
-#include "Script_Anglerox.h"
-#include "Script_MiningMech.h"
-#include "Script_Deus_Phase_1.h"
-#include "Script_Deus_Phase_2.h"
-
 
 GameObject::GameObject()
 	: GameEntity()
 {
+	mTimer = new GameTimer;
 }
 
 GameObject::GameObject(UINT32 sessionID)
 	: GameEntity(sessionID)
 {
+	mTimer = new GameTimer;
+
 }
 
 GameObject::~GameObject()
 {
+	SAFE_DELETE(mTimer);
+
+	for (auto& iter : mComponents)
+		iter.second = nullptr;
+	for (auto& iter : mScripts)
+		iter.second = nullptr;
+
+	mScriptEntity = nullptr;
+	mOwnerRoom    = nullptr;
+}
+
+void GameObject::Start()
+{
+	mTimer->Start();
+
+	// Update all components
+	for (auto& pair : mComponents) {
+		if (pair.second) {
+			pair.second->Start();
+		}
+	}
+
+	// Update all scripts
+	for (auto& pair : mScripts) {
+		if (pair.second) {
+			pair.second->Start();
+		}
+	}
+
+	if (mComponents.end() != mComponents.find(Component::Type::Animation)) {
+		GetAnimation()->Start();
+	}
+
+	if (mScriptEntity)
+		mScriptEntity->Start();
 }
 
 void GameObject::Update()
 {
-	UpdateDeltaTime();
+	mTimer->Update();
+
 	// Update all components
 	for (auto& pair : mComponents) {
-		if (pair.second) {  // Check if the shared pointer is not null
+		if (pair.second) {  
 			pair.second->Update();
 		}
 	}
 
 	// Update all scripts
 	for (auto& pair : mScripts) {
-		if (pair.second) {  // Check if the shared pointer is not null
+		if (pair.second) {  
 			pair.second->Update();
 		}
 	}
 
-	if (mComponents.end() != mComponents.find(ComponentInfo::Type::Animation))
-		mComponents.at(ComponentInfo::Type::Animation)->Animate();
-	
+	if (mComponents.end() != mComponents.find(Component::Type::Animation)) {
+		GetAnimation()->Animate();
+	}
+		
+	if (mScriptEntity)
+		mScriptEntity->Update();
 
+}
+
+void GameObject::LateUpdate()
+{
 	for (auto& pair : mComponents) {
-		if (pair.second) {  // Check if the shared pointer is not null
+		if (pair.second) { 
 			pair.second->LateUpdate();
 		}
 	}
@@ -84,43 +96,23 @@ void GameObject::Update()
 			pair.second->LateUpdate();
 		}
 	}
+
+	if (mScriptEntity)
+		mScriptEntity->LateUpdate();
+
 }
 
-void GameObject::Animate()
+void GameObject::End()
 {
-}
-
-void GameObject::WakeUp()
-{
-	mCurrTimePoint = std::chrono::steady_clock::now();
-
-	for (auto& iter : mComponents) {
-		iter.second->WakeUp();
-	}
-
-	for (auto& iter : mScripts) {
-		iter.second->WakeUp();
-	}
-}
-
-void GameObject::Start()
-{
-	mCurrTimePoint = std::chrono::steady_clock::now();
-
-	for (auto& iter : mComponents) {
-		iter.second->Start();
-	}
-
-	for (auto& iter : mScripts) {
-		iter.second->Start();
-	}
 }
 
 void GameObject::Activate()
 {
+	mActivateRef.fetch_add(1);
+
 	GameEntity::Activate();
 
-	mCurrTimePoint = std::chrono::steady_clock::now();
+	mTimer->Activate();
 
 	for (auto& iter : mComponents) {
 		iter.second->Activate();
@@ -129,11 +121,18 @@ void GameObject::Activate()
 	for (auto& iter : mScripts) {
 		iter.second->Activate();
 	}
+
+	if (mScriptEntity)
+		mScriptEntity->Activate();
 }
 
 void GameObject::DeActivate()
 {
+	mActivateRef.fetch_sub(1);
+
 	GameEntity::DeActivate();
+
+	mTimer->DeActivate();
 
 	for (auto& iter : mComponents) {
 		iter.second->DeActivate();
@@ -142,57 +141,47 @@ void GameObject::DeActivate()
 		iter.second->DeActivate();
 	}
 
+	if (mScriptEntity)
+		mScriptEntity->DeActivate();
 }
 
-void GameObject::OnCollision(GameObject* other)
+void GameObject::DecreaseActivateRef()
 {
-}
-
-void GameObject::UpdateDeltaTime()
-{
-	mPrevTimePoint = mCurrTimePoint;
-	mCurrTimePoint = std::chrono::steady_clock::now();
-
-	std::chrono::duration<double> elapsed_seconds = mCurrTimePoint - mPrevTimePoint;
-	mDeltaTime = static_cast<float>(elapsed_seconds.count());
+	mActivateRef.fetch_sub(1);
 
 }
 
-bool GameObject::RegisterUpdate(std::chrono::system_clock::duration offset)
+void GameObject::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 {
+	// 실질적인 처리를 Script 에 넘긴다. 
+	if (mScriptEntity)
+		mScriptEntity->Dispatch(overlapped, bytes);
+}
 
-	TimerEvent t;
+bool GameObject::RegisterUpdate(float duration_second)
+{
+	
+	TimerEvent t{};
 	t.Type        = TimerEventType::Update_GameObject;
-	t.WakeUp_Time = std::chrono::system_clock::now() + offset; 
+	t.WakeUp_Time = std::chrono::system_clock::now() + std::chrono::duration_cast<std::chrono::system_clock::duration>(std::chrono::duration<float>(duration_second));
 	t.Owner       = shared_from_this();
+	
 	TIME_MGR->PushTimerEvent(t);
-
 	return true;
-
 }
 
-void GameObject::SetAnimation(const std::string& controller)
+float GameObject::DeltaTime()
 {
-	if (controller == "") {
-		return;
-	}
-
-	SPtr<Animation> animation = AddComponent<Animation>(ComponentInfo::Type::Animation);
-	animation->Load(controller);
+	return mTimer->DeltaTime();
 }
-
 
 SPtr<GameObject> GameObject::Clone() const
 {
-
 	SPtr<GameObject> copy = MEMORY->Make_Shared<GameObject>();
-
-	copy->ID    = this->ID;
-	copy->mType = this->mType;
-
+	copy->mID             = this->mID;
+	copy->mName           = this->mName;
 	CloneComponents(copy);
 	CloneScripts(copy);
-
 
 	return copy;
 }
@@ -209,127 +198,59 @@ void GameObject::CloneComponents(SPtr<GameObject>& copy) const
 
 void GameObject::CloneScripts(SPtr<GameObject>& copy) const
 {
-	auto keys = mScripts | std::views::keys;
-	std::vector<ScriptInfo::Type> sortedKeys(keys.begin(), keys.end());
-	std::ranges::sort(sortedKeys);
-	for (auto key : sortedKeys)
-	{
-		SPtr<Script> script = copy->AddScript(key);
-		script->SetOwner(copy);
-		script->Clone(mScripts.at(key));
+	/// 1. Clone Entity Script 
+	mScriptEntity->Clone(copy);
+	mScriptEntity->SetOwner(copy);
+	
+	/// 2. Clone Sub Scripts
+	// Collect the script keys from the original GameObject and sort them
+	std::vector<UINT32> sortedKeys;
+	sortedKeys.reserve(mScripts.size());
+
+	for (const auto& pair : mScripts) {
+		sortedKeys.push_back(pair.first);
 	}
 
-}
+	std::sort(sortedKeys.begin(), sortedKeys.end());
 
+	// Clone each script and attach it to the new GameObject
+	for (const auto& key : sortedKeys) {
+		if (auto script = mScripts.at(key)) {
+			script->Clone(copy);
+			script->SetOwner(copy);
 
-
-SPtr<Script> GameObject::AddScript(ScriptInfo::Type key)
-{
-	SPtr<Script> script{};
-
-	switch (key)
-	{
-	case ScriptInfo::Type::Stat: {
-		switch (mType)
-		{
-		case GameObjectInfo::Type::Monster_Ursacetus:
-			script = AddScript<Script_Ursacetus>(key);
-			break;
-		case GameObjectInfo::Type::Monster_Onyscidus:
-			script = AddScript<Script_Onyscidus>(key);
-			break;
-		case GameObjectInfo::Type::Monster_AdvancedCombat_5:
-			script = AddScript<Script_AdvancedCombatDroid_5>(key);
-			break;
-		case GameObjectInfo::Type::Monster_Anglerox:
-			script = AddScript<Script_Anglerox>(key);
-			break;
-		case GameObjectInfo::Type::Monster_Arack:
-			script = AddScript<Script_Arack>(key);
-			break;
-		case GameObjectInfo::Type::Monster_Ceratoferox:
-			script = AddScript<Script_Ceratoferox>(key);
-			break;
-		case GameObjectInfo::Type::Monster_Gobbler:
-			script = AddScript<Script_Gobbler>(key);
-			break;
-		case GameObjectInfo::Type::Monster_LightBipedMech:
-			script = AddScript<Script_LightBipedMech>(key);
-			break;
-		case GameObjectInfo::Type::Monster_MiningMech:
-			script = AddScript<Script_MiningMech>(key);
-			break;
-		case GameObjectInfo::Type::Monster_Rapax:
-			script = AddScript<Script_Rapax>(key);
-			break;
-		case GameObjectInfo::Type::Monster_Aranobot:
-			script = AddScript<Script_Aranobot>(key);
-			break;
-		case GameObjectInfo::Type::Montser_Deus_Phase_1:
-			script = AddScript<Script_Deus_Phase_1>(key);
-			break;
-		case GameObjectInfo::Type::Monster_Deus_Phase_2:
-			script = AddScript<Script_Deus_Phase_2>(key);
-			break;
-		default:
-			break;
 		}
 	}
-		break;
-	case ScriptInfo::Type::EnemyController:
-		script = AddScript<Script_EnemyController>(key);
-		break;
-	case ScriptInfo::Type::DefaultEnemyBT:
-		script = AddScript<Script_DefaultEnemyBT>(key);
-		break;
-	case ScriptInfo::Type::MindControlledEnemyBT:
-		script = AddScript<Script_MindControlledEnemyBT>(key);
-		break;
-	case ScriptInfo::Type::DeusPhase1BT:
-		script = AddScript<Script_DeusPhase1BT>(key);
-		break;
-	case ScriptInfo::Type::Phero:
-		script = AddScript<Script_Phero>(key);
-		break;
-	case ScriptInfo::Type::PheroDropper:
-		script = AddScript<Script_PheroDropper>(key);
-		break;
-	case ScriptInfo::Type::Building:
-		script = AddScript<Script_Building>(key);
-		break;
-	case ScriptInfo::Type::Bullet:
-		script = AddScript<Script_Bullet>(key);
-		break;
-	default:
-		break;
-	}
 
-	return script;
 
 }
 
-
-SPtr<Component> GameObject::AddComponent(ComponentInfo::Type key)
+SPtr<Component> GameObject::AddComponent(Component::Type key)
 {
 	SPtr<Component> component{};
 
 	switch (key)
 	{
-	case ComponentInfo::Type::Transform: 
+	case Component::Type::Transform: 
 	{
 		component = AddComponent<Transform>(key);
 	}
 		break;
-	case ComponentInfo::Type::Collider:
+	case Component::Type::Collider:
 	{
 		component = AddComponent<Collider>(key);
 	}
 		break;
-	case ComponentInfo::Type::Animation:
+	case Component::Type::Animation:
 	{
 		component = AddComponent<Animation>(key);
 	}
-	break;
+		break;
+	case Component::Type::Rigidbody:
+	{
+		component = AddComponent<Rigidbody>(key);
+	}
+		break;
 	default:
 		assert(0);
 		break;

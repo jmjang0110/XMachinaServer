@@ -1,9 +1,5 @@
 #pragma once
-#include "BTTask.h"
 #include "BTTaskM_PathPlanning_AStar.h"
-#include "Script_Enemy.h"
-#include "Script_EnemyController.h"
-
 namespace MonsterTask {
 
 	/// +-------------------------------------------------------------------------
@@ -19,7 +15,7 @@ namespace MonsterTask {
 		virtual BTNodeState Evaluate() override;
 
 	public:
-		PathPlanningToSapwn(SPtr_GameObject owner, std::function<void()> callback = nullptr);
+		PathPlanningToSapwn(SPtr<GameObject> owner, std::function<void()> callback = nullptr);
 		~PathPlanningToSapwn();
 	};
 };

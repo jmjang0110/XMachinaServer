@@ -1,8 +1,6 @@
 #pragma once
 
 #include "BTTask.h"
-#include "Script_Enemy.h"
-#include "Script_EnemyController.h"
 namespace MonsterTask {
 
 	/// +-------------------------------------------------------------------------
@@ -12,8 +10,8 @@ namespace MonsterTask {
 
 	class GetHit : public MonsterBTTask {
 	private:
-		float						  mPrevHp{};
-		float						  mKnockBack{};
+		float mPrevHp    = {};
+		float mKnockBack = {};
 
 	public:
 		virtual BTNodeState Evaluate() override;
@@ -21,7 +19,7 @@ namespace MonsterTask {
 
 
 	public:
-		GetHit(SPtr_GameObject owner, std::function<void()> callback = nullptr);
+		GetHit(SPtr<GameObject> owner, std::function<void()> callback = nullptr);
 		~GetHit();
 	};
 };

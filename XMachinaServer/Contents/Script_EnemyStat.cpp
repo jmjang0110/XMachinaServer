@@ -1,15 +1,15 @@
 #include "pch.h"
 #include "Script_EnemyStat.h"
 #include "GameObject.h"
-#include "GameMonster.h"
 
 
 Script_EnemyStat::Script_EnemyStat()
 {
+    mKey = uint32_t_ScriptKey(ScriptKey::Enemy);
 }
 
-Script_EnemyStat::Script_EnemyStat(SPtr<GameObject> owner, ScriptInfo::Type type)
-	: Script_Stat(owner , type)
+Script_EnemyStat::Script_EnemyStat(SPtr<GameObject> owner)
+	: Script_Stat(owner, uint32_t_ScriptKey(ScriptKey::Enemy))
 {
 }
 
@@ -17,61 +17,37 @@ Script_EnemyStat::~Script_EnemyStat()
 {
 }
 
-void Script_EnemyStat::Clone(SPtr<Component> other) 
+SPtr<Component> Script_EnemyStat::Clone(SPtr<Component> target)
 {
-	Script::Clone(other);
-	SPtr<Script_EnemyStat> otherScript = std::static_pointer_cast<Script_EnemyStat>(other);
+    // 먼저, 기본 클래스인 Script_Stat의 Clone을 호출
+    Script_Stat::Clone(target);
 
-	this->mEnemyLevel          = otherScript->mEnemyLevel;
-	this->mPheroLevel          = otherScript->mPheroLevel;
-	this->mMoveSpeed           = otherScript->mMoveSpeed;
-	this->mRotationSpeed       = otherScript->mRotationSpeed;
-	this->mAttackRotationSpeed = otherScript->mAttackRotationSpeed;
-	this->mDetectionRange      = otherScript->mDetectionRange;
-	this->mAttackRate          = otherScript->mAttackRate;
-	this->mAttackRange         = otherScript->mAttackRange;
-	this->mAttackCoolTime      = otherScript->mAttackCoolTime;
-	this->mAttack1AnimName     = otherScript->mAttack1AnimName;
-	this->mAttack2AnimName     = otherScript->mAttack2AnimName;
-	this->mAttack3AnimName     = otherScript->mAttack3AnimName;
+    // Cast the target to the appropriate type (Script_EnemyStat)
+    auto enemyStat = std::dynamic_pointer_cast<Script_EnemyStat>(target);
 
-	SPtr<GameMonster> ownerMonster = std::dynamic_pointer_cast<GameMonster>(GetOwner());
-	ownerMonster->SetEnemyStat(this);
+    // Ensure the casting was successful
+    if (enemyStat)
+    {
+        // Copy the Script_EnemyStat-specific member variables
+        enemyStat->mType                = this->mType;
+        enemyStat->mEnemyLevel          = this->mEnemyLevel;
+        enemyStat->mPheroLevel          = this->mPheroLevel;
+        enemyStat->mMoveSpeed           = this->mMoveSpeed;
+        enemyStat->mRotationSpeed       = this->mRotationSpeed;
+        enemyStat->mAttackRotationSpeed = this->mAttackRotationSpeed;
+        enemyStat->mDetectionRange      = this->mDetectionRange;
+        enemyStat->mAttackRate          = this->mAttackRate;
+        enemyStat->mAttackRange         = this->mAttackRange;
+        enemyStat->mAttackCoolTime      = this->mAttackCoolTime;
+        enemyStat->mAttack1AnimName     = this->mAttack1AnimName;
+        enemyStat->mAttack2AnimName     = this->mAttack2AnimName;
+        enemyStat->mAttack3AnimName     = this->mAttack3AnimName;
+        enemyStat->mGetHitAnimName      = this->mGetHitAnimName;
+        enemyStat->mDeathAnimName       = this->mDeathAnimName;
+    }
+
+    return target;
 }
-
-void Script_EnemyStat::Activate()
-{
-	Script_Stat::Activate();
-}
-
-void Script_EnemyStat::DeActivate()
-{
-	Script_Stat::DeActivate();
-}
-
-bool Script_EnemyStat::WakeUp()
-{
-	Script_Stat::WakeUp();
-	return true;
-}
-
-bool Script_EnemyStat::Start()
-{
-	Script_Stat::Start();
-	return true;
-}
-
-bool Script_EnemyStat::Update()
-{
-	Script_Stat::Update();
-	return true;
-}
-
-void Script_EnemyStat::OnDestroy()
-{
-	Script_Stat::OnDestroy();
-}
-
 
 bool Script_EnemyStat::Attack()
 {
@@ -87,7 +63,7 @@ void Script_EnemyStat::Dead()
 	Script_Stat::Dead();
 }
 
-bool Script_EnemyStat::Hit(float damage, SPtr_GameObject instigator)
+bool Script_EnemyStat::Hit(float damage, SPtr<GameObject> instigator)
 {
 	Script_Stat::Hit(damage, instigator);
 

@@ -9,9 +9,12 @@ private:
 
 public:
 	Script_Ceratoferox();
-	Script_Ceratoferox(SPtr<GameObject> owner, ScriptInfo::Type type);
-	~Script_Ceratoferox();
+	Script_Ceratoferox(SPtr<GameObject> owner);
+	virtual ~Script_Ceratoferox();
 
 public:
-	virtual bool Start() override;
+	virtual SPtr<Component> Clone(SPtr<Component> target);
+	virtual void Clone(SPtr<GameObject> target);
+
+	virtual void Start() override;
 };

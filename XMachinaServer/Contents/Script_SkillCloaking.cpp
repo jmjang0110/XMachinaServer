@@ -1,71 +1,98 @@
 #include "pch.h"
 #include "Script_SkillCloaking.h"
-#include "GameSkill.h"
+#include "Script_Player.h"
+#include "Script_PlayerStat.h"
 #include "GameObject.h"
-#include "GamePlayer.h"
 
-
-Script_SkillCloaking::Script_SkillCloaking()
+Script_SkillCloaking::Script_SkillCloaking(SPtr<GameObject> owner)
+	: Script_Skill(owner)
 {
-}
+	mSkillType = FBProtocol::PLAYER_SKILL_TYPE_CLOACKING;
 
-Script_SkillCloaking::Script_SkillCloaking(SPtr<GameSkill> owner, ScriptInfo::Type type)
-	: Script_Skill(owner, type)
-{
-}
-
-Script_SkillCloaking::Script_SkillCloaking(SPtr<GameObject> owner, ScriptInfo::Type type)
-	: Script_Skill(owner, type)
-{
 }
 
 Script_SkillCloaking::~Script_SkillCloaking()
 {
 }
 
-void Script_SkillCloaking::Clone(SPtr<Component> other)
+SPtr<Component> Script_SkillCloaking::Clone(SPtr<Component> target)
 {
+	// Clone the base class part (Script_Skill)
+	Script_Skill::Clone(target);
+
+	// Cast the target to the appropriate type (Script_SkillCloaking)
+	auto skillCloaking = std::dynamic_pointer_cast<Script_SkillCloaking>(target);
+
+	// Ensure the casting was successful
+	if (skillCloaking)
+	{
+		// Copy the Script_SkillCloaking-specific member variables
+		skillCloaking->mTimer     = this->mTimer;
+		skillCloaking->mToggle    = this->mToggle;
+		skillCloaking->mPheroCost = this->mPheroCost;
+	}
+
+	return target;
 }
 
-bool Script_SkillCloaking::Update()
+void Script_SkillCloaking::Clone(SPtr<GameObject> target)
+{
+	// Add a new Script_PlayerStat instance to the GameObject
+	auto clonedScript = target->AddScript<Script_SkillCloaking>();
+	// Clone the current script into the new script
+	this->Clone(clonedScript);
+}
+
+void Script_SkillCloaking::Update()
 {
 	Script_Skill::Update();
 
-	GameSkill::State skillCurrState = mSkillOwner->GetState();
-
-	if (skillCurrState == GameSkill::State::CoolTime_Start) {
-		mSkillOwner->RegisterUpdate(mCoolTime);
-		mSkillOwner->SetState(GameSkill::State::CoolTime_End);
-		return true;
-	}
-	else if (skillCurrState == GameSkill::State::CoolTime_End) {
-		mTimer = 0.f;
-		mSkillOwner->DeActivate();
-		mSkillOwner->SetState(GameSkill::State::Possible);
-		return true;
-	}
-
-	if (skillCurrState == GameSkill::State::Active) {
-		float deltatime = mSkillOwner->GetDeltaTime();
-		mTimer += deltatime;
-		bool checkOnSkill = mSkillOwner->GetOwnerPlayer()->S_DecPhero(deltatime * mPheroCost);
+	switch (mSkillState)
+	{
+	case SkillState::Impossible:
+	case SkillState::Possible:
+		break;
+	case SkillState::Active:
+	{
+		bool checkOnSkill = mOwnerPlayer->GetScriptEntity<Script_Player>()->ReducePheroAmount(DeltaTime() * mPheroCost);
 		if (checkOnSkill == true) {
-			mSkillOwner->RegisterUpdate(0.f);
+			mOwnerPlayer->RegisterUpdate(0.f);
 		}
 		else {
-			mTimer = 0.f;
-			mSkillOwner->DeActivate();
-			mSkillOwner->SetState(GameSkill::State::Possible);
+			mSkillState = SkillState::Possible;
+			mOwner->DeActivate();
 		}
-
 	}
+		break;
+	case SkillState::CoolTime_Start:
+	{
+		mSkillState = SkillState::CoolTime_End;
+		mOwner->RegisterUpdate(mCoolTime);
+	}
+		break;
+	case SkillState::CoolTime_End:
+	{
+		mTimer = 0.f;
+		mSkillState = SkillState::Possible;
+		mOwner->DeActivate();
+	}
+		break;
+	default:
+		assert(0);
+		break;
+	}
+}
 
-	return true;
+void Script_SkillCloaking::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
+{
 }
 
 void Script_SkillCloaking::DeActivate()
 {
 	Script::DeActivate();
-	mSkillOwner->SetState(GameSkill::State::Possible);
+	mOwner->DeActivate();
+
+	mTimer = 0.f;
+	mSkillState = SkillState::Possible;
 
 }

@@ -1,15 +1,10 @@
 #pragma once
-#include "GameMonster.h"
-#include "GameBullet.h"
-#include "GameNPC.h"
 #include "GameRoom.h"
-#include "GameItem.h"
-
 /// +-------------------------------
 ///		   NPCController
 /// ________________________________
 ///	> [ 설명 ]
-/// - NPC, GameMonster, GameBullet 들을 관리한다. 
+/// - NPC, GameObject, GameBullet 들을 관리한다. 
 /// - Player 정보는 PlayerController 에 있다. 
 /// ________________________________
 /// 
@@ -22,41 +17,39 @@ private:
 
 private:
 	/* Room 안의 모든 GameObject (NPC) 관리 */
-	std::unordered_map<UINT32, SPtr<GameMonster>>	mMonsters;
-	std::unordered_map<UINT32, SPtr<GameBullet>>	mBullets;
-	std::unordered_map<UINT32, SPtr<GameNPC>>		mNPCs;
+	std::unordered_map<UINT32, SPtr<GameObject>>		mMonsters;
+	std::unordered_map<UINT32, SPtr<GameObject>>		mNPCs;
 
-	std::unordered_map<UINT32, SPtr<GameItem>>		mStaticItems;	// Client Scene과 동기화 ( 이미 만들어짐 )
-	std::unordered_map<UINT32, SPtr<GameItem>>		mDynamicItems;  // Server 에서만 관리  
+	std::unordered_map<UINT32, SPtr<GameObject>>		mStaticItems;	// Client Scene과 동기화 ( 이미 만들어짐 )
+	std::unordered_map<UINT32, SPtr<GameObject>>		mDynamicItems;  // Server 에서만 관리  
 
 public:
 	NPCController();
 	~NPCController();
 
 public:
-	void Init(SPtr_GameRoom owner);
+	void Init(SPtr<GameRoom> owner);
 
 	/* sectorIdx 에 따라서 다른 몬스터 종류를 생성 - monTypes에 있는 MonsterType 몬스터 생성*/
 	void InitMonsters(Coordinate maxSectorIdx);
 	void InitItems();
-	void InitBullets();
-	void InitNPCs();
-
-	void AddMonster(UINT32 id, SPtr<GameMonster> monster);
-	void AddDynamicItem(UINT32 id, SPtr<GameItem> item);
-	void AddStaticItem(UINT32 id, SPtr<GameItem> item);
-	void AddBuilding(UINT32 id, SPtr<GameBuilding> buildings);
 
 
-	SPtr<GameRoom>  GetOwnerRoom() { return mOwnerRoom; }
-
-	SPtr<GameMonster>	GetMonster(UINT32 monsterID);
-	SPtr<GameItem>		GetStaticItem(UINT32 item_id);
-	SPtr<GameItem>		GetDynamicItem(UINT32 item_id);
-	SPtr<GameItem>		GetItem(UINT32 item_id);
+	void AddMonster(UINT32 id, SPtr<GameObject> monster);
+	void AddDynamicItem(UINT32 id, SPtr<GameObject> item);
+	void AddStaticItem(UINT32 id, SPtr<GameObject> item);
+	void AddBuilding(UINT32 id, SPtr<GameObject> buildings);
 
 
-	std::vector<SPtr<GameMonster>> GetMonstersInViewRange(Vec3 palyer_pos, float viewRange_radius);
+	SPtr<GameRoom>			GetOwnerRoom() { return mOwnerRoom; }
+
+	SPtr<GameObject>		GetMonster(UINT32 monsterID);
+	SPtr<GameObject>		GetStaticItem(UINT32 item_id);
+	SPtr<GameObject>		GetDynamicItem(UINT32 item_id);
+	SPtr<GameObject>		GetItem(UINT32 item_id);
+
+
+	std::vector<SPtr<GameObject>> GetMonstersInViewRange(Vec3 palyer_pos, float viewRange_radius);
 
 };
 

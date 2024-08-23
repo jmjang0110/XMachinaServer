@@ -1,8 +1,6 @@
 #pragma once
 
 #include "BTTask.h"
-#include "Script_Enemy.h"
-#include "Script_EnemyController.h"
 namespace MonsterTask {
 	/// +-------------------------------------------------------------------------
 ///	> ¢º¢º¢º Task Check Mind Detection Range
@@ -18,7 +16,7 @@ namespace MonsterTask {
 		virtual BTNodeState Evaluate() override;
 
 	public:
-		CheckMindDetectionRange(SPtr_GameObject owner, std::function<void()> callback = nullptr);
+		CheckMindDetectionRange(SPtr<GameObject> owner, std::function<void()> callback = nullptr);
 		~CheckMindDetectionRange();
 	};
 

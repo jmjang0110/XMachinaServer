@@ -1,94 +1,67 @@
 #include "pch.h"
 #include "Component.h"
-
+#include "GameObject.h"
 
 Component::Component()
 {
 }
 
-Component::Component(const Component& other)
-	: mType(other.mType)
-{
-
-}
-
-Component::Component(SPtr<GameObject> owner, ComponentInfo::Type Type, UINT32 id)
-	: GameEntity(id)
-
+Component::Component(SPtr<GameObject> owner, Component::Type Type, UINT32 id)
 {
 	mOwner = owner;
-	mType = Type;
-
+	mType  = Type;
+	mID    = id;
 }
 
 Component::~Component()
 {
+	mOwner = nullptr;
 }
 
 void Component::Activate()
 {
-	GameEntity::Activate();
 
-	OnEnable();
 }
 
 void Component::DeActivate()
 {
-	GameEntity::DeActivate();
-
-	OnDisable();
 }
 
-void Component::OnEnable()
-{
-	if (!mIsAwake) {
-		WakeUp();
-	}
-
-	mIsActive = true;
-}
-
-void Component::OnDisable()
-{
-	mIsActive = false;
-}
-
-bool Component::WakeUp()
-{
-	mIsAwake = true;
-
-	return true;
-}
-
-bool Component::Start()
-{
-	mIsStart = true;
-
-	return true;
-}
-
-bool Component::Update()
-{
-	return true;
-}
-
-bool Component::Animate()
-{
-
-	return true;
-}
-
-bool Component::LateUpdate()
-{
-	return false;
-}
-
-void Component::OnDestroy()
+void Component::Start()
 {
 }
 
-void Component::Clone(SPtr<Component> other) 
+void Component::Update()
 {
-	
+}
+
+void Component::LateUpdate()
+{
+}
+
+void Component::End()
+{
+}
+float Component::DeltaTime()
+{
+	return mOwner->DeltaTime();
+}
+
+SPtr<Component> Component::Clone(SPtr<Component> target)
+{
+    // 타겟이 null인 경우 새 Component를 생성합니다.
+    if (!target)
+    {
+        target = std::make_shared<Component>(mOwner, mType, mID);
+    }
+
+    // 복제할 속성을 타겟에 복사합니다.
+    target->mID       = mID;
+    target->mName     = mName;
+    target->mType     = mType;
+    target->mIsActive = mIsActive;
+
+    return target;
+
 }
 

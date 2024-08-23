@@ -1,18 +1,23 @@
 #include "pch.h"
 #include "Script_EnemyController.h"
 #include "Script_Stat.h"
+
 #include "NPCController.h"
 #include "GameRoom.h"
+#include "Animation.h"
+#include "GameObject.h"
 
 
 Script_EnemyController::Script_EnemyController()
 	: Script()
 {
+    mKey = uint32_t_ScriptKey(ScriptKey::EnemyController);
 }
 
-Script_EnemyController::Script_EnemyController(SPtr<GameObject> owner, ScriptInfo::Type type)
-	: Script(owner, type, static_cast<UINT32>(type))
+Script_EnemyController::Script_EnemyController(SPtr<GameObject> owner)
+	: Script(owner, uint32_t_ScriptKey(ScriptKey::EnemyController))
 {
+
 }
 
 Script_EnemyController::~Script_EnemyController()
@@ -20,67 +25,51 @@ Script_EnemyController::~Script_EnemyController()
 
 }
 
+SPtr<Component> Script_EnemyController::Clone(SPtr<Component> target)
+{
+    // Try to cast the target to Script_EnemyController
+    auto clonedScript = std::dynamic_pointer_cast<Script_EnemyController>(target);
+    if (clonedScript)
+    {
+        // Call the base class Clone method first
+        Script::Clone(clonedScript);
+        return clonedScript;
+    }
+    else
+    {
+        std::cout << "Clone failed: target is not of type Script_EnemyController" << std::endl;
+        return nullptr;
+    }
+}
+
+void Script_EnemyController::Clone(SPtr<GameObject> target)
+{
+    // Add a new Script_EnemyController to the target GameObject
+    auto clonedScript = target->AddScript<Script_EnemyController>();
+    // Use the component-based Clone method to copy the data
+    this->Clone(clonedScript);
+}
+
+void Script_EnemyController::Start()
+{
+    mOwnerNPCController = mOwner->GetOwnerRoom()->GetNPCController();
+    mOwnerRoom          = mOwner->GetOwnerRoom().get();
+}
+
+
 void Script_EnemyController::RemoveAllAnimation()
 {
 
-	GetOwner()->GetAnimation()->GetController()->SetValue("Attack", 0);
-	GetOwner()->GetAnimation()->GetController()->SetValue("Walk", false);
-	GetOwner()->GetAnimation()->GetController()->SetValue("Return", false);
-	GetOwner()->GetAnimation()->GetController()->SetValue("GetHit", false);
+	OwnerAnimation()->GetController()->SetValue("Attack", 0);
+	OwnerAnimation()->GetController()->SetValue("Walk", false);
+	OwnerAnimation()->GetController()->SetValue("Return", false);
+	OwnerAnimation()->GetController()->SetValue("GetHit", false);
 
 }
-
-void Script_EnemyController::SetOwnerMonster(SPtr<GameMonster> ownerMonster)
-{
-	mOwnerMonster = ownerMonster;
-	mOwnerNPCController = mOwnerMonster->GetOwnerNPCController();
-}
-
-void Script_EnemyController::Clone(SPtr<Component> other) 
-{
-	Script::Clone(other);
-	SPtr<Script_EnemyController> otherScript = std::static_pointer_cast<Script_EnemyController>(other);
-
-	const auto& ownerMon = std::static_pointer_cast<GameMonster>(GetOwner());
-	SetOwnerMonster(ownerMon);
-	ownerMon->SetEnemyController(this);
-}
-
-void Script_EnemyController::Activate()
-{
-	Script::Activate();
-
-}
-
-void Script_EnemyController::DeActivate()
-{
-	Script::DeActivate();
-
-}
-
-bool Script_EnemyController::WakeUp()
-{
-	return true;
-}
-
-bool Script_EnemyController::Start()
-{
-	Script::Start();
-
-	mOwnerNPCController = mOwnerMonster->GetOwnerNPCController();
-	mOwnerRoom          = mOwnerNPCController->GetOwnerRoom().get();
-
-	return true;
-}
-
-bool Script_EnemyController::Update()
-{
-	return true;
-}
-
-void Script_EnemyController::OnDestroy()
+void Script_EnemyController::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 {
 }
+
 
 void Script_EnemyController::Reset()
 {

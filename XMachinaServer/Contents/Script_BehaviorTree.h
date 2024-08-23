@@ -10,15 +10,17 @@ private:
 
 public:
 	Script_BehaviorTree();
-	Script_BehaviorTree(SPtr<GameObject> owner, ScriptInfo::Type type);
+	Script_BehaviorTree(SPtr<GameObject> owner);
 	virtual ~Script_BehaviorTree();
 
+	virtual SPtr<Component> Clone(SPtr<Component> target);
+	virtual void Clone(SPtr<GameObject> target);
 public:
 	/// +------------------------------
 	///		  virtual function 
 	/// ------------------------------+
-	virtual bool Start();
-	virtual bool Update();
+	virtual void Start();
+	virtual void Update();
 
 
 protected:

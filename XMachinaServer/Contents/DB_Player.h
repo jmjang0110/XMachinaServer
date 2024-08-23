@@ -5,8 +5,6 @@
 /// Manage Player Data In Game World 
 /// -------------------------------+
 
-#include "GamePlayer.h"
-
 struct PlayerDataBase
 {
 	std::string stringID;

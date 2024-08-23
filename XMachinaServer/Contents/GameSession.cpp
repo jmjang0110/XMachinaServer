@@ -1,12 +1,14 @@
 #include "pch.h"
 #include "GameSession.h"
 
-#include "../Framework.h"
+#include "Framework.h"
 #include "Protocol/FBsPacketFactory.h"
-#include "../ServerLib/MemoryManager.h"
-#include "GameManager.h"
-#include "GamePlayer.h"
+#include "ServerLib/MemoryManager.h"
+#include "RoomManager.h"
+#include "GameRoom.h"
+#include "GameObject.h"
 
+#include "Script.h"
 #include "Script_Player.h"
 
 GameSession::GameSession() 
@@ -15,28 +17,30 @@ GameSession::GameSession()
 
 GameSession::~GameSession()
 { 
-	if (mPlayer)
-		mPlayer->DecRef_OwnerGameSession();
+	if (mPlayer) {
+		mPlayer->DeActivate();
+		mPlayer = nullptr;
+	}
 }
 
 void GameSession::OnConnected()
 {
-	mPlayer = MEMORY->Make_Shared<GamePlayer>(this->GetID(), std::static_pointer_cast<GameSession>(shared_from_this()));
-	mPlayer->AddComponent<Transform>(ComponentInfo::Type::Transform);
-	mPlayer->AddComponent<Collider>(ComponentInfo::Type::Collider);
-	mPlayer->AddScript<Script_Player>(ScriptInfo::Type::Stat);
-	
-	//mPlayer->Start();
+	mPlayer = MEMORY->Make_Shared<GameObject>(this->GetID());
+	mPlayer->AddComponent<Transform>(Component::Type::Transform);
+	mPlayer->AddComponent<Collider>(Component::Type::Collider);
+	auto player_entity = mPlayer->SetScriptEntity<Script_Player>();
+	player_entity->SetSessionOwner(std::dynamic_pointer_cast<GameSession>(shared_from_this()));
 
+	mPlayer->Start();
 
-	GAME_MGR->EnterInRoom(mPlayer); // WRITE Lock 
+	ROOM_MGR->EnterInRoom(mPlayer); // WRITE Lock 
 }
 
 void GameSession::OnDisconnected()
 {
 	SPtr_SendPktBuf removePkt = FBS_FACTORY->SPkt_RemovePlayer(GetID());
-	GAME_MGR->BroadcastRoom(mPlayer->GetRoomID(), removePkt, GetID()); /* SEND REMOVE PKT TO SESSIONS IN ROOM */
-	GAME_MGR->ExitInRoom(mPlayer); // WRITE Lock
+	ROOM_MGR->BroadcastRoom(mPlayer->GetOwnerRoom()->GetID(), removePkt, GetID()); /* SEND REMOVE PKT TO SESSIONS IN ROOM */
+	ROOM_MGR->ExitInRoom(mPlayer); // WRITE Lock
 	mPlayer = nullptr; // Dec Ref 
 
 }
@@ -74,4 +78,9 @@ UINT32 GameSession::OnRecv(BYTE* buffer, UINT32 len)
 	}
 
 	return len;
+}
+
+SPtr<Script_Player> GameSession::GetPlayerEntity()
+{
+	return mPlayer->GetScriptEntity<Script_Player>();
 }

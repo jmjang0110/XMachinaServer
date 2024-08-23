@@ -1,7 +1,7 @@
 #pragma once
-#include "Script.h"
+#include "Script_Entity.h"
 
-class Script_Building : public Script
+class Script_Building : public Script_Entity
 {
 private:
 	Coordinate mSectorIdx;
@@ -14,21 +14,13 @@ public:
 
 public:
 	Script_Building();
-	Script_Building(SPtr<GameObject> owner, ScriptInfo::Type type);
+	Script_Building(SPtr<GameObject> owner);
 	~Script_Building();
 
 public:
-	/// +------------------------------
-	///		  virtual function 
-	/// ------------------------------+
-	virtual void Clone(SPtr<Component> other) ;
+	virtual SPtr<Component> Clone(SPtr<Component> target);
+	virtual void Clone(SPtr<GameObject> target);
 
-	virtual void Activate();
-	virtual void DeActivate();
 
-	virtual bool WakeUp();
-	virtual bool Start();
-	virtual bool Update();
-	virtual void OnDestroy();
 };
 

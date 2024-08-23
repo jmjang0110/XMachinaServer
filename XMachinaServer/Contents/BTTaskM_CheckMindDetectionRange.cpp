@@ -1,15 +1,23 @@
 #include "pch.h"
 #include "BTTaskM_CheckMindDetectionRange.h"
-
 #include "BTTask.h"
 
-#include "Script_AdvancedCombatDroid_5.h"
-#include "Script_Onyscidus.h"
-#include "Script_Ursacetus.h"
+#include "Script_EnemyController.h"
+#include "Script_Enemy.h"
 
 #include "SectorController.h"
 #include "NPCController.h"
 #include "GameRoom.h"
+
+#include "GameObject.h"
+#include "Transform.h"
+#include "Animation.h"
+#include "Collider.h"
+#include "Rigidbody.h"
+#include "ViewList.h"
+
+
+
 
 /// +-------------------------------------------------------------------------
 ///	> ¢º¢º¢º Task Mind Detection Range 
@@ -49,15 +57,16 @@ bool MonsterTask::CheckMindDetectionRange::SetTargetNearestEnemy()
 	float minDistance = std::numeric_limits<float>::max();
 
 	Vec3				monsterPos       = MonsterBTTask::mTransform->GetPosition();
-	ViewList			monsterVList     = mEnemyController->GetOwnerRoom()->GetSectorController()->GetViewList(monsterPos, mStat->GetStat_DetectionRange(), false);
+	ViewList			monsterVList     = mOwner->GetOwnerRoom()->GetSectorController()->GetViewList(monsterPos, mStat->GetStat_DetectionRange(), false);
 	SPtr<GameObject>	target			 = nullptr;
 
 	for (auto& iter : monsterVList.VL_Monsters) {
-		if (iter.second->S_GetObjectState() == Script_Stat::ObjectState::Dead) {
+		auto enemy_entity = iter.second->GetScriptEntity<Script_Enemy>();
+		if (enemy_entity->S_GetObjectState() == Script_Stat::ObjectState::Dead) {
 			continue;
 		}
 
-		if (iter.second->GetID() == mEnemyController->GetOwnerMonster()->GetID()) {
+		if (iter.second->GetID() == mOwner->GetID()) {
 			continue;
 		}
 
@@ -76,17 +85,12 @@ bool MonsterTask::CheckMindDetectionRange::SetTargetNearestEnemy()
 
 
 
-MonsterTask::CheckMindDetectionRange::CheckMindDetectionRange(SPtr_GameObject owner, std::function<void()> callback)
+MonsterTask::CheckMindDetectionRange::CheckMindDetectionRange(SPtr<GameObject> owner, std::function<void()> callback)
 	: MonsterBTTask(owner, BTTaskType::MonT_CheckMindDetectionRange, callback)
 {
-	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
-	mStat = GetStat(owner->GetType());
-
 }
 
 MonsterTask::CheckMindDetectionRange::~CheckMindDetectionRange()
 {
-	mEnemyController = nullptr;
-
 }
 

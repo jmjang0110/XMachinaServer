@@ -1,7 +1,5 @@
 #pragma once
-#include "Script.h"
-#include "GameObject.h"
-
+#include "Script_Entity.h"
 /// +-------------------------------
 ///		     Script_Stat 
 /// ________________________________
@@ -15,7 +13,7 @@
 ///	Script_EnemyStat		Script_PlayerStat 
 /// -------------------------------+
 
-class Script_Stat : public Script	
+class Script_Stat : public Script_Entity
 {
 public:
 	enum class ObjectState : UINT8 {
@@ -23,12 +21,15 @@ public:
 	};
 
 private:
+	/// ---------------- HP ----------------
 	float mMaxHP        = {};
 	float mShieldAmount = {};
 
 	float mCrntHP       = {};
 	float mPrevHP       = {};
 
+	/// ---------------- PHero ----------------
+	float mMaxPhero		= {};
 	float mPhero		= 1000.f;
 
 private:
@@ -37,26 +38,23 @@ private:
 
 public:
 	Script_Stat();
-	Script_Stat(SPtr<GameObject> owner, ScriptInfo::Type type);
-	~Script_Stat();
+	Script_Stat(SPtr<GameObject> owner, UINT32 key);
+	virtual ~Script_Stat();
 
 public:
-
-	/// +------------------------------
-	///			virtual function 
-	/// ------------------------------+
-	virtual void Clone(SPtr<Component> other) ;
+	virtual SPtr<Component> Clone(SPtr<Component> target);
 
 	virtual void Activate();
 	virtual void DeActivate();
 
-	virtual bool WakeUp()	override;
-	virtual bool Start()	override;
+	virtual void Start();
+
+	
 
 	/// +------------------------------
 	///		 Stat : virtual function 
 	/// ------------------------------+
-	virtual bool Hit(float damage, SPtr_GameObject instigator = nullptr);
+	virtual bool Hit(float damage, SPtr<GameObject> instigator = nullptr);
 	virtual void Dead();
 
 
@@ -70,8 +68,8 @@ public:
 	void	SetShield(float shield)		{ mShieldAmount  = shield; }
 	void	AddShield(float shield)		{ mShieldAmount += shield; }
 
-	void	S_SetHp(float hp)						{ Lock_HP.LockWrite();		mHP      = hp; Lock_HP.UnlockWrite(); }
-	void	S_SetObjectState(ObjectState state)   { Lock_State.LockWrite();	mObjectState   = state; Lock_State.UnlockWrite(); }
+	void	S_SetHp(float hp)					{ Lock_HP.LockWrite();		mHP            = hp;	Lock_HP.UnlockWrite(); }
+	void	S_SetObjectState(ObjectState state) { Lock_State.LockWrite();	mObjectState   = state; Lock_State.UnlockWrite(); }
 
 	/// +------------------------------
 	///			G E T T E R
@@ -80,8 +78,8 @@ public:
 	float	GetMaxHp()	const			{ return mMaxHP; }
 	float	GetPhero()	const			{ return mPhero; }
 
-	float	S_GetHp()					{ Lock_HP.LockRead();		float hp     = mHP; Lock_HP.UnlockRead(); return hp; }
-	ObjectState	S_GetObjectState()			{ Lock_State.LockRead();	ObjectState ObjectState = mObjectState;  Lock_State.UnlockRead(); return mObjectState; }
+	float	S_GetHp()					{ Lock_HP.LockRead();		float hp                = mHP;			 Lock_HP.UnlockRead(); return hp; }
+	ObjectState	S_GetObjectState()		{ Lock_State.LockRead();	ObjectState ObjectState = mObjectState;  Lock_State.UnlockRead(); return mObjectState; }
 
 
 public:

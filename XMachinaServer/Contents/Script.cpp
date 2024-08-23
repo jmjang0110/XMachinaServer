@@ -1,88 +1,71 @@
 #include "pch.h"
 #include "Script.h"
+
 #include "GameObject.h"
+#include "Transform.h"
+#include "Collider.h"
+#include "Animation.h"
+#include "Rigidbody.h"
 
 Script::Script()
 	: Component()
 {
 }
 
-Script::Script(SPtr<GameObject> owner, ScriptInfo::Type type, UINT32 id)
-	: Component(owner, ComponentInfo::Type::Script, id)
+Script::Script(SPtr<GameObject> owner, UINT32 id)
+	: Component(owner, Component::Type::Script, id)
 {
-	mType = type;
+    mKey = id;
 }
 
 Script::~Script()
 {
 }
 
-
-void Script::Clone(SPtr<Component> other) 
+void Script::Clone(SPtr<GameObject> target)
 {
-	Component::Clone(other);
-
-	SPtr<Script> otherScript = std::static_pointer_cast<Script>(other);
-
+    mOwner = target;
 }
 
-void Script::Activate()
+SPtr<Component> Script::Clone(SPtr<Component> target)
 {
-	Component::Activate();
+    // First, clone the base Component part
+    Component::Clone(target);
 
-	OnEnable();
+    // Cast the target to the appropriate type (Script)
+    auto script = std::dynamic_pointer_cast<Script>(target);
 
+    // Ensure the casting was successful
+    if (script)
+    {
+        // Copy the script-specific member variables
+        script->mKey = this->mKey;
+        // Add any additional copying logic if needed
+    }
+
+    return target;
 }
 
-void Script::DeActivate()
+void Script::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 {
-	Component::DeActivate();
-
-	OnDisable();
 }
 
-void Script::OnEnable()
+SPtr<Transform> Script::OwnerTransform()
 {
-	Component::OnEnable();
+	return mOwner->GetComponent<Transform>(Component::Type::Transform);
+}
+SPtr<Collider>	Script::OwnerCollider()
+{
+	return mOwner->GetComponent<Collider>(Component::Type::Collider);
 
 }
-
-void Script::OnDisable()
+SPtr<Animation> Script::OwnerAnimation()
 {
-	Component::OnDisable();
+	return mOwner->GetComponent<Animation>(Component::Type::Animation);
 
 }
-
-bool Script::WakeUp()
+SPtr<Rigidbody>	Script::OwnerRigidbody()
 {
-	Component::WakeUp();
-
-	return false;
-}
-
-bool Script::Start()
-{
-	Component::Start();
-
-	return true;
-}
-
-bool Script::Update()
-{
-	Component::Update();
-
-	return true;
-}
-
-bool Script::LateUpdate()
-{
-	Component::LateUpdate();
-
-	return true;
-}
-
-void Script::OnDestroy()
-{
-	Component::OnDestroy();
+	return mOwner->GetComponent<Rigidbody>(Component::Type::Rigidbody);
 
 }

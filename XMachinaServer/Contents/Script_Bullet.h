@@ -1,19 +1,11 @@
 #pragma once
-#include "Script.h"
-#include "GamePlayer.h"
+#include "Script_Entity.h"
 
-#include "DB_Weapon.h"
-
-namespace BulletInfo {
-
-}
-
-class Script_Bullet : public Script
+class Rigidbody;
+class Script_Bullet : public Script_Entity
 {
 private:
-	SPtr<GamePlayer>	mPlayerOwner{};	// 총알을 발사한 객체 (자신은 충돌하지 않도록 한다)
-	SPtr<Rigidbody>		mRigid;
-	std::array<std::vector<std::string>, WeaponInfo::BulletPSTypeCount> mPSNames;
+	SPtr<Rigidbody>		mRigid = nullptr;
 
 	float mSpeed{};					// speed of bullet
 	float mDamage{};				// damage of bullet
@@ -23,52 +15,32 @@ private:
 
 public:
 	Script_Bullet();
-	Script_Bullet(SPtr<GameObject> owner, ScriptInfo::Type type);
-	~Script_Bullet();
+	Script_Bullet(SPtr<GameObject> owner);
+	virtual ~Script_Bullet();
 
 public:
-	/// +------------------------------
-	///		  virtual function 
-	/// ------------------------------+
-	virtual void Clone(SPtr<Component> other);
+	virtual SPtr<Component> Clone(SPtr<Component> target);
+	virtual void Clone(SPtr<GameObject> target);
 
-	virtual void Activate();
-	virtual void DeActivate();
+	virtual void Update();
 
-	virtual bool WakeUp();
-	virtual bool Start();
-	virtual bool Update();
-	virtual void OnDestroy();
-
-
-	/// +------------------------------
-	///		  Bullet Script Funcs  
-	/// ------------------------------+
 public:
 	float GetDamage() const { return mDamage; }
 
-	void SetDamage(float damage) { mDamage = damage; }
-	void SetSpeed(float speed) { mSpeed = speed; }
-	void SetOwner(SPtr<GamePlayer> object) { mPlayerOwner = object; }
-	void SetLifeTime(float lifeTIme) { mMaxLifeTime = lifeTIme; }
+	void SetDamage(float damage)		{ mDamage      = damage; }
+	void SetSpeed(float speed)			{ mSpeed       = speed; }
+	void SetLifeTime(float lifeTIme)	{ mMaxLifeTime = lifeTIme; }
 
 public:
 	virtual void Init();
-
-	// [pos] 위치에 생성하고 [dir, up]에 따라 look 방향을 결정하고, look 방향으로 [speed]의 속도로 이동하도록 한다.
-	void Fire(const Vec3& pos, const Vec3& dir, const Vec3& up);
-	// [err] 만큼 각도로 탄이 퍼진다.
-	void Fire(const Transform& transform, const Vec2& err = Vector2::Zero);
-
-	// 총알 객체를 터뜨린다. (폭발 처리)
-	virtual void Explode();
+	void Fire(const Vec3& pos, const Vec3& dir, const Vec3& up); // [pos] 위치에 생성하고 [dir, up]에 따라 look 방향을 결정하고, look 방향으로 [speed]의 속도로 이동하도록 한다.
+	void Fire(const Transform& transform, const Vec2& err = Vector2::Zero); // [err] 만큼 각도로 탄이 퍼진다.
+	virtual void Explode(); // 총알 객체를 터뜨린다. (폭발 처리)
 
 protected:
+
 	virtual void StartFire() {};
-
 private:
-	bool IsPlayerOwner(int playerID) { return playerID == mPlayerOwner->GetID(); }
-
 	void Reset();
 	// terrain과 충돌 여부를 검사한다.
 	bool IntersectTerrain();

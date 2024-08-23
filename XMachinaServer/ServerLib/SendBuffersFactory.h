@@ -20,8 +20,6 @@
 /// - TLS 영역에 생성시킬것이기에 싱글쓰레드처럼 사용가능
 /// -----------------------------------------------+
 
-#include "Contents/GamePlayer.h"
-
 
 namespace SendPktInfo {
 	enum class Type {

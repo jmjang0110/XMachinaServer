@@ -1,6 +1,5 @@
 #pragma once
-#include "GamePlayer.h"
-
+#include "GameEntity.h"
 class PlayerController;
 class NPCController;
 class SectorController;
@@ -26,6 +25,7 @@ public:
 
 public:
 	void PQCS(OverlappedObject* over);
+	virtual void Dispatch(class OverlappedObject* overlapped, UINT32 bytes = 0);
 
 public:
 	/// +-------------------------------------------------------------------
@@ -39,11 +39,11 @@ public:
 	/// +-------------------------------------------------------------------
 	///	¢º¢º¢º Player Controller 
 	/// -------------------------------------------------------------------+
-	bool EnterPlayer(SPtr_GamePlayer player);
+	bool EnterPlayer(SPtr<GameObject> player);
 	bool ExitPlayer(UINT32 id);
 	void Broadcast(SPtr_SendPktBuf packet, UINT32 exceptsessionid = -1);
 	void SendPacket(UINT32 sessionid, SPtr_SendPktBuf packet);
-	std::vector<SPtr<GamePlayer>> GetallPlayers();
+	std::vector<SPtr<GameObject>> GetallPlayers();
 
 public:
 	/// +-------------------------------------------------------------------

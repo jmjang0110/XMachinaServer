@@ -4,16 +4,8 @@
 #include "Sector.h"
 #include "SectorController.h"
 #include "GameRoom.h"
-
-
-#include "GameMonster.h"
-
-#include "Script_AdvancedCombatDroid_5.h"
-#include "Script_Ursacetus.h"
-#include "Script_Onyscidus.h"
-
+#include "GameObject.h"
 #include "ResourceManager.h"
-
 
 NPCController::NPCController()
 {
@@ -23,7 +15,7 @@ NPCController::~NPCController()
 {
 }
 
-void NPCController::Init(SPtr_GameRoom owner)
+void NPCController::Init(SPtr<GameRoom> owner)
 {
 	mOwnerRoom = owner;
 
@@ -31,10 +23,6 @@ void NPCController::Init(SPtr_GameRoom owner)
 	Coordinate maxSectorIdx = sc->GetMaxSectorIndex();
 
 	InitMonsters(maxSectorIdx);
-	InitBullets();
-	InitNPCs();
-	InitItems();
-
 }
 
 
@@ -54,25 +42,21 @@ void NPCController::InitMonsters(Coordinate maxSectorIdx)
 	/// ___________________________________________________________________
 
 	int monster_id = 1;
-	const std::vector<SPtr<GameMonster>>* EnemyPrototypes = RESOURCE_MGR->GetBattleScene()->GetEnemies();
+	const std::vector<SPtr<GameObject>>* EnemyPrototypes = RESOURCE_MGR->GetBattleScene()->GetEnemies();
 	for (int i = 0; i < EnemyPrototypes->size(); ++i) {
 
-		SPtr<GameMonster> enemy = (*EnemyPrototypes)[i]->Clone(); // 복사본을 만든다 ( 원본은 건들이지 않는다. )
-		
+		SPtr<GameObject> enemy = (*EnemyPrototypes)[i]->Clone(); // 복사본을 만든다 ( 원본은 건들이지 않는다. )
 		// NPC
-		enemy->SetOwnerNPCController(this);
 		AddMonster(enemy->GetID(), enemy);
-
-		if (enemy->GetType() == GameObjectInfo::Type::Montser_Deus_Phase_1)
-			int i = 0;
 
 		// SECTOR
 		Coordinate SectorIndex = SectorController::GetSectorIdxByPosition(enemy->GetTransform()->GetPosition());
-		enemy->SetSectorIndex(SectorIndex);
+		//enemy->SetSectorIndex(SectorIndex);
 		sc->AddMonsterInSector(SectorIndex, enemy->GetID(), enemy);
 		
 		// INIT
-		enemy->UpdateSnapShot();
+		//enemy->UpdateSnapShot();
+		enemy->SetOwnerRoom(mOwnerRoom);
 		enemy->Start();
 	}
 
@@ -87,9 +71,8 @@ void NPCController::InitItems()
 	auto staticItemPrototypes  = RESOURCE_MGR->GetBattleScene()->GetStaticItems();
 
 	for (int i = 0; i < dynamicItemPrototypes->size(); ++i) {
-		SPtr<GameItem> d_Item = (*dynamicItemPrototypes)[i]->Clone();
+		SPtr<GameObject> d_Item = (*dynamicItemPrototypes)[i]->Clone();
 
-		d_Item->SetOwnerNPCController(this);
 		AddDynamicItem(d_Item->GetID(), d_Item);
 
 		// INIT
@@ -99,9 +82,8 @@ void NPCController::InitItems()
 
 	for (int i = 0; i < staticItemPrototypes->size(); ++i) {
 		auto item = (*staticItemPrototypes)[i];
-		SPtr<GameItem> s_Item = item->Clone();
+		SPtr<GameObject> s_Item = item->Clone();
 
-		s_Item->SetOwnerNPCController(this);
 		AddStaticItem(s_Item->GetID(), s_Item);
 
 
@@ -111,16 +93,7 @@ void NPCController::InitItems()
 
 }
 
-
-void NPCController::InitBullets()
-{
-}
-
-void NPCController::InitNPCs()
-{
-}
-
-void NPCController::AddMonster(UINT32 id, SPtr<GameMonster> monster)
+void NPCController::AddMonster(UINT32 id, SPtr<GameObject> monster)
 {
 	const auto& iter = mMonsters.find(id);
 	if (iter == mMonsters.end()) {
@@ -129,7 +102,7 @@ void NPCController::AddMonster(UINT32 id, SPtr<GameMonster> monster)
 	
 }
 
-void NPCController::AddDynamicItem(UINT32 id, SPtr<GameItem> item)
+void NPCController::AddDynamicItem(UINT32 id, SPtr<GameObject> item)
 {
 	const auto& iter = mDynamicItems.find(id);
 	if (iter == mDynamicItems.end()) {
@@ -137,7 +110,7 @@ void NPCController::AddDynamicItem(UINT32 id, SPtr<GameItem> item)
 	}
 }
 
-void NPCController::AddStaticItem(UINT32 id, SPtr<GameItem> item)
+void NPCController::AddStaticItem(UINT32 id, SPtr<GameObject> item)
 {
 	const auto& iter = mStaticItems.find(id);
 	if (iter == mStaticItems.end()) {
@@ -145,11 +118,11 @@ void NPCController::AddStaticItem(UINT32 id, SPtr<GameItem> item)
 	}
 }
 
-void NPCController::AddBuilding(UINT32 id, SPtr<GameBuilding> buildings)
+void NPCController::AddBuilding(UINT32 id, SPtr<GameObject> buildings)
 {
 }
 
-SPtr<GameMonster> NPCController::GetMonster(UINT32 monsterID)
+SPtr<GameObject> NPCController::GetMonster(UINT32 monsterID)
 {
 	const auto& iter = mMonsters.find(monsterID);
 	if (iter == mMonsters.end()) {
@@ -159,7 +132,7 @@ SPtr<GameMonster> NPCController::GetMonster(UINT32 monsterID)
 	return iter->second;
 }
 
-SPtr<GameItem> NPCController::GetStaticItem(UINT32 item_id)
+SPtr<GameObject> NPCController::GetStaticItem(UINT32 item_id)
 {
 
 	const auto& iter = mStaticItems.find(item_id);
@@ -170,7 +143,7 @@ SPtr<GameItem> NPCController::GetStaticItem(UINT32 item_id)
 	return iter->second;
 }
 
-SPtr<GameItem> NPCController::GetDynamicItem(UINT32 item_id)
+SPtr<GameObject> NPCController::GetDynamicItem(UINT32 item_id)
 {
 	const auto& iter = mDynamicItems.find(item_id);
 	if (iter == mDynamicItems.end()) {
@@ -180,9 +153,9 @@ SPtr<GameItem> NPCController::GetDynamicItem(UINT32 item_id)
 	return iter->second;
 }
 
-SPtr<GameItem> NPCController::GetItem(UINT32 item_id)
+SPtr<GameObject> NPCController::GetItem(UINT32 item_id)
 {
-	SPtr<GameItem> item = nullptr;
+	SPtr<GameObject> item = nullptr;
 	item = GetDynamicItem(item_id);
 	if (item)
 		return item;

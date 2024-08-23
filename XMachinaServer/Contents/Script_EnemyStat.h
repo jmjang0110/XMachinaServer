@@ -12,7 +12,10 @@
 
 class Script_EnemyStat : public Script_Stat
 {
-private:
+protected:
+	FBProtocol::MONSTER_TYPE mType  = FBProtocol::MONSTER_TYPE_NONE;
+
+protected:
 	/* LEVEL */
 	int			mEnemyLevel          = {};
 	int			mPheroLevel          = {};
@@ -30,6 +33,7 @@ private:
 	float		mAttackRange         = {};
 	float		mAttackCoolTime      = {};
 	
+	/* ANIMATION NAME */
 	std::string	mAttack1AnimName     = {};
 	std::string	mAttack2AnimName     = {};
 	std::string	mAttack3AnimName     = {};
@@ -40,22 +44,14 @@ private:
 
 public:
 	Script_EnemyStat();
-	Script_EnemyStat(SPtr<GameObject> owner, ScriptInfo::Type type);
-	~Script_EnemyStat();
+	Script_EnemyStat(SPtr<GameObject> owner);
+	virtual ~Script_EnemyStat();
 
 
 public:
-	/// +------------------------------
-	///		  virtual function 
-	/// ------------------------------+
-	virtual void Clone(SPtr<Component> other) ;
-	virtual void Activate();
-	virtual void DeActivate();
 
-	virtual bool WakeUp();
-	virtual bool Start();
-	virtual bool Update();
-	virtual void OnDestroy();
+
+	virtual SPtr<Component> Clone(SPtr<Component> target);
 
 	/// +------------------------------
 	///		Stat :  virtual function 
@@ -63,9 +59,10 @@ public:
 	virtual bool Attack();
 	virtual void AttackCallback();
 	virtual void Dead();
-	virtual bool Hit(float damage, SPtr_GameObject instigator = nullptr) override;
+	virtual bool Hit(float damage, SPtr<GameObject> instigator = nullptr) override;
 
 public:
+	FBProtocol::MONSTER_TYPE GetMonsterType() { return mType; }
 
 	// Getters
 	int			GetStat_EnemyLevel() const					{ return mEnemyLevel; }

@@ -1,13 +1,13 @@
 #pragma once
 
 #include "Component.h"
-#include "ObjectSnapShot.h"
 
 #pragma region ClassForwardDecl
 class BoxCollider;
 class SphereCollider;
 class ObjectCollider;
 class Collider;
+class GameObject;
 #pragma endregion
 
 namespace ColliderInfo
@@ -18,14 +18,11 @@ namespace ColliderInfo
 /// +-----------------------------------------------------
 ///					COLLIDER SNAPSHOT 
 /// -----------------------------------------------------+
-struct ColliderSnapShot : public ObjectSnapShot
+struct ColliderSnapShot 
 {
 	MyBoundingSphere BS{};
 	std::vector<MyBoundingOrientedBox>	BoundingBoxList{};
 };
-
-
-
 
 /// +-----------------------------------------------------
 ///				    COLLIDER COMPONENT 
@@ -42,17 +39,19 @@ private:
 public:
 	Collider();
 	Collider(const Collider& other);
-	Collider(SPtr<GameObject> owner, ComponentInfo::Type Type);
+	Collider(SPtr<GameObject> owner, Component::Type Type);
 	~Collider();
 
 public:
-	virtual void Clone(SPtr<Component> CopyT) ;
-	virtual bool LateUpdate();
+	virtual SPtr<Component> Clone(SPtr<Component> target) ;
+	virtual void LateUpdate() override;
 
 public:
 	ColliderSnapShot GetSnapShot(); /* Read Only */
-	void SwapSnapShotIndex();
 	void UpdateColliderSnapShot();
+	void SyncSnapShot();
+
+public:
 	void UpdateTransform();
 
 	void SetBS(const MyBoundingSphere& bs) { mBS = bs; }

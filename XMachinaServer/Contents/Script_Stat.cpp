@@ -1,12 +1,13 @@
 #include "pch.h"
 #include "Script_Stat.h"
+#include "GameObject.h"
 
 Script_Stat::Script_Stat()
 {
 }
 
-Script_Stat::Script_Stat(SPtr<GameObject> owner, ScriptInfo::Type type)
-	: Script(owner, type, static_cast<UINT32>(type))
+Script_Stat::Script_Stat(SPtr<GameObject> owner, UINT32 key)
+	: Script_Entity(owner, key)
 {
 }
 
@@ -14,26 +15,17 @@ Script_Stat::~Script_Stat()
 {
 }
 
-bool Script_Stat::WakeUp()
-{
-    Script::WakeUp();
-
-	mCrntHP = mMaxHP;
-	mPrevHP = mMaxHP;
-    return true;
-}
-
-bool Script_Stat::Start()
+void Script_Stat::Start()
 {
     Script::Start();
 
 	mCrntHP = mMaxHP;
 	mPrevHP = mMaxHP;
-    return true;
+
 }
 
 
-bool Script_Stat::Hit(float damage, SPtr_GameObject instigator)
+bool Script_Stat::Hit(float damage, SPtr<GameObject> instigator)
 {
 	//LOG_MGR->Cout(" -- Script_Stat::Hit - HP : ", mCrntHP, "\n");
 
@@ -64,11 +56,34 @@ void Script_Stat::Dead()
 }
 
 
-void Script_Stat::Clone(SPtr<Component> other) 
+SPtr<Component> Script_Stat::Clone(SPtr<Component> target)
 {
-	Script::Clone(other);
-	SPtr<Script_Stat> otherScript = std::static_pointer_cast<Script_Stat>(other);
+	// First, clone the base Script_Entity part
+	Script_Entity::Clone(target);
 
+	// Cast the target to the appropriate type (Script_Stat)
+	auto statScript = std::dynamic_pointer_cast<Script_Stat>(target);
+
+	// Ensure the casting was successful
+	if (statScript)
+	{
+		// Copy the Script_Stat-specific member variables
+		statScript->mMaxHP        = this->mMaxHP;
+		statScript->mShieldAmount = this->mShieldAmount;
+		statScript->mCrntHP       = this->mCrntHP;
+		statScript->mPrevHP       = this->mPrevHP;
+		statScript->mMaxPhero     = this->mMaxPhero;
+		statScript->mPhero        = this->mPhero;
+
+		// Copy the state and locks
+		statScript->mObjectState = this->mObjectState;
+		statScript->mHP          = this->mHP;
+
+		// Locks are generally not copied, as the locks should be managed independently in the cloned object
+		// If copying is necessary, you would need to create new lock objects (depending on your locking mechanism)
+	}
+
+	return target;
 }
 
 void Script_Stat::Activate()

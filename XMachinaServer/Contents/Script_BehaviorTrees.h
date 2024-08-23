@@ -2,7 +2,6 @@
 
 #include "Script_BehaviorTree.h"
 #include "BTNode.h"
-#include "Gameinfo.h"
 
 class Script_Enemy;
 
@@ -10,15 +9,16 @@ class Script_DefaultEnemyBT : public Script_BehaviorTree
 {
 protected:
 	BTNode* mRoot{};
-	SPtr_GameObject mPrevTarget{};
+	SPtr<GameObject> mPrevTarget{};
 
 public:
-	Script_DefaultEnemyBT(SPtr<GameObject> owner, ScriptInfo::Type type) : Script_BehaviorTree(owner, type) {}
+	Script_DefaultEnemyBT(SPtr<GameObject> owner) : Script_BehaviorTree(owner) {}
 	virtual ~Script_DefaultEnemyBT() { MEMORY->Delete(mRoot); }
 
 public:
-	virtual void Clone(SPtr<Component> other);
-	virtual bool Update();
+	virtual SPtr<Component> Clone(SPtr<Component> target);
+	virtual void Clone(SPtr<GameObject> target);
+	virtual void Update();
 
 protected:
 	virtual BTNode* SetupTree() override;
@@ -27,8 +27,10 @@ protected:
 class Script_MindControlledEnemyBT : public Script_DefaultEnemyBT
 {
 public:
-	Script_MindControlledEnemyBT(SPtr<GameObject> owner, ScriptInfo::Type type) : Script_DefaultEnemyBT(owner, type) {}
+	Script_MindControlledEnemyBT(SPtr<GameObject> owner) : Script_DefaultEnemyBT(owner) {}
 
+	virtual SPtr<Component> Clone(SPtr<Component> target);
+	virtual void Clone(SPtr<GameObject> target);
 protected:
 	virtual BTNode* SetupTree() override;
 };
@@ -36,7 +38,9 @@ protected:
 class Script_DeusPhase1BT : public Script_DefaultEnemyBT
 {
 public:
-	Script_DeusPhase1BT(SPtr<GameObject> owner, ScriptInfo::Type type) : Script_DefaultEnemyBT(owner, type) {}
+	virtual SPtr<Component> Clone(SPtr<Component> target);
+	virtual void Clone(SPtr<GameObject> target);
+	Script_DeusPhase1BT(SPtr<GameObject> owner) : Script_DefaultEnemyBT(owner) {}
 
 protected:
 	virtual BTNode* SetupTree() override;

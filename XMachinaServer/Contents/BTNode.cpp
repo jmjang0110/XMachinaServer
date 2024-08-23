@@ -1,16 +1,21 @@
 #include "pch.h"
 #include "BTNode.h"
-#include "GameObject.h"
+
 #include "Script_EnemyController.h"
+#include "GameObject.h"
+#include "Transform.h"
+#include "Rigidbody.h"
+#include "Collider.h"
+#include "Animation.h"
 
 
 
-BTNode::BTNode(SPtr_GameObject owner)
+BTNode::BTNode(SPtr<GameObject> owner)
 {
 	mOwner = owner;
 }
 
-BTNode::BTNode(SPtr_GameObject owner, std::vector<BTNode*>& children)
+BTNode::BTNode(SPtr<GameObject> owner, std::vector<BTNode*>& children)
 {
 	mOwner = owner;
 
@@ -18,8 +23,7 @@ BTNode::BTNode(SPtr_GameObject owner, std::vector<BTNode*>& children)
 		Attach(child);
 	}
 
-	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
-
+	mEnemyController = owner->GetScriptEntity<Script_EnemyController>();
 }
 
 BTNode::~BTNode()
@@ -66,7 +70,7 @@ BTNodeState BTNode_Sequence::Evaluate()
 
 	bool isRunning = false;
 
-	if (!GetRoot()->mWaitQueue.empty()) {
+	if (!mRoot->mWaitQueue.empty()) {
 		if (mRoot->mWaitQueue.front()->Evaluate() != BTNodeState::Wait) {
 			mRoot->mWaitQueue.pop();
 		}

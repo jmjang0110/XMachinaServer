@@ -3,7 +3,7 @@
 #include "SListMemoryPool.h"
 #include "MemoryManager.h"
 #include "../Framework.h"
-#include "Contents/GamePlayer.h"
+#include "Contents/GameObject.h"
 
 
 #undef max

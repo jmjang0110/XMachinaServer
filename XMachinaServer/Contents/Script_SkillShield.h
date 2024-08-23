@@ -8,14 +8,19 @@ class Script_SkillShield : public Script_Skill
 private:
 
 public:
-	Script_SkillShield();
-	Script_SkillShield(SPtr<GameSkill> owner, ScriptInfo::Type type);
-	Script_SkillShield(SPtr<GameObject> owner, ScriptInfo::Type type);
-	~Script_SkillShield();
+	Script_SkillShield() = default;
+	Script_SkillShield(SPtr<GameObject> owner);
+	virtual ~Script_SkillShield();
 
 public:
-	virtual void Clone(SPtr<Component> other);
+	virtual SPtr<Component> Clone(SPtr<Component> target);
+	virtual void Clone(SPtr<GameObject> target);
 
-	virtual bool Update();
+	virtual void Start();
+	virtual void Update();
+	virtual void LateUpdate();
+	virtual void End();
+
+	virtual void Dispatch(class OverlappedObject* overlapped, UINT32 bytes = 0) override;
 };
 

@@ -3,83 +3,77 @@
 #include "ResourceManager.h"
 #include "TimeManager.h"
 #include "ServerLib/ThreadManager.h"
-#include "Transform.h"
-#include "Component.h"
+#include "GameObject.h"
 
 
 Script_Bullet::Script_Bullet()
-    : Script()
 {
+    mKey = uint32_t_ScriptKey(ScriptKey::Bullet);
 }
 
-Script_Bullet::Script_Bullet(SPtr<GameObject> owner, ScriptInfo::Type type)
-    : Script(owner, type, static_cast<int>(ScriptInfo::Type::Bullet))
+Script_Bullet::Script_Bullet(SPtr<GameObject> owner)
+    : Script_Entity(owner, uint32_t_ScriptKey(ScriptKey::Bullet))
 {
+    owner->EnableTag(ObjectTag::Bullet);
+
 }
 
 Script_Bullet::~Script_Bullet()
 {
 }
 
-void Script_Bullet::Clone(SPtr<Component> other)
+SPtr<Component> Script_Bullet::Clone(SPtr<Component> target)
 {
-    Script::Clone(other);
+    // Try to cast the target to Script_Bullet
+    auto clonedScript = std::dynamic_pointer_cast<Script_Bullet>(target);
+    if (clonedScript)
+    {
+        // Call the base class Clone method first
+        Script_Entity::Clone(clonedScript);
 
+        // Copy the specific member variables
+        clonedScript->mSpeed        = this->mSpeed;
+        clonedScript->mDamage       = this->mDamage;
+        clonedScript->mMaxLifeTime  = this->mMaxLifeTime;
+        clonedScript->mCurrLifeTime = this->mCurrLifeTime;
+
+        // If `mRigid` needs to be cloned, you should also handle it here.
+        // For simplicity, assuming `mRigid` does not require special handling.
+
+        return clonedScript;
+    }
+    else
+    {
+        std::cout << "Clone failed: target is not of type Script_Bullet" << std::endl;
+        return nullptr;
+    }
 }
 
-void Script_Bullet::Activate()
+void Script_Bullet::Clone(SPtr<GameObject> target)
 {
-    Script::Activate();
-
+    auto clonedScript = target->AddScript<Script_Bullet>();
+    this->Clone(clonedScript);
+    clonedScript->SetOwner(target);
 }
 
-void Script_Bullet::DeActivate()
-{
-    Script::DeActivate();
-
-}
-
-bool Script_Bullet::WakeUp()
-{
-    Script::WakeUp();
-
-    return false;
-}
-
-bool Script_Bullet::Start()
-{
-    Script::Start();
-
-    return false;
-}
-
-bool Script_Bullet::Update()
+void Script_Bullet::Update()
 {
     Script::Update();
 
-	mCurrLifeTime += GetOwner()->GetDeltaTime();
+	mCurrLifeTime += DeltaTime();
 
 	if (mCurrLifeTime >= mMaxLifeTime) {
 		Reset();
 	}
-	else if ((GetOwner()->GetTransform()->GetPosition().y < 0.f) /* || IntersectTerrain()*/) {
+	else if ((OwnerTransform()->GetPosition().y < 0.f) /* || IntersectTerrain()*/) {
 		Explode();
 	}
-
-    return true;
-
-}
-
-void Script_Bullet::OnDestroy()
-{
-    Script::OnDestroy();
 
 }
 
 void Script_Bullet::Init()
 {
-
-    mRigid = GetOwner()->GetComponent<Rigidbody>(ComponentInfo::Type::Rigidbody);
+    mRigid = mOwner->GetRigidbody();
     if (mRigid == nullptr)
         assert(0);
 

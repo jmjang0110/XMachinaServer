@@ -1,30 +1,10 @@
 #pragma once
 
 #include "Component.h"
-#include "ObjectSnapShot.h"
 
 enum class ForceMode {
 	Accleration = 0,
 	Impulse
-};
-
-
-/// +-----------------------------------------------------
-///					COLLIDER SNAPSHOT 
-/// -----------------------------------------------------+
-struct RigidbodySnapShot : public ObjectSnapShot
-{
-	bool	mUseGravity		= false;	// controls whether gravity affects this rigidbody.
-	float	mGravityScale	= 1.f;
-
-	float	mMass			= 1.f;
-	float	mDrag			= 1.f;
-	float	mFriction		= 1.f;
-	float	mAcc			= 1.f;
-	float	mMaxSpeed		= FLT_MAX;
-	Vec3	mVelocity{};
-
-
 };
 
 class Rigidbody : public Component
@@ -42,31 +22,25 @@ private:
 
 private:
 	std::atomic_bool  mSnapShotIndex = 0;
-	RigidbodySnapShot mRigidbodySnapShot[2]{};
 
 public:
 	Rigidbody();
 	Rigidbody(const Rigidbody& other);
-	Rigidbody(SPtr<GameObject> owner, ComponentInfo::Type Type);
+	Rigidbody(SPtr<GameObject> owner, Component::Type Type);
 	~Rigidbody();
 
 public:
-	virtual void Clone(SPtr<Component> CopyT) ;
+	virtual SPtr<Component> Clone(SPtr<Component> CopyT) ;
 
 
 	virtual void Activate();
 	virtual void DeActivate();
 
-	virtual void OnEnable();
-	virtual void OnDisable();
-
 public:
-	virtual bool WakeUp();
-	virtual bool Start();
-	virtual bool Update();
-	virtual bool LateUpdate();
-
-	virtual void OnDestroy();
+	virtual void Start();
+	virtual void Update();
+	virtual void LateUpdate();
+	virtual void End();
 
 	/// +-----------------------------------
 	///	     RIGID BODY SNAP SHOT FUNCS  

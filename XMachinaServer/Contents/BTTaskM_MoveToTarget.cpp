@@ -1,42 +1,36 @@
 #include "pch.h"
 #include "BTTaskM_MoveToTarget.h"
-
-#include "BTTask.h"
-#include "Transform.h"
-#include "GameObject.h"
 #include "BTNode.h"
-#include "Script_Player.h"
-#include "ResourceManager.h"
-#include "GamePlayer.h"
-#include "SectorController.h"
-#include "CollisionManager.h"
-#include "GameObject.h"
-#include "PlayerController.h"
+#include "BTTask.h"
+
 #include "GameRoom.h"
+#include "GameObject.h"
+#include "Animation.h"
+#include "Transform.h"
+#include "Collider.h"
+#include "Rigidbody.h"
+
+
+#include "PlayerController.h"
+#include "SectorController.h"
 #include "NPCController.h"
 
-#include "Script_AdvancedCombatDroid_5.h"
-#include "Script_Onyscidus.h"
-#include "Script_Ursacetus.h"
-
-#include "ServerLib/ThreadManager.h"
+#include "Script_Player.h"
+#include "Script_EnemyController.h"
+#include "Script_Enemy.h"
 
 #include "FBsPacketFactory.h"
-#include "GameManager.h"
-#include "GameRoom.h"
-#include "GameObject.h"
-
+#include "ResourceManager.h"
+#include "CollisionManager.h"
+#include "RoomManager.h"
 
 /// +-------------------------------------------------------------------------
 ///	> ▶▶▶ Task Move To Target  
 /// __________________________________________________________________________
 
-MonsterTask::MoveToTarget::MoveToTarget(SPtr_GameObject owner, std::function<void()> callback)
+MonsterTask::MoveToTarget::MoveToTarget(SPtr<GameObject> owner, std::function<void()> callback)
 	: MonsterBTTask(owner, BTTaskType::MonT_MoveToTarget, callback)
 {
-	mEnemyController = GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
-	mStat = GetStat(owner->GetType());
-
 }
 
 MonsterTask::MoveToTarget::~MoveToTarget()
@@ -73,11 +67,11 @@ BTNodeState MonsterTask::MoveToTarget::Evaluate()
 	// 1. Set Path Target 
 	mEnemyController->SetPathTargetObject(target);
 	
-	Vec3 Pos			                 = GetOwner()->GetTransform()->GetPosition();
+	Vec3 Pos			                 = mOwner->GetTransform()->GetPosition();
 	TransformSnapShot targetTansSnapShot = target->GetTransform()->GetSnapShot();
 	Vec3 targetPos		                 = targetTansSnapShot.GetPosition();
 
-	Vec3 objectAdjPos	= Pos + GetOwner()->GetTransform()->GetUp() * 0.5f;
+	Vec3 objectAdjPos	= Pos + mOwner->GetTransform()->GetUp() * 0.5f;
 	Vec3 targetAdjPos	= targetTansSnapShot.GetPosition() + targetTansSnapShot.GetUp() * 0.5f;
 	MonsterBTTask::mAnimation->GetController()->SetValue("Walk", true);
 
@@ -89,7 +83,7 @@ BTNodeState MonsterTask::MoveToTarget::Evaluate()
 
 
 	// 몬스터가 있는 섹터 인덱스
-	/* A */Coordinate My_SectorIdx = SectorController::GetSectorIdxByPosition(GetOwner()->GetTransform()->GetPosition());
+	/* A */Coordinate My_SectorIdx = SectorController::GetSectorIdxByPosition(mOwner->GetTransform()->GetPosition());
 	/* B */Coordinate Target_SectorIdx = SectorController::GetSectorIdxByPosition(targetPos);
 	/* C */ Coordinate Alpha_SectorIdx;
 
@@ -102,10 +96,11 @@ BTNodeState MonsterTask::MoveToTarget::Evaluate()
 	if (My_SectorIdx.z != Target_SectorIdx.z && My_SectorIdx.x != Target_SectorIdx.x) {
 
 		Coordinate RT_sectorIDx = Coordinate(std::max(My_SectorIdx.x, Target_SectorIdx.x), std::max(My_SectorIdx.z, Target_SectorIdx.z));
-		Coordinate Center = SectorController::GetSectorStartPos(RT_sectorIDx);
+		Coordinate Center       = SectorController::GetSectorStartPos(RT_sectorIDx);
 
-		bool IsMyX_Positive = (Pos.x - Center.x) > 0;
-		bool IsXInter_Positive = isXInterceptPositive(targetPos, GetOwner()->GetTransform()->GetPosition()); // x 절편이 양수인지
+		bool IsMyX_Positive    = (Pos.x - Center.x) > 0;
+		bool IsXInter_Positive = isXInterceptPositive(targetPos, mOwner->GetTransform()->GetPosition()); // x 절편이 양수인지
+		
 		if (IsMyX_Positive == false /* x : 음수 */) {
 
 			if (IsXInter_Positive == false)
@@ -128,7 +123,7 @@ BTNodeState MonsterTask::MoveToTarget::Evaluate()
 	// 타겟이 속한 모든 그리드를 검사해야 한다.
 	for (int i = 0; i < checkSectors.size(); ++i) {
 		SectorController* SC = mEnemyController->GetOwnerRoom()->GetSectorController();
-		if (SC->CollideCheckRay_MinimumDist(checkSectors[i], r, GameObjectInfo::Type::Building) < toTarget.Length()) { // Ray와 섹터의 빌딩들과 Ray 체크후 가장 짧은 길이로 비교 
+		if (SC->CollideCheckRay_MinimumDist(checkSectors[i], r) < toTarget.Length()) { // Ray와 섹터의 빌딩들과 Ray 체크후 가장 짧은 길이로 비교 
 			return BTNodeState::Failure;
 		}
 	}
@@ -141,7 +136,7 @@ BTNodeState MonsterTask::MoveToTarget::Evaluate()
 	const float kMinDistance = 0.1f;
 
 	const float s = mStat->GetStat_MoveSpeed();
-	const float d = GetOwner()->GetDeltaTime();
+	const float d = mOwner->DeltaTime();
 
 
 	// 타겟에 도착하지 않았을 경우에만 이동
@@ -150,7 +145,7 @@ BTNodeState MonsterTask::MoveToTarget::Evaluate()
 
 		//mStat->GetStat_RotationSpeed();
 		MonsterBTTask::mTransform->RotateTargetAxisY(targetTansSnapShot.GetPosition(), 500.f);
-		MonsterBTTask::mTransform->Translate(GetOwner()->GetTransform()->GetLook(), mStat->GetStat_MoveSpeed() * GetOwner()->GetDeltaTime());
+		MonsterBTTask::mTransform->Translate(mOwner->GetTransform()->GetLook(), mStat->GetStat_MoveSpeed() * mOwner->DeltaTime());
 	}
 
 	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_MOVE_TO_TARGET);

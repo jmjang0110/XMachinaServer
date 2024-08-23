@@ -1,8 +1,5 @@
 #pragma once
 #include "BTTask.h"
-#include "Script_Enemy.h"
-#include "Script_EnemyController.h"
-
 namespace MonsterTask {
 
 	/// +-------------------------------------------------------------------------
@@ -17,7 +14,7 @@ namespace MonsterTask {
 		virtual BTNodeState Evaluate() override;
 
 	public:
-		Attack(SPtr_GameObject owner, std::function<void()> callback);
+		Attack(SPtr<GameObject> owner, std::function<void()> callback);
 		~Attack();
 	};
 };

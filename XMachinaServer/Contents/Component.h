@@ -1,71 +1,48 @@
 #pragma once
 
-#include "GameEntity.h"
-
 class GameObject;
-
-namespace ComponentInfo {
-
-	enum class Type : UINT16 {
-		None ,
-
-		Transform,
-		Collider,
-		Animation,
-		Rigidbody,
-
-		Script,
-		End,
-
-	};
-}
-
-
-class Component : public GameEntity
+class Component : public std::enable_shared_from_this<Component>
 {
-private:
-	ComponentInfo::Type mType = ComponentInfo::Type::None;
-	SPtr_GameObject mOwner = nullptr;
+public:
+	enum class Type : UINT16 {
+		None, Transform, Collider, Animation, Rigidbody, Script, _count, 
+	};
 
-private:
-	bool mIsAwake  = false;
-	bool mIsStart  = false;
-	bool mIsActive = false;
+protected:
+	UINT32				mID       = -1;
+	std::string			mName     = {};
+	Type				mType	  = Type::None;
+	SPtr<GameObject>	mOwner	  = nullptr;
+	bool				mIsActive = false;
 
 public:
 	Component();
-	Component(const Component& other);
-	Component(SPtr<GameObject> owner, ComponentInfo::Type Type, UINT32 id);
+	Component(SPtr<GameObject> owner, Type Type, UINT32 id);
 	virtual ~Component();
 
 public:
-	virtual void Activate();
-	virtual void DeActivate();
+	virtual SPtr<Component>	Clone(SPtr<Component> target);
 
-	virtual void OnEnable();
-	virtual void OnDisable();
+	virtual void	Activate();
+	virtual void	DeActivate();
 
-public:
-	virtual bool WakeUp();
-	virtual bool Start();
-	virtual bool Update();
-	virtual bool Animate();
-	virtual bool LateUpdate();
-
-	virtual void OnDestroy();
+	virtual void	Start() ;
+	virtual void	Update();
+	virtual void	LateUpdate();
+	virtual void	End();
 
 public:
-	void		SetOwner(SPtr_GameObject owner) { mOwner = owner; }
-	void SetType(ComponentInfo::Type type) { mType = type; }
-	SPtr_GameObject GetOwner() { return mOwner; }
+	float DeltaTime();
 
 public:
-	bool IsAwake() const { return mIsAwake; }
-	bool IsStart() const { return mIsStart; }
-	bool IsActive() const { return mIsActive; }
+	void			SetID(UINT32 id)				 { mID    = id; }
+	void			SetOwner(SPtr<GameObject> owner) { mOwner = owner; }
+	void			SetType(Type type)				 { mType  = type; }
 
-	// Clone 함수 선언
-	virtual void Clone(SPtr<Component> other) ;
+public:
+	UINT32			 GetID()			 { return mID; }
+	SPtr<GameObject> GetOwner()			 { return mOwner; }
+	bool			 IsActive() const	 { return mIsActive; }
 
 };
 

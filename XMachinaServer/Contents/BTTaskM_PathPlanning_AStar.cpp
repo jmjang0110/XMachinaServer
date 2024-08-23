@@ -1,21 +1,24 @@
 #include "pch.h"
 #include "BTTaskM_PathPlanning_AStar.h"
-#include "AStarPath.h"
-#include "BTTask.h"
-#include "Transform.h"
-#include "GameObject.h"
 #include "BTNode.h"
-#include "Script_Player.h"
+
 #include "ResourceManager.h"
-#include "Script_AdvancedCombatDroid_5.h"
-#include "Script_Onyscidus.h"
-#include "Script_Ursacetus.h"
+
+#include "GameObject.h"
+#include "Transform.h"
+#include "Animation.h"
+#include "Rigidbody.h"
+#include "Collider.h"
+
+#include "Script_Player.h"
+#include "Script_Enemy.h"
+#include "Script_EnemyController.h"
 /// +-------------------------------------------------------------------------
 ///	> ¢º¢º¢º Task Path Planning A*  
 /// __________________________________________________________________________
 
 
-MonsterTask::PathPlanning_AStar::PathPlanning_AStar(SPtr_GameObject owner, BTTaskType type, std::function<void()> callback)
+MonsterTask::PathPlanning_AStar::PathPlanning_AStar(SPtr<GameObject> owner, BTTaskType type, std::function<void()> callback)
 	: MonsterBTTask(owner, type, callback)
 
 {
@@ -25,7 +28,7 @@ MonsterTask::PathPlanning_AStar::PathPlanning_AStar(SPtr_GameObject owner, BTTas
 
 }
 
-MonsterTask::PathPlanning_AStar::PathPlanning_AStar(SPtr_GameObject owner, std::function<void()> callback)
+MonsterTask::PathPlanning_AStar::PathPlanning_AStar(SPtr<GameObject> owner, std::function<void()> callback)
 	: MonsterBTTask(owner, BTTaskType::MonT_PathPlanningASatr, callback)
 {
 

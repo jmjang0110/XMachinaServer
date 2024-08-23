@@ -7,9 +7,12 @@ class Script_Gobbler : public Script_Enemy
 {
 public:
 	Script_Gobbler();
-	Script_Gobbler(SPtr<GameObject> owner, ScriptInfo::Type type);
-	~Script_Gobbler();
+	Script_Gobbler(SPtr<GameObject> owner);
+	virtual ~Script_Gobbler();
 
 public:
-	virtual bool Start() override;
+	virtual SPtr<Component> Clone(SPtr<Component> target);
+	virtual void Clone(SPtr<GameObject> target);
+
+	virtual void Start() override;
 };

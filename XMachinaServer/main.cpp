@@ -50,7 +50,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	// 프로세스 종료 핸들러를 등록합니다.
 	if (!SetConsoleCtrlHandler(ConsoleHandler, TRUE)) {
-		std::cerr << "Error setting console control handler" << std::endl;
+		std::cout << "Error setting console control handler" << std::endl;
 		return 1;
 	}
 

@@ -1,6 +1,5 @@
 #pragma once
 
-class Script_EnemyController;
 
 enum class BTNodeState {
 	Running = 0,
@@ -13,41 +12,36 @@ enum class BTNodeState {
 ///	> ¢¹¢¹¢¹ Behavior Tree Node 
 /// -------------------------------------------------------------------------+
 
+class GameObject;
+class Script_EnemyController;
 class BTNode
 {
-public:
-	SPtr_GameObject					mOwner          = {};
-
-	BTNode*							mRoot           = {};
-	BTNode*							mParent         = {};
-
-	std::queue<BTNode*>				mWaitQueue  = {};
+protected:
+	SPtr<GameObject>				mOwner      = {};
+	BTNode*							mRoot       = {};
+	BTNode*							mParent     = {};
 	std::vector<BTNode*>			mChildren   = {};
 
 public:
+	std::queue<BTNode*>				mWaitQueue  = {};
 	SPtr<Script_EnemyController>	mEnemyController;
 
 
 public:
-	BTNode(SPtr_GameObject owner);
-	BTNode(SPtr_GameObject owner, std::vector<BTNode*>& children);
+	BTNode(SPtr<GameObject> owner);
+	BTNode(SPtr<GameObject> owner, std::vector<BTNode*>& children);
 	virtual ~BTNode();
 
 public:
 	virtual BTNodeState Evaluate() { return BTNodeState::Failure; }
 	void SetRoot();
 
-	SPtr_GameObject GetOwner()							{ return mOwner;			}
-	BTNode*			GetRoot()							{ return mRoot;				}
-	BTNode*			GetParent()							{ return mParent;			}
 	SPtr<Script_EnemyController> GetEnemyController()	{ return mEnemyController;	}
 
 public:
-	void SetOwner(SPtr_GameObject owner) { mOwner = owner; }
+	void SetOwner(SPtr<GameObject> owner) { mOwner = owner; }
 	void SetRoot(BTNode* root) { mRoot = root; }
 	void SetParent(BTNode* parent) { mParent = parent; }
-
-
 
 private:
 	void Attach(BTNode* node);
@@ -67,8 +61,8 @@ public:
 	virtual BTNodeState Evaluate() override;
 
 public:
-	BTNode_Sequence(SPtr_GameObject owner) : BTNode(owner) {};
-	BTNode_Sequence(SPtr_GameObject owner, std::vector<BTNode*> children) : BTNode(owner, children) {};
+	BTNode_Sequence(SPtr<GameObject> owner) : BTNode(owner) {};
+	BTNode_Sequence(SPtr<GameObject> owner, std::vector<BTNode*> children) : BTNode(owner, children) {};
 };
 
 /// +-------------------------------------------------------------------------
@@ -84,8 +78,8 @@ public:
 	virtual BTNodeState Evaluate() override;
 
 public:
-	BTNode_Selector(SPtr_GameObject owner) : BTNode(owner) {};
-	BTNode_Selector(SPtr_GameObject owner, std::vector<BTNode*> children) : BTNode(owner, children) {};
+	BTNode_Selector(SPtr<GameObject> owner) : BTNode(owner) {};
+	BTNode_Selector(SPtr<GameObject> owner, std::vector<BTNode*> children) : BTNode(owner, children) {};
 };
 
 /// +-------------------------------------------------------------------------
@@ -104,8 +98,8 @@ public:
 	virtual BTNodeState Evaluate() { return BTNode::Evaluate(); };
 
 public:
-	BTNode_Action(SPtr_GameObject owner) : BTNode(owner) {};
-	BTNode_Action(SPtr_GameObject owner, std::function<void()> callback) : BTNode(owner) { mCallback = callback; }
+	BTNode_Action(SPtr<GameObject> owner) : BTNode(owner) {};
+	BTNode_Action(SPtr<GameObject> owner, std::function<void()> callback) : BTNode(owner) { mCallback = callback; }
 
 public:
 	void ExecuteCallback() {

@@ -1,8 +1,9 @@
 #include "pch.h"
 #include "TileMap.h"
 #include "Sector.h"
-#include "Contents/Collider.h"
+#include "GameObject.h"
 #include "Collider.h"
+#include "Script_Entity.h"
 
 int TileMap::mTileRows = 0;
 int TileMap::mTileCols = 0;
@@ -50,7 +51,7 @@ TileMapInfo::TileType TileMap::GetTileFromPos(const Vec3& pos) const
 void TileMap::UpdateTiles(TileMapInfo::TileType tile, GameObject* object)
 {
 	// 정적 오브젝트가 Building 태그인 경우에만 벽으로 설정
-	if (object->GetType() != GameObjectInfo::Type::Building)
+	if (!object->IsEnableTag(ObjectTag::Building))
 		return;
 
 	// BFS를 통해 주변 타일도 업데이트

@@ -21,10 +21,7 @@
 class GameObject;
 class AnimationClip;
 class AnimatorController;
-class GameItem;
-
-enum class ObjectTag { None, Building, Enemy, Item };
-
+class GameObject;
 struct ScriptParameter {
 	enum class Type : BYTE {
 		None,
@@ -100,13 +97,17 @@ public:
 class BattleScene {
 private:
 	std::vector<SPtr<GameObject>>	mBuildings{};
-	std::vector<SPtr<GameMonster>>	mEnemies{};
-	std::vector<SPtr<GameItem>>		mStaticItems{};
-	std::vector<SPtr<GameItem>>		mDynamicItems{};
+	std::vector<SPtr<GameObject>>	mEnemies{};
+	std::vector<SPtr<GameObject>>	mStaticItems{};
+	std::vector<SPtr<GameObject>>	mDynamicItems{};
 
 
 public:
 	void Load();
+	ObjectTag Load_SettingObjectTag(std::string loadname);
+	void Load_SettingByModelName(std::string modelname);
+
+
 
 	// Getter for mBuildings
 	const std::vector<SPtr<GameObject>>* GetBuildings() const {
@@ -114,27 +115,27 @@ public:
 	}
 
 	// Getter for mEnemies
-	const std::vector<SPtr<GameMonster>>* GetEnemies() const {
+	const std::vector<SPtr<GameObject>>* GetEnemies() const {
 		return &mEnemies;
 	}
 
 	// Getter for mStaticItems
-	const std::vector<SPtr<GameItem>>* GetStaticItems() const {
+	const std::vector<SPtr<GameObject>>* GetStaticItems() const {
 		return &mStaticItems;
 	}
 
 	// Getter for mDynamicItems
-	const std::vector<SPtr<GameItem>>* GetDynamicItems() const {
+	const std::vector<SPtr<GameObject>>* GetDynamicItems() const {
 		return &mDynamicItems;
 	}
 
 private:
-	void AddMonster(SPtr<GameObject> object);
+	void AddMonster(SPtr<GameObject> object, std::string modelName);
 	void AddBuilding(SPtr<GameObject> object);
 	void UpdateTiles() const;
 
 	void LoadScriptExporter(std::ifstream& file, SPtr<GameObject> object);
-	FBProtocol::ITEM_TYPE GetItemType(std::string itemname);
+	void SetScriptEntityByName(SPtr<GameObject> object, std::string itemName);
 
 };
 

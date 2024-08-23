@@ -3,6 +3,11 @@
 
 #include "ResourceManager.h"
 #include "Animation.h"
+#include "Transform.h"
+#include "Collider.h"
+#include "Rigidbody.h"
+#include "GameObject.h"
+
 
 namespace {
     sptr<Model> LoadFrame(std::ifstream& file)

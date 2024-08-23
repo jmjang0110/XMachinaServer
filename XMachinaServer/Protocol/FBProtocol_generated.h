@@ -740,7 +740,7 @@ struct CPkt_PlayerOnSkillBuilder {
 
 inline ::flatbuffers::Offset<CPkt_PlayerOnSkill> CreateCPkt_PlayerOnSkill(
     ::flatbuffers::FlatBufferBuilder &_fbb,
-    FBProtocol::PLAYER_SKILL_TYPE skill_type = FBProtocol::PLAYER_SKILL_TYPE_IMPOSSIBLE,
+    FBProtocol::PLAYER_SKILL_TYPE skill_type = FBProtocol::PLAYER_SKILL_TYPE_NONE,
     int32_t mindcontrol_monster_id = 0) {
   CPkt_PlayerOnSkillBuilder builder_(_fbb);
   builder_.add_mindcontrol_monster_id(mindcontrol_monster_id);
@@ -808,7 +808,7 @@ struct SPkt_PlayerOnSkillBuilder {
 inline ::flatbuffers::Offset<SPkt_PlayerOnSkill> CreateSPkt_PlayerOnSkill(
     ::flatbuffers::FlatBufferBuilder &_fbb,
     uint32_t player_id = 0,
-    FBProtocol::PLAYER_SKILL_TYPE skill_type = FBProtocol::PLAYER_SKILL_TYPE_IMPOSSIBLE,
+    FBProtocol::PLAYER_SKILL_TYPE skill_type = FBProtocol::PLAYER_SKILL_TYPE_NONE,
     float phero_amount = 0.0f,
     int32_t mindcontrol_monster_id = 0) {
   SPkt_PlayerOnSkillBuilder builder_(_fbb);
@@ -2126,7 +2126,7 @@ struct SPkt_Monster_StateBuilder {
 inline ::flatbuffers::Offset<SPkt_Monster_State> CreateSPkt_Monster_State(
     ::flatbuffers::FlatBufferBuilder &_fbb,
     uint32_t monster_id = 0,
-    FBProtocol::MONSTER_BT_TYPE monster_bt_type = FBProtocol::MONSTER_BT_TYPE_IDLE,
+    FBProtocol::MONSTER_BT_TYPE monster_bt_type = FBProtocol::MONSTER_BT_TYPE_NONE,
     int32_t monster_bt_step = 0) {
   SPkt_Monster_StateBuilder builder_(_fbb);
   builder_.add_monster_bt_step(monster_bt_step);

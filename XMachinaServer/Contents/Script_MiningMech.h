@@ -16,11 +16,14 @@ protected:
 
 public:
 	Script_MiningMech();
-	Script_MiningMech(SPtr<GameObject> owner, ScriptInfo::Type type);
-	~Script_MiningMech();
+	Script_MiningMech(SPtr<GameObject> owner);
+	virtual ~Script_MiningMech();
 
 public:
-	virtual bool Start() override;
+	virtual SPtr<Component> Clone(SPtr<Component> target);
+	virtual void Clone(SPtr<GameObject> target);
+
+	virtual void Start() override;
 
 protected:
 	void SmashAttackCallback();

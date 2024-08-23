@@ -1,24 +1,19 @@
 #include "pch.h"
 #include "BTTaskM_CheckAttackRange.h"
-
 #include "BTTask.h"
+
+#include "GameObject.h"
+#include "Transform.h"
+#include "Animation.h"
+#include "Collider.h"
+#include "Rigidbody.h"
+
 #include "Script_Player.h"
-#include "GameMonster.h"
-#include "GamePlayer.h"
-#include "GameSkill.h"
+#include "Script_Skill.h"
 
+#include "Script_Enemy.h"
+#include "Script_EnemyController.h"
 
-#include "Script_AdvancedCombatDroid_5.h"
-#include "Script_Ursacetus.h"
-#include "Script_Onyscidus.h"
-#include "Script_Arack.h"
-#include "Script_Aranobot.h"
-#include "Script_Ceratoferox.h"
-#include "Script_Gobbler.h"
-#include "Script_LightBipedMech.h"
-#include "Script_Rapax.h"
-#include "Script_Anglerox.h"
-#include "Script_MiningMech.h"
 /// +-------------------------------------------------------------------------
 ///	> ▶▶▶ Task Check Attack Range 
 /// __________________________________________________________________________
@@ -33,17 +28,19 @@ BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 	}
 	
 	// 3. Target Player 가 Cloacking 상태라면 Attack (X)
-	SPtr<GameObject> target = mEnemyController->GetTarget();
-	if (auto player = std::dynamic_pointer_cast<GamePlayer>(target)) {
-		if (player->IsExit() == true) {
+	SPtr<GameObject> target        = mEnemyController->GetTarget();
+	auto			 player_entity = target->GetScriptEntity<Script_Player>();
+	if (player_entity) {
+		if (player_entity->GetCurrState() == PlayerState::Exit) {
 			mEnemyController->RemoveAllAnimation();
 			mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_IDLE);
 			mEnemyController->SetTarget(nullptr);
 			return BTNodeState::Failure;
 		}
+		auto		skill_entity  = player_entity->GetSkillEntity(FBProtocol::PLAYER_SKILL_TYPE_CLOACKING);
+		SkillState currSkillState = skill_entity->GetCurrSkillState();
 
-		GameSkill::State IsCloakingOn = player->GetSkillState(FBProtocol::PLAYER_SKILL_TYPE_CLOACKING);
-		if (IsCloakingOn == GameSkill::State::Active) {
+		if (currSkillState == SkillState::Active) {
 			mEnemyController->RemoveAllAnimation();
 			mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_IDLE);
 			mEnemyController->SetTarget(nullptr);
@@ -60,7 +57,7 @@ BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 
 	if (distance < mStat->GetStat_AttackRange()) {
 		Vec3	ToTargetDir = Vector3::Normalized(TargetPos - Pos);
-		float	Angle       = Vector3::Angle(GetOwner()->GetTransform()->GetLook(), ToTargetDir);
+		float	Angle       = Vector3::Angle(mOwner->GetTransform()->GetLook(), ToTargetDir);
 		
 		// 너무 가까우면 계속 돈다 그래서 적당히 가까우면 Attack State 로 바꾼다.
 		if (distance < minDistance || Angle < 10.f) {
@@ -73,11 +70,10 @@ BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 	return BTNodeState::Failure;
 }
 
-MonsterTask::CheckAttackRange::CheckAttackRange(SPtr_GameObject owner, std::function<void()> callback)
+MonsterTask::CheckAttackRange::CheckAttackRange(SPtr<GameObject> owner, std::function<void()> callback)
 	: MonsterBTTask(owner, BTTaskType::MonT_CheckAttackRange, callback)
 
 {
-	const auto& o1 = GetOwner();
 }
 
 MonsterTask::CheckAttackRange::~CheckAttackRange()

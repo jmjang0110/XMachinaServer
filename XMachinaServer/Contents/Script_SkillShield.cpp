@@ -1,47 +1,88 @@
 #include "pch.h"
 #include "Script_SkillShield.h"
-#include "GameSkill.h"
 #include "GameObject.h"
 
-Script_SkillShield::Script_SkillShield()
+Script_SkillShield::Script_SkillShield(SPtr<GameObject> owner)
+	: Script_Skill(owner)
 {
-}
-
-Script_SkillShield::Script_SkillShield(SPtr<GameSkill> owner, ScriptInfo::Type type)
-	: Script_Skill(owner, type)
-{
-}
-
-Script_SkillShield::Script_SkillShield(SPtr<GameObject> owner, ScriptInfo::Type type)
-	: Script_Skill(owner, type)
-{
+	mSkillType = FBProtocol::PLAYER_SKILL_TYPE_SHIELD;
 }
 
 Script_SkillShield::~Script_SkillShield()
 {
 }
 
-void Script_SkillShield::Clone(SPtr<Component> other)
+void Script_SkillShield::Start()
 {
 }
 
-bool Script_SkillShield::Update()
+SPtr<Component> Script_SkillShield::Clone(SPtr<Component> target)
+{
+	// Try to cast the target to Script_Anglerox
+	auto clonedScript = std::dynamic_pointer_cast<Script_SkillShield>(target);
+	if (clonedScript)
+	{
+		// Call the base class Clone method first
+		Script_Skill::Clone(clonedScript);
+		return clonedScript;
+	}
+	else
+	{
+		std::cout << "Clone failed: target is not of type Script_SkillShield" << std::endl;
+		return nullptr;
+	}
+}
+
+void Script_SkillShield::Clone(SPtr<GameObject> target)
+{
+	// Add a new Script_Anglerox instance to the GameObject
+	auto clonedScript = target->AddScript<Script_SkillShield>();
+	// Clone the current script into the new script
+	this->Clone(clonedScript);
+}
+
+void Script_SkillShield::Update()
 {
 	Script_Skill::Update();
-	GameSkill::State skillState = mSkillOwner->GetState();
 
-	if (skillState == GameSkill::State::Active) {
-		mSkillOwner->SetState(GameSkill::State::CoolTime_Start);
-		mSkillOwner->RegisterUpdate(mActiveDuration);
+	switch (mSkillState)
+	{
+	case SkillState::Impossible:
+	case SkillState::Possible:
+		break;
+	case SkillState::Active:
+	{
+		mSkillState = SkillState::CoolTime_Start;
+		mOwner->RegisterUpdate(mActiveDuration); // call after activeduration time
 	}
-	else if (skillState == GameSkill::State::CoolTime_Start) {
-		mSkillOwner->SetState(GameSkill::State::CoolTime_End);
-		mSkillOwner->RegisterUpdate(mCoolTime);
+		break;
+	case SkillState::CoolTime_Start:
+	{
+		mSkillState = SkillState::CoolTime_End;
+		mOwner->RegisterUpdate(mCoolTime);		// call after cool time
 	}
-	else if (skillState == GameSkill::State::CoolTime_End) {
-		mSkillOwner->SetState(GameSkill::State::Possible);
-		mSkillOwner->DeActivate();
+		break;
+	case SkillState::CoolTime_End:
+	{
+		mSkillState = SkillState::Possible;
+		mOwner->DeActivate();
+	}
+		break;
+	default:
+		assert(0);
+		break;
 	}
 
-	return true;
+}
+
+void Script_SkillShield::LateUpdate()
+{
+}
+
+void Script_SkillShield::End()
+{
+}
+
+void Script_SkillShield::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
+{
 }

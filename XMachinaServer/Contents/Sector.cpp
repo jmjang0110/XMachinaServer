@@ -1,15 +1,10 @@
 #include "pch.h"
 #include "Sector.h"
-#include "GameObject.h"
-#include "GameBuilding.h"
+
+#include "Transform.h"
 #include "Collider.h"
 #include "CollisionManager.h"
 
-
-Sector::Sector()
-	: GameObject(-1)
-{
-}
 
 Sector::Sector(UINT32 id, Coordinate sectorIdx)
 	: GameObject(id)
@@ -17,7 +12,6 @@ Sector::Sector(UINT32 id, Coordinate sectorIdx)
 	mIndex = sectorIdx;
 
 }
-
 
 Sector::~Sector()
 {
@@ -43,56 +37,13 @@ void Sector::PrintInfo()
 
 }
 
-void Sector::Activate()
-{
-	if (mActivateRef.load() == 0)
-		GameObject::Activate();
-
-	mActivateRef.fetch_add(1);
-
-}
-
-void Sector::DeActivate()
-{
-	mActivateRef.fetch_sub(1);
-	if (mActivateRef.load() < 0)
-	{
-		GameObject::DeActivate();
-	}
-}
-
-bool Sector::IsActive()
-{
-	if (mActivateRef.load() > 0)
-		return true;
-	else
-		return false;
-}
-
-void Sector::Update()
-{
-	
-}
-
-void Sector::WakeUp()
-{
-}
-
-void Sector::Start()
-{
-}
-
-void Sector::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
-{
-}
-
 void Sector::Init(Coordinate Index, SectorInfo::Type type)
 {
 	mType  = type;
 	mIndex = Index;
 }
 
-bool Sector::AddMonster(UINT32 id, SPtr<GameMonster> monster)
+bool Sector::AddMonster(UINT32 id, SPtr<GameObject> monster)
 {
 	auto it = mMonsters.find(id);
 	if (it == mMonsters.end()) {
@@ -102,7 +53,7 @@ bool Sector::AddMonster(UINT32 id, SPtr<GameMonster> monster)
 	return false;
 }
 
-bool Sector::AddNPC(UINT32 id, SPtr<GameNPC> npc)
+bool Sector::AddNPC(UINT32 id, SPtr<GameObject> npc)
 {
 	auto it = mNPCs.find(id);
 	if (it == mNPCs.end()) {
@@ -122,9 +73,9 @@ bool Sector::AddBuilding(UINT32 id, SPtr<GameObject> building)
 	return false;
 }
 
-std::vector<SPtr<GameMonster>> Sector::GetMonstersInViewRange(Vec3 player_pos, float viewRange_radius)
+std::vector<SPtr<GameObject>> Sector::GetMonstersInViewRange(Vec3 player_pos, float viewRange_radius)
 {
-	std::vector<SPtr<GameMonster>> monstersInView;
+	std::vector<SPtr<GameObject>> monstersInView;
 	for (auto& Mon : mMonsters) {
 		Vec3 pos = Mon.second->GetTransform()->GetSnapShot().GetPosition(); /* Snap Shot - Position */
 
@@ -142,7 +93,7 @@ std::vector<SPtr<GameMonster>> Sector::GetMonstersInViewRange(Vec3 player_pos, f
 
 
 
-float Sector::CollideCheckRay_MinimumDist(const Ray& ray, GameObjectInfo::Type targetType)
+float Sector::CollideCheckRay_MinimumDist(const Ray& ray)
 {
 	float minDist = 999.f;
 	float Result;

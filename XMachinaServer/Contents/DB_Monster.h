@@ -5,25 +5,6 @@
 /// ________________________________
 /// Manage Monster Data In Game World 
 /// -------------------------------+
-
-enum class MonsterType : UINT8
-{
-	Ursacetus,
-	Onyscidus,
-	AdvancedCombatDroid_5,
-	Anglerox,
-	Arack,
-	Ceratoferox,
-	Gobbler,
-	LightBipedMech,
-	MiningMech,
-	Rapax,
-	Aranobot,
-
-	End,
-
-};
-
 /* Monster Prototype Information */
 struct MonsterDataBase 
 {
@@ -39,7 +20,6 @@ struct MonsterDataBase
 class DB_Monster
 {
 private:
-	MonsterType		mType;
 	MonsterDataBase mProtoDB;
 
 public:

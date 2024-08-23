@@ -5,34 +5,33 @@
 
 #define CHAR_TO_STRING(c) LogManager::GetInst()->CharToString(c)
 #define WSTR_TO_STRING(str) LogManager::GetInst()->WstringToString(str)
-
 enum class TextColor {
 	Default = 0x07,    // White
 
-	Black = 0x00,
-	Red = 0x04,
-	Green = 0x02,
-	Yellow = 0x06,
-	Blue = 0x01,
-	Magenta = 0x05,
-	Cyan = 0x03,
-	White = 0x07,
-	BrightBlack = 0x08,
-	BrightRed = 0x0C,
-	BrightGreen = 0x0A,
-	BrightYellow = 0x0E,
-	BrightBlue = 0x09,
+	Black         = 0x00,
+	Red           = 0x04,
+	Green         = 0x02,
+	Yellow        = 0x06,
+	Blue          = 0x01,
+	Magenta       = 0x05,
+	Cyan          = 0x03,
+	White         = 0x07,
+	BrightBlack   = 0x08,
+	BrightRed     = 0x0C,
+	BrightGreen   = 0x0A,
+	BrightYellow  = 0x0E,
+	BrightBlue    = 0x09,
 	BrightMagenta = 0x0D,
-	BrightCyan = 0x0B,
-	BrightWhite = 0x0F,
-	ExtraBlack = 0x10,
-	ExtraRed = 0x14,
-	ExtraGreen = 0x12,
-	ExtraYellow = 0x16,
-	ExtraBlue = 0x11,
-	ExtraMagenta = 0x15,
-	ExtraCyan = 0x13,
-	ExtraWhite = 0x17
+	BrightCyan    = 0x0B,
+	BrightWhite   = 0x0F,
+	ExtraBlack    = 0x10,
+	ExtraRed      = 0x14,
+	ExtraGreen    = 0x12,
+	ExtraYellow   = 0x16,
+	ExtraBlue     = 0x11,
+	ExtraMagenta  = 0x15,
+	ExtraCyan     = 0x13,
+	ExtraWhite    = 0x17
 };
 
 enum class LogLevel

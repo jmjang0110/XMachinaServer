@@ -4,7 +4,7 @@
 #include "ServerLib/ThreadManager.h"
 #include "ServerLib/NetworkManager.h"
 #include "ServerLib/MemoryManager.h"
-#include "Contents/GameManager.h"
+#include "Contents/RoomManager.h"
 #include "Contents/TimeManager.h"
 
 
@@ -51,10 +51,6 @@ Framework::~Framework()
 
 bool Framework::Init(HINSTANCE& hInst)
 {
-
-
-
-
 	/// +------------------------------------
 	///	 Log Manager : Console I/O, File I/O 
 	/// ------------------------------------+
@@ -62,7 +58,6 @@ bool Framework::Init(HINSTANCE& hInst)
 		LOG_MGR->SetColor(TextColor::Red);
 		LOG_MGR->Cout("[FAIL] LOG_MGR INIT\n");
 		LOG_MGR->SetColor(TextColor::Default);
-
 		return false;
 	}
 
@@ -73,24 +68,22 @@ bool Framework::Init(HINSTANCE& hInst)
 	/// _______________________________________________________________________________
 	///	 XMachina Window Server UI : Dx12, Imgui - 서버 상태를 Imgui를 이용해 렌더링한다. 
 	/// ------------------------------------------------------------------------------+
-	if (FALSE == WINDOW_UI->Init(hInst, { 1366,768 })) {
-		LOG_MGR->SetColor(TextColor::Red);
-		LOG_MGR->Cout("[FAIL] WINDOW_UI INIT\n");
-		LOG_MGR->SetColor(TextColor::Default);
-
-		return false;
-	}
-	LOG_MGR->Cout("[SUCCESS] WINDOW_UI INIT\n");
+//	if (FALSE == WINDOW_UI->Init(hInst, { 1366,768 })) {
+//		LOG_MGR->SetColor(TextColor::Red);
+//		LOG_MGR->Cout("[FAIL] WINDOW_UI INIT\n");
+//		LOG_MGR->SetColor(TextColor::Default);
+//
+//		return false;
+//	}
+//	LOG_MGR->Cout("[SUCCESS] WINDOW_UI INIT\n");
 
 	/// +----------------------------------------------------------------
 	///	Network Manager : 2.2버젼 Winsock 초기화 및 비동기 함수 Lpfn 초기화
 	/// ----------------------------------------------------------------+
 	if (FALSE == NETWORK_MGR->Init()) {
-		
 		LOG_MGR->SetColor(TextColor::Red);
 		LOG_MGR->Cout("[FAIL] NETWORK_MGR INIT\n");
 		LOG_MGR->SetColor(TextColor::Default);
-
 		return false;
 	}
 	LOG_MGR->Cout("[SUCCESS] NETWORK_MGR INIT\n");
@@ -99,11 +92,9 @@ bool Framework::Init(HINSTANCE& hInst)
 	///	TLS MGR : Thread Local Storage 관리 
 	/// ------------------------------------+
 	if (FALSE == TLS_MGR->Init()) {
-
 		LOG_MGR->SetColor(TextColor::Red);
 		LOG_MGR->Cout("[FAIL] TLS_MGR INIT\n");
 		LOG_MGR->SetColor(TextColor::Default);
-
 		return false;
 
 	}
@@ -130,10 +121,10 @@ bool Framework::Init(HINSTANCE& hInst)
 	///	GAME MANAGER : Game Room, Player ... 관리
 	/// -----------------------------------------+
 	RESOURCE_MGR->Init();	// Scene, Models ... ( Game Resources ) Load 
-	GAME_MGR->Init();		// Room - PlayerController, SectorController, NPCController ( Init )
+	ROOM_MGR->Init();		// Room - PlayerController, SectorController, NPCController ( Init )
 
 
-	LOG_MGR->Cout("[SUCCESS] GAME_MGR INIT\n");
+	LOG_MGR->Cout("[SUCCESS] ROOM_MGR INIT\n");
 
 	std::string ipAddresses = GetLocalIPv4Address();
 	if (!ipAddresses.empty()) {
@@ -230,13 +221,8 @@ void Framework::Launch()
 			{
 				TLS_MGR->Get_TlsInfoData()->TimeMgr.Tick(240.f);
 				mServer->WorkerThread(msTimeOut);
-
 				time += TLS_MGR->Get_TlsInfoData()->TimeMgr.GetTimeElapsed();
 
-		/*		if ((int)time != (int)prev) {
-					LOG_MGR->Cout("[", TLS_MGR->Get_TlsInfoData()->id,"] : ", time, "\n");
-					prev = time;
-				}*/
 			}
 
 			});

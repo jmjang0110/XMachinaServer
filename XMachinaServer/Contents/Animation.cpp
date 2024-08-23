@@ -4,6 +4,9 @@
 #include "ResourceManager.h"
 #include "ServerLib/ThreadManager.h"
 #include "GameObject.h"
+#include "Collider.h"
+#include "Transform.h"
+#include "Rigidbody.h"
 
 Animation::Animation()
 {
@@ -15,7 +18,7 @@ Animation::Animation(const Animation& other)
 
 }
 
-Animation::Animation(SPtr<GameObject> owner, ComponentInfo::Type Type)
+Animation::Animation(SPtr<GameObject> owner, Component::Type Type)
     : Component(owner, Type, static_cast<UINT32>(Type))
 {
 }
@@ -24,47 +27,41 @@ Animation::~Animation()
 {
 }
 
-void Animation::Clone(SPtr<Component> other)
+SPtr<Component> Animation::Clone(SPtr<Component> target)
 {
-    Component::Clone(other);
-	SPtr<Animation> other_AnimationComponent = std::static_pointer_cast<Animation>(other);
+	// First, copy the base Component part.
+	Component::Clone(target);
 
-	mController = MEMORY->Make_Shared<AnimatorController>(*(other_AnimationComponent->GetController().get()));
+	// Cast the target to the appropriate type (Animation).
+	SPtr<Animation> other_Animation = std::dynamic_pointer_cast<Animation>(target);
+
+	// Check if the target object is valid.
+	if (other_Animation)
+	{
+		// Deep copy the mController from the target to the current object.
+		if (other_Animation->mController)
+		{
+			this->mController = MEMORY->Make_Shared<AnimatorController>(*(other_Animation->mController.get()));
+			this->mController->SetAnimOwner(this); // Set the owner of the controller to the current object.
+		}
+		else
+		{
+			this->mController = nullptr;
+		}
+	}
+	return target;
+}
+
+
+void Animation::Start()
+{
 	mController->SetAnimOwner(this);
-
 }
 
-bool Animation::WakeUp()
-{
-    return false;
-}
 
-bool Animation::Start()
-{
-	mController->SetAnimOwner(this);
-
-    return false;
-}
-
-bool Animation::Update()
-{
-	Component::Update();
-
-    return true;
-}
-
-bool Animation::LateUpdate()
-{
-	Component::LateUpdate();
-
-    return false;
-}
-
-bool Animation::Animate()
+void Animation::Animate()
 {
 	mController->Animate();
-
-	return true;
 }
 
 void Animation::Load(const std::string& controller)
@@ -172,7 +169,7 @@ bool AnimatorMotion::Animate()
 		return false;
 	}
 
-	mCrntLength += mSpeed * mAnimOwner->GetOwner()->GetDeltaTime();
+	mCrntLength += mSpeed * mAnimOwner->DeltaTime();
 
 	if (mCallbackAnimate) {
 		mCallbackAnimate->Callback();

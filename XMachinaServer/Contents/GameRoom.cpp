@@ -1,16 +1,16 @@
 #include "pch.h"
 #include "GameRoom.h"
+#include "GameObject.h"
 #include "GameSession.h"
-#include "ServerLib/ThreadManager.h"
+
 #include "PlayerController.h"
 #include "NPCController.h"
 #include "SectorController.h"
 #include "GameOverlapped.h"
+
 #include "Framework.h"
 #include "ServerLib/ServerNetwork.h"
 #include "ServerLib/MemoryManager.h"
-
-
 GameRoom::GameRoom()
 {
 }
@@ -28,6 +28,10 @@ void GameRoom::PQCS(OverlappedObject* over)
 {
 	::PostQueuedCompletionStatus(SERVER_NETWORK->GetIocpHandle(), 1, 0, over);
 
+}
+
+void GameRoom::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
+{
 }
 
 /// +-------------------------------------------------------------------
@@ -61,7 +65,7 @@ bool GameRoom::IsPossibleToEnter()
 /// +-------------------------------------------------------------------
 ///	¢º¢º¢º Player Controller 
 /// -------------------------------------------------------------------+
-bool GameRoom::EnterPlayer(SPtr_GamePlayer player)
+bool GameRoom::EnterPlayer(SPtr<GameObject> player)
 {
 	return mPC->EnterPlayer(player);
 }
@@ -82,7 +86,7 @@ void GameRoom::SendPacket(UINT32 sessionid, SPtr_SendPktBuf packet)
 }
 
 
-std::vector<SPtr<GamePlayer>> GameRoom::GetallPlayers()
+std::vector<SPtr<GameObject>> GameRoom::GetallPlayers()
 {
 	return mPC->GetAllPlayers();
 }

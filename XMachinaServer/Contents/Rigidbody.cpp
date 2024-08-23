@@ -6,6 +6,7 @@
 #include "GameObject.h"
 #include "Component.h"
 #include "Transform.h"
+#include "Collider.h"
 #include "TimeManager.h"
 
 Rigidbody::Rigidbody()
@@ -20,7 +21,7 @@ Rigidbody::Rigidbody(const Rigidbody& other)
 {
 }
 
-Rigidbody::Rigidbody(SPtr<GameObject> owner, ComponentInfo::Type Type)
+Rigidbody::Rigidbody(SPtr<GameObject> owner, Component::Type Type)
 	: Component(owner, Type, static_cast<UINT32>(Type))
 
 {
@@ -30,9 +31,33 @@ Rigidbody::~Rigidbody()
 {
 }
 
-void Rigidbody::Clone(SPtr<Component> CopyT)
+SPtr<Component> Rigidbody::Clone(SPtr<Component> target)
 {
-	Component::Clone(CopyT);
+	// target이 nullptr인 경우, 새로운 Rigidbody 인스턴스를 생성합니다.
+	if (!target)
+	{
+		target = std::make_shared<Rigidbody>(mOwner, mType);
+	}
+
+	// 기본 Component 클래스의 Clone 메서드를 호출하여 공통 속성을 복사합니다.
+	Component::Clone(target);
+
+	// Rigidbody 고유의 속성을 복사합니다.
+	SPtr<Rigidbody> clonedRigidbody = std::dynamic_pointer_cast<Rigidbody>(target);
+	if (clonedRigidbody)
+	{
+		clonedRigidbody->mUseGravity    = mUseGravity;
+		clonedRigidbody->mGravityScale  = mGravityScale;
+		clonedRigidbody->mMass          = mMass;
+		clonedRigidbody->mDrag          = mDrag;
+		clonedRigidbody->mFriction      = mFriction;
+		clonedRigidbody->mAcc           = mAcc;
+		clonedRigidbody->mMaxSpeed      = mMaxSpeed;
+		clonedRigidbody->mVelocity      = mVelocity;
+		clonedRigidbody->mSnapShotIndex = mSnapShotIndex.load(); // std::atomic_bool 복사
+	}
+
+	return target;
 
 }
 
@@ -45,36 +70,14 @@ void Rigidbody::Activate()
 void Rigidbody::DeActivate()
 {
 	Component::DeActivate();
-
 }
 
-void Rigidbody::OnEnable()
+
+void Rigidbody::Start()
 {
-	Component::OnEnable();
-
 }
 
-void Rigidbody::OnDisable()
-{
-	Component::OnDisable();
-
-}
-
-bool Rigidbody::WakeUp()
-{
-	Component::WakeUp();
-
-    return false;
-}
-
-bool Rigidbody::Start()
-{
-	Component::Start();
-
-	return false;
-}
-
-bool Rigidbody::Update()
+void Rigidbody::Update()
 {
 	const float gravity = Math::kGravity * mGravityScale;
 
@@ -97,7 +100,7 @@ bool Rigidbody::Update()
 
 			const Vec3 frictionAcc = (frictionForce / mMass) + dragAcc;	// 마찰 가속도 = (마찰력/질량) + 저항 가속도
 
-			const Vec3 resultVec = mVelocity + (frictionAcc * GetOwner()->GetDeltaTime());	// 결과 = 현재 속도 + (마찰 가속도 * DeltaTime)
+			const Vec3 resultVec = mVelocity + (frictionAcc * DeltaTime());	// 결과 = 현재 속도 + (마찰 가속도 * DeltaTime)
 
 			// 각 성분의 방향이 바뀌면 0으로 조정한다.
 			mVelocity.x = (mVelocity.x * resultVec.x < 0) ? 0.f : resultVec.x;
@@ -108,29 +111,25 @@ bool Rigidbody::Update()
 			if (mUseGravity) {
 				const Vec3 gravityForce = Vector3::Down * normalForce;			// 중력 = 수직항력(-y)
 				const Vec3 gravityAcc = gravityForce * mMass;				// 중력 가속도 = 중력 * 질량
-				mVelocity += gravityAcc * GetOwner()->GetDeltaTime();						// 속도 = 속도 + (중력가속도 * DeltaTime)
+				mVelocity += gravityAcc * DeltaTime();						// 속도 = 속도 + (중력가속도 * DeltaTime)
 			}
 		}
 	}
 
 	if (mVelocity.Length() > FLT_EPSILON) {
 		// mVelocity 속도로 DeltaTime만큼 이동한다.
-		GetOwner()->GetTransform()->Translate(mVelocity * GetOwner()->GetDeltaTime());
+		mOwner->GetTransform()->Translate(mVelocity * DeltaTime());
 	}
 
-	return true;
 }
 
-
-bool Rigidbody::LateUpdate()
-{
-	return false;
-}
-
-void Rigidbody::OnDestroy()
+void Rigidbody::LateUpdate()
 {
 }
 
+void Rigidbody::End()
+{
+}
 
 void Rigidbody::SetVelocity(float speed)
 {
@@ -148,13 +147,13 @@ void Rigidbody::Stop()
 void Rigidbody::AddForce(const Vec3& force, ForceMode forceMode)
 {
 	float t{ 1 };
-	if (forceMode == ForceMode::Accleration) {	// 가속도인 경우 DelteTime을 적용하도록 한다.
-		t = GetOwner()->GetDeltaTime();
+	if (forceMode == ForceMode::Accleration) {		// 가속도인 경우 DelteTime을 적용하도록 한다.
+		t = DeltaTime();
 	}
 
 	const Vec3 acc = ((force * mAcc) / mMass) * t;	// 가속도 = ((force * mAcc) / 질량) * t
 	mVelocity += acc;								// 현재 속도에 가속도를 더한다.
-	if (mVelocity.Length() > mMaxSpeed) {	// 최대 속도를 넘지 않도록 한다.
+	if (mVelocity.Length() > mMaxSpeed) {			// 최대 속도를 넘지 않도록 한다.
 		SetVelocity(mMaxSpeed);
 	}
 }
@@ -162,5 +161,4 @@ void Rigidbody::AddForce(const Vec3& force, ForceMode forceMode)
 void Rigidbody::AddForce(const Vec3& dir, float speed, ForceMode forceMode)
 {
 	AddForce(dir * speed, forceMode);		// force = dir * speed
-
 }

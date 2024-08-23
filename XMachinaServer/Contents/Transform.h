@@ -1,12 +1,10 @@
 #pragma once
 #include "Component.h"
-#include "GameInfo.h"
-#include "ObjectSnapShot.h"
 
 /// +-----------------------------------------------------
 ///					TRANSFORM SNAPSHOT 
 /// -----------------------------------------------------+
-struct TransformSnapShot : public ObjectSnapShot
+struct TransformSnapShot 
 {
 	Matrix	WorldTransform;
 
@@ -61,21 +59,21 @@ private:
 
 public:
 	TransformSnapShot GetSnapShot();
-	void SwapSnapShotIndex();
 	void UpdateTransofrmSnapShot();
+	void SyncSnapShot(); // SnapShot[0] 과 SnapShot[1] 의 값을 동일하게 맞춘다. 
+
 
 public:
 	Transform();
 	Transform(const Transform& other);
-	Transform(SPtr<GameObject> owner, ComponentInfo::Type Type);
+	Transform(SPtr<GameObject> owner, Component::Type Type);
 	~Transform();
 
-	virtual void Clone(SPtr<Component> other) ;
+	virtual SPtr<Component> Clone(SPtr<Component> target) ;
 
-	virtual bool WakeUp() override;
-	virtual bool Start() override;
-	virtual bool Update() override;
-	virtual bool LateUpdate() override;
+	virtual void Start() override;
+	virtual void Update() override;
+	virtual void LateUpdate() override;
 
 public:
 #pragma endregion

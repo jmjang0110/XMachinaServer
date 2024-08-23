@@ -3,15 +3,15 @@
 
 #include "FileIO.h"
 #include "GameObject.h"
-#include "GameItem.h"
 #include "Collider.h"
 #include "Transform.h"
 #include "SectorController.h"
 
 #include "Script_Building.h"
-
 #include "Script_Enemy.h"
 #include "Script_EnemyController.h"
+#include "Script_PheroDropper.h"
+#include "Script_BehaviorTrees.h"
 
 #include "Script_AdvancedCombatDroid_5.h"
 #include "Script_Ursacetus.h"
@@ -27,15 +27,18 @@
 #include "Script_Deus_Phase_1.h"
 #include "Script_Deus_Phase_2.h"
 
-#include "Script_BehaviorTree.h"
-#include "Script_BehaviorTrees.h"
-#include "Script_PheroDropper.h"
-
+/* Item */
+#include "Script_Crate.h"
+#include "Script_WeaponBurnout.h"
+#include "Script_WeaponDBMS.h"
+#include "Script_WeaponMineLauncher.h"
+#include "Script_WeaponPipeLine.h"
+#include "Script_WeaponSkyLine.h"
 namespace {
-	const std::string kTerrainDataPath = "Contents/Resource/Terrain.bin";
-	const std::string kModelDataPath = "Contents/Resource/Models/";
-	const std::string kSceneDataPath = "Contents/Resource/ServerScene.bin";
-	const std::string kAnimationClipDataPath = "Contents/Resource/AnimationClips/";
+	const std::string kTerrainDataPath            = "Contents/Resource/Terrain.bin";
+	const std::string kModelDataPath              = "Contents/Resource/Models/";
+	const std::string kSceneDataPath              = "Contents/Resource/ServerScene.bin";
+	const std::string kAnimationClipDataPath      = "Contents/Resource/AnimationClips/";
 	const std::string kAnimatorControllerDataPath = "Contents/Resource/AnimatorControllers/";
 }
 
@@ -55,113 +58,34 @@ void BattleScene::Load()
 	int sameObjectCnt = 0;
 	sptr<Model> model{};
 	ObjectTag objectTag{};
-	GameObjectInfo::Type objectType{};
 
 	for (int i = 0; i < objectCnt; ++i) {
+		std::string modelName = {};
+
 		if (sameObjectCnt <= 0) {
+			/// -------------------- 1. <Tag> --------------------
 			FileIO::ReadString(file, token); // <Tag>:
 			std::string tag = FileIO::ReadString(file);
+			objectTag = Load_SettingObjectTag(tag);
 
+			/// -------------------- 2. <FileName> --------------------
 			FileIO::ReadString(file, token); // <FileName>:
-			std::string modelName = FileIO::ReadString(file);
-			if (tag == "Enemy") {
-				objectTag = ObjectTag::Enemy;
-				if (modelName == "Onyscidus")
-					objectType = GameObjectInfo::Type::Monster_Onyscidus;
-				else if (modelName == "Ursacetus")
-					objectType = GameObjectInfo::Type::Monster_Ursacetus;
-				else if (modelName == "AdvancedCombatDroid")
-					objectType = GameObjectInfo::Type::Monster_AdvancedCombat_5;
-				else if (modelName == "Anglerox")
-					objectType = GameObjectInfo::Type::Monster_Anglerox;
-				else if (modelName == "Arack")
-					objectType = GameObjectInfo::Type::Monster_Arack;
-				else if (modelName == "Ceratoferox")
-					objectType = GameObjectInfo::Type::Monster_Ceratoferox;
-				else if (modelName == "Gobbler")
-					objectType = GameObjectInfo::Type::Monster_Gobbler;
-				else if (modelName == "LightBipedMech")
-					objectType = GameObjectInfo::Type::Monster_LightBipedMech;
-				else if (modelName == "MiningMech")
-					objectType = GameObjectInfo::Type::Monster_MiningMech;
-				else if (modelName == "Rapax")
-					objectType = GameObjectInfo::Type::Monster_Rapax;
-				else if (modelName == "Aranobot")
-					objectType = GameObjectInfo::Type::Monster_Aranobot;
-				else if (modelName == "Deus_Phase_1")
-					objectType = GameObjectInfo::Type::Montser_Deus_Phase_1;
-				else if (modelName == "Deus_Phase_2")
-					objectType = GameObjectInfo::Type::Monster_Deus_Phase_2;
-
-				else
-					assert(0);
-			}
-			else if(tag == "Building" || tag == "Dissolve_Building" || tag == "Bound") {
-				objectTag = ObjectTag::Building;
-				objectType = GameObjectInfo::Type::Building;
-			}
-			else if (tag == "Crate") {
-				objectTag = ObjectTag::Item;
-				objectType = GameObjectInfo::Type::Crate;
-			}
-			else {
-				assert(0);
-			}
-
+			modelName = FileIO::ReadString(file);
 			model = RESOURCE_MGR->GetModel(modelName);
 
+			/// -------------------- 3. <Transforms> --------------------
 			FileIO::ReadString(file, token); // <Transforms>:
 			sameObjectCnt = FileIO::ReadVal<int>(file);
 		}
 
 		if (sameObjectCnt > 0) {
-
-			bool isGameMonster{};
-			switch (objectType) {
-				case GameObjectInfo::Type::Monster_Onyscidus:
-				case GameObjectInfo::Type::Monster_Ursacetus:
-				case GameObjectInfo::Type::Monster_AdvancedCombat_5:
-				case GameObjectInfo::Type::Monster_Anglerox:
-				case GameObjectInfo::Type::Monster_Arack:
-				case GameObjectInfo::Type::Monster_Ceratoferox:
-				case GameObjectInfo::Type::Monster_Gobbler:
-				case GameObjectInfo::Type::Monster_LightBipedMech:
-				case GameObjectInfo::Type::Monster_MiningMech:
-				case GameObjectInfo::Type::Monster_Rapax:
-				case GameObjectInfo::Type::Monster_Aranobot:
-				case GameObjectInfo::Type::Montser_Deus_Phase_1:
-				case GameObjectInfo::Type::Monster_Deus_Phase_2:
-					
-					isGameMonster = true;
-					break;
-			}
-
-			SPtr<GameObject> object;
-			switch (objectTag)
-			{
-			case ObjectTag::None:
-				break;
-			case ObjectTag::Building: {
-				object = std::make_shared<GameObject>();
-			}
-				break;
-			case ObjectTag::Enemy: {
-				object = std::make_shared<GameMonster>();
-				object->SetAnimation(model->mAnimatorController);
-			}
-				break;
-			case ObjectTag::Item: {
-				object = std::make_shared<GameItem>();
-			}
-				break;
-			default:
-				assert(0);
-				break;
-			}
-
-
-			object->SetType(objectType);
+			/// -------------------- 4. <GameObject> --------------------
+			SPtr<GameObject> object = std::make_shared<GameObject>();
 			object->SetName(model->mName);
+			if (objectTag == ObjectTag::Enemy) {
+				SPtr<Animation> animation = object->AddComponent<Animation>(Component::Type::Animation);
+				animation->Load(model->mAnimatorController);
+			}
 
 			/// +---------------------------------------------------
 			///	¡å Component : Tarnsform 
@@ -169,9 +93,9 @@ void BattleScene::Load()
 			{
 				FileIO::ReadString(file, token);	// <Transform>:
 				Matrix transformMatrix = FileIO::ReadVal<Matrix>(file);
-				model->mTransform = transformMatrix;
+				model->mTransform      = transformMatrix;
 
-				SPtr<Transform> transform = object->AddComponent<Transform>(ComponentInfo::Type::Transform);
+				SPtr<Transform> transform = object->AddComponent<Transform>(Component::Type::Transform);
 				transform->SetLocalTransform(transformMatrix);
 				transform->SetPosition(Transform::GetPosition(transformMatrix));
 
@@ -183,25 +107,17 @@ void BattleScene::Load()
 				}
 			}
 
-
-			/// +---------------------------------------------------
-			///	¡å Component : Collider 
-			/// ---------------------------------------------------+
-			if (object->GetComponent<Collider>(ComponentInfo::Type::Collider)) {
+			if (object->GetComponent<Collider>(Component::Type::Collider)) {
 				AddBuilding(object);
 			}
 			else {
-				const auto& collider = object->AddComponent<Collider>(ComponentInfo::Type::Collider);
+				const auto& collider = object->AddComponent<Collider>(Component::Type::Collider);
 				collider->SetBS(model->mBS);
-
-				/// +---------------------------------------------------
-				///	¢º Game Monster 
-				/// ---------------------------------------------------+
-				if (isGameMonster)
+				if (objectTag == ObjectTag::Enemy)
 				{
-					AddMonster(object);
+					AddMonster(object, model->mName);
 				}
-				else if(objectType == GameObjectInfo::Type::Building) {
+				else if(objectTag == ObjectTag::Building) {
 					collider->SetBoundingBoxList(model->mBoxList);
 					AddBuilding(object);
 				}
@@ -214,105 +130,94 @@ void BattleScene::Load()
 	UpdateTiles();
 }
 
-void BattleScene::AddMonster(SPtr<GameObject> object)
+ObjectTag BattleScene::Load_SettingObjectTag(std::string loadname)
 {
-	sptr<GameMonster> monsterObject = std::static_pointer_cast<GameMonster>(object);
+	ObjectTag tag = ObjectTag::Untagged;
+	if (loadname == "Enemy") {
+		tag = ObjectTag::Enemy;
+		
+	}
+	else if (loadname == "Building" || loadname == "Dissolve_Building" || loadname == "Bound") {
+		tag = ObjectTag::Building;
+	}
+	else if (loadname == "Crate") {
+		tag = ObjectTag::Crate;
+	}
+	else {
+		assert(0);
+	}
+	return tag;
+}
+
+void BattleScene::AddMonster(SPtr<GameObject> object, std::string modelName)
+{
 	UINT32 ID = static_cast<UINT32>(mEnemies.size() + 1);
-	monsterObject->SetID(ID);
-	monsterObject->SetMonsterID(ID);
+	object->SetID(ID);
 
 	/// +---------------------------------------------------
 	///	¡å Script  
 	/// ---------------------------------------------------+
-	monsterObject->AddScript<Script_EnemyController>(ScriptInfo::Type::EnemyController);
-	monsterObject->AddScript<Script_PheroDropper>(ScriptInfo::Type::PheroDropper)->Init();
+	object->AddScript<Script_EnemyController>();
+	object->AddScript<Script_PheroDropper>();
 
-	switch (object->GetType())
-	{
-	case GameObjectInfo::Type::Monster_Ursacetus: {
-		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_URSACETUS);
-		monsterObject->AddScript<Script_Ursacetus>(ScriptInfo::Type::Stat);
-		monsterObject->AddScript<Script_MindControlledEnemyBT>(ScriptInfo::Type::MindControlledEnemyBT);
+	if (modelName == "Onyscidus") {
+		object->SetScriptEntity<Script_Onyscidus>();
+		object->AddScript<Script_MindControlledEnemyBT>();
+
 	}
-	break;
-	case GameObjectInfo::Type::Monster_Onyscidus: {
-		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_ONYSCIDUS);
-		monsterObject->AddScript<Script_Onyscidus>(ScriptInfo::Type::Stat);
-		monsterObject->AddScript<Script_MindControlledEnemyBT>(ScriptInfo::Type::MindControlledEnemyBT);
+	else if (modelName == "Ursacetus") {
+		object->SetScriptEntity<Script_Ursacetus>();
+		object->AddScript<Script_MindControlledEnemyBT>();
 	}
-	break;
-	case GameObjectInfo::Type::Monster_AdvancedCombat_5: {
-		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_ADVANCED_COMBAT_DROIR_5);
-		monsterObject->AddScript<Script_AdvancedCombatDroid_5>(ScriptInfo::Type::Stat);
-		monsterObject->AddScript<Script_MindControlledEnemyBT>(ScriptInfo::Type::MindControlledEnemyBT);
+	else if (modelName == "AdvancedCombatDroid") {
+		object->SetScriptEntity<Script_AdvancedCombatDroid_5>();
+		object->AddScript<Script_MindControlledEnemyBT>();
 	}
-	break;
-	case GameObjectInfo::Type::Monster_Anglerox: {
-		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_ANGLEROX);
-		monsterObject->AddScript<Script_Anglerox>(ScriptInfo::Type::Stat);
-		monsterObject->AddScript<Script_MindControlledEnemyBT>(ScriptInfo::Type::MindControlledEnemyBT);
+	else if (modelName == "Anglerox") {
+		object->SetScriptEntity<Script_Anglerox>();
+		object->AddScript<Script_MindControlledEnemyBT>();
 	}
-	break;
-	case GameObjectInfo::Type::Monster_Arack: {
-		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_ARACK);
-		monsterObject->AddScript<Script_Arack>(ScriptInfo::Type::Stat);
-		monsterObject->AddScript<Script_MindControlledEnemyBT>(ScriptInfo::Type::MindControlledEnemyBT);
+	else if (modelName == "Arack") {
+		object->SetScriptEntity<Script_Arack>();
+		object->AddScript<Script_MindControlledEnemyBT>();
 	}
-	break;
-	case GameObjectInfo::Type::Monster_Ceratoferox: {
-		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_CERATOFEROX);
-		monsterObject->AddScript<Script_Ceratoferox>(ScriptInfo::Type::Stat);
-		monsterObject->AddScript<Script_MindControlledEnemyBT>(ScriptInfo::Type::MindControlledEnemyBT);
+	else if (modelName == "Ceratoferox") {
+		object->SetScriptEntity<Script_Ceratoferox>();
+		object->AddScript<Script_MindControlledEnemyBT>();
 	}
-	break;
-	case GameObjectInfo::Type::Monster_Gobbler: {
-		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_GOBBLER);
-		monsterObject->AddScript<Script_Gobbler>(ScriptInfo::Type::Stat);
-		monsterObject->AddScript<Script_MindControlledEnemyBT>(ScriptInfo::Type::MindControlledEnemyBT);
+	else if (modelName == "Gobbler") {
+		object->SetScriptEntity<Script_Gobbler>();
+		object->AddScript<Script_MindControlledEnemyBT>();
 	}
-	break;
-	case GameObjectInfo::Type::Monster_LightBipedMech: {
-		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_LIGHTBIPEDMECH);
-		monsterObject->AddScript<Script_LightBipedMech>(ScriptInfo::Type::Stat);
-		monsterObject->AddScript<Script_MindControlledEnemyBT>(ScriptInfo::Type::MindControlledEnemyBT);
+	else if (modelName == "LightBipedMech") {
+		object->SetScriptEntity<Script_LightBipedMech>();
+		object->AddScript<Script_MindControlledEnemyBT>();
 	}
-	break;
-	case GameObjectInfo::Type::Monster_MiningMech: {
-		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_MININGMECH);
-		monsterObject->AddScript<Script_MiningMech>(ScriptInfo::Type::Stat);
-		monsterObject->AddScript<Script_MindControlledEnemyBT>(ScriptInfo::Type::MindControlledEnemyBT);
+	else if (modelName == "MiningMech") {
+		object->SetScriptEntity<Script_MiningMech>();
+		object->AddScript<Script_MindControlledEnemyBT>();
 	}
-	break;
-	case GameObjectInfo::Type::Monster_Rapax: {
-		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_RAPAX);
-		monsterObject->AddScript<Script_Rapax>(ScriptInfo::Type::Stat);
-		monsterObject->AddScript<Script_MindControlledEnemyBT>(ScriptInfo::Type::MindControlledEnemyBT);
+	else if (modelName == "Rapax") {
+		object->SetScriptEntity<Script_Rapax>();
+		object->AddScript<Script_MindControlledEnemyBT>();
 	}
-	break;
-	case GameObjectInfo::Type::Monster_Aranobot: {
-		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_ARANOBOT);
-		monsterObject->AddScript<Script_Aranobot>(ScriptInfo::Type::Stat);
-		monsterObject->AddScript<Script_MindControlledEnemyBT>(ScriptInfo::Type::MindControlledEnemyBT);
+	else if (modelName == "Aranobot") {
+		object->SetScriptEntity<Script_Aranobot>();
+		object->AddScript<Script_MindControlledEnemyBT>();
 	}
-	break;
-	case GameObjectInfo::Type::Montser_Deus_Phase_1: {
-		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_DEUS_PHASE_1);
-		monsterObject->AddScript<Script_Deus_Phase_1>(ScriptInfo::Type::Stat);
-		monsterObject->AddScript<Script_DeusPhase1BT>(ScriptInfo::Type::DeusPhase1BT);
+	else if (modelName == "Deus_Phase_1") {
+		object->SetScriptEntity<Script_Deus_Phase_1>();
+		object->AddScript<Script_DeusPhase1BT>();
 	}
-	break;
-	case GameObjectInfo::Type::Monster_Deus_Phase_2: {
-		monsterObject->SetMonsterType(FBProtocol::MONSTER_TYPE_DEUS_PHASE_2);
-		monsterObject->AddScript<Script_Deus_Phase_2>(ScriptInfo::Type::Stat);
-		monsterObject->AddScript<Script_DeusPhase1BT>(ScriptInfo::Type::DeusPhase1BT);
+	else if (modelName == "Deus_Phase_2") {
+		object->SetScriptEntity<Script_Deus_Phase_2>();
+		object->AddScript<Script_DeusPhase1BT>();
+
 	}
-	break;
-	default:
+	else
 		assert(0);
-		break;
-	}
 
-	mEnemies.push_back(monsterObject);
+	mEnemies.push_back(object);
 }
 
 void BattleScene::AddBuilding(SPtr<GameObject> object)
@@ -320,7 +225,7 @@ void BattleScene::AddBuilding(SPtr<GameObject> object)
 	UINT32 ID = static_cast<UINT32>(mBuildings.size());
 	object->SetID(ID);
 
-	const auto& BuildingScript = object->AddScript<Script_Building>(ScriptInfo::Type::Building);
+	const auto& BuildingScript = object->SetScriptEntity<Script_Building>();
 	Coordinate SectorIdx = SectorController::GetSectorIdxByPosition(object->GetTransform()->GetPosition());
 	mBuildings.push_back(object);
 }
@@ -336,41 +241,41 @@ void BattleScene::LoadScriptExporter(std::ifstream& file, SPtr<GameObject> objec
 {
 	ScriptExporter exporter;
 	exporter.Load(file);
-
+	
 	switch (Hash(exporter.GetName())) {
 	case Hash("WeaponCrate"):
 	{
+		SPtr<GameObject> crate = object;
 		std::string weaponName{};
 		int id;
 		exporter.GetData("ID", id);
 		exporter.GetData("Name", weaponName);
 		LOG_MGR->Cout(weaponName, '\n');
-
-	
-		SPtr<GameItem> crateObject = std::static_pointer_cast<GameItem>(object);
-		crateObject->SetID(id);
-		crateObject->SetItemType(FBProtocol::ITEM_TYPE_STATIC_ITEM_CRATE);
-		crateObject->SetItemState(GameItem::State::InCrate);
+			
+		/// > ------------------ Crate ------------------
+		crate->SetID(id);
+		crate->SetName(weaponName);
+		auto crate_entity = crate->SetScriptEntity<Script_Crate>();
 		
-		SPtr<GameItem> weaponObject = std::make_shared<GameItem>();
-		weaponObject->SetItemType(GetItemType(weaponName));
+		/// > ------------------ Weapon ------------------
+		SPtr<GameObject> weapon = std::make_shared<GameObject>();
+		weapon->SetID(id + 1);
 		
-		weaponObject->AddComponent<Transform>(ComponentInfo::Type::Transform);
-		weaponObject->GetTransform()->SetLocalTransform(crateObject->GetTransform()->GetLocalTransform());
-		weaponObject->GetTransform()->SetPosition(crateObject->GetTransform()->GetPosition());
+		weapon->AddComponent<Transform>(Component::Type::Transform);
+		weapon->GetTransform()->SetLocalTransform(crate->GetTransform()->GetLocalTransform());
+		weapon->GetTransform()->SetPosition(crate->GetTransform()->GetPosition());
 
+		SetScriptEntityByName(weapon, weaponName);
 
-		weaponObject->SetID(id + 1);
-		crateObject->SetChildItemID(id + 1);
-		weaponObject->SetParentItemID(id);
+		crate_entity->SetItem(weapon); // Crate <----- Incrate ---- Weapon 
 
-		mStaticItems.push_back(crateObject);
-		mDynamicItems.push_back(weaponObject);
+		mStaticItems.push_back(crate);
+		mDynamicItems.push_back(weapon);
 	}
 		break;
 	case Hash("Bound"):
 	{
-		const auto& collider = object->AddComponent<Collider>(ComponentInfo::Type::Collider);
+		const auto& collider = object->AddComponent<Collider>(Component::Type::Collider);
 
 		// sphere
 		{
@@ -404,26 +309,23 @@ void BattleScene::LoadScriptExporter(std::ifstream& file, SPtr<GameObject> objec
 	}
 }
 
-FBProtocol::ITEM_TYPE BattleScene::GetItemType(std::string itemname)
+void BattleScene::SetScriptEntityByName(SPtr<GameObject> object, std::string itemName)
 {
-	FBProtocol::ITEM_TYPE type{};
-
-	if (itemname == "SkyLine") {
-		type = FBProtocol::ITEM_TYPE_WEAPON_SKYLINE;
+	if (itemName == "SkyLine") {
+		object->SetScriptEntity<Script_WeaponSkyLine>();
 	}
-	else if (itemname == "DBMS") {
-		type = FBProtocol::ITEM_TYPE_WEAPON_DBMS;
+	else if (itemName == "DBMS") {
+		object->SetScriptEntity<Script_WeaponDBMS>();
 	}
-	else if (itemname == "PipeLine") {
-		type = FBProtocol::ITEM_TYPE_WEAPON_PIPELINE;
+	else if (itemName == "PipeLine") {
+		object->SetScriptEntity<Script_WeaponPipeLine>();
 	}
-	else if (itemname == "Burnout") {
-		type = FBProtocol::ITEM_TYPE_WEAPON_BURNOUT;
+	else if (itemName == "Burnout") {
+		object->SetScriptEntity<Script_WeaponBurnout>();
 	}
-	else if (itemname == "MineLauncher") {
-		type = FBProtocol::ITEM_TYPE_WEAPON_MINE_LAUNCHER;
+	else if (itemName == "MineLauncher") {
+		object->SetScriptEntity<Script_WeaponMineLauncher>();
 	}
-	return type;
 }
 
 ResourceManager::ResourceManager()

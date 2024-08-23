@@ -16,21 +16,22 @@
 
 #include "Component.h"
 #include "Transform.h"
+#include "Animation.h"
 #include "FBsPacketFactory.h"
 
 #include "Script_EnemyController.h"
 #include "GameRoom.h"
-#include "GameManager.h"
+#include "RoomManager.h"
 
 
 Script_Enemy::Script_Enemy()
 {
 }
 
-Script_Enemy::Script_Enemy(SPtr<GameObject> owner, ScriptInfo::Type type)
-	: Script_EnemyStat(owner, type)
+Script_Enemy::Script_Enemy(SPtr<GameObject> owner)
+	: Script_EnemyStat(owner)
 {
-	mEnemyController = std::dynamic_pointer_cast<Script_EnemyController>(GetOwner()->AddScript<Script_EnemyController>(ScriptInfo::Type::EnemyController));
+	owner->EnableTag(ObjectTag::Enemy);
 
 }
 
@@ -40,69 +41,65 @@ Script_Enemy::~Script_Enemy()
 	
 }
 
-void Script_Enemy::Clone(SPtr<Component> other) 
+SPtr<Component> Script_Enemy::Clone(SPtr<Component> target)
 {
-	Script_EnemyStat::Clone(other);
-	SPtr<Script_Enemy> otherScript = std::static_pointer_cast<Script_Enemy>(other);
+	// 먼저, 기본 클래스인 Script_EnemyStat의 Clone을 호출
+	Script_EnemyStat::Clone(target);
 
+	// Script_Enemy 타입으로 캐스팅
+	auto script_enemy = std::dynamic_pointer_cast<Script_Enemy>(target);
+	if (script_enemy) {
+		// Script_Enemy의 멤버들을 복사
+		this->mAnimTime			= script_enemy->mAnimTime;
+		this->mCurrAttackStep	= script_enemy->mCurrAttackStep;
+
+		this->mSpawnPos			= script_enemy->mSpawnPos;
+		this->mSpawnRot			= script_enemy->mSpawnRot;
+		this->mPherosInfo		= script_enemy->mPherosInfo;
+	}
+	else {
+		std::cout << "Clone failed: other is not of type Script_Enemy" << std::endl;
+	}
+
+	return target;
 }
 
-void Script_Enemy::Activate()
-{
-	Script_EnemyStat::Activate();
-
-}
-
-void Script_Enemy::DeActivate()
-{
-	Script_EnemyStat::DeActivate();
-
-}
-
-
-bool Script_Enemy::WakeUp()
-{
-	Script_EnemyStat::WakeUp();
-
-
-
-    return true;
-}
-
-bool Script_Enemy::Start()
+void Script_Enemy::Start()
 {
 	Script_EnemyStat::Start();
 
-	mEnemyController = std::dynamic_pointer_cast<Script_EnemyController>(GetOwner()->GetScript<Script_EnemyController>(ScriptInfo::Type::EnemyController));
+	mEnemyController          = mOwner->GetScript<Script_EnemyController>();
+	auto Animation_Controller = OwnerAnimation()->GetController();
 
-	if (GetStat_Attack1AnimName() != "None") {
-		 GetOwner()->GetAnimation()->GetController()->FindMotionByName(GetStat_Attack1AnimName())->AddEndCallback(std::bind(&Script_Enemy::AttackEndCallback, this));
+	if (mAttack1AnimName != "None") {
+		Animation_Controller->FindMotionByName(mAttack1AnimName)->AddEndCallback(std::bind(&Script_Enemy::AttackEndCallback, this));
 	}
-	if (GetStat_Attack2AnimName() != "None") {
-		GetOwner()->GetAnimation()->GetController()->FindMotionByName(GetStat_Attack2AnimName())->AddEndCallback(std::bind(&Script_Enemy::AttackEndCallback, this));
+	if (mAttack2AnimName != "None") {
+		Animation_Controller->FindMotionByName(mAttack2AnimName)->AddEndCallback(std::bind(&Script_Enemy::AttackEndCallback, this));
 	}
-	if (GetStat_Attack3AnimName() != "None") {
-		GetOwner()->GetAnimation()->GetController()->FindMotionByName(GetStat_Attack3AnimName())->AddEndCallback(std::bind(&Script_Enemy::AttackEndCallback, this));
+	if (mAttack3AnimName != "None") {
+		Animation_Controller->FindMotionByName(mAttack3AnimName)->AddEndCallback(std::bind(&Script_Enemy::AttackEndCallback, this));
 	}
-	if (GetStat_DeathAnimName() != "None") {
-		GetOwner()->GetAnimation()->GetController()->FindMotionByName(GetStat_DeathAnimName())->AddEndCallback(std::bind(&Script_Enemy::DeathEndCallback, this));
+	if (mDeathAnimName != "None") {
+		Animation_Controller->FindMotionByName(mDeathAnimName)->AddEndCallback(std::bind(&Script_Enemy::DeathEndCallback, this));
 	}
 
-    return true;
 }
 
-bool Script_Enemy::Update()
+void Script_Enemy::Update()
 {
 	Script_EnemyStat::Update();
 
-	return true;
 }
 
-void Script_Enemy::OnDestroy()
+void Script_Enemy::LateUpdate()
 {
-	Script_EnemyStat::OnDestroy();
-
 }
+
+void Script_Enemy::End()
+{
+}
+
 
 void Script_Enemy::StartAttack()
 {
@@ -112,10 +109,10 @@ void Script_Enemy::StartAttack()
 
 	mEnemyController->RemoveAllAnimation();
 	mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_ATTACK);
-	GetOwner()->GetAnimation()->GetController()->SetValue("Attack", mCurrAttackStep);
+	OwnerAnimation()->GetController()->SetValue("Attack", mCurrAttackStep);
 
-	auto spkt = FBS_FACTORY->SPkt_Monster_State(GetOwner()->GetID(), FBProtocol::MONSTER_BT_TYPE_ATTACK, mCurrAttackStep);
-	GAME_MGR->BroadcastRoom(mEnemyController->GetOwnerRoom()->GetID(), spkt);
+	auto spkt = FBS_FACTORY->SPkt_Monster_State(mOwner->GetID(), FBProtocol::MONSTER_BT_TYPE_ATTACK, mCurrAttackStep);
+	ROOM_MGR->BroadcastRoom(mOwner->GetOwnerRoom()->GetID(), spkt);
 }
 
 bool Script_Enemy::Attack()
@@ -135,12 +132,12 @@ void Script_Enemy::AttackCallback()
 
 	// TODO : 타겟 주변 레인지 범위 공격
 	const Vec3& TargetPos = mEnemyController->GetTarget()->GetTransform()->GetSnapShot().GetPosition();
-	const Vec3& Pos = GetOwner()->GetTransform()->GetPosition();
-	if (Vec3::Distance(TargetPos, Pos) <= GetStat_AttackRange()) {
-		const auto& statScript = mEnemyController->GetTarget()->GetScript<Script_Stat>(ScriptInfo::Type::Stat);
+	const Vec3& Pos = OwnerTransform()->GetPosition();
+	if (Vec3::Distance(TargetPos, Pos) <= mAttackRange) {
+		const auto& statScript = mEnemyController->GetTarget()->GetScript<Script_Stat>();
 		if (statScript) {
 
-			statScript->Hit(GetStat_AttackRate(), GetOwner());
+			statScript->Hit(mAttackRate, mOwner);
 			Script_Stat::ObjectState state =  statScript->S_GetObjectState();
 			if (state == Script_Stat::ObjectState::Dead) {
 				mEnemyController->SetTarget(nullptr);
@@ -159,7 +156,11 @@ void Script_Enemy::AttackEndCallback()
 
 void Script_Enemy::DeathEndCallback()
 {
-	GetOwner()->GetAnimation()->GetController()->GetCrntMotion()->SetSpeed(0.f);
+	OwnerAnimation()->GetController()->GetCrntMotion()->SetSpeed(0.f);
+}
+
+void Script_Enemy::OnExitFromViewList()
+{
 }
 
 void Script_Enemy::Dead()
@@ -168,7 +169,7 @@ void Script_Enemy::Dead()
 
 }
 
-bool Script_Enemy::Hit(float damage, SPtr_GameObject instigator)
+bool Script_Enemy::Hit(float damage, SPtr<GameObject> instigator)
 {
 	bool res = Script_EnemyStat::Hit(damage, instigator);
 

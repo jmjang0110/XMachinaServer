@@ -3,6 +3,7 @@
 #include "Component.h"
 
 class Animation;
+class GameObject;
 
 class AnimationClip {
 
@@ -308,16 +309,14 @@ private:
 public:
 	Animation();
 	Animation(const Animation& other);
-	Animation(SPtr<GameObject> owner, ComponentInfo::Type Type);
+	Animation(SPtr<GameObject> owner, Component::Type Type);
 	~Animation();
 
-	virtual void Clone(SPtr<Component> other);
+public:
+	void Animate();
+	virtual SPtr<Component> Clone(SPtr<Component> target);
+	virtual void Start() override;
 
-	virtual bool WakeUp() override;
-	virtual bool Start() override;
-	virtual bool Update() override;
-	virtual bool Animate() override;
-	virtual bool LateUpdate() override;
 
 public:
 	void Load(const std::string& controller);

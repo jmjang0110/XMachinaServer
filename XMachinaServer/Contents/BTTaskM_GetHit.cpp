@@ -1,12 +1,14 @@
 #include "pch.h"
 #include "BTTaskM_GetHit.h"
 
-#include "BTTask.h"
+#include "GameObject.h"
+#include "Animation.h"
+#include "Transform.h"
+#include "Collider.h"
+#include "Rigidbody.h"
 
-#include "Script_AdvancedCombatDroid_5.h"
-#include "Script_Onyscidus.h"
-#include "Script_Ursacetus.h"
-
+#include "Script_Enemy.h"
+#include "Script_EnemyController.h"
 
 /// +-------------------------------------------------------------------------
 ///	> ¢º¢º¢º Task Get Hit  
@@ -37,7 +39,7 @@ BTNodeState MonsterTask::GetHit::Evaluate()
 }
 
 
-MonsterTask::GetHit::GetHit(SPtr_GameObject owner, std::function<void()> callback)
+MonsterTask::GetHit::GetHit(SPtr<GameObject> owner, std::function<void()> callback)
 	: MonsterBTTask(owner, BTTaskType::MonT_GetHit, callback)
 {
 	mPrevHp          = mStat->GetCrntHp();

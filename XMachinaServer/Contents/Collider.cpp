@@ -2,6 +2,8 @@
 #include "Collider.h"
 #include "GameObject.h"
 #include "Transform.h"
+#include "Animation.h"
+#include "Rigidbody.h"
 
 /// +----------------------------------------------------------------------
 ///     COLLIDER 
@@ -22,7 +24,7 @@ Collider::Collider(const Collider& other)
     }
 }
 
-Collider::Collider(SPtr<GameObject> owner, ComponentInfo::Type Type)
+Collider::Collider(SPtr<GameObject> owner, Component::Type Type)
     : Component(owner, Type, static_cast<UINT32>(Type))
 {
 
@@ -32,32 +34,39 @@ Collider::~Collider()
 {
 }
 
-void Collider::Clone(SPtr<Component> other) 
+SPtr<Component> Collider::Clone(SPtr<Component> target)
 {
-    Component::Clone(other);
+    // target이 nullptr인 경우, 새로운 Collider 인스턴스를 생성합니다.
+    if (!target)
+    {
+        target = std::make_shared<Collider>(mOwner, mType);
+    }
 
-    SPtr<Collider> collider = std::static_pointer_cast<Collider>(other);
+    // 기본 Component 클래스의 Clone 메서드를 호출하여 공통 속성을 복사합니다.
+    Component::Clone(target);
 
-    this->mBS = collider->mBS;
-    this->mBoundingBoxList.resize(collider->mBoundingBoxList.size());
-    std::memcpy(collider->mBoundingBoxList.data(), collider->mBoundingBoxList.data(), collider->mBoundingBoxList.size() * sizeof(MyBoundingOrientedBox));
+    // Collider 고유의 속성을 복사합니다.
+    SPtr<Collider> clonedCollider = std::dynamic_pointer_cast<Collider>(target);
+    if (clonedCollider)
+    {
+        clonedCollider->mSnapShotIndex       = mSnapShotIndex.load();
+        clonedCollider->mColliderSnapShot[0] = mColliderSnapShot[0];
+        clonedCollider->mColliderSnapShot[1] = mColliderSnapShot[1];
+        clonedCollider->mBS                  = mBS;
+        clonedCollider->mBoundingBoxList.resize(mBoundingBoxList.size());
+        std::memcpy(clonedCollider->mBoundingBoxList.data(), mBoundingBoxList.data(), mBoundingBoxList.size() * sizeof(MyBoundingOrientedBox));
 
+    }
 
-    mColliderSnapShot[0].BoundingBoxList = mBoundingBoxList;
-    mColliderSnapShot[1].BoundingBoxList = mBoundingBoxList;
-
-    this->SetType(ComponentInfo::Type::Collider);
+    return target;
 }
 
-bool Collider::LateUpdate()
+void Collider::LateUpdate()
 {
     UpdateTransform();
 
     /* Update Snap Shot */
     UpdateColliderSnapShot();
-    SwapSnapShotIndex();
-
-    return true;
 }
 
 ColliderSnapShot Collider::GetSnapShot()
@@ -67,11 +76,6 @@ ColliderSnapShot Collider::GetSnapShot()
 
 }
 
-void Collider::SwapSnapShotIndex()
-{
-    // [SnapShot Index] Swap!!!!
-    mSnapShotIndex.store(!mSnapShotIndex);;
-}
 
 void Collider::UpdateColliderSnapShot()
 {
@@ -79,6 +83,21 @@ void Collider::UpdateColliderSnapShot()
     mColliderSnapShot[mSnapShotIndex].BoundingBoxList.resize(mBoundingBoxList.size());
 
     std::memcpy(mColliderSnapShot[mSnapShotIndex].BoundingBoxList.data(), mBoundingBoxList.data(), sizeof(MyBoundingOrientedBox) * mBoundingBoxList.size());
+    
+    // [SnapShot Index] Swap!!!!
+    mSnapShotIndex.store(!mSnapShotIndex);;
+
+}
+
+void Collider::SyncSnapShot()
+{
+    mColliderSnapShot[0].BS = mBS;
+    mColliderSnapShot[0].BoundingBoxList.resize(mBoundingBoxList.size());
+    std::memcpy(mColliderSnapShot[0].BoundingBoxList.data(), mBoundingBoxList.data(), sizeof(MyBoundingOrientedBox) * mBoundingBoxList.size());
+
+    mColliderSnapShot[1].BS = mBS;
+    mColliderSnapShot[1].BoundingBoxList.resize(mBoundingBoxList.size());
+    std::memcpy(mColliderSnapShot[1].BoundingBoxList.data(), mBoundingBoxList.data(), sizeof(MyBoundingOrientedBox) * mBoundingBoxList.size());
 
 }
 
