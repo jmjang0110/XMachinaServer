@@ -3,6 +3,7 @@
 #include "GameObject.h"
 
 Script_Entity::Script_Entity(SPtr<GameObject> owner, UINT32 key)
+    : Script(owner, key)
 {
 }
 
