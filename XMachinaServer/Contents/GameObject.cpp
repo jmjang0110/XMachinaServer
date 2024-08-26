@@ -110,6 +110,9 @@ void GameObject::Activate()
 {
 	mActivateRef.fetch_add(1);
 
+	if (mIsActive)
+		return;
+
 	GameEntity::Activate();
 
 	mTimer->Activate();
@@ -124,12 +127,17 @@ void GameObject::Activate()
 
 	if (mScriptEntity)
 		mScriptEntity->Activate();
+
+	mIsActive = true;
 }
 
 void GameObject::DeActivate()
 {
 	mActivateRef.fetch_sub(1);
 
+	if (mActivateRef.load() > 0)
+		return;
+	
 	GameEntity::DeActivate();
 
 	mTimer->DeActivate();
@@ -143,6 +151,8 @@ void GameObject::DeActivate()
 
 	if (mScriptEntity)
 		mScriptEntity->DeActivate();
+
+	mIsActive = false;
 }
 
 void GameObject::DecreaseActivateRef()

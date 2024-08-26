@@ -19,9 +19,9 @@ private:
 
 private:
 
-	std::unordered_map<UINT32, SPtr<GameObject>>		 mMonsters;
-	std::unordered_map<UINT32, SPtr<GameObject>>			 mNPCs;
-	std::unordered_map<UINT32, SPtr<GameObject>>		 mBuildings; 
+	std::unordered_map<UINT32, SPtr<GameObject>>		 mMonsters{};
+	std::unordered_map<UINT32, SPtr<GameObject>>	     mNPCs{};
+	std::unordered_map<UINT32, SPtr<GameObject>>		 mBuildings{};
 
 public:
 	Sector() = default;

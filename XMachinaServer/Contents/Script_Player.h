@@ -18,13 +18,13 @@ enum class PlayerState : UINT8 {
 
 class GameSession;
 class Script_Player : public Script_PlayerStat
-{
+{ 
 private:
 	SPtr<GameSession> mSessionOwner = nullptr;
 private:
 	std::array<SPtr<GameObject>, FBProtocol::PLAYER_SKILL_TYPE_END>		mSkills      = {};		
 	SPtr<GameObject>													mWeapon      = {};
-	ViewList															mViewList    = {};
+	ViewList															mViewList    = {}; Lock::SRWLock mViewList_Lock;
 	PlayerState															mPlayerState = PlayerState::None;
 
 public:  
@@ -52,6 +52,7 @@ public:
 	PlayerState			GetCurrState()											{ return mPlayerState; }
 	SPtr<GameObject>	GetWeapon()												{ return mWeapon; }
 	SPtr<GameSession>	GetSessionOwner()										{ return mSessionOwner; }
+	ViewList			S_GetViewList()											{ mViewList_Lock.LockRead(); ViewList currViewList = mViewList; mViewList_Lock.UnlockRead(); return currViewList; }
 
 	void SetState(PlayerState state)				{ mPlayerState  = state; }
 	void SetSessionOwner(SPtr<GameSession> session) { mSessionOwner = session; }
