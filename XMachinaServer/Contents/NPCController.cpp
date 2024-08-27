@@ -13,6 +13,18 @@ NPCController::NPCController()
 
 NPCController::~NPCController()
 {
+	for (auto& iter : mMonsters) {
+		iter.second = nullptr;
+	}
+	for (auto& iter : mNPCs) {
+		iter.second = nullptr;
+	}
+	for (auto& iter : mStaticItems) {
+		iter.second = nullptr;
+	}
+	for (auto& iter : mDynamicItems) {
+		iter.second = nullptr;
+	}
 }
 
 void NPCController::Init(SPtr<GameRoom> owner)
@@ -48,14 +60,9 @@ void NPCController::InitMonsters(Coordinate maxSectorIdx)
 		SPtr<GameObject> enemy = (*EnemyPrototypes)[i]->Clone(); // 복사본을 만든다 ( 원본은 건들이지 않는다. )
 		// NPC
 		AddMonster(enemy->GetID(), enemy);
-
-		// SECTOR
 		Coordinate SectorIndex = SectorController::GetSectorIdxByPosition(enemy->GetTransform()->GetPosition());
-		//enemy->SetSectorIndex(SectorIndex);
 		sc->AddMonsterInSector(SectorIndex, enemy->GetID(), enemy);
-		
-		// INIT
-		//enemy->UpdateSnapShot();
+
 		enemy->SetOwnerRoom(mOwnerRoom);
 		enemy->Start();
 	}

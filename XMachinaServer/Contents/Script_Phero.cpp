@@ -86,3 +86,17 @@ void Script_Phero::Init(int monster_id, int phero_index, int level, float lifeTi
     mAmount   = amount;
 
 }
+
+bool Script_Phero::DoInteract(SPtr<GameObject> player)
+{
+    // 거리차이로 계산
+    Vec3  playerPos = player->GetTransform()->GetSnapShot().GetPosition();
+    Vec3  itemPos   = mOwner->GetTransform()->GetPosition();
+    float dist      = (playerPos - itemPos).Length();
+
+    float interactDist = 3.f;
+    if (dist <= interactDist)
+        return true;
+
+    return false;
+}

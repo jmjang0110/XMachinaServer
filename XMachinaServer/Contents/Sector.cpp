@@ -47,6 +47,7 @@ bool Sector::AddMonster(UINT32 id, SPtr<GameObject> monster)
 {
 	auto it = mMonsters.find(id);
 	if (it == mMonsters.end()) {
+		monster->SetSectorIndex(mIndex);
 		mMonsters.insert(std::make_pair(id, monster));
 		return true;
 	}

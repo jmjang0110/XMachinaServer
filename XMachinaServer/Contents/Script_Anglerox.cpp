@@ -82,4 +82,6 @@ void Script_Anglerox::Start()
 
 void Script_Anglerox::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 {
+    MEMORY->Delete(overlapped);
+
 }

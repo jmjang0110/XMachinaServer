@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "Script_Item.h"
 #include "GameObject.h"
-
+#include "Collider.h"
+#include "Transform.h"
 
 Script_Item::Script_Item()
 {
@@ -32,4 +33,9 @@ SPtr<Component> Script_Item::Clone(SPtr<Component> target)
         std::cout << "Clone failed: target is not of type Script_Weapon" << std::endl;
         return nullptr;
     }
+}
+
+bool Script_Item::DoInteract(SPtr<GameObject> player)
+{
+    return false;
 }

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Script_WeaponMineLauncher.h"
 #include "GameObject.h"
+#include "Script_SpiderMine.h"
 
 
 Script_WeaponMineLauncher::Script_WeaponMineLauncher(SPtr<GameObject> owner)
@@ -36,4 +37,21 @@ void Script_WeaponMineLauncher::Clone(SPtr<GameObject> target)
     auto clonedScript = target->SetScriptEntity<Script_WeaponMineLauncher>();
     // Clone the current script into the new script
     this->Clone(clonedScript);
+}
+
+void Script_WeaponMineLauncher::Start()
+{
+    for (int i = 0; i < WeaponInfo::MaxBulletsNum; ++i) {
+        int id = i;
+        SPtr<GameObject> bullet = MEMORY->Make_Shared<GameObject>(id);
+        bullet->AddComponent<Transform>(Component::Type::Transform);
+        bullet->AddComponent<Collider>(Component::Type::Collider);
+        bullet->SetScriptEntity<Script_SpiderMine>();
+        mBullets[i] = bullet;
+        bullet->Start();
+    }
+}
+
+void Script_WeaponMineLauncher::Update()
+{
 }

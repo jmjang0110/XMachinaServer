@@ -25,6 +25,7 @@ public:
 	virtual void Clone(SPtr<GameObject> target);
 
 	virtual void Start() override;
+	virtual void Dispatch(class OverlappedObject* overlapped, UINT32 bytes = 0);
 
 protected:
 	void BasicAttackCallback();

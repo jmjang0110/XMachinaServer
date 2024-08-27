@@ -38,3 +38,8 @@ void Script_Crate::Clone(SPtr<GameObject> target)
     // Clone the current script into the new script
     this->Clone(clonedScript);
 }
+
+bool Script_Crate::DoInteract(SPtr<GameObject> player)
+{
+    return false;
+}

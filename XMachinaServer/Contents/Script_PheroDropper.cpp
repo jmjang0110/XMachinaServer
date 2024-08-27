@@ -55,6 +55,11 @@ void Script_PheroDropper::Clone(SPtr<GameObject> target)
 	this->Clone(clonedScript);
 }
 
+void Script_PheroDropper::Start()
+{
+	Init();
+}
+
 void Script_PheroDropper::Init()
 {
 	std::string AllPherosState = {};

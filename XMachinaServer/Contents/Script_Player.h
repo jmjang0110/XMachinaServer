@@ -21,11 +21,16 @@ class Script_Player : public Script_PlayerStat
 { 
 private:
 	SPtr<GameSession> mSessionOwner = nullptr;
+
 private:
-	std::array<SPtr<GameObject>, FBProtocol::PLAYER_SKILL_TYPE_END>		mSkills      = {};		
-	SPtr<GameObject>													mWeapon      = {};
-	ViewList															mViewList    = {}; Lock::SRWLock mViewList_Lock;
-	PlayerState															mPlayerState = PlayerState::None;
+	std::array<SPtr<GameObject>, FBProtocol::PLAYER_SKILL_TYPE_END>		mSkills              = {};	
+
+	SPtr<GameObject>													mDefaultWeapon       = {}; // H_Lock
+	SPtr<GameObject>													mCurrWeapon          = {};	
+	
+	ViewList															mViewListSnapShot    = {}; Lock::SRWLock mViewList_Lock;
+	ViewList															mViewList	         = {};
+	PlayerState															mPlayerState         = PlayerState::None;
 
 public:  
 	Script_Player();
@@ -36,6 +41,7 @@ public:
 	virtual void Clone(SPtr<GameObject> target);
 
 public: 
+	virtual void Update();
 	virtual void Start();
 
 public:
@@ -50,9 +56,9 @@ public:
 	SPtr<Script_Skill>	GetSkillEntity(FBProtocol::PLAYER_SKILL_TYPE type);
 	SPtr<GameObject>	GetSKill(FBProtocol::PLAYER_SKILL_TYPE type)			{ return mSkills[type]; }
 	PlayerState			GetCurrState()											{ return mPlayerState; }
-	SPtr<GameObject>	GetWeapon()												{ return mWeapon; }
+	SPtr<GameObject>	GetWeapon()												{ return mCurrWeapon; }
 	SPtr<GameSession>	GetSessionOwner()										{ return mSessionOwner; }
-	ViewList			S_GetViewList()											{ mViewList_Lock.LockRead(); ViewList currViewList = mViewList; mViewList_Lock.UnlockRead(); return currViewList; }
+	ViewList			S_GetViewList()											{ mViewList_Lock.LockRead(); ViewList currViewList = mViewListSnapShot; mViewList_Lock.UnlockRead(); return currViewList; }
 
 	void SetState(PlayerState state)				{ mPlayerState  = state; }
 	void SetSessionOwner(SPtr<GameSession> session) { mSessionOwner = session; }

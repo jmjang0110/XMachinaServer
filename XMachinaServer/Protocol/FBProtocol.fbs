@@ -381,8 +381,8 @@ table SPkt_GetPhero
 
 table CPkt_Bullet_OnShoot
 {
-	pos : Vector3;
-	ray : Vector3;
+	fire_pos : Vector3;
+	fire_dir : Vector3;
 }
 
 table SPkt_Bullet_OnShoot
@@ -392,7 +392,7 @@ table SPkt_Bullet_OnShoot
 	bullet_id : uint; // 4 bytes - 어떤 총알을 쐈는가
 
 	fire_pos  : Vector3;
-	ray       : Vector3; // 12 bytes (4bytes * 3) - 총구 방향은 어떠한가? 
+	fire_dir  : Vector3; // 12 bytes (4bytes * 3) - 총구 방향은 어떠한가? 
 }
 
 // +------------------------

@@ -2224,21 +2224,21 @@ inline ::flatbuffers::Offset<SPkt_GetPhero> CreateSPkt_GetPhero(
 struct CPkt_Bullet_OnShoot FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef CPkt_Bullet_OnShootBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
-    VT_POS = 4,
-    VT_RAY = 6
+    VT_FIRE_POS = 4,
+    VT_FIRE_DIR = 6
   };
-  const FBProtocol::Vector3 *pos() const {
-    return GetPointer<const FBProtocol::Vector3 *>(VT_POS);
+  const FBProtocol::Vector3 *fire_pos() const {
+    return GetPointer<const FBProtocol::Vector3 *>(VT_FIRE_POS);
   }
-  const FBProtocol::Vector3 *ray() const {
-    return GetPointer<const FBProtocol::Vector3 *>(VT_RAY);
+  const FBProtocol::Vector3 *fire_dir() const {
+    return GetPointer<const FBProtocol::Vector3 *>(VT_FIRE_DIR);
   }
   bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyOffset(verifier, VT_POS) &&
-           verifier.VerifyTable(pos()) &&
-           VerifyOffset(verifier, VT_RAY) &&
-           verifier.VerifyTable(ray()) &&
+           VerifyOffset(verifier, VT_FIRE_POS) &&
+           verifier.VerifyTable(fire_pos()) &&
+           VerifyOffset(verifier, VT_FIRE_DIR) &&
+           verifier.VerifyTable(fire_dir()) &&
            verifier.EndTable();
   }
 };
@@ -2247,11 +2247,11 @@ struct CPkt_Bullet_OnShootBuilder {
   typedef CPkt_Bullet_OnShoot Table;
   ::flatbuffers::FlatBufferBuilder &fbb_;
   ::flatbuffers::uoffset_t start_;
-  void add_pos(::flatbuffers::Offset<FBProtocol::Vector3> pos) {
-    fbb_.AddOffset(CPkt_Bullet_OnShoot::VT_POS, pos);
+  void add_fire_pos(::flatbuffers::Offset<FBProtocol::Vector3> fire_pos) {
+    fbb_.AddOffset(CPkt_Bullet_OnShoot::VT_FIRE_POS, fire_pos);
   }
-  void add_ray(::flatbuffers::Offset<FBProtocol::Vector3> ray) {
-    fbb_.AddOffset(CPkt_Bullet_OnShoot::VT_RAY, ray);
+  void add_fire_dir(::flatbuffers::Offset<FBProtocol::Vector3> fire_dir) {
+    fbb_.AddOffset(CPkt_Bullet_OnShoot::VT_FIRE_DIR, fire_dir);
   }
   explicit CPkt_Bullet_OnShootBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
@@ -2266,11 +2266,11 @@ struct CPkt_Bullet_OnShootBuilder {
 
 inline ::flatbuffers::Offset<CPkt_Bullet_OnShoot> CreateCPkt_Bullet_OnShoot(
     ::flatbuffers::FlatBufferBuilder &_fbb,
-    ::flatbuffers::Offset<FBProtocol::Vector3> pos = 0,
-    ::flatbuffers::Offset<FBProtocol::Vector3> ray = 0) {
+    ::flatbuffers::Offset<FBProtocol::Vector3> fire_pos = 0,
+    ::flatbuffers::Offset<FBProtocol::Vector3> fire_dir = 0) {
   CPkt_Bullet_OnShootBuilder builder_(_fbb);
-  builder_.add_ray(ray);
-  builder_.add_pos(pos);
+  builder_.add_fire_dir(fire_dir);
+  builder_.add_fire_pos(fire_pos);
   return builder_.Finish();
 }
 
@@ -2281,7 +2281,7 @@ struct SPkt_Bullet_OnShoot FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Tabl
     VT_GUN_ID = 6,
     VT_BULLET_ID = 8,
     VT_FIRE_POS = 10,
-    VT_RAY = 12
+    VT_FIRE_DIR = 12
   };
   uint32_t player_id() const {
     return GetField<uint32_t>(VT_PLAYER_ID, 0);
@@ -2295,8 +2295,8 @@ struct SPkt_Bullet_OnShoot FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Tabl
   const FBProtocol::Vector3 *fire_pos() const {
     return GetPointer<const FBProtocol::Vector3 *>(VT_FIRE_POS);
   }
-  const FBProtocol::Vector3 *ray() const {
-    return GetPointer<const FBProtocol::Vector3 *>(VT_RAY);
+  const FBProtocol::Vector3 *fire_dir() const {
+    return GetPointer<const FBProtocol::Vector3 *>(VT_FIRE_DIR);
   }
   bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
@@ -2305,8 +2305,8 @@ struct SPkt_Bullet_OnShoot FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Tabl
            VerifyField<uint32_t>(verifier, VT_BULLET_ID, 4) &&
            VerifyOffset(verifier, VT_FIRE_POS) &&
            verifier.VerifyTable(fire_pos()) &&
-           VerifyOffset(verifier, VT_RAY) &&
-           verifier.VerifyTable(ray()) &&
+           VerifyOffset(verifier, VT_FIRE_DIR) &&
+           verifier.VerifyTable(fire_dir()) &&
            verifier.EndTable();
   }
 };
@@ -2327,8 +2327,8 @@ struct SPkt_Bullet_OnShootBuilder {
   void add_fire_pos(::flatbuffers::Offset<FBProtocol::Vector3> fire_pos) {
     fbb_.AddOffset(SPkt_Bullet_OnShoot::VT_FIRE_POS, fire_pos);
   }
-  void add_ray(::flatbuffers::Offset<FBProtocol::Vector3> ray) {
-    fbb_.AddOffset(SPkt_Bullet_OnShoot::VT_RAY, ray);
+  void add_fire_dir(::flatbuffers::Offset<FBProtocol::Vector3> fire_dir) {
+    fbb_.AddOffset(SPkt_Bullet_OnShoot::VT_FIRE_DIR, fire_dir);
   }
   explicit SPkt_Bullet_OnShootBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
@@ -2347,9 +2347,9 @@ inline ::flatbuffers::Offset<SPkt_Bullet_OnShoot> CreateSPkt_Bullet_OnShoot(
     uint32_t gun_id = 0,
     uint32_t bullet_id = 0,
     ::flatbuffers::Offset<FBProtocol::Vector3> fire_pos = 0,
-    ::flatbuffers::Offset<FBProtocol::Vector3> ray = 0) {
+    ::flatbuffers::Offset<FBProtocol::Vector3> fire_dir = 0) {
   SPkt_Bullet_OnShootBuilder builder_(_fbb);
-  builder_.add_ray(ray);
+  builder_.add_fire_dir(fire_dir);
   builder_.add_fire_pos(fire_pos);
   builder_.add_bullet_id(bullet_id);
   builder_.add_gun_id(gun_id);

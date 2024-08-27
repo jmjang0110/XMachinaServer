@@ -36,6 +36,7 @@ public:
 
 public:
 	void Init(int monster_id, int phero_index, int level, float lifeTime, float amount);
+	bool DoInteract(SPtr<GameObject> player);
 
 public:
 	/// ----------------------- Get -----------------------

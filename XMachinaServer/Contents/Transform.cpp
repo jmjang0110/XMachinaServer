@@ -49,24 +49,24 @@ SPtr<Component> Transform::Clone(SPtr<Component> target)
 	SPtr<Transform> clonedTransform = std::static_pointer_cast<Transform>(target);
 
 	// Copy primitive data members
-	clonedTransform->mIndex          = this->mIndex;
-	clonedTransform->mWorldTransform = this->mWorldTransform;
-	clonedTransform->mLocalTransform = this->mLocalTransform;
-	clonedTransform->mPrevTransform  = this->mPrevTransform;
-	clonedTransform->mPosition       = this->mPosition;
-	clonedTransform->mRight          = this->mRight;
-	clonedTransform->mUp             = this->mUp;
-	clonedTransform->mLook           = this->mLook;
-	clonedTransform->mObject         = this->mObject;  // Copy the object reference (deep copy may be needed if applicable)
-	clonedTransform->mUseObjCB       = this->mUseObjCB;
-	clonedTransform->mObjCBCount     = this->mObjCBCount;
-	clonedTransform->mObjCBIndices   = this->mObjCBIndices;
-	clonedTransform->mObjectCB       = this->mObjectCB;
+	this->mIndex          = clonedTransform->mIndex;
+	this->mWorldTransform = clonedTransform->mWorldTransform;
+	this->mLocalTransform = clonedTransform->mLocalTransform;
+	this->mPrevTransform  = clonedTransform->mPrevTransform;
+	this->mPosition       = clonedTransform->mPosition;
+	this->mRight          = clonedTransform->mRight;
+	this->mUp             = clonedTransform->mUp;
+	this->mLook           = clonedTransform->mLook;
+	this->mObject         = clonedTransform->mObject;  // Copy the object reference (deep copy may be needed if applicable)
+	this->mUseObjCB       = clonedTransform->mUseObjCB;
+	this->mObjCBCount     = clonedTransform->mObjCBCount;
+	this->mObjCBIndices   = clonedTransform->mObjCBIndices;
+	this->mObjectCB       = clonedTransform->mObjectCB;
 
 	// Parent, Child, and Sibling relationships are not copied to avoid cyclic references
-	clonedTransform->mParent		 = nullptr;
-	clonedTransform->mChild			 = nullptr;
-	clonedTransform->mSibling		 = nullptr;
+	this->mParent		  = nullptr;
+	this->mChild		  = nullptr;
+	this->mSibling		  = nullptr;
 
 	return clonedTransform;
 

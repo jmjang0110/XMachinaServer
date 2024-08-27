@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Script_WeaponDBMS.h"
 #include "GameObject.h"
+#include "Script_BasicBullet.h"
 
 
 Script_WeaponDBMS::Script_WeaponDBMS(SPtr<GameObject> owner)
@@ -36,4 +37,21 @@ void Script_WeaponDBMS::Clone(SPtr<GameObject> target)
     auto clonedScript = target->SetScriptEntity<Script_WeaponDBMS>();
     // Clone the current script into the new script
     this->Clone(clonedScript);
+}
+
+void Script_WeaponDBMS::Start()
+{
+    for (int i = 0; i < WeaponInfo::MaxBulletsNum; ++i) {
+        int id = i;
+        SPtr<GameObject> bullet = MEMORY->Make_Shared<GameObject>(id);
+        bullet->AddComponent<Transform>(Component::Type::Transform);
+        bullet->AddComponent<Collider>(Component::Type::Collider);
+        bullet->SetScriptEntity<Script_BasicBullet>();
+        mBullets[i] = bullet;
+        bullet->Start();
+    }
+}
+
+void Script_WeaponDBMS::Update()
+{
 }

@@ -625,18 +625,18 @@ bool FBsPacketFactory::Process_CPkt_Bullet_OnShoot(SPtr_Session session, const F
 	
 	SPtr<GameSession> gameSession = std::static_pointer_cast<GameSession>(session);
 
-	int  player_id   = gameSession->GetID(); // 플레이어 아이디
-	Vec3 ray         = GetVector3(pkt.ray());
-	Vec3 firePos     = GetVector3(pkt.pos());
+	int  player_id        = gameSession->GetID(); // 플레이어 아이디
+	Vec3 fire_pos         = GetVector3(pkt.fire_pos());
+	Vec3 fire_dir         = GetVector3(pkt.fire_dir());
 	// On Shoot ! 
-	gameSession->GetPlayerEntity()->OnShoot(firePos, ray); 
+	gameSession->GetPlayerEntity()->OnShoot(fire_pos, fire_dir);
 
-	auto weapon = gameSession->GetPlayer()->GetScriptEntity<Script_Player>()->GetWeapon();
-	auto gun_id = weapon->GetScriptEntity<Script_Item>()->GetItemType();
+	auto weapon   = gameSession->GetPlayerEntity()->GetWeapon();
+	auto gun_id   = weapon->GetScriptEntity<Script_Item>()->GetItemType();
 	int bullet_id = -1; 
 
 	/// 플레이어가 Shot 했다는 것을 플레이어들에게 알린다. 
-	auto spkt = FBS_FACTORY->SPkt_Bullet_OnShoot(player_id, gun_id, bullet_id, firePos, ray);
+	auto spkt = FBS_FACTORY->SPkt_Bullet_OnShoot(player_id, gun_id, bullet_id, fire_pos, fire_dir);
 	ROOM_MGR->BroadcastRoom(gameSession->GetPlayer()->GetOwnerRoom()->GetID(), spkt, player_id);
 
 	return true;

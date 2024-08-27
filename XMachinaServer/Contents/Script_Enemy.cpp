@@ -44,18 +44,19 @@ Script_Enemy::~Script_Enemy()
 SPtr<Component> Script_Enemy::Clone(SPtr<Component> target)
 {
 	// 먼저, 기본 클래스인 Script_EnemyStat의 Clone을 호출
-	Script_EnemyStat::Clone(target);
 
 	// Script_Enemy 타입으로 캐스팅
 	auto script_enemy = std::dynamic_pointer_cast<Script_Enemy>(target);
 	if (script_enemy) {
-		// Script_Enemy의 멤버들을 복사
-		this->mAnimTime			= script_enemy->mAnimTime;
-		this->mCurrAttackStep	= script_enemy->mCurrAttackStep;
+		Script_EnemyStat::Clone(target);
 
-		this->mSpawnPos			= script_enemy->mSpawnPos;
-		this->mSpawnRot			= script_enemy->mSpawnRot;
-		this->mPherosInfo		= script_enemy->mPherosInfo;
+		// Script_Enemy의 멤버들을 복사
+		script_enemy->mAnimTime			= this->mAnimTime;
+		script_enemy->mCurrAttackStep	= this->mCurrAttackStep;
+
+		script_enemy->mSpawnPos			= this->mSpawnPos;
+		script_enemy->mSpawnRot			= this->mSpawnRot;
+		script_enemy->mPherosInfo		= this->mPherosInfo;
 	}
 	else {
 		std::cout << "Clone failed: other is not of type Script_Enemy" << std::endl;

@@ -22,7 +22,7 @@ private:
 	std::unordered_map<Component::Type,		SPtr<Component>>	mComponents   = {};	
 	std::unordered_map<UINT32,				SPtr<Script>>		mScripts      = {};	
 	SPtr<Script>												mScriptEntity = {};	
-
+	Coordinate													mSectorIndex  = {};
 public:
 	GameObject();
 	GameObject(UINT32 sessionID);
@@ -59,14 +59,15 @@ public:
 
 	void SetOwnerRoom(SPtr<GameRoom> room)		{ mOwnerRoom    = room; }
 	void SetScriptEntity(SPtr<Script> entity)	{ mScriptEntity = entity; }
+	void SetSectorIndex(Coordinate index)		{ mSectorIndex  = index; }
 	template<typename T>
 	SPtr<T> SetScriptEntity()					{ mScriptEntity = MEMORY->Make_Shared<T>(std::dynamic_pointer_cast<GameObject>(shared_from_this())); return  std::dynamic_pointer_cast<T>(mScriptEntity); }
-
 	/// --------------- TAG ---------------
 	void		EnableTag(ObjectTag tag)		{ mTag.EnableTag(tag); }
 	void		DisavleTag(ObjectTag tag)		{ mTag.DisableTag(tag); }
 	bool		IsEnableTag(ObjectTag tag)		{ return mTag.IsTagEnabled(tag); }
 	ObjectTag	GetTag()						{ return mTag.GetTag(); }
+	Coordinate  GetSectorIndex()				{ return mSectorIndex; }
 
 protected:
 	void CloneComponents(SPtr<GameObject>& copy) const;

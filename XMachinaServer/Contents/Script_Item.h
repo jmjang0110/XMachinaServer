@@ -15,5 +15,9 @@ public:
 	virtual SPtr<Component> Clone(SPtr<Component> target);
 
 	FBProtocol::ITEM_TYPE GetItemType() { return mItemType; }
+
+public:
+	virtual bool DoInteract(SPtr<GameObject> player);
+
 };
 

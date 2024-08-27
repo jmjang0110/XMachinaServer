@@ -4,16 +4,20 @@
 #include "GameObject.h"
 #include "GameSession.h"
 #include "GameRoom.h"
-#include "RoomManager.h"
+#include "SectorController.h"
+#include "Sector.h"
+
 #include "Transform.h"
 #include "ViewList.h"
 
+#include "RoomManager.h"
 #include "FBsPacketFactory.h"
 
 #include "Script_Skill.h"
 #include "Script_Enemy.h"
 #include "Script_EnemyController.h"
 #include "Script_Stat.h"
+#include "Script_WeaponHLock.h"
 
 Script_Player::Script_Player()
     : Script_PlayerStat()
@@ -36,7 +40,11 @@ Script_Player::~Script_Player()
     for (int i = 0; i < mSkills.size(); ++i) {
         mSkills[i] = nullptr;
     }
-    mViewList.Clear();
+	mViewListSnapShot.Clear();
+	mViewList.Clear();
+
+	mDefaultWeapon = nullptr;
+	mCurrWeapon    = nullptr;
 
 }
 SPtr<Component> Script_Player::Clone(SPtr<Component> target)
@@ -68,18 +76,33 @@ void Script_Player::Clone(SPtr<GameObject> target)
     this->Clone(clonedScript);
 }
 
+void Script_Player::Update()
+{
+	auto sectorController = mOwner->GetOwnerRoom()->GetSectorController();
+	sectorController->UpdateViewList(mOwner.get(), mOwner->GetTransform()->GetPosition(), mViewListSnapShot.ViewRangeRadius);
+
+}
+
 void Script_Player::Start()
 {
-    mViewList.ViewRangeRadius = 45.f;
+	mViewListSnapShot.ViewRangeRadius = 15.f;
+	mViewList.ViewRangeRadius     = mViewListSnapShot.ViewRangeRadius;
+	
+	// H_Lock ( ±âº» ±ÇÃÑ ) 
+	mDefaultWeapon = MEMORY->Make_Shared<GameObject>(FBProtocol::ITEM_TYPE_WEAPON_H_LOOK);
+	mDefaultWeapon->AddComponent<Transform>(Component::Type::Transform);
+	mDefaultWeapon->SetScriptEntity<Script_WeaponHLock>();
+
+	mCurrWeapon = mDefaultWeapon;
+
 }
 
 void Script_Player::UpdateViewList(std::vector<SPtr<GameObject>> players, std::vector<SPtr<GameObject>> monster)
 {
 	ViewList PrevViewList;
-	ViewList currViewList;
 
 	mViewList_Lock.LockRead();
-	PrevViewList = mViewList;
+	PrevViewList                 = mViewListSnapShot;
 	mViewList_Lock.UnlockRead();
 
 	std::vector<SPtr<GameObject>> NewMonsters;
@@ -89,10 +112,8 @@ void Script_Player::UpdateViewList(std::vector<SPtr<GameObject>> players, std::v
 	///	1. [PLAYER] VIEW LIST 
 	/// ---------------------------------------------------------------------------------+
 	for (int i = 0; i < players.size(); ++i) {
-		currViewList.TryInsertPlayer(players[i]->GetID(), players[i]);
+		mViewList.TryInsertPlayer(players[i]->GetID(), players[i]);
 	}
-
-
 
 	/// +--------------------------------------------------------------------------------
 	///	2. [NEW MONSTER] VIEW LIST 
@@ -104,9 +125,9 @@ void Script_Player::UpdateViewList(std::vector<SPtr<GameObject>> players, std::v
 
 		bool IsSuccess = false;
 		if (objState == Script_Stat::ObjectState::Dead)
-			IsSuccess = currViewList.TryInsertMonster(monster[i]->GetID(), monster[i], false);
+			IsSuccess = mViewList.TryInsertMonster(monster[i]->GetID(), monster[i], false);
 		else
-			IsSuccess = currViewList.TryInsertMonster(monster[i]->GetID(), monster[i]);
+			IsSuccess = mViewList.TryInsertMonster(monster[i]->GetID(), monster[i]);
 
 		if (IsSuccess) {
 			NewMonsters.push_back(monster[i]);
@@ -117,7 +138,6 @@ void Script_Player::UpdateViewList(std::vector<SPtr<GameObject>> players, std::v
 	for (int i = 0; i < monster.size(); ++i) {
 		currentMonsterIDs.insert(monster[i]->GetID());
 	}
-
 
 	/// +--------------------------------------------------------------------------------
 	///	3. [REMOVE MONSTER] VIEW LIST 
@@ -138,12 +158,11 @@ void Script_Player::UpdateViewList(std::vector<SPtr<GameObject>> players, std::v
 			float	dist        = (Monster_Pos - Player_Pos).Length();
 
 			if (dist > PrevViewList.ViewRangeRadius) {
-				currViewList.RemoveMonster(it.first, DoDeactivate);
+				mViewList.RemoveMonster(it.first, DoDeactivate);
 				RemoveMonsters.push_back(it.second);
 			}
 		}
 	}
-
 
 	/// +------------------------------------------------------------------------------------------------------
 	/// 4. SEND NEW MOSNTERS PACKET 
@@ -195,13 +214,17 @@ void Script_Player::UpdateViewList(std::vector<SPtr<GameObject>> players, std::v
 
 
 	mViewList_Lock.LockWrite();
-	mViewList = currViewList;
+	mViewListSnapShot = mViewList;
 	mViewList_Lock.UnlockWrite();
 }
 
 int Script_Player::OnShoot(Vec3& bullet_center, Vec3& bullet_dir)
 {
-    return 0;
+	if (!mCurrWeapon)
+		return -1;
+
+	int bulletID = mCurrWeapon->GetScriptEntity<Script_Weapon>()->OnShoot(bullet_center, bullet_dir);
+    return bulletID;
 }
 
 int Script_Player::OnHitEnemy(int32_t monster_id, Vec3& bullet_center, Vec3& bullet_dir)

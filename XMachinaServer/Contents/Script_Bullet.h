@@ -2,15 +2,25 @@
 #include "Script_Entity.h"
 
 class Rigidbody;
+enum class BulletType {
+	None,
+	Basic,
+	Explosive,
+
+	_count,
+};
 class Script_Bullet : public Script_Entity
 {
-private:
-	SPtr<Rigidbody>		mRigid = nullptr;
+protected:
+	BulletType			mBulletType    = BulletType::None;
 
-	float mSpeed{};					// speed of bullet
-	float mDamage{};				// damage of bullet
-	float mMaxLifeTime{ 2.f };		// 총알 수명(발사 후 최대 유지시간)
-	float mCurrLifeTime{};			// 현재 수명
+protected:
+	SPtr<Rigidbody>		mRigid         = nullptr;
+
+	float			    mSpeed         = {};			// speed of bullet
+	float			    mDamage        = {};			// damage of bullet
+	float			    mMaxLifeTime   = 2.f;		// 총알 수명(발사 후 최대 유지시간)
+	float			    mCurrLifeTime  = {};			// 현재 수명
 
 
 public:

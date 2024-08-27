@@ -156,7 +156,6 @@ ViewList SectorController::UpdateViewList(GameObject* player, Vec3 player_pos, f
     }
      // LOG_MGR->Cout("--------------------------------------------\n");
 
-
     player->GetScriptEntity<Script_Player>()->UpdateViewList(AllView_Players, AllView_Monsters);
 
  

@@ -27,6 +27,8 @@ public:
 	virtual SPtr<Component> Clone(SPtr<Component> target);
 	virtual void Clone(SPtr<GameObject> target);
 
+	virtual void Start();
+
 
 public:
 	void Init();

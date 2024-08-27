@@ -200,6 +200,7 @@
     <ClInclude Include="Contents\Script_Anglerox.h" />
     <ClInclude Include="Contents\Script_Arack.h" />
     <ClInclude Include="Contents\Script_Aranobot.h" />
+    <ClInclude Include="Contents\Script_BasicBullet.h" />
     <ClInclude Include="Contents\Script_Building.h" />
     <ClInclude Include="Contents\Script_Bullet.h" />
     <ClInclude Include="Contents\Script_Ceratoferox.h" />
@@ -207,11 +208,12 @@
     <ClInclude Include="Contents\Script_Deus_Phase_1.h" />
     <ClInclude Include="Contents\Script_Deus_Phase_2.h" />
     <ClInclude Include="Contents\Script_Entity.h" />
+    <ClInclude Include="Contents\Script_ExplosiveBullet.h" />
     <ClInclude Include="Contents\Script_Gobbler.h" />
     <ClInclude Include="Contents\Script_Item.h" />
     <ClInclude Include="Contents\Script_LightBipedMech.h" />
     <ClInclude Include="Contents\Script_MiningMech.h" />
-    <ClInclude Include="Contents\Script_MissileLauncher.h" />
+    <ClInclude Include="Contents\Script_SpiderMine.h" />
     <ClInclude Include="Contents\Script_Rapax.h" />
     <ClInclude Include="Contents\Script_Skill.h" />
     <ClInclude Include="Contents\Script_SkillCloaking.h" />
@@ -220,6 +222,7 @@
     <ClInclude Include="Contents\Script_Weapon.h" />
     <ClInclude Include="Contents\Script_WeaponBurnout.h" />
     <ClInclude Include="Contents\Script_WeaponDBMS.h" />
+    <ClInclude Include="Contents\Script_WeaponHLock.h" />
     <ClInclude Include="Contents\Script_WeaponMineLauncher.h" />
     <ClInclude Include="Contents\Script_WeaponPipeLine.h" />
     <ClInclude Include="Contents\Script_WeaponSkyLine.h" />
@@ -324,6 +327,7 @@
     <ClCompile Include="Contents\Script_Anglerox.cpp" />
     <ClCompile Include="Contents\Script_Arack.cpp" />
     <ClCompile Include="Contents\Script_Aranobot.cpp" />
+    <ClCompile Include="Contents\Script_BasicBullet.cpp" />
     <ClCompile Include="Contents\Script_Building.cpp" />
     <ClCompile Include="Contents\Script_Bullet.cpp" />
     <ClCompile Include="Contents\Script_Ceratoferox.cpp" />
@@ -331,11 +335,12 @@
     <ClCompile Include="Contents\Script_Deus_Phase_1.cpp" />
     <ClCompile Include="Contents\Script_Deus_Phase_2.cpp" />
     <ClCompile Include="Contents\Script_Entity.cpp" />
+    <ClCompile Include="Contents\Script_ExplosiveBullet.cpp" />
     <ClCompile Include="Contents\Script_Gobbler.cpp" />
     <ClCompile Include="Contents\Script_Item.cpp" />
     <ClCompile Include="Contents\Script_LightBipedMech.cpp" />
     <ClCompile Include="Contents\Script_MiningMech.cpp" />
-    <ClCompile Include="Contents\Script_MissileLauncher.cpp" />
+    <ClCompile Include="Contents\Script_SpiderMine.cpp" />
     <ClCompile Include="Contents\Script_Rapax.cpp" />
     <ClCompile Include="Contents\Script_Skill.cpp" />
     <ClCompile Include="Contents\Script_SkillCloaking.cpp" />
@@ -344,6 +349,7 @@
     <ClCompile Include="Contents\Script_Weapon.cpp" />
     <ClCompile Include="Contents\Script_WeaponBurnout.cpp" />
     <ClCompile Include="Contents\Script_WeaponDBMS.cpp" />
+    <ClCompile Include="Contents\Script_WeaponHLock.cpp" />
     <ClCompile Include="Contents\Script_WeaponMineLauncher.cpp" />
     <ClCompile Include="Contents\Script_WeaponPipeLine.cpp" />
     <ClCompile Include="Contents\Script_WeaponSkyLine.cpp" />

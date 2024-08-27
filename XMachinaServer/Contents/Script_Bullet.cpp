@@ -15,7 +15,6 @@ Script_Bullet::Script_Bullet(SPtr<GameObject> owner)
     : Script_Entity(owner, uint32_t_ScriptKey(ScriptKey::Bullet))
 {
     owner->EnableTag(ObjectTag::Bullet);
-
 }
 
 Script_Bullet::~Script_Bullet()

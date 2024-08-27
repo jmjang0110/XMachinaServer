@@ -79,4 +79,6 @@ void Script_AdvancedCombatDroid_5::Start()
 
 void Script_AdvancedCombatDroid_5::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 {
+    MEMORY->Delete(overlapped);
+
 }

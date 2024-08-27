@@ -89,6 +89,12 @@ void Script_Ursacetus::Start()
 
 }
 
+void Script_Ursacetus::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
+{
+    MEMORY->Delete(overlapped);
+
+}
+
 void Script_Ursacetus::BasicAttackCallback()
 {
     if (!Script_Enemy::mEnemyController->GetTarget()) {

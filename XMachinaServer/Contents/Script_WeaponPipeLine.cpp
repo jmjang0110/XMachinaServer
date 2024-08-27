@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Script_WeaponPipeLine.h"
 #include "GameObject.h"
-
+#include "Script_BasicBullet.h"
 
 Script_WeaponPipeLine::Script_WeaponPipeLine(SPtr<GameObject> owner)
 	: Script_Weapon(owner)
@@ -36,4 +36,21 @@ void Script_WeaponPipeLine::Clone(SPtr<GameObject> target)
     auto clonedScript = target->SetScriptEntity<Script_WeaponPipeLine>();
     // Clone the current script into the new script
     this->Clone(clonedScript);
+}
+
+void Script_WeaponPipeLine::Start()
+{
+    for (int i = 0; i < WeaponInfo::MaxBulletsNum; ++i) {
+        int id = i;
+        SPtr<GameObject> bullet = MEMORY->Make_Shared<GameObject>(id);
+        bullet->AddComponent<Transform>(Component::Type::Transform);
+        bullet->AddComponent<Collider>(Component::Type::Collider);
+        bullet->SetScriptEntity<Script_BasicBullet>();
+        mBullets[i] = bullet;
+        bullet->Start();
+    }
+}
+
+void Script_WeaponPipeLine::Update()
+{
 }

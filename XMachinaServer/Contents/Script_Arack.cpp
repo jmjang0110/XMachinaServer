@@ -80,4 +80,6 @@ void Script_Arack::Start()
 
 void Script_Arack::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 {
+    MEMORY->Delete(overlapped);
+
 }

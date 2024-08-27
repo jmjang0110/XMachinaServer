@@ -163,7 +163,7 @@ void GameObject::DecreaseActivateRef()
 
 void GameObject::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 {
-	// 실질적인 처리를 Script 에 넘긴다. 
+	// 실질적인 처리를 Entity Script 에 넘긴다. 
 	if (mScriptEntity)
 		mScriptEntity->Dispatch(overlapped, bytes);
 }

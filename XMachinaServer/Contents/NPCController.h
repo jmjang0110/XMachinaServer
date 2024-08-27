@@ -48,8 +48,5 @@ public:
 	SPtr<GameObject>		GetDynamicItem(UINT32 item_id);
 	SPtr<GameObject>		GetItem(UINT32 item_id);
 
-
-	std::vector<SPtr<GameObject>> GetMonstersInViewRange(Vec3 palyer_pos, float viewRange_radius);
-
 };
 
