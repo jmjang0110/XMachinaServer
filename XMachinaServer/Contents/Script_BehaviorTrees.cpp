@@ -53,6 +53,8 @@ void Script_DefaultEnemyBT::Clone(SPtr<Component> other)
 
 bool Script_DefaultEnemyBT::Update()
 {
+	return true;
+
     Script_BehaviorTree::Update();
 
 	if (!mRoot) {
