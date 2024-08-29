@@ -71,7 +71,7 @@ private:
 	Concurrency::concurrent_queue<int>									mPossibleBulletIndex;		// Possible To Shoot Bullets 
 	
 	// View List
-	float					mViewRangeRadius = 45.f;										// View Range 
+	float					mViewRangeRadius = 190.f;										// View Range 
 	ViewList				mVlist           = {};										// View List ( Current ) 
 public:
 	GamePlayer();
