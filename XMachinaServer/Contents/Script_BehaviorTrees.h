@@ -20,6 +20,9 @@ public:
 	virtual void Clone(SPtr<GameObject> target);
 	virtual void Update();
 
+	void PrintBTtype(FBProtocol::MONSTER_BT_TYPE bttype, std::string substring = "");
+
+
 protected:
 	virtual BTNode* SetupTree() override;
 };

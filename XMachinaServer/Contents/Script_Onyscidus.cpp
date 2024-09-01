@@ -81,3 +81,19 @@ void Script_Onyscidus::Start()
     AnimController->FindMotionByName(mAttack1AnimName)->AddCallback(std::bind(&Script_Onyscidus::AttackCallback, this), 44);
 
 }
+
+void Script_Onyscidus::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
+{
+    MEMORY->Delete(overlapped);
+
+    int activeReference = mOwner->GetActivateRef();
+    if (activeReference > 0) {
+        mOwner->Update();
+        mOwner->RegisterUpdate();
+    }
+    else {
+        OnExitFromViewList();
+    }
+
+
+}

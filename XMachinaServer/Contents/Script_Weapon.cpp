@@ -75,3 +75,9 @@ bool Script_Weapon::DoInteract(SPtr<GameObject> player)
 
     return false;
 }
+
+void Script_Weapon::ReturnPossibleBulletIndex(int index)
+{
+    mPossibleBulletIndex.push(index);
+}
+

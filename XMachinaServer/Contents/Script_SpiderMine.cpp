@@ -1,7 +1,17 @@
 #include "pch.h"
 #include "Script_SpiderMine.h"
 #include "GameObject.h"
+#include "GameRoom.h"
+#include "SectorController.h"
+
 #include "Component.h"
+#include "Collider.h"
+#include "CollisionManager.h"
+#include "ViewList.h"
+
+#include "Script_Weapon.h"
+#include "Script_Player.h"
+
 
 Script_SpiderMine::Script_SpiderMine()
 	: Script_ExplosiveBullet()
@@ -31,6 +41,7 @@ SPtr<Component> Script_SpiderMine::Clone(SPtr<Component> target)
 		clonedScript->mRotationXSpeed = this->mRotationXSpeed;
 		clonedScript->mPlantY         = this->mPlantY;
 		clonedScript->mIsPlanted      = this->mIsPlanted;
+		clonedScript->mUpSpeed        = this->mUpSpeed;
 
 		Script_ExplosiveBullet::Clone(clonedScript);
         return clonedScript;
@@ -50,12 +61,66 @@ void Script_SpiderMine::Clone(SPtr<GameObject> target)
 
 void Script_SpiderMine::Start()
 {
+
 }
 
 void Script_SpiderMine::Update()
 {
+	Script_Bullet::Update();
+
+	float deltatime	      = mOwner->DeltaTime();
+	auto  weaponentity    = mOwnerWeapon->GetScriptEntity<Script_Weapon>();
+	auto  player          = weaponentity->GetOwnerPlayer();
+	bool  IsExploded      = false;
+
+	if (!player)
+		return;
+
+	auto	 player_entity   = player->GetScriptEntity<Script_Player>();
+	ViewList player_VL       = player_entity->S_GetViewList();
+
+	mOwner->GetTransform()->MoveForward(mSpeed * deltatime);
+
+	if (mUpSpeed > 0) {
+		mOwner->GetTransform()->Translate(Vector3::Up, mUpSpeed * deltatime);
+		mUpSpeed -= deltatime * 10.f;
+	}
+	
+	mOwner->GetTransform()->Translate(Vector3::Up ,-Math::kGravity * mMass * deltatime); // translate 
+
+	if (!mIsPlanted) {
+		auto room = mOwner->GetOwnerRoom();
+		if (room->CollideCheckWithNPC(mOwner, ObjectTag::Building)) {
+			if (mSpeed > 0) {
+				mSpeed *= -1; // º®¿¡ ºÎµúÄ¡¸é Åü±ä´Ù.
+			}
+		}
+	}
+
+	mSpeed -= Math::Sign(mSpeed) * deltatime * mDrag;
+	auto bullet_pos	= mOwner->GetTransform()->GetPosition();
+	if (bullet_pos.y <= mPlantY) {
+		/* Plant */
+		mIsPlanted = true;
+		mOwner->GetTransform()->SetPositionY(mPlantY);
+	}
+}
+
+void Script_SpiderMine::SplashDamage()
+{
+}
+
+void Script_SpiderMine::Explode()
+{
+	Script_Bullet::Explode();
+	SplashDamage();
 }
 
 void Script_SpiderMine::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 {
+	MEMORY->Delete(overlapped);
+
+	mOwner->RegisterUpdate();
+
+
 }

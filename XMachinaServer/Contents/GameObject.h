@@ -68,7 +68,7 @@ public:
 	bool		IsEnableTag(ObjectTag tag)		{ return mTag.IsTagEnabled(tag); }
 	ObjectTag	GetTag()						{ return mTag.GetTag(); }
 	Coordinate  GetSectorIndex()				{ return mSectorIndex; }
-
+	int			GetActivateRef()				{ return mActivateRef.load(); }
 protected:
 	void CloneComponents(SPtr<GameObject>& copy) const;
 	void CloneScripts(SPtr<GameObject>& copy) const;

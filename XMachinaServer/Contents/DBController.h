@@ -32,9 +32,9 @@ class DBController
 	DECLARE_SINGLETON(DBController);
 
 private:
-	SQLHENV  hEnv  = SQL_NULL_HANDLE;
-	SQLHDBC  hDbc  = SQL_NULL_HANDLE; /* Connection DB */
-	SQLHSTMT hStm  = SQL_NULL_HANDLE;
+	SQLHENV  mhEnv  = SQL_NULL_HANDLE;
+	SQLHDBC  mhDbc  = SQL_NULL_HANDLE; /* Connection DB */
+	SQLHSTMT mhStm  = SQL_NULL_HANDLE;
 
 
 private:

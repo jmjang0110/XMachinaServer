@@ -17,9 +17,10 @@ private:
 	NPCController*		mOwnerNPCController = nullptr;
 	GameRoom*			mOwnerRoom          = nullptr;
 private:
-	bool				mIsMindControlled  = {};
+	bool				mIsMindControlled	= {};
 
-	SPtr<GameObject>	mTarget             = {}; Lock::SRWLock Lock_Target;
+	SPtr<GameObject>	mPrevTarget         = {};	Lock::SRWLock Lock_PrevTarget;
+	SPtr<GameObject>	mTarget             = {};	Lock::SRWLock Lock_Target;
 	SPtr<GameObject>	mInvoker			= {};
 
 	SPtr<GameObject>	mPathTarget			= {};
@@ -62,6 +63,7 @@ public:
 	FBProtocol::MONSTER_BT_TYPE GetMontserPrevBTType()			{ return mPrevBTType; }
 
 	SPtr<GameObject>			GetTarget()						{ Lock_Target.LockRead(); SPtr<GameObject> target = mTarget; Lock_Target.UnlockRead(); return target; }
+	SPtr<GameObject>			GetPrevTarget()					{ return mPrevTarget; }
 	FBProtocol::MONSTER_BT_TYPE GetMonsterBTType()				{ mLock_BTType.LockRead(); FBProtocol::MONSTER_BT_TYPE btType = mBTType; mLock_BTType.UnlockRead(); return btType; }
 	
 	NPCController*				GetOwnerNPCController()			{ return mOwnerNPCController; }
@@ -77,7 +79,7 @@ public:
 	void SetPathTargetObject(SPtr<GameObject> target)			{ mPathTarget    = target; }
 	void SetInvoker(SPtr<GameObject> invoker)					{ mInvoker       = invoker; }
 	
-	void SetTarget(SPtr<GameObject> target)						{ Lock_Target.LockWrite(); mTarget  = target; Lock_Target.UnlockWrite(); }
+	void SetTarget(SPtr<GameObject> target)						{ Lock_Target.LockWrite(); mPrevTarget = mTarget;  mTarget = target; Lock_Target.UnlockWrite(); }
 	void SetBTType(FBProtocol::MONSTER_BT_TYPE btType)			{ mLock_BTType.LockWrite(); mBTType = btType; mLock_BTType.UnlockWrite(); }
 
 

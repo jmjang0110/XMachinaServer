@@ -44,7 +44,6 @@ BTNodeState MonsterTask::CheckDetectionRange::Evaluate()
 	if (target) {
 		auto player_entity    = target->GetScriptEntity<Script_Player>();
 		auto cloaking_entity  = player_entity->GetSkillEntity(FBProtocol::PLAYER_SKILL_TYPE_CLOACKING);
-
 		if (cloaking_entity->GetCurrSkillState() == SkillState::Active) {
 			mEnemyController->SetTarget(nullptr);
 			mEnemyController->RemoveAllAnimation();

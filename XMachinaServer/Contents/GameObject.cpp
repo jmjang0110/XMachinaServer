@@ -62,14 +62,14 @@ void GameObject::Update()
 
 	// Update all components
 	for (auto& pair : mComponents) {
-		if (pair.second) {  
+		if (pair.second) {
 			pair.second->Update();
 		}
 	}
 
 	// Update all scripts
 	for (auto& pair : mScripts) {
-		if (pair.second) {  
+		if (pair.second) {
 			pair.second->Update();
 		}
 	}
@@ -77,10 +77,12 @@ void GameObject::Update()
 	if (mComponents.end() != mComponents.find(Component::Type::Animation)) {
 		GetAnimation()->Animate();
 	}
-		
+
 	if (mScriptEntity)
 		mScriptEntity->Update();
 
+
+	LateUpdate();
 }
 
 void GameObject::LateUpdate()
@@ -129,6 +131,9 @@ void GameObject::Activate()
 		mScriptEntity->Activate();
 
 	mIsActive = true;
+	
+	RegisterUpdate();
+
 }
 
 void GameObject::DeActivate()

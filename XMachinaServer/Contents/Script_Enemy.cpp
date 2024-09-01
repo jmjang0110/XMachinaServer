@@ -6,6 +6,7 @@
 #include "Script_Enemy.h"
 #include "Script_EnemyStat.h"
 #include "GameObject.h"
+#include "GameTimer.h"
 
 #include "Script_Enemy.h"
 #include "Script_EnemyController.h"
@@ -85,11 +86,24 @@ void Script_Enemy::Start()
 		Animation_Controller->FindMotionByName(mDeathAnimName)->AddEndCallback(std::bind(&Script_Enemy::DeathEndCallback, this));
 	}
 
+	mSpawnPos = mOwner->GetTransform()->GetPosition();
+	mSpawnRot = Quaternion::ToEuler(mOwner->GetTransform()->GetRotation());
+
 }
 
 void Script_Enemy::Update()
 {
 	Script_EnemyStat::Update();
+
+	mActiveTimer += mOwner->DeltaTime();
+
+	if (mActiveTimer >= 1.f / 2.f) {
+		Vec3 enemy_pos = mOwner->GetTransform()->GetPosition();
+		Vec3 enemy_look = mOwner->GetTransform()->GetLook();
+		auto spkt = FBS_FACTORY->SPkt_Monster_Transform(mOwner->GetID(), enemy_pos, enemy_look);
+		ROOM_MGR->BroadcastRoom(mOwner->GetOwnerRoom()->GetID(), spkt);
+
+	}
 
 }
 
@@ -162,6 +176,24 @@ void Script_Enemy::DeathEndCallback()
 
 void Script_Enemy::OnExitFromViewList()
 {
+	LOG_MGR->SetColor(TextColor::BrightCyan);
+	LOG_MGR->Cout("On Exit From View List ");
+	LOG_MGR->SetColor(TextColor::Default);
+
+	mOwner->GetTransform()->SetPosition(mSpawnPos);
+	mOwner->GetTransform()->SetLocalRotation(Quaternion::ToQuaternion(mSpawnRot));
+	mOwner->GetTransform()->SyncSnapShot();
+	
+	if (mEnemyController) {
+		mEnemyController->Reset();
+		if (S_GetObjectState() == Script_Stat::ObjectState::Deactive)
+			mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_IDLE);
+	}
+
+	auto spkt = FBS_FACTORY->SPkt_Monster_Transform(GetID(), mSpawnPos, mSpawnRot);
+	ROOM_MGR->BroadcastRoom(mOwner->GetOwnerRoom()->GetID(), spkt);
+
+
 }
 
 void Script_Enemy::Dead()
@@ -179,4 +211,5 @@ bool Script_Enemy::Hit(float damage, SPtr<GameObject> instigator)
 
 	return res;
 }
+
 

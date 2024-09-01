@@ -76,3 +76,19 @@ void Script_LightBipedMech::Start()
     AnimController->FindMotionByName(mAttack1AnimName)->AddCallback(std::bind(&Script_LightBipedMech::AttackCallback, this), 20);
 
 }
+
+void Script_LightBipedMech::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
+{
+    MEMORY->Delete(overlapped);
+
+    int activeReference = mOwner->GetActivateRef();
+    if (activeReference > 0) {
+        mOwner->Update();
+        mOwner->RegisterUpdate();
+    }
+    else {
+        OnExitFromViewList();
+    }
+
+
+}

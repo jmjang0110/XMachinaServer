@@ -144,6 +144,8 @@ class ResourceManager
 {
 	DECLARE_SINGLETON(ResourceManager);
 
+private:
+	std::unordered_map<int, SPtr<GameObject>> mPheroInfos{};
 
 private:
 	SPtr<HeightMapImage>										mHeightMapImg;
@@ -170,6 +172,10 @@ public:
 	SPtr<BattleScene>			GetBattleScene() const 									{ return mBattleScene; }
 	SPtr<AnimationClip>			GetAnimationClip(const std::string& name) const			{ return mAnimationClips.at(name); }
 	SPtr<AnimatorController>	GetAnimatorController(const std::string& name) const	{ return mAnimatorControllers.at(name); }
+
+private:
+	void LoadPheroInfos_DB();
+
 
 private:
 	void LoadTerrain();

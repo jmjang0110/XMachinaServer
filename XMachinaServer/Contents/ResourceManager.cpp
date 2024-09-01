@@ -34,6 +34,10 @@
 #include "Script_WeaponMineLauncher.h"
 #include "Script_WeaponPipeLine.h"
 #include "Script_WeaponSkyLine.h"
+
+/* DataBase */
+#include "DBController.h"
+
 namespace {
 	const std::string kTerrainDataPath            = "Contents/Resource/Terrain.bin";
 	const std::string kModelDataPath              = "Contents/Resource/Models/";
@@ -350,6 +354,16 @@ void ResourceManager::Init()
 
 	mBattleScene = std::make_shared<BattleScene>();
 	mBattleScene->Load();
+
+	LoadPheroInfos_DB();
+
+}
+
+void ResourceManager::LoadPheroInfos_DB()
+{
+	DB_CONTROLLER->ReadDataFromDatabase(L"SELECT* FROM dbo.Phero;");
+
+
 }
 
 /// +----------------------------------------------------

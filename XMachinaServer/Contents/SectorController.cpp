@@ -89,50 +89,7 @@ ViewList SectorController::UpdateViewList(GameObject* player, Vec3 player_pos, f
     ViewList vList;
 
     // 확인해야할 Sector를 구한다.
-    std::vector<Coordinate> sectors{};
-    Coordinate curSectorIdx = GetSectorIdx(player_pos);
-    sectors.push_back(curSectorIdx);
-
-    Vec3 E = player_pos; E.x += viewRange_radius;
-    Coordinate East_SectorIdx = GetSectorIdx(E);
-    if (East_SectorIdx == Coordinate())
-        East_SectorIdx = curSectorIdx;
-
-    Vec3 N = player_pos; N.z += viewRange_radius;
-    Coordinate North_SectorIdx = GetSectorIdx(N);
-    if (North_SectorIdx == Coordinate())
-        North_SectorIdx = curSectorIdx;
-
-    Vec3 W = player_pos; W.x -= viewRange_radius;
-    Coordinate West_SectorIdx = GetSectorIdx(W);
-    if (West_SectorIdx == Coordinate())
-        West_SectorIdx = curSectorIdx;
-
-    Vec3 S = player_pos; S.z -= viewRange_radius;
-    Coordinate South_SectorIdx = GetSectorIdx(S);
-    if (South_SectorIdx == Coordinate())
-        South_SectorIdx = curSectorIdx;
-
-    /// ---------------------------------------
-    /// [if(북On/서On)] [ 북 ] [if(북On/동On)]
-    /// [ 서 ]          curidx          [ 동 ]
-    /// [if(서On/남On]] [ 남 ] [if(동On/남On)]   
-    /// ______________________________________
-    
-    bool E_check = curSectorIdx != East_SectorIdx;
-    bool N_check = curSectorIdx != North_SectorIdx;
-    bool W_check = curSectorIdx != West_SectorIdx;
-    bool S_check = curSectorIdx != South_SectorIdx;
-
-    if (E_check)              sectors.push_back(East_SectorIdx);
-    if (N_check)              sectors.push_back(North_SectorIdx);
-    if (W_check)              sectors.push_back(West_SectorIdx);
-    if (S_check)              sectors.push_back(South_SectorIdx);
-    if (E_check && N_check)   sectors.push_back(Coordinate(East_SectorIdx.x, North_SectorIdx.z)); 
-    if (W_check && N_check)   sectors.push_back(Coordinate(West_SectorIdx.x, North_SectorIdx.z)); 
-    if (W_check && S_check)   sectors.push_back(Coordinate(West_SectorIdx.x, South_SectorIdx.z)); 
-    if (E_check && S_check)   sectors.push_back(Coordinate(East_SectorIdx.x, South_SectorIdx.z)); 
-
+    std::vector<Coordinate> sectors = GetCheckSectors(player_pos, viewRange_radius);
 
     //LOG_MGR->Cout("Sector Size : ", mSectorSize.z, mSectorSize.x, "  -- curSectorIdx : ", " z :", curSectorIdx.z, " x : ", curSectorIdx.x, '\n');
     std::vector<SPtr<GameObject>> AllView_Monsters;
@@ -144,7 +101,7 @@ ViewList SectorController::UpdateViewList(GameObject* player, Vec3 player_pos, f
 
         // 해당 섹터에서 Monster 와 Player 들을 확인한다.
         //LOG_MGR->Cout(player->GetID(), " player : -- SECTORS IDX : ", " z :", sectors[i].z, " x : ", sectors[i].x, '\n');
-        std::vector<SPtr<GameObject>> VL_Monsters = mSectors[sectors[i].z][sectors[i].x]->GetMonstersInViewRange(player_pos, viewRange_radius);
+        std::vector<SPtr<GameObject>>  VL_Monsters = mSectors[sectors[i].z][sectors[i].x]->GetMonstersInViewRange(player_pos, viewRange_radius);
         std::vector<SPtr<GameObject>>  VL_Players  = mOwnerRoom->GetPlayerController()->GetPlayersInViewRange(player_pos, viewRange_radius);
 
         for (int i = 0; i < VL_Monsters.size(); ++i) {
@@ -167,49 +124,7 @@ ViewList SectorController::GetViewList(Vec3 pos, float viewRange_radius, bool Do
     ViewList vList;
 
     // 확인해야할 Sector를 구한다.
-    std::vector<Coordinate> sectors{};
-    Coordinate curSectorIdx = GetSectorIdx(pos);
-    sectors.push_back(curSectorIdx);
-
-    Vec3 E = pos; E.x += viewRange_radius;
-    Coordinate East_SectorIdx = GetSectorIdx(E);
-    if (East_SectorIdx == Coordinate())
-        East_SectorIdx = curSectorIdx;
-
-    Vec3 N = pos; N.z += viewRange_radius;
-    Coordinate North_SectorIdx = GetSectorIdx(N);
-    if (North_SectorIdx == Coordinate())
-        North_SectorIdx = curSectorIdx;
-
-    Vec3 W = pos; W.x -= viewRange_radius;
-    Coordinate West_SectorIdx = GetSectorIdx(W);
-    if (West_SectorIdx == Coordinate())
-        West_SectorIdx = curSectorIdx;
-
-    Vec3 S = pos; S.z -= viewRange_radius;
-    Coordinate South_SectorIdx = GetSectorIdx(S);
-    if (South_SectorIdx == Coordinate())
-        South_SectorIdx = curSectorIdx;
-
-    /// ---------------------------------------
-    /// [if(북On/서On)] [ 북 ] [if(북On/동On)]
-    /// [ 서 ]          curidx          [ 동 ]
-    /// [if(서On/남On]] [ 남 ] [if(동On/남On)]   
-    /// ______________________________________
-
-    bool E_check = curSectorIdx != East_SectorIdx;
-    bool N_check = curSectorIdx != North_SectorIdx;
-    bool W_check = curSectorIdx != West_SectorIdx;
-    bool S_check = curSectorIdx != South_SectorIdx;
-
-    if (E_check)              sectors.push_back(East_SectorIdx);
-    if (N_check)              sectors.push_back(North_SectorIdx);
-    if (W_check)              sectors.push_back(West_SectorIdx);
-    if (S_check)              sectors.push_back(South_SectorIdx);
-    if (E_check && N_check)   sectors.push_back(Coordinate(East_SectorIdx.x, North_SectorIdx.z));
-    if (W_check && N_check)   sectors.push_back(Coordinate(West_SectorIdx.x, North_SectorIdx.z));
-    if (W_check && S_check)   sectors.push_back(Coordinate(West_SectorIdx.x, South_SectorIdx.z));
-    if (E_check && S_check)   sectors.push_back(Coordinate(East_SectorIdx.x, South_SectorIdx.z));
+    std::vector<Coordinate> sectors = GetCheckSectors(pos, viewRange_radius);
 
     for (int i = 0; i < sectors.size(); ++i) {
         if (sectors[i].x == -1)
@@ -257,12 +172,19 @@ float SectorController::CollideCheckRay_MinimumDist(Coordinate sectorIdx, const 
    return mSectors[sectorIdx.z][sectorIdx.x]->CollideCheckRay_MinimumDist(ray);
 }
 
-bool SectorController::CollideCheck_WithBuildings(Vec3& pos, ColliderSnapShot& other)
+bool SectorController::CollideCheck_WithBuildings(Coordinate sectorIndex, SPtr<GameObject> obj)
 {
-    Coordinate sectorIdx = GetSectorIdxByPosition(pos);
-    if (sectorIdx.x < 0 || sectorIdx.x >= mTotalSectorSize.x || sectorIdx.z >= mTotalSectorSize.z) 
+    if (sectorIndex.x < 0 || sectorIndex.x >= mTotalSectorSize.x || sectorIndex.z >= mTotalSectorSize.z)
         return false;
-    bool Result = mSectors[sectorIdx.z][sectorIdx.x]->CollideCheck_WithBuildings(other);
+    bool Result = mSectors[sectorIndex.z][sectorIndex.x]->CollideCheck_WithBuildings(obj);
+    return Result;
+}
+
+bool SectorController::CollideCheck_WithEnemies(Coordinate sectorIndex, SPtr<GameObject> obj)
+{
+    if (sectorIndex.x < 0 || sectorIndex.x >= mTotalSectorSize.x || sectorIndex.z >= mTotalSectorSize.z)
+        return false;
+    bool Result = mSectors[sectorIndex.z][sectorIndex.x]->CollideCheck_WithEnemies(obj);
     return Result;
 }
 
@@ -283,4 +205,55 @@ Coordinate SectorController::GetSectorStartPos(Coordinate sectorIdx)
     int startX = SectorController::SectorStartPos.x + sectorIdx.x * SectorController::Each_SectorSize.x;
     int startZ = SectorController::SectorStartPos.z + sectorIdx.z * SectorController::Each_SectorSize.z;
     return Coordinate(startX, startZ);
+}
+
+
+std::vector<Coordinate> SectorController::GetCheckSectors(Vec3 pos, float radius)
+{   
+    // 확인해야할 Sector를 구한다.
+    std::vector<Coordinate> sectors{};
+    Coordinate curSectorIdx = GetSectorIdx(pos);
+    sectors.push_back(curSectorIdx);
+
+    Vec3 E = pos; E.x += radius;
+    Coordinate East_SectorIdx = GetSectorIdx(E);
+    if (East_SectorIdx == Coordinate())
+        East_SectorIdx = curSectorIdx;
+
+    Vec3 N = pos; N.z += radius;
+    Coordinate North_SectorIdx = GetSectorIdx(N);
+    if (North_SectorIdx == Coordinate())
+        North_SectorIdx = curSectorIdx;
+
+    Vec3 W = pos; W.x -= radius;
+    Coordinate West_SectorIdx = GetSectorIdx(W);
+    if (West_SectorIdx == Coordinate())
+        West_SectorIdx = curSectorIdx;
+
+    Vec3 S = pos; S.z -= radius;
+    Coordinate South_SectorIdx = GetSectorIdx(S);
+    if (South_SectorIdx == Coordinate())
+        South_SectorIdx = curSectorIdx;
+
+    /// ---------------------------------------
+    /// [if(북On/서On)] [ 북 ] [if(북On/동On)]
+    /// [ 서 ]          curidx          [ 동 ]
+    /// [if(서On/남On]] [ 남 ] [if(동On/남On)]   
+    /// ______________________________________
+
+    bool E_check = curSectorIdx != East_SectorIdx;
+    bool N_check = curSectorIdx != North_SectorIdx;
+    bool W_check = curSectorIdx != West_SectorIdx;
+    bool S_check = curSectorIdx != South_SectorIdx;
+
+    if (E_check)              sectors.push_back(East_SectorIdx);
+    if (N_check)              sectors.push_back(North_SectorIdx);
+    if (W_check)              sectors.push_back(West_SectorIdx);
+    if (S_check)              sectors.push_back(South_SectorIdx);
+    if (E_check && N_check)   sectors.push_back(Coordinate(East_SectorIdx.x, North_SectorIdx.z));
+    if (W_check && N_check)   sectors.push_back(Coordinate(West_SectorIdx.x, North_SectorIdx.z));
+    if (W_check && S_check)   sectors.push_back(Coordinate(West_SectorIdx.x, South_SectorIdx.z));
+    if (E_check && S_check)   sectors.push_back(Coordinate(East_SectorIdx.x, South_SectorIdx.z));
+
+    return sectors;
 }

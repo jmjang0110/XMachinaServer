@@ -81,4 +81,14 @@ void Script_AdvancedCombatDroid_5::Dispatch(OverlappedObject* overlapped, UINT32
 {
     MEMORY->Delete(overlapped);
 
+    int activeReference = mOwner->GetActivateRef();
+    if (activeReference > 0) {
+        mOwner->Update();
+        mOwner->RegisterUpdate();
+    }
+    else {
+        OnExitFromViewList();
+    }
+
+
 }

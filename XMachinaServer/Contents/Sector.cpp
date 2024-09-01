@@ -109,13 +109,27 @@ float Sector::CollideCheckRay_MinimumDist(const Ray& ray)
 	return minDist;
 }
 
-bool Sector::CollideCheck_WithBuildings(ColliderSnapShot& other)
+bool Sector::CollideCheck_WithBuildings(SPtr<GameObject> obj)
 {
 	bool Result = false;
+	auto A_Sphere_col = obj->GetCollider()->GetSnapShot();
 	for (auto& iter : mBuildings) {
-		ColliderSnapShot col = iter.second->GetCollider()->GetColliderSnapShot();
+		ColliderSnapShot B_Box_col = iter.second->GetCollider()->GetColliderSnapShot();
+		Result = COLLISION_MGR->CollideCheck_Sphere_Box(A_Sphere_col, B_Box_col);
+		if (Result)
+			return true;
+	}
+	
+	return false;
+}
 
-		Result = COLLISION_MGR->CollideCheck_Sphere_Box(other, col);
+bool Sector::CollideCheck_WithEnemies(SPtr<GameObject> obj)
+{
+	bool Result = false;
+	auto A_Sphere_col = obj->GetCollider()->GetSnapShot();
+	for (auto& iter : mMonsters) {
+		ColliderSnapShot B_Box_col = iter.second->GetCollider()->GetColliderSnapShot();
+		Result = COLLISION_MGR->CollideCheck_Sphere_Box(A_Sphere_col, B_Box_col);
 		if (Result)
 			return true;
 	}

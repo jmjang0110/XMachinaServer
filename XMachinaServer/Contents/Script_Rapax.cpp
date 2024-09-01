@@ -81,3 +81,9 @@ void Script_Rapax::Start()
     OwnerAnimation()->GetController()->FindMotionByName(GetStat_Attack1AnimName())->AddCallback(std::bind(&Script_Rapax::AttackCallback, this), 35);
 
 }
+
+void Script_Rapax::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
+{
+    MEMORY->Delete(overlapped);
+
+}

@@ -52,7 +52,7 @@ private:
 	std::unordered_map<UINT32, SPtr<GameObject>> mPlayers;
 	Lock::SRWLock								 mPlayers_SRWLock;
 
-	std::array<std::array<Sector*, SectorInfo::Width>, SectorInfo::height> mSectors;
+	std::array<std::array<Sector*, SectorInfo::Width>, SectorInfo::height> mSectors{};
 
 	Coordinate									mTotalSectorSize = {}; // Sector 전체 크기  ( Image )
 	Coordinate									mSectorSize      = {}; // 각 Sector 크기	  
@@ -70,8 +70,8 @@ public:
 	~SectorController();
 
 public:
+	std::vector<Coordinate> GetCheckSectors(Vec3 pos, float radius);
 	bool Init(SPtr<GameRoom> owner);
-
 	
 	ViewList UpdateViewList(GameObject* player, Vec3 player_pos, float viewRange_radius);
 	ViewList GetViewList(Vec3 pos, float viewRange_radius, bool DoActivate);
@@ -98,7 +98,9 @@ public:
 	///		Collision ray 
 	/// -------------------------------------------------------------+
 	float CollideCheckRay_MinimumDist(Coordinate sectorIdx, const Ray& ray) const;
-	bool  CollideCheck_WithBuildings(Vec3& pos, ColliderSnapShot& other);
+	bool  CollideCheck_WithBuildings(Coordinate sectorIndex, SPtr<GameObject> obj);
+	bool  CollideCheck_WithEnemies(Coordinate sectorIndex, SPtr<GameObject> obj);
+
 
 public:
 	static Coordinate GetSectorIdxByPosition(Vec3 Pos);

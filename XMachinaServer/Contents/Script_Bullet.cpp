@@ -3,7 +3,12 @@
 #include "ResourceManager.h"
 #include "TimeManager.h"
 #include "ServerLib/ThreadManager.h"
+
 #include "GameObject.h"
+#include "GameRoom.h"
+
+#include "Script_Weapon.h"
+
 
 
 Script_Bullet::Script_Bullet()
@@ -62,11 +67,17 @@ void Script_Bullet::Update()
 	mCurrLifeTime += DeltaTime();
 
 	if (mCurrLifeTime >= mMaxLifeTime) {
-		Reset();
-	}
-	else if ((OwnerTransform()->GetPosition().y < 0.f) /* || IntersectTerrain()*/) {
-		Explode();
-	}
+        Explode();
+        return;
+    }
+	
+    if ((OwnerTransform()->GetPosition().y < 0.f) /* || IntersectTerrain()*/) {
+        Explode();
+        return;
+    }
+
+    if (!mIsExploded)
+        mOwner->RegisterUpdate();
 
 }
 
@@ -101,11 +112,24 @@ void Script_Bullet::Fire(const Transform& transform, const Vec2& err)
 
 void Script_Bullet::Explode()
 {
+    ReturnPossibleIndexToWeapon();
+    Reset();
+    mIsExploded = true;
+
+    mOwner->DeActivate();
 }
 
 void Script_Bullet::Reset()
 {
 	mCurrLifeTime = 0.f;
+    mIsExploded   = false;
+}
+
+void Script_Bullet::ReturnPossibleIndexToWeapon()
+{
+    auto weapon     = mOwnerWeapon->GetScriptEntity<Script_Weapon>();
+    int bulletIndex = mOwner->GetID();
+    weapon->ReturnPossibleBulletIndex(bulletIndex);
 
 }
 
@@ -113,4 +137,11 @@ bool Script_Bullet::IntersectTerrain()
 {
 
     return true;
+}
+
+bool Script_Bullet::CollideCheck(ObjectTag objTag)
+{
+    auto room = mOwner->GetOwnerRoom();
+
+    return false;
 }

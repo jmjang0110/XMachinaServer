@@ -91,6 +91,28 @@ std::vector<SPtr<GameObject>> GameRoom::GetallPlayers()
 	return mPC->GetAllPlayers();
 }
 
+bool GameRoom::CollideCheckWithNPC(SPtr<GameObject> obj, ObjectTag objTag)
+{
+	bool isCollide = false;
+	if (ObjectTag::Building == objTag) {
+		std::vector<Coordinate> checkSectors = mSC->GetCheckSectors(obj->GetTransform()->GetSnapShot().GetPosition(), 10.f);
+		for (int i = 0; i < checkSectors.size(); ++i) {
+			isCollide = mSC->CollideCheck_WithBuildings(checkSectors[i], obj);
+			if (isCollide)
+				return isCollide;
+		}
+	}
+	else if (ObjectTag::Enemy == objTag) {
+		std::vector<Coordinate> checkSectors = mSC->GetCheckSectors(obj->GetTransform()->GetSnapShot().GetPosition(), 10.f);
+		for (int i = 0; i < checkSectors.size(); ++i) {
+			isCollide = mSC->CollideCheck_WithEnemies(checkSectors[i], obj);
+			if (isCollide)
+				return isCollide;
+		}
+	}
+	return isCollide;
+}
+
 
 /// +-------------------------------------------------------------------
 ///	¢º¢º¢º NPC Controller 

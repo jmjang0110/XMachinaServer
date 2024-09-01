@@ -15,6 +15,5 @@ public:
 
 	virtual void Update();
 	virtual void Dispatch(class OverlappedObject* overlapped, UINT32 bytes = 0);
-
 };
 

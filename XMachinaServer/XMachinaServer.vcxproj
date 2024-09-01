@@ -213,6 +213,7 @@
     <ClInclude Include="Contents\Script_Item.h" />
     <ClInclude Include="Contents\Script_LightBipedMech.h" />
     <ClInclude Include="Contents\Script_MiningMech.h" />
+    <ClInclude Include="Contents\Script_RayCheckBullet.h" />
     <ClInclude Include="Contents\Script_SpiderMine.h" />
     <ClInclude Include="Contents\Script_Rapax.h" />
     <ClInclude Include="Contents\Script_Skill.h" />
@@ -340,6 +341,7 @@
     <ClCompile Include="Contents\Script_Item.cpp" />
     <ClCompile Include="Contents\Script_LightBipedMech.cpp" />
     <ClCompile Include="Contents\Script_MiningMech.cpp" />
+    <ClCompile Include="Contents\Script_RayCheckBullet.cpp" />
     <ClCompile Include="Contents\Script_SpiderMine.cpp" />
     <ClCompile Include="Contents\Script_Rapax.cpp" />
     <ClCompile Include="Contents\Script_Skill.cpp" />

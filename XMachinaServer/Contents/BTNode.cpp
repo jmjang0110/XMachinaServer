@@ -23,7 +23,7 @@ BTNode::BTNode(SPtr<GameObject> owner, std::vector<BTNode*>& children)
 		Attach(child);
 	}
 
-	mEnemyController = owner->GetScriptEntity<Script_EnemyController>();
+	mEnemyController = owner->GetScript<Script_EnemyController>();
 }
 
 BTNode::~BTNode()

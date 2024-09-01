@@ -27,19 +27,20 @@ BTNodeState MonsterTask::CheckAttackRange::Evaluate()
 		return BTNodeState::Success;
 	}
 	
-	// 3. Target Player 가 Cloacking 상태라면 Attack (X)
+	// 3. Target Player 가 Cloacking or Exit 상태 라면 Attack (X)
 	SPtr<GameObject> target        = mEnemyController->GetTarget();
 	auto			 player_entity = target->GetScriptEntity<Script_Player>();
 	if (player_entity) {
+
 		if (player_entity->GetCurrState() == PlayerState::Exit) {
 			mEnemyController->RemoveAllAnimation();
 			mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_IDLE);
 			mEnemyController->SetTarget(nullptr);
 			return BTNodeState::Failure;
 		}
+
 		auto		skill_entity  = player_entity->GetSkillEntity(FBProtocol::PLAYER_SKILL_TYPE_CLOACKING);
 		SkillState currSkillState = skill_entity->GetCurrSkillState();
-
 		if (currSkillState == SkillState::Active) {
 			mEnemyController->RemoveAllAnimation();
 			mEnemyController->SetMonsterCurrBTType(FBProtocol::MONSTER_BT_TYPE_IDLE);

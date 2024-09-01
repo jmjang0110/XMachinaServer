@@ -10,8 +10,10 @@ namespace WeaponInfo {
 class Script_Weapon : public Script_Item
 {
 protected:
-	int															mMaxBullet = {};
-	std::array<SPtr<GameObject>, WeaponInfo::MaxBulletsNum>		mBullets   = {};			// Bullets 
+	SPtr<GameObject>											mOwnerPlayer = {};
+	int															mMaxBullet   = {};
+	std::array<SPtr<GameObject>, WeaponInfo::MaxBulletsNum>		mBullets     = {};			// Bullets 
+	
 	Concurrency::concurrent_queue<int>							mPossibleBulletIndex;		// Possible To Shoot Bullets 
 
 public:
@@ -29,5 +31,11 @@ public:
 	virtual int	OnShoot(Vec3& center_pos, Vec3& fire_dir);
 	virtual bool DoInteract(SPtr<GameObject> player) override;
 
+
+public:
+	void ReturnPossibleBulletIndex(int index);
+	
+	void SetOwnerPlayer(SPtr<GameObject> owner) { mOwnerPlayer = owner; }
+	SPtr<GameObject> GetOwnerPlayer() { return mOwnerPlayer; }
 };
 

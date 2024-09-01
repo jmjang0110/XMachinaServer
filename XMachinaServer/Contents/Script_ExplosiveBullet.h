@@ -4,7 +4,7 @@
 class GameObject;
 class Script_ExplosiveBullet : public Script_Bullet
 {
-private:
+protected:
 	float mExplosionDamage = {};
 
 public:
@@ -14,6 +14,7 @@ public:
 
 public:
 	virtual SPtr<Component> Clone(SPtr<Component> target);
+	virtual void SplashDamage() = 0;
 
 public:
 	void SetExplosionDamage(float damage) { mExplosionDamage = damage; }

@@ -5,6 +5,7 @@ class GameObject;
 class Script_SpiderMine : public Script_ExplosiveBullet
 {
 private:
+	float mUpSpeed        = {};
 	float mMass           = {};
 	float mDrag           = {};
 	float mRotationSpeed  = {};
@@ -25,6 +26,10 @@ public:
 
 	virtual void Start() override;
 	virtual void Update() override;
+
+	virtual void SplashDamage();
+	virtual void Explode();
+
 
 	virtual void Dispatch(class OverlappedObject* overlapped, UINT32 bytes = 0);
 };

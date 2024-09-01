@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "Script_BasicBullet.h"
 #include "GameObject.h"
+#include "GameRoom.h"
+#include "Transform.h"
+
 
 
 Script_BasicBullet::Script_BasicBullet()
@@ -45,8 +48,20 @@ void Script_BasicBullet::Update()
 {
 	Script_Bullet::Update();
 
+	float deltatime = mOwner->DeltaTime();
+	mOwner->GetTransform()->MoveForward(deltatime * mSpeed);
+	
+	bool IsCollide = false;
+	IsCollide = mOwner->GetOwnerRoom()->CollideCheckWithNPC(mOwner, ObjectTag::Enemy);
+	IsCollide = mOwner->GetOwnerRoom()->CollideCheckWithNPC(mOwner, ObjectTag::Building);
+	if (IsCollide)
+		Explode();
+
 }
 
 void Script_BasicBullet::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 {
+	MEMORY->Delete(overlapped);
+
+	mOwner->RegisterUpdate();
 }

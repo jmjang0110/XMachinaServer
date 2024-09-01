@@ -21,6 +21,8 @@ protected:
 	Vec3							mSpawnRot			= {};
 	std::string						mPherosInfo			= {};
 
+	double							mActiveTimer		= {};
+
 public:
 	Script_Enemy();
 	Script_Enemy(SPtr<GameObject> owner);

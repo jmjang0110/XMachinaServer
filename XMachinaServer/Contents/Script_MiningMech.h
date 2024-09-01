@@ -8,8 +8,8 @@ class Script_MiningMech : public Script_Enemy
 protected:
 	struct MiningMechAttackType : AttackType {
 		static constexpr int DiggerAttack = 1;
-		static constexpr int DrillAttack = 2;
-		static constexpr int SmashAttack = 3;
+		static constexpr int DrillAttack  = 2;
+		static constexpr int SmashAttack  = 3;
 
 		static constexpr int _count = 4;
 	};
@@ -24,6 +24,7 @@ public:
 	virtual void Clone(SPtr<GameObject> target);
 
 	virtual void Start() override;
+	virtual void Dispatch(class OverlappedObject* overlapped, UINT32 bytes = 0) override;
 
 protected:
 	void SmashAttackCallback();

@@ -87,6 +87,20 @@ void Script_MiningMech::Start()
 
 }
 
+void Script_MiningMech::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
+{
+    MEMORY->Delete(overlapped);
+
+    int activeReference = mOwner->GetActivateRef();
+    if (activeReference > 0) {
+        mOwner->Update();
+        mOwner->RegisterUpdate();
+    }
+    else {
+        OnExitFromViewList();
+    }
+}
+
 void Script_MiningMech::SmashAttackCallback()
 {
 }

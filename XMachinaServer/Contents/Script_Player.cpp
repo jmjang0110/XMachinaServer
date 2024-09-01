@@ -19,6 +19,10 @@
 #include "Script_Stat.h"
 #include "Script_WeaponHLock.h"
 
+#include "Script_SkillCloaking.h"
+#include "Script_SkillMindControl.h"
+#include "Script_SkillShield.h"
+
 Script_Player::Script_Player()
     : Script_PlayerStat()
 {
@@ -85,14 +89,21 @@ void Script_Player::Update()
 
 void Script_Player::Start()
 {
-	mViewListSnapShot.ViewRangeRadius = 15.f;
+	mViewListSnapShot.ViewRangeRadius = 10.f;
 	mViewList.ViewRangeRadius     = mViewListSnapShot.ViewRangeRadius;
 	
 	// H_Lock ( ±âº» ±ÇÃÑ ) 
 	mDefaultWeapon = MEMORY->Make_Shared<GameObject>(FBProtocol::ITEM_TYPE_WEAPON_H_LOOK);
 	mDefaultWeapon->AddComponent<Transform>(Component::Type::Transform);
-	mDefaultWeapon->SetScriptEntity<Script_WeaponHLock>();
+	auto weapon_entity = mDefaultWeapon->SetScriptEntity<Script_WeaponHLock>();
+	weapon_entity->SetOwnerPlayer(mOwner);
 
+	// Skills
+	for (int i = 0; i < FBProtocol::PLAYER_SKILL_TYPE_END; ++i) { mSkills[i] = MEMORY->Make_Shared<GameObject>(i); }
+	mSkills[FBProtocol::PLAYER_SKILL_TYPE_CLOACKING]->SetScriptEntity<Script_SkillCloaking>();
+	mSkills[FBProtocol::PLAYER_SKILL_TYPE_MIND_CONTROL]->SetScriptEntity<Script_SkillMindControl>();
+	mSkills[FBProtocol::PLAYER_SKILL_TYPE_SHIELD]->SetScriptEntity<Script_SkillShield>();
+	
 	mCurrWeapon = mDefaultWeapon;
 
 }

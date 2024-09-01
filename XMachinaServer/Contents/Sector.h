@@ -49,7 +49,8 @@ public:
 
 	/// ----------------------- Collide -----------------------
 	float CollideCheckRay_MinimumDist(const Ray& ray);
-	bool  CollideCheck_WithBuildings(ColliderSnapShot& other);
+	bool  CollideCheck_WithBuildings(SPtr<GameObject> obj);
+	bool  CollideCheck_WithEnemies(SPtr<GameObject> obj);
 
 
 };

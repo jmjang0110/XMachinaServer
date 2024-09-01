@@ -120,6 +120,8 @@ bool Framework::Init(HINSTANCE& hInst)
 	/// +-----------------------------------------
 	///	GAME MANAGER : Game Room, Player ... 관리
 	/// -----------------------------------------+
+	DB_CONTROLLER->Init();
+	DB_CONTROLLER->ConnectToDatabase(L"X_Machina_DB", L"jmjang016", L"1234");
 	RESOURCE_MGR->Init();	// Scene, Models ... ( Game Resources ) Load 
 	ROOM_MGR->Init();		// Room - PlayerController, SectorController, NPCController ( Init )
 
@@ -157,8 +159,7 @@ bool Framework::Init(HINSTANCE& hInst)
 	LOG_MGR->Cout("[SUCCESS] ServerNetwork INIT\n");
 
 
-	DB_CONTROLLER->Init();
-	DB_CONTROLLER->ConnectToDatabase(L"X_Machina_DB", L"jmjang016", L"1234");
+
 
 	/// +-------------------------------------------------------------------
 	///	SEND BUFFERS FACTORY : SendBuffer전용 메모리 풀 및 SendPktBuffer 생산

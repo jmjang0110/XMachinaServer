@@ -20,7 +20,8 @@ void Script_WeaponHLock::Start()
         SPtr<GameObject> bullet = MEMORY->Make_Shared<GameObject>(id);
         bullet->AddComponent<Transform>(Component::Type::Transform);
         bullet->AddComponent<Collider>(Component::Type::Collider);
-        bullet->SetScriptEntity<Script_BasicBullet>();
+        auto bullet_entity = bullet->SetScriptEntity<Script_BasicBullet>();
+        bullet_entity->SetOwnerWeapon(mOwner);
         mBullets[i] = bullet;
         bullet->Start();
     }

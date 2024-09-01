@@ -17,7 +17,7 @@ DBController::DBController()
 
 DBController::~DBController()
 {
-	SQLFreeHandle(SQL_HANDLE_ENV, hEnv);
+	SQLFreeHandle(SQL_HANDLE_ENV, mhEnv);
 	//MEMORY->Delete(mX_Machina_DB.MonsterDB);
 	//MEMORY->Delete(mX_Machina_DB.NPCDB);
 	//MEMORY->Delete(mX_Machina_DB.PlayerDB);
@@ -36,35 +36,35 @@ bool DBController::ConnectToDatabase(const wchar_t* dsn, const wchar_t* user, co
 	SQLRETURN ret;
 
 	// 환경 핸들 할당
-	ret = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &hEnv);
+	ret = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &mhEnv);
 	if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO) {
 		LOG_MGR->Cout("환경 핸들 할당 실패\n");
 		return false;
 	}
 
 	// ODBC 버전 설정
-	ret = ::SQLSetEnvAttr(hEnv, SQL_ATTR_ODBC_VERSION, reinterpret_cast<SQLPOINTER>(SQL_OV_ODBC3), 0);
+	ret = ::SQLSetEnvAttr(mhEnv, SQL_ATTR_ODBC_VERSION, reinterpret_cast<SQLPOINTER>(SQL_OV_ODBC3), 0);
 	if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO) {
 		LOG_MGR->Cout("ODBC 버전 설정 실패\n");
-		::SQLFreeHandle(SQL_HANDLE_ENV, hEnv);
+		::SQLFreeHandle(SQL_HANDLE_ENV, mhEnv);
 		return false;
 	}
 
 	// 연결 핸들 할당
-	ret = ::SQLAllocHandle(SQL_HANDLE_DBC, hEnv, &hDbc);
+	ret = ::SQLAllocHandle(SQL_HANDLE_DBC, mhEnv, &mhDbc);
 	if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO) {
 		LOG_MGR->Cout("연결 핸들 할당 실패\n");
-		::SQLFreeHandle(SQL_HANDLE_ENV, hEnv);
+		::SQLFreeHandle(SQL_HANDLE_ENV, mhEnv);
 		return false;
 	}
 
 	// 데이터베이스 연결
-	ret = ::SQLConnect(hDbc, (SQLWCHAR*)dsn, SQL_NTS, (SQLWCHAR*)user, SQL_NTS, (SQLWCHAR*)password, SQL_NTS);
+	ret = ::SQLConnect(mhDbc, (SQLWCHAR*)dsn, SQL_NTS, (SQLWCHAR*)user, SQL_NTS, (SQLWCHAR*)password, SQL_NTS);
 	if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO) {
-		CheckSQLReturn(ret, SQL_HANDLE_DBC, hDbc);
+		CheckSQLReturn(ret, SQL_HANDLE_DBC, mhDbc);
 		LOG_MGR->Cout("데이터베이스 연결 실패\n");
-		::SQLFreeHandle(SQL_HANDLE_DBC, hDbc);
-		::SQLFreeHandle(SQL_HANDLE_ENV, hEnv);
+		::SQLFreeHandle(SQL_HANDLE_DBC, mhDbc);
+		::SQLFreeHandle(SQL_HANDLE_ENV, mhEnv);
 		return false;
 	}
 
@@ -73,12 +73,12 @@ bool DBController::ConnectToDatabase(const wchar_t* dsn, const wchar_t* user, co
 }
 
 void DBController::DisconnectFromDatabase() {
-	if (hDbc != SQL_NULL_HDBC) {
-		::SQLDisconnect(hDbc);
-		::SQLFreeHandle(SQL_HANDLE_DBC, hDbc);
+	if (mhDbc != SQL_NULL_HDBC) {
+		::SQLDisconnect(mhDbc);
+		::SQLFreeHandle(SQL_HANDLE_DBC, mhDbc);
 	}
-	if (hEnv != SQL_NULL_HENV) {
-		::SQLFreeHandle(SQL_HANDLE_ENV, hEnv);
+	if (mhEnv != SQL_NULL_HENV) {
+		::SQLFreeHandle(SQL_HANDLE_ENV, mhEnv);
 	}
 }
 
@@ -87,7 +87,7 @@ bool DBController::ExecuteQuery(const wchar_t* query) {
 	SQLRETURN ret;
 
 	// 문장 핸들 할당
-	ret = ::SQLAllocHandle(SQL_HANDLE_STMT, hDbc, &hStmt);
+	ret = ::SQLAllocHandle(SQL_HANDLE_STMT, mhDbc, &hStmt);
 	if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO) {
 		LOG_MGR->Cout("문장 핸들 할당 실패\n");
 		return false;
@@ -106,13 +106,12 @@ bool DBController::ExecuteQuery(const wchar_t* query) {
 }
 
 bool DBController::FetchData(const wchar_t* query) {
-	SQLHSTMT	hStmt     = {};
-	SQLRETURN	ret       = {};
-	SQLCHAR		col1[256] = {};
-	SQLCHAR		col2[256] = {};
+	SQLHSTMT    hStmt = {};
+	SQLRETURN   ret = {};
+	SQLSMALLINT colCount = 0;
 
 	// 문장 핸들 할당
-	ret = ::SQLAllocHandle(SQL_HANDLE_STMT, hDbc, &hStmt);
+	ret = ::SQLAllocHandle(SQL_HANDLE_STMT, mhDbc, &hStmt);
 	if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO) {
 		LOG_MGR->Cout("환경 핸들 할당 실패\n");
 		return false;
@@ -126,16 +125,90 @@ bool DBController::FetchData(const wchar_t* query) {
 		return false;
 	}
 
+	// 컬럼 개수 가져오기
+	ret = SQLNumResultCols(hStmt, &colCount);
+	if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO) {
+		LOG_MGR->Cout("컬럼 개수 가져오기 실패\n");
+		::SQLFreeHandle(SQL_HANDLE_STMT, hStmt);
+		return false;
+	}
+
 	// 데이터 페칭
-	while (SQLFetch(hStmt) == SQL_SUCCESS) {
-		::SQLGetData(hStmt, 1, SQL_C_CHAR, col1, sizeof(col1), NULL);
-		::SQLGetData(hStmt, 2, SQL_C_CHAR, col2, sizeof(col2), NULL);
-		std::cout << "col1: " << col1 << " col2: " << col2 << std::endl;
+	while ((ret = SQLFetch(hStmt)) == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO) {
+		for (SQLLEN i = 1; i <= colCount; ++i) {
+			SQLWCHAR	colName[256] = {};
+			SQLSMALLINT colNameLen, colType, colScale, colNullable;
+			SQLULEN		colSize;
+
+			// 컬럼 메타 정보 가져오기
+			ret = SQLDescribeCol(hStmt, i, colName, sizeof(colName), &colNameLen, &colType, &colSize, &colScale, &colNullable);
+			if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO) {
+				LOG_MGR->Cout("컬럼 설명 실패\n");
+				::SQLFreeHandle(SQL_HANDLE_STMT, hStmt);
+				return false;
+			}
+
+			SQLLEN colDataLen = 0;
+
+			// 데이터 타입에 따라 적절한 C 타입 지정
+			switch (colType) {
+			case SQL_CHAR:
+			case SQL_VARCHAR:
+			case SQL_LONGVARCHAR: {
+				SQLCHAR colData[256] = {};
+				ret = SQLGetData(hStmt, i, SQL_C_CHAR, colData, sizeof(colData), &colDataLen);
+				std::cout << "col" << i << ": " << colData << std::endl;
+				break;
+			}
+			case SQL_INTEGER: {
+				SQLINTEGER intData = 0;
+				ret = SQLGetData(hStmt, i, SQL_C_SLONG, &intData, sizeof(intData), &colDataLen);
+				std::cout << "col" << i << ": " << intData << std::endl;
+				break;
+			}
+			case SQL_FLOAT: {
+				SQLFLOAT floatData = 0.0f;
+				ret = SQLGetData(hStmt, i, SQL_C_DOUBLE /*SQL_C_FLOAT*/, &floatData, sizeof(floatData), &colDataLen);
+				std::cout << "col" << i << ": " << floatData << std::endl;
+				break;
+			}
+			case SQL_DOUBLE:
+			case SQL_REAL: {
+				SQLDOUBLE doubleData = 0;
+				ret = SQLGetData(hStmt, i, SQL_C_DOUBLE, &doubleData, sizeof(doubleData), &colDataLen);
+				std::cout << "col" << i << ": " << doubleData << std::endl;
+				break;
+			}
+						 // 추가적인 데이터 타입 처리가 필요하다면 여기에 추가
+			default: {
+				LOG_MGR->Cout("지원하지 않는 데이터 타입\n");
+				::SQLFreeHandle(SQL_HANDLE_STMT, hStmt);
+				return false;
+			}
+			}
+
+			// SQLGetData 성공 여부 확인
+			if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO) {
+				LOG_MGR->Cout("데이터 가져오기 실패\n");
+				std::cout << "SQLGetData for INTEGER failed with ret: " << ret << std::endl;
+
+				SQLWCHAR sqlState[6];
+				SQLWCHAR messageText[SQL_MAX_MESSAGE_LENGTH];
+				SQLSMALLINT textLength;
+				SQLGetDiagRec(SQL_HANDLE_STMT, hStmt, 1, sqlState, nullptr, messageText, sizeof(messageText), &textLength);
+				std::wcout << "SQL Error State: " << sqlState << ", Message: " << messageText << std::endl;
+
+				::SQLFreeHandle(SQL_HANDLE_STMT, hStmt);
+				return false;
+			}
+		}
 	}
 
 	::SQLFreeHandle(SQL_HANDLE_STMT, hStmt);
 	return true;
 }
+
+
 
 bool DBController::ReadDataFromDatabase(const wchar_t* query) {
 	return FetchData(query);

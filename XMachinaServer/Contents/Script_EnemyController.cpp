@@ -73,12 +73,13 @@ void Script_EnemyController::Dispatch(OverlappedObject* overlapped, UINT32 bytes
 
 void Script_EnemyController::Reset()
 {
-	mTarget = nullptr;
-	
+    mTarget     = nullptr;
+    mPrevTarget = nullptr;
+
 	while (!mPaths.empty()) {
 		mPaths.pop();
 	};
 
 	RemoveAllAnimation();
-	
+
 }

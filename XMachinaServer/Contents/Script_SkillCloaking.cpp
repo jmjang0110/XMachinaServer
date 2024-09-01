@@ -57,7 +57,7 @@ void Script_SkillCloaking::Update()
 		bool checkOnSkill = mOwnerPlayer->GetScriptEntity<Script_Player>()->ReducePheroAmount(DeltaTime() * mPheroCost);
 		if (checkOnSkill == true) {
 			mOwnerPlayer->RegisterUpdate(0.f);
-		}
+		} 
 		else {
 			mSkillState = SkillState::Possible;
 			mOwner->DeActivate();

@@ -33,78 +33,84 @@ void Script_DefaultEnemyBT::Update()
 		return;
 	}
 
+	// ¡å 1. Send Monster State Server Packet 
 	FBProtocol::MONSTER_BT_TYPE PrevType = mRoot->GetEnemyController()->GetMontserPrevBTType();
 	FBProtocol::MONSTER_BT_TYPE CurrType = mRoot->GetEnemyController()->GetMonsterCurrBTType();
+
+	Vec3 pos = mOwner->GetTransform()->GetSnapShot().GetPosition();
+	LOG_MGR->Cout(mOwner->GetID(), " : ", pos.x, " ", pos.y, " ", pos.z, "\n");
 
 	if (CurrType == FBProtocol::MONSTER_BT_TYPE_ATTACK)
 		return;
 
 	if (PrevType != CurrType) {
 
-			/* Send Packet */
-		switch (CurrType)
-		{
-		case FBProtocol::MONSTER_BT_TYPE_DEATH:
-			LOG_MGR->Cout("MONSTER_BT_TYPE_DEATH\n");
-			break;
-		case FBProtocol::MONSTER_BT_TYPE_ATTACK:
-			LOG_MGR->Cout("MONSTER_BT_TYPE_ATTACK\n");
-			break;
-		case FBProtocol::MONSTER_BT_TYPE_GETHIT:
-			LOG_MGR->Cout("MONSTER_BT_TYPE_GETHIT\n");
-			break;
-		case FBProtocol::MONSTER_BT_TYPE_MOVE_TO_TARGET:
-			LOG_MGR->Cout("MONSTER_BT_TYPE_MOVE_TO_TARGET\n");
-			break;
-		case FBProtocol::MONSTER_BT_TYPE_MOVE_TO_PATH:
-			LOG_MGR->Cout("MONSTER_BT_TYPE_MOVE_TO_PATH\n");
-			break;
-		case FBProtocol::MONSTER_BT_TYPE_PATROL:
-			LOG_MGR->Cout("MONSTER_BT_TYPE_PATROL\n");
-			break;
-		case FBProtocol::MONSTER_BT_TYPE_IDLE:
-			LOG_MGR->Cout("MONSTER_BT_TYPE_IDLE\n");
-			break;
-		case FBProtocol::MONSTER_BT_TYPE_CHANGE_BT:
-			LOG_MGR->Cout("MONSTER_BT_TYPE_CHANGE_BT\n");
-			break;
-		default:
-			LOG_MGR->Cout("MONSTER BT TYPE ..XXXX \n");
-			break;
-		};
-
+		/* Send Packet */
 		auto spkt_MonsterState = FBS_FACTORY->SPkt_Monster_State(mOwner->GetID(), CurrType);
 		ROOM_MGR->BroadcastRoom(mOwner->GetOwnerRoom()->GetID(), spkt_MonsterState);
 
 		mRoot->GetEnemyController()->SetBTType(CurrType);
-		mRoot->mEnemyController->UpdateMonsterCurrBTType();
+		mRoot->mEnemyController->SetMonsterCurrBTType(CurrType);
 	}
 
-	if (mPrevTarget != mRoot->GetEnemyController()->GetTarget()) {
+	// ¡å 2. Send Monster Target Player / Monster(MindControlled) Server Packet 
+	if (mRoot->GetEnemyController()->GetPrevTarget() != mRoot->GetEnemyController()->GetTarget()) {
 		int monster_id			= mOwner->GetID();
 		int target_monster_id	= 0;
 		int target_player_id	= 0;
 
-		SPtr<GameObject> target = mRoot->GetEnemyController()->GetTarget();
+		SPtr<GameObject> target  = mRoot->GetEnemyController()->GetTarget();
 		SPtr<GameObject> invoker = mRoot->GetEnemyController()->GetInvoker();
+
 		if (target) {
-			auto tag = target->GetTag();
-			if (tag == ObjectTag::Player) {
-				target_player_id = target->GetID();
-			}
-			else {
-				target_monster_id = target->GetID();
-			}
+			if (target->GetTag() == ObjectTag::Player)	
+				target_player_id  = target->GetID(); 
+			else
+				target_monster_id = target->GetID(); 
 		}
-		else if (invoker) {
-			target_player_id = invoker->GetID();
-		}
+		else if (invoker)				
+			target_player_id  = invoker->GetID(); 
 
 		auto pkt = FBS_FACTORY->SPkt_Monster_Target(monster_id, target_player_id, target_monster_id);
 		ROOM_MGR->BroadcastRoom(mRoot->GetEnemyController()->GetOwnerRoom()->GetID(), pkt);
-		mPrevTarget = target;
+		mRoot->GetEnemyController()->SetTarget(target); // Update PrevTarget & Target sync
+
 	}
 
+}
+
+void Script_DefaultEnemyBT::PrintBTtype(FBProtocol::MONSTER_BT_TYPE bttype, std::string substring)
+{
+	switch (bttype)
+	{
+	case FBProtocol::MONSTER_BT_TYPE_DEATH:
+		LOG_MGR->Cout(substring, "MONSTER_BT_TYPE_DEATH\n");
+		break;
+	case FBProtocol::MONSTER_BT_TYPE_ATTACK:
+		LOG_MGR->Cout(substring, "MONSTER_BT_TYPE_ATTACK\n");
+		break;
+	case FBProtocol::MONSTER_BT_TYPE_GETHIT:
+		LOG_MGR->Cout(substring, "MONSTER_BT_TYPE_GETHIT\n");
+		break;
+	case FBProtocol::MONSTER_BT_TYPE_MOVE_TO_TARGET:
+		LOG_MGR->Cout(substring, "MONSTER_BT_TYPE_MOVE_TO_TARGET\n");
+		break;
+	case FBProtocol::MONSTER_BT_TYPE_MOVE_TO_PATH:
+		LOG_MGR->Cout(substring, "MONSTER_BT_TYPE_MOVE_TO_PATH\n");
+		break;
+	case FBProtocol::MONSTER_BT_TYPE_PATROL:
+		LOG_MGR->Cout(substring, "MONSTER_BT_TYPE_PATROL\n");
+		break;
+	case FBProtocol::MONSTER_BT_TYPE_IDLE:
+		LOG_MGR->Cout(substring, "MONSTER_BT_TYPE_IDLE\n");
+		break;
+	case FBProtocol::MONSTER_BT_TYPE_CHANGE_BT:
+		LOG_MGR->Cout(substring, "MONSTER_BT_TYPE_CHANGE_BT\n");
+		break;
+	default:
+		LOG_MGR->Cout(substring, "MONSTER BT TYPE ..XXXX \n");
+		break;
+	};
 }
 
 SPtr<Component> Script_DefaultEnemyBT::Clone(SPtr<Component> target)
