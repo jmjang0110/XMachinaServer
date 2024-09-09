@@ -43,6 +43,10 @@
 #include <concurrent_unordered_set.h>
 #include <atomic>
 
+/* SQL */
+#include <sql.h>
+#include <sqlext.h>
+
 
 template<typename T>
 using SPtr = std::shared_ptr<T>;

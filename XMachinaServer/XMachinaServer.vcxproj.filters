@@ -562,7 +562,9 @@
     <ClInclude Include="Contents\DB_Phero.h">
       <Filter>Framework\Contents\DataBase\Object</Filter>
     </ClInclude>
-    <ClInclude Include="Contents\DB_Object.h" />
+    <ClInclude Include="Contents\DB_Object.h">
+      <Filter>Framework\Contents\DataBase\Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp">
@@ -922,7 +924,9 @@
     <ClCompile Include="Contents\DB_Phero.cpp">
       <Filter>Framework\Contents\DataBase\Object</Filter>
     </ClCompile>
-    <ClCompile Include="Contents\DB_Object.cpp" />
+    <ClCompile Include="Contents\DB_Object.cpp">
+      <Filter>Framework\Contents\DataBase\Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="XMachinaServer.rc">

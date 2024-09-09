@@ -1,5 +1,7 @@
 #pragma once
-class DB_Phero
+#include "DB_Object.h"
+
+class DB_Phero : public DB_Object
 {
 public:
 	int		Level;
@@ -11,7 +13,8 @@ public:
 	~DB_Phero();
 
 public:
-
+	virtual void FetchDataFromDataBase(const wchar_t* query); // DB 로 부터 데이터 읽는 전용 함수 
+	void FetchPheroData(int level);
 
 };
 

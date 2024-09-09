@@ -37,6 +37,7 @@
 
 /* DataBase */
 #include "DBController.h"
+#include "DB_Phero.h"
 
 namespace {
 	const std::string kTerrainDataPath            = "Contents/Resource/Terrain.bin";
@@ -361,9 +362,14 @@ void ResourceManager::Init()
 
 void ResourceManager::LoadPheroInfos_DB()
 {
-	DB_CONTROLLER->ReadDataFromDatabase(L"SELECT* FROM dbo.Phero;");
+	//DB_CONTROLLER->ReadDataFromDatabase(L"SELECT* FROM dbo.Phero;");
+	DB_Phero phero1{};
+	DB_Phero phero2{};
+	DB_Phero phero3{};
 
-
+	phero1.FetchPheroData(1);
+	phero2.FetchPheroData(2);
+	phero3.FetchPheroData(3);
 }
 
 /// +----------------------------------------------------

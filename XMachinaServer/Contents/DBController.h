@@ -15,8 +15,7 @@
 #include "DB_Monster.h"
 #include "DB_NPC.h"
 
-#include <sql.h>
-#include <sqlext.h>
+
 
 /* X-Machina Game Data Base */
 struct X_Machina_DB
@@ -65,5 +64,9 @@ public:
 	void PrintSQLError(SQLSMALLINT handleType, SQLHANDLE handle);
 	void CheckSQLReturn(SQLRETURN ret, SQLSMALLINT handleType, SQLHANDLE handle);
 
+public:
+	SQLHENV		SQLH_Env()		{ return mhEnv; }
+	SQLHDBC		SQLH_Dbc()		{ return mhDbc; }
+	SQLHSTMT	SQLH_Stmt()		{ return mhStm; }
 };
 
