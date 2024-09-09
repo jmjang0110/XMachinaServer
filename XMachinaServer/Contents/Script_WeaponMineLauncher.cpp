@@ -46,12 +46,17 @@ void Script_WeaponMineLauncher::Start()
         SPtr<GameObject> bullet = MEMORY->Make_Shared<GameObject>(id);
         bullet->AddComponent<Transform>(Component::Type::Transform);
         bullet->AddComponent<Collider>(Component::Type::Collider);
+        bullet->SetOwnerRoom(mOwner->GetOwnerRoom());
+
         auto bullet_entity = bullet->SetScriptEntity<Script_SpiderMine>();
         bullet_entity->SetOwnerWeapon(mOwner);
         bullet_entity->SetExplosionDamage(5.f);
 
         mBullets[i] = bullet;
         bullet->Start();
+
+        mPossibleBulletIndex.push(i);
+
     }
 }
 

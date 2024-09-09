@@ -559,6 +559,10 @@
     <ClInclude Include="Contents\Script_RayCheckBullet.h">
       <Filter>Framework\Contents\GameWorld\Script\Item\Bullet</Filter>
     </ClInclude>
+    <ClInclude Include="Contents\DB_Phero.h">
+      <Filter>Framework\Contents\DataBase\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\DB_Object.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp">
@@ -915,6 +919,10 @@
     <ClCompile Include="Contents\Script_RayCheckBullet.cpp">
       <Filter>Framework\Contents\GameWorld\Script\Item\Bullet</Filter>
     </ClCompile>
+    <ClCompile Include="Contents\DB_Phero.cpp">
+      <Filter>Framework\Contents\DataBase\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\DB_Object.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="XMachinaServer.rc">

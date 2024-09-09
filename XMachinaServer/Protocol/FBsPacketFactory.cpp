@@ -253,9 +253,7 @@ bool FBsPacketFactory::Process_CPkt_LogIn(SPtr_Session session, const FBProtocol
 #ifdef CONNECT_WITH_TEST_CLIENT
 	return true;
 #endif
-
 	SPtr<GameSession> gameSession = std::static_pointer_cast<GameSession>(session);
-
 	gameSession->GetPlayer()->GetTransform()->SetPosition(Vec3(65, 0, 240));
 
 	LOG_MGR->SetColor(TextColor::BrightBlue);

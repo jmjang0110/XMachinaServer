@@ -1,9 +1,10 @@
 #include "pch.h"
 #include "Script_WeaponHLock.h"
-#include "Script_BasicBullet.h"
+#include "Script_RayCheckBullet.h"
 #include "GameObject.h"
 
 Script_WeaponHLock::Script_WeaponHLock(SPtr<GameObject> owner)
+    : Script_Weapon(owner)
 {
     mItemType = FBProtocol::ITEM_TYPE_WEAPON_H_LOOK;
 
@@ -20,10 +21,14 @@ void Script_WeaponHLock::Start()
         SPtr<GameObject> bullet = MEMORY->Make_Shared<GameObject>(id);
         bullet->AddComponent<Transform>(Component::Type::Transform);
         bullet->AddComponent<Collider>(Component::Type::Collider);
-        auto bullet_entity = bullet->SetScriptEntity<Script_BasicBullet>();
+        bullet->SetOwnerRoom(mOwner->GetOwnerRoom());
+        auto bullet_entity = bullet->SetScriptEntity<Script_RayCheckBullet>();
         bullet_entity->SetOwnerWeapon(mOwner);
         mBullets[i] = bullet;
         bullet->Start();
+
+        mPossibleBulletIndex.push(i);
+
     }
 }
 

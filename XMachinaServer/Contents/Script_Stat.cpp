@@ -103,3 +103,41 @@ void Script_Stat::DeActivate()
 
 }
 
+/// +-------------------------------------------
+///	 >> Phero
+/// -------------------------------------------+
+void Script_Stat::AddPheroAmount(float pheroAmount)
+{
+	float currphero = S_GetCurrPheroAmount();
+	currphero += pheroAmount;
+	currphero = min(currphero, mMaxPhero);
+	S_SetCurrPheroAmount(currphero);
+}
+
+bool Script_Stat::ReducePheroAmount(float pheroCost)
+{
+	float currphero = S_GetCurrPheroAmount();
+	currphero -= pheroCost;
+	if (currphero < 0)
+		return false;
+	else
+		S_SetCurrPheroAmount(currphero);
+	return true;
+}
+
+void Script_Stat::S_SetCurrPheroAmount(float phero)
+{
+	Lock_Phero.LockWrite();
+	mPhero = phero;
+	Lock_Phero.UnlockWrite();
+
+}
+
+float Script_Stat::S_GetCurrPheroAmount()
+{
+	float currPhero = 0.f;
+	Lock_Phero.LockRead();
+	currPhero = mPhero;
+	Lock_Phero.UnlockRead();
+	return currPhero;
+}

@@ -4,8 +4,6 @@
 
 
 namespace WeaponInfo {
-
-
 	enum class BulletPSType : UINT8 {
 		Explosion = 0,
 		Contrail,

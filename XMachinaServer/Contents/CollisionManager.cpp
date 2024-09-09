@@ -117,3 +117,20 @@ float CollisionManager::CollideCheckRay_MinimumDist(const ColliderSnapShot& A, R
 
 	return minDist;
 }
+
+bool CollisionManager::CollideCheckRay(const ColliderSnapShot& A, Ray& R)
+{
+	float dist = 100.0f;
+
+	if (!A.BS.Intersects(_VECTOR(R.Position), XMVector3Normalize(_VECTOR(R.Direction)), dist)) {
+		return true;
+	}
+
+	for (int i = 0; i < A.BoundingBoxList.size(); ++i) {
+		if (A.BoundingBoxList[i].Intersects(_VECTOR(R.Position), XMVector3Normalize(_VECTOR(R.Direction)), dist)) {
+			return true;
+		}
+	}
+
+	return false;
+}

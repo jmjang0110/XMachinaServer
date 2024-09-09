@@ -177,7 +177,7 @@ void Script_Enemy::DeathEndCallback()
 void Script_Enemy::OnExitFromViewList()
 {
 	LOG_MGR->SetColor(TextColor::BrightCyan);
-	LOG_MGR->Cout("On Exit From View List ");
+	LOG_MGR->Cout("[",mOwner->GetID(), "] - On Exit From View List \n");
 	LOG_MGR->SetColor(TextColor::Default);
 
 	mOwner->GetTransform()->SetPosition(mSpawnPos);
@@ -192,8 +192,6 @@ void Script_Enemy::OnExitFromViewList()
 
 	auto spkt = FBS_FACTORY->SPkt_Monster_Transform(GetID(), mSpawnPos, mSpawnRot);
 	ROOM_MGR->BroadcastRoom(mOwner->GetOwnerRoom()->GetID(), spkt);
-
-
 }
 
 void Script_Enemy::Dead()

@@ -9,12 +9,13 @@
 Script_BasicBullet::Script_BasicBullet()
     : Script_Bullet()
 {
+	mBulletType = BulletType::Basic;
 }
 
 Script_BasicBullet::Script_BasicBullet(SPtr<GameObject> owner)
     : Script_Bullet(owner)
 {
-
+	mBulletType = BulletType::Basic;
 }
 
 Script_BasicBullet::~Script_BasicBullet()
@@ -56,7 +57,6 @@ void Script_BasicBullet::Update()
 	IsCollide = mOwner->GetOwnerRoom()->CollideCheckWithNPC(mOwner, ObjectTag::Building);
 	if (IsCollide)
 		Explode();
-
 }
 
 void Script_BasicBullet::Dispatch(OverlappedObject* overlapped, UINT32 bytes)

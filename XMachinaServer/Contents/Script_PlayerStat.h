@@ -42,7 +42,6 @@ protected:
 	float mStartPheroAmount		= {};
 	float mMaxPheroAmount		= {};
 
-	float mCurrPheroAmount		= {};	Lock::SRWLock Lock_CurrPheroAmount;
 	float mPheroRegenRate		= {};
 
 	/// +-------------------------------------------
@@ -69,14 +68,7 @@ public:
 
 	float GetVelocity() { return mVelocity; }
 public:
-	/// +-------------------------------------------
-	///	 >> Phero
-	/// -------------------------------------------+
-	virtual void AddPheroAmount(float pheroAmount);
-	virtual bool ReducePheroAmount(float pheroCost);
 
-	void  S_SetCurrPheroAmount(float phero);
-	float S_GetCurrPheroAmount();
 
 	
 };

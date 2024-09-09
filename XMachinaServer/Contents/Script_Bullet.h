@@ -5,10 +5,11 @@ class Rigidbody;
 enum class BulletType {
 	None,
 	Basic,
+	RayCheck,
 	Explosive,
-
 	_count,
 };
+
 class Script_Bullet : public Script_Entity
 {
 protected:

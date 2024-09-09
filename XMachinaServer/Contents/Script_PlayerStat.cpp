@@ -34,7 +34,6 @@ SPtr<Component> Script_PlayerStat::Clone(SPtr<Component> target)
 
 		clonedScript->mStartPheroAmount = this->mStartPheroAmount;
 		clonedScript->mMaxPheroAmount   = this->mMaxPheroAmount;
-		clonedScript->mCurrPheroAmount  = this->mCurrPheroAmount; // Handle lock if needed
 		clonedScript->mPheroRegenRate   = this->mPheroRegenRate;
 
 		clonedScript->mVelocity			= this->mVelocity;
@@ -69,45 +68,4 @@ void Script_PlayerStat::SetSpawn(const Vec3& pos)
 	mOwner->GetTransform()->SetPosition(mRespawn_Position);
 	mOwner->GetTransform()->UpdateTransofrmSnapShot();
 	mOwner->GetTransform()->UpdateTransofrmSnapShot();
-}
-
-
-
-/// +-------------------------------------------
-///	 >> Phero
-/// -------------------------------------------+
-void Script_PlayerStat::AddPheroAmount(float pheroAmount)
-{
-	float currphero = S_GetCurrPheroAmount();
-	currphero -= pheroAmount;
-	currphero = min(currphero, mMaxPheroAmount);
-	S_SetCurrPheroAmount(currphero);
-}
-
-bool Script_PlayerStat::ReducePheroAmount(float pheroCost)
-{
-	float currphero = S_GetCurrPheroAmount();
-	currphero -= pheroCost;
-	if (currphero < 0)
-		return false;
-	else
-		S_SetCurrPheroAmount(currphero);
-	return true;
-}
-
-void Script_PlayerStat::S_SetCurrPheroAmount(float phero)
-{
-	Lock_CurrPheroAmount.LockWrite();
-	mCurrPheroAmount = phero;
-	Lock_CurrPheroAmount.UnlockWrite();
-
-}
-
-float Script_PlayerStat::S_GetCurrPheroAmount()
-{
-	float currPhero = 0.f;
-	Lock_CurrPheroAmount.LockRead();
-	currPhero = mCurrPheroAmount;
-	Lock_CurrPheroAmount.UnlockRead();
-	return currPhero;
 }

@@ -183,6 +183,8 @@
     <ClInclude Include="Contents\DB_Item.h" />
     <ClInclude Include="Contents\DB_Monster.h" />
     <ClInclude Include="Contents\DB_NPC.h" />
+    <ClInclude Include="Contents\DB_Object.h" />
+    <ClInclude Include="Contents\DB_Phero.h" />
     <ClInclude Include="Contents\DB_Player.h" />
     <ClInclude Include="Contents\DB_Weapon.h" />
     <ClInclude Include="Contents\EntityTag.h" />
@@ -301,6 +303,8 @@
     <ClCompile Include="Contents\DB_Item.cpp" />
     <ClCompile Include="Contents\DB_Monster.cpp" />
     <ClCompile Include="Contents\DB_NPC.cpp" />
+    <ClCompile Include="Contents\DB_Object.cpp" />
+    <ClCompile Include="Contents\DB_Phero.cpp" />
     <ClCompile Include="Contents\DB_Player.cpp" />
     <ClCompile Include="Contents\DB_Weapon.cpp" />
     <ClCompile Include="Contents\FileIO.cpp" />

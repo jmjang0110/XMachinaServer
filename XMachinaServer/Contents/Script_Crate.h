@@ -13,7 +13,7 @@ class Script_Crate : public Script_Item
 {
 private:
 	CrateState			mCrateState = CrateState::None;
-	SPtr<GameObject>	mItem       = nullptr;
+	SPtr<GameObject>	mItem       = nullptr; Lock::SRWLock mLock_Item;
 
 public:
 	Script_Crate() = default;
@@ -28,11 +28,12 @@ public:
 
 public:
 	/// ---------------------- Set ----------------------
-	void		SetItem(SPtr<GameObject> item)	{ mItem       = item; }
+	void		SetItem(SPtr<GameObject> item) { mLock_Item.LockWrite();  mItem = item; mLock_Item.UnlockWrite(); }
 	void		OpenCrate()						{ mCrateState = CrateState::Open; }
 	void		CloseCrate()					{ mCrateState = CrateState::Closed; }
+
 	/// ---------------------- Get ----------------------
-	SPtr<GameObject> GetItem()			{ return mItem; }
+	SPtr<GameObject> GetItem()			{ mLock_Item.LockRead(); SPtr<GameObject> item = mItem; mLock_Item.UnlockRead(); return item; }
 	CrateState		 GetCrateState()	{ return mCrateState; }
 
 };

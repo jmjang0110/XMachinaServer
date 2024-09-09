@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Script_Weapon.h"
 #include "GameObject.h"
+#include "Transform.h"
+#include "Script_RayCheckBullet.h"
 
 Script_Weapon::Script_Weapon(SPtr<GameObject> owner)
 	: Script_Item(owner)
@@ -14,6 +16,11 @@ Script_Weapon::~Script_Weapon()
     }
 }
 
+
+void Script_Weapon::Start()
+{
+
+}
 
 void Script_Weapon::Update()
 {
@@ -44,8 +51,33 @@ void Script_Weapon::Clone(SPtr<GameObject> target)
     this->Clone(clonedScript);
 }
 
+int Script_Weapon::OnHitEnemy(int32_t checktargetID, Vec3& center_pos, Vec3& fire_dir)
+{
+    // Ray check 
+
+    int possibleIndex = -1;
+    if (mPossibleBulletIndex.try_pop(possibleIndex)) {
+
+        if (0 <= possibleIndex && possibleIndex < WeaponInfo::MaxBulletsNum) {
+
+            mBullets[possibleIndex]->GetTransform()->SetPosition(center_pos);
+            mBullets[possibleIndex]->GetTransform()->SetRight(Vector3::Right);
+            mBullets[possibleIndex]->GetTransform()->SetLook(fire_dir);
+            auto raycheck = mBullets[possibleIndex]->GetScriptEntity<Script_RayCheckBullet>();
+            if (raycheck) {
+                raycheck->SetRayCheckTargetID(checktargetID);
+                mBullets[possibleIndex]->Activate(); // PQCS - Register Update !
+                return possibleIndex;
+            }
+        }
+    }
+
+    return -1;
+}
+
 int Script_Weapon::OnShoot(Vec3& center_pos, Vec3& fire_dir)
 {
+ 
     int possibleIndex = -1;
     if (mPossibleBulletIndex.try_pop(possibleIndex)) {
 

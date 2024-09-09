@@ -29,8 +29,8 @@ private:
 	float mPrevHP       = {};
 
 	/// ---------------- PHero ----------------
-	float mMaxPhero		= {};
-	float mPhero		= 1000.f;
+	float mMaxPhero		= 1000.f;
+	float mPhero		= 1000.f; Lock::SRWLock Lock_Phero;
 
 private:
 	ObjectState  mObjectState = ObjectState::Deactive; Lock::SRWLock Lock_State;
@@ -85,6 +85,13 @@ public:
 public:
 	bool UpdatePrevHP()					{ bool res = mPrevHP == mCrntHP; mPrevHP = mCrntHP; return res; }
 
+	/// +-------------------------------------------
+	///	 >> Phero
+	/// -------------------------------------------+
+	virtual void AddPheroAmount(float pheroAmount);
+	virtual bool ReducePheroAmount(float pheroCost);
 
+	void  S_SetCurrPheroAmount(float phero);
+	float S_GetCurrPheroAmount();
 };
 

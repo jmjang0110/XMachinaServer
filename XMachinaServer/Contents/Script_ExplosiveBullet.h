@@ -5,7 +5,8 @@ class GameObject;
 class Script_ExplosiveBullet : public Script_Bullet
 {
 protected:
-	float mExplosionDamage = {};
+	float mSplashRangeRadius = {};
+	float mExplosionDamage   = {};
 
 public:
 	Script_ExplosiveBullet();

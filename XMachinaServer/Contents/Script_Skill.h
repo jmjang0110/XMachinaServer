@@ -23,10 +23,11 @@ protected:
 	FBProtocol::PLAYER_SKILL_TYPE	mSkillType      = FBProtocol::PLAYER_SKILL_TYPE_NONE;
 	SkillState						mSkillState     = SkillState::None;
 
-	float							mCoolTime       = {};
-	float							mActiveDuration = {};
-	float							mTimer          = {};
+	float							mCoolTime         = {};
+	float							mActiveDuration   = {};
+	float							mTimer            = {};
 
+	float							mPheroAmountToUse = {};
 public:
 	Script_Skill();
 	Script_Skill(SPtr<GameObject> owner);

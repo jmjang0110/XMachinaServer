@@ -13,7 +13,8 @@ public:
 
 public:
 	static float CollideCheckRay_MinimumDist(const ColliderSnapShot& A, Ray& R);
-	
+	static bool CollideCheckRay(const ColliderSnapShot& A, Ray& R);
+
 public:
 	static bool CollideCheck(ColliderSnapShot& A, ColliderSnapShot& B);
 	static bool CollideCheck_Sphere(ColliderSnapShot& A, ColliderSnapShot& B);

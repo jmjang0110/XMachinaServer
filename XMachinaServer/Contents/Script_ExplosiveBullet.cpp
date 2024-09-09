@@ -5,11 +5,13 @@
 Script_ExplosiveBullet::Script_ExplosiveBullet()
 	: Script_Bullet()
 {
+	mBulletType = BulletType::Explosive;
 }
 
 Script_ExplosiveBullet::Script_ExplosiveBullet(SPtr<GameObject> owner)
 	: Script_Bullet(owner)
 {
+	mBulletType = BulletType::Explosive;
 }
 
 Script_ExplosiveBullet::~Script_ExplosiveBullet()

@@ -109,9 +109,6 @@ public:
 	SPtr_SendPktBuf SPkt_Item_Interact(uint32_t player_id, uint32_t item_id, FBProtocol::ITEM_TYPE item_type, Vec3 drop_pos);
 	SPtr_SendPktBuf SPkt_Item_ThrowAway(uint32_t player_id, uint32_t item_id, FBProtocol::ITEM_TYPE item_type, Vec3 drop_pos);
 
-
-
-
 private:
 	static Vec3 GetVector3(const FBProtocol::Vector3* vec3);
 	static Vec4 GetVector4(const FBProtocol::Vector4* vec4);

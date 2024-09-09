@@ -96,13 +96,16 @@ void Script_Player::Start()
 	mDefaultWeapon = MEMORY->Make_Shared<GameObject>(FBProtocol::ITEM_TYPE_WEAPON_H_LOOK);
 	mDefaultWeapon->AddComponent<Transform>(Component::Type::Transform);
 	auto weapon_entity = mDefaultWeapon->SetScriptEntity<Script_WeaponHLock>();
+	mDefaultWeapon->SetOwnerRoom(mOwner->GetOwnerRoom());
+
 	weapon_entity->SetOwnerPlayer(mOwner);
+	mDefaultWeapon->Start();
 
 	// Skills
 	for (int i = 0; i < FBProtocol::PLAYER_SKILL_TYPE_END; ++i) { mSkills[i] = MEMORY->Make_Shared<GameObject>(i); }
-	mSkills[FBProtocol::PLAYER_SKILL_TYPE_CLOACKING]->SetScriptEntity<Script_SkillCloaking>();
-	mSkills[FBProtocol::PLAYER_SKILL_TYPE_MIND_CONTROL]->SetScriptEntity<Script_SkillMindControl>();
-	mSkills[FBProtocol::PLAYER_SKILL_TYPE_SHIELD]->SetScriptEntity<Script_SkillShield>();
+	mSkills[FBProtocol::PLAYER_SKILL_TYPE_CLOACKING]->SetScriptEntity<Script_SkillCloaking>()->SetOwnerPlayer(mOwner);
+	mSkills[FBProtocol::PLAYER_SKILL_TYPE_MIND_CONTROL]->SetScriptEntity<Script_SkillMindControl>()->SetOwnerPlayer(mOwner);
+	mSkills[FBProtocol::PLAYER_SKILL_TYPE_SHIELD]->SetScriptEntity<Script_SkillShield>()->SetOwnerPlayer(mOwner);
 	
 	mCurrWeapon = mDefaultWeapon;
 
@@ -240,7 +243,12 @@ int Script_Player::OnShoot(Vec3& bullet_center, Vec3& bullet_dir)
 
 int Script_Player::OnHitEnemy(int32_t monster_id, Vec3& bullet_center, Vec3& bullet_dir)
 {
-    return 0;
+	if (!mCurrWeapon)
+		return -1;
+
+	// Check Hit Enemy...
+	int bulletID = mCurrWeapon->GetScriptEntity<Script_Weapon>()->OnHitEnemy(monster_id, bullet_center, bullet_dir);
+	return bulletID;
 }
 
 int Script_Player::OnHitExpEnemy(int32_t monster_id)
@@ -250,6 +258,7 @@ int Script_Player::OnHitExpEnemy(int32_t monster_id)
 
 bool Script_Player::OnSkill(FBProtocol::PLAYER_SKILL_TYPE type, SPtr<GameObject> mindControlledMonster)
 {
+	mSkills[type]->Activate();
     return false;
 }
 

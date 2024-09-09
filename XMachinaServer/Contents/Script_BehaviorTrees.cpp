@@ -37,9 +37,6 @@ void Script_DefaultEnemyBT::Update()
 	FBProtocol::MONSTER_BT_TYPE PrevType = mRoot->GetEnemyController()->GetMontserPrevBTType();
 	FBProtocol::MONSTER_BT_TYPE CurrType = mRoot->GetEnemyController()->GetMonsterCurrBTType();
 
-	Vec3 pos = mOwner->GetTransform()->GetSnapShot().GetPosition();
-	LOG_MGR->Cout(mOwner->GetID(), " : ", pos.x, " ", pos.y, " ", pos.z, "\n");
-
 	if (CurrType == FBProtocol::MONSTER_BT_TYPE_ATTACK)
 		return;
 

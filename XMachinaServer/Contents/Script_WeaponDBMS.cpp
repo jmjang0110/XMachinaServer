@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Script_WeaponDBMS.h"
 #include "GameObject.h"
-#include "Script_BasicBullet.h"
+#include "Script_RayCheckBullet.h"
 
 
 Script_WeaponDBMS::Script_WeaponDBMS(SPtr<GameObject> owner)
@@ -46,10 +46,14 @@ void Script_WeaponDBMS::Start()
         SPtr<GameObject> bullet = MEMORY->Make_Shared<GameObject>(id);
         bullet->AddComponent<Transform>(Component::Type::Transform);
         bullet->AddComponent<Collider>(Component::Type::Collider);
-        auto bullet_entity = bullet->SetScriptEntity<Script_BasicBullet>();
+        bullet->SetOwnerRoom(mOwner->GetOwnerRoom());
+        auto bullet_entity = bullet->SetScriptEntity<Script_RayCheckBullet>();
         bullet_entity->SetOwnerWeapon(mOwner);
         mBullets[i] = bullet;
         bullet->Start();
+
+        mPossibleBulletIndex.push(i);
+
     }
 }
 

@@ -50,13 +50,19 @@ void Script_SkillCloaking::Update()
 	switch (mSkillState)
 	{
 	case SkillState::Impossible:
-	case SkillState::Possible:
+	case SkillState::Possible: {
+		auto playerPhero = mOwnerPlayer->GetScriptEntity<Script_Player>()->GetPhero();
+		if (playerPhero >= 0.f) {
+			mSkillState = SkillState::Active;
+			mOwner->RegisterUpdate(0.f);
+		}
+	}
 		break;
 	case SkillState::Active:
 	{
 		bool checkOnSkill = mOwnerPlayer->GetScriptEntity<Script_Player>()->ReducePheroAmount(DeltaTime() * mPheroCost);
 		if (checkOnSkill == true) {
-			mOwnerPlayer->RegisterUpdate(0.f);
+			mOwner->RegisterUpdate(0.f);
 		} 
 		else {
 			mSkillState = SkillState::Possible;
@@ -83,14 +89,24 @@ void Script_SkillCloaking::Update()
 	}
 }
 
+
 void Script_SkillCloaking::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 {
+	MEMORY->Delete(overlapped);
+
+	mOwner->Update();
+}
+
+void Script_SkillCloaking::Activate()
+{
+	Script::Activate();
+
+	mSkillState = SkillState::Possible;
 }
 
 void Script_SkillCloaking::DeActivate()
 {
 	Script::DeActivate();
-	mOwner->DeActivate();
 
 	mTimer = 0.f;
 	mSkillState = SkillState::Possible;

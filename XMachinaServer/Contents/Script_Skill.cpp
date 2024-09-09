@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Script_Skill.h"
 #include "GameObject.h"
+#include "Script_Stat.h"
+#include "Script_Player.h"
 
 Script_Skill::Script_Skill()
 {
@@ -52,5 +54,4 @@ void Script_Skill::Update()
 	mTimer += deltatime;
 
 }
-
 
