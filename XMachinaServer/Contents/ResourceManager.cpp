@@ -431,7 +431,10 @@ void ResourceManager::LoadDB_EnemyStatInfos()
 		"MiningMech",
 		"Onyscidus",
 		"Rapax",
-		"Ursacetus"
+		"Ursacetus",
+		"Deus_Phase_1",
+		"Deus_Phase_2"
+
 	};
 
 	for (const auto& name : enemyNames) {
