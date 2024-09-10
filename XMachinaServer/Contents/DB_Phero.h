@@ -4,7 +4,7 @@
 class DB_Phero : public DB_Object
 {
 public:
-	int		Level;
+	int		PK_Level;
 	float	LifeTime_second;
 	float	Amount;
 
@@ -14,7 +14,7 @@ public:
 
 public:
 	virtual void FetchDataFromDataBase(const wchar_t* query); // DB 로 부터 데이터 읽는 전용 함수 
-	void FetchPheroData(int level);
+	void LoadFromDataBase(int PK_Level);
 
 };
 

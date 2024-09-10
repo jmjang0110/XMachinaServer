@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "Script_EnemyStat.h"
 #include "GameObject.h"
-
+#include "DB_EnemyStat.h"
+#include "ResourceManager.h"
 
 Script_EnemyStat::Script_EnemyStat()
 {
@@ -68,4 +69,27 @@ bool Script_EnemyStat::Hit(float damage, SPtr<GameObject> instigator)
 	Script_Stat::Hit(damage, instigator);
 
 	return false;
+}
+
+void Script_EnemyStat::SetDataFromDataBase(std::string PK_EnemyName)
+{
+    DB_EnemyStat DB = RESOURCE_MGR->GetEnemyStatInfo(PK_EnemyName);
+    
+    mEnemyLevel          = DB.Level;
+    mPheroLevel          = DB.PheroLevel;
+    
+    mMoveSpeed           = DB.MoveSpeed;
+    mRotationSpeed       = DB.RotationSpeed;
+    mAttackRotationSpeed = DB.AttackRotationSpeed;
+
+    mDetectionRange      = DB.DetectionRange;
+    mAttackRate          = DB.AttackRate;
+    mAttackRange         = DB.AttackRange;
+    mAttackCoolTime      = DB.AttackCoolTime;
+                         
+    mAttack1AnimName     = DB.Attack1AnimName;
+    mAttack2AnimName     = DB.Attack2AnimName; 
+    mAttack3AnimName     = DB.Attack3AnimName;
+    mGetHitAnimName      = DB.GetHitAnimName;
+    mDeathAnimName       = DB.DeathAnimName;
 }

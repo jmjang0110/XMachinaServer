@@ -21,28 +21,11 @@ Script_MiningMech::Script_MiningMech()
 Script_MiningMech::Script_MiningMech(SPtr<GameObject> owner)
     :Script_Enemy(owner)
 {
+    std::string name = "MiningMech";
     mType = FBProtocol::MONSTER_TYPE_MININGMECH;
-
+    owner->SetName(name);
+    Script_EnemyStat::SetDataFromDataBase(name);
     Script_EnemyStat::SetID(owner->GetID());
-
-    Script_EnemyStat::SetStat_EnemyLevel(7);
-    Script_EnemyStat::SetStat_PheroLevel(6);
-    Script_EnemyStat::SetStat_MoveSpeed(5.5);
-    Script_EnemyStat::SetStat_DetectionRange(20);
-    Script_EnemyStat::SetStat_RotationSpeed(150);
-    Script_EnemyStat::SetStat_AttackRotationSpeed(100);
-    Script_EnemyStat::SetStat_AttackRate(300);
-    Script_EnemyStat::SetStat_AttackRange(5);
-    Script_EnemyStat::SetStat_AttackCoolTime(0);
-    Script_EnemyStat::SetMaxHP(1500);
-    Script_EnemyStat::SetStat_Attack1AnimName("UppercutDiggerAttack");
-    Script_EnemyStat::SetStat_Attack2AnimName("UppercutDrillAttack");
-    Script_EnemyStat::SetStat_Attack3AnimName("SmashAttack");
-    Script_EnemyStat::SetStat_GetHitName("Blocked");
-    Script_EnemyStat::SetStat_DeathAnimName("Deactivation");
-
-
-    owner->SetName("MiningMech");
 }
 
 Script_MiningMech::~Script_MiningMech()

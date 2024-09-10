@@ -139,13 +139,18 @@ private:
 
 };
 
+class DB_Phero;
+class DB_PheroDropInfo;
+class DB_EnemyStat;
 
 class ResourceManager
 {
 	DECLARE_SINGLETON(ResourceManager);
 
 private:
-	std::unordered_map<int, SPtr<GameObject>> mPheroInfos{};
+	std::unordered_map<int, DB_Phero>				mPheroInfos{};
+	std::unordered_map<int, DB_PheroDropInfo>		mPheroDropInfos{};
+	std::unordered_map<std::string, DB_EnemyStat>	mEnemyStatInfos{};
 
 private:
 	SPtr<HeightMapImage>										mHeightMapImg;
@@ -173,9 +178,15 @@ public:
 	SPtr<AnimationClip>			GetAnimationClip(const std::string& name) const			{ return mAnimationClips.at(name); }
 	SPtr<AnimatorController>	GetAnimatorController(const std::string& name) const	{ return mAnimatorControllers.at(name); }
 
-private:
-	void LoadPheroInfos_DB();
+	// Getter functions for maps
+	DB_Phero GetPheroInfo(int key) const;
+	DB_PheroDropInfo GetPheroDropInfo(int key) const;
+	DB_EnemyStat GetEnemyStatInfo(const std::string& key) const;
 
+
+private:
+	void LoadDB_PheroInfos();
+	void LoadDB_EnemyStatInfos();
 
 private:
 	void LoadTerrain();

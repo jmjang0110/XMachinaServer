@@ -24,6 +24,7 @@
 #include "GameRoom.h"
 #include "RoomManager.h"
 
+#include "DB_EnemyStat.h"
 
 Script_Enemy::Script_Enemy()
 {

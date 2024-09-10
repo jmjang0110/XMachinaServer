@@ -12,7 +12,6 @@
 /// -----------------------------------------------+
 
 #include "DB_Player.h"
-#include "DB_Monster.h"
 #include "DB_NPC.h"
 
 
@@ -21,7 +20,6 @@
 struct X_Machina_DB
 {
 	DB_Player*	PlayerDB  = nullptr;
-	DB_Monster*	MonsterDB = nullptr;
 	DB_NPC*		NPCDB     = nullptr;
 };
 

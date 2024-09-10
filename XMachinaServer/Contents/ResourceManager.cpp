@@ -38,6 +38,8 @@
 /* DataBase */
 #include "DBController.h"
 #include "DB_Phero.h"
+#include "DB_PheroDropInfo.h"
+#include "DB_EnemyStat.h"
 
 namespace {
 	const std::string kTerrainDataPath            = "Contents/Resource/Terrain.bin";
@@ -346,6 +348,9 @@ ResourceManager::~ResourceManager()
 
 void ResourceManager::Init()
 {
+	LoadDB_PheroInfos();
+	LoadDB_EnemyStatInfos();
+
 	mTileMap = std::make_shared<TileMap>();
 
 	LoadTerrain();
@@ -356,20 +361,84 @@ void ResourceManager::Init()
 	mBattleScene = std::make_shared<BattleScene>();
 	mBattleScene->Load();
 
-	LoadPheroInfos_DB();
 
 }
 
-void ResourceManager::LoadPheroInfos_DB()
+DB_Phero ResourceManager::GetPheroInfo(int key) const
 {
-	//DB_CONTROLLER->ReadDataFromDatabase(L"SELECT* FROM dbo.Phero;");
-	DB_Phero phero1{};
-	DB_Phero phero2{};
-	DB_Phero phero3{};
+	auto it = mPheroInfos.find(key);
+	if (it != mPheroInfos.end()) {
+		return it->second;
+	}
+	else {
+		// Handle the case where the key is not found
+		throw std::out_of_range("PheroInfo with the specified key does not exist.");
+	}
+}
 
-	phero1.FetchPheroData(1);
-	phero2.FetchPheroData(2);
-	phero3.FetchPheroData(3);
+DB_PheroDropInfo ResourceManager::GetPheroDropInfo(int key) const
+{
+	auto it = mPheroDropInfos.find(key);
+	if (it != mPheroDropInfos.end()) {
+		return it->second;
+	}
+	else {
+		// Handle the case where the key is not found
+		throw std::out_of_range("PheroDropInfo with the specified key does not exist.");
+	}
+}
+
+DB_EnemyStat ResourceManager::GetEnemyStatInfo(const std::string& key) const
+{
+	auto it = mEnemyStatInfos.find(key);
+	if (it != mEnemyStatInfos.end()) {
+		return it->second;
+	}
+	else {
+		// Handle the case where the key is not found
+		throw std::out_of_range("EnemyStatInfo with the specified key does not exist.");
+	}
+}
+void ResourceManager::LoadDB_PheroInfos()
+{
+	int MaxLevel = 3;
+	for (int level = 1; level <= MaxLevel; ++level) {
+		DB_Phero phero{};
+		phero.LoadFromDataBase(level);
+		mPheroInfos.insert({ level, phero });
+	}
+
+	MaxLevel = 10;
+	for (int level = 1; level <= MaxLevel; ++level) {
+		DB_PheroDropInfo pheroDropInfo{};
+		pheroDropInfo.LoadFromDataBase(level);
+		mPheroDropInfos.insert({ level, pheroDropInfo });
+	}
+
+}
+
+void ResourceManager::LoadDB_EnemyStatInfos()
+{    
+	// List of enemy names to load
+	std::vector<std::string> enemyNames = {
+		"AdvancedCombatDroid_5",
+		"Anglerox",
+		"Arack",
+		"Aranobot",
+		"Ceratoferox",
+		"Gobbler",
+		"LightBipedMech",
+		"MiningMech",
+		"Onyscidus",
+		"Rapax",
+		"Ursacetus"
+	};
+
+	for (const auto& name : enemyNames) {
+		DB_EnemyStat enemyStat{};
+		enemyStat.LoadFromDataBase(name); // Fetch data based on the enemy name
+		mEnemyStatInfos.insert({ name, enemyStat });
+	}
 }
 
 /// +----------------------------------------------------

@@ -95,5 +95,10 @@ public:
 	void		SetStat_Attack3AnimName(std::string name)	{ mAttack3AnimName     = name;  }
 	void		SetStat_GetHitName(std::string name)		{ mGetHitAnimName      = name;  }
 	void		SetStat_DeathAnimName(std::string name)		{ mDeathAnimName       = name;  }
+
+
+public:
+	void SetDataFromDataBase(std::string PK_EnemyName);
+
 };
 
