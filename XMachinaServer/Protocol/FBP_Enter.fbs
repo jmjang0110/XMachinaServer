@@ -1,0 +1,21 @@
+
+include "Enum.fbs";
+include "Struct.fbs";
+include "Transform.fbs";
+
+
+// +------------------------
+//		  ENTER GAME 
+// ------------------------+
+namespace FBProtocol;
+
+table CPkt_EnterGame
+{
+	player_id: uint;	// 8 bytes
+}
+
+table SPkt_EnterGame
+{
+	myinfo  : Player;		// 나의 정보 
+	players : [Player];		// 나를 포함한 Room안의 모든 player 정보 
+}

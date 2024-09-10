@@ -170,6 +170,9 @@
     <Filter Include="Framework\Contents\GameWorld\Script\Item\Bullet">
       <UniqueIdentifier>{b9792db6-a37d-434e-9f9d-9d4c4406d2bd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Protocol\PacketProtocol">
+      <UniqueIdentifier>{da97ffe3-46e0-4abb-a1d8-46630385de8c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework.h">
@@ -224,9 +227,6 @@
       <Filter>Protocol\FlatBuffers</Filter>
     </ClInclude>
     <ClInclude Include="Protocol\Enum_generated.h">
-      <Filter>Protocol\FlatBuffers</Filter>
-    </ClInclude>
-    <ClInclude Include="Protocol\FBProtocol_generated.h">
       <Filter>Protocol\FlatBuffers</Filter>
     </ClInclude>
     <ClInclude Include="ServerLib\SendBuffersFactory.h">
@@ -567,6 +567,36 @@
     </ClInclude>
     <ClInclude Include="Contents\DB_EnemyStat.h">
       <Filter>Framework\Contents\DataBase\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Protocol\FBP_LogIn_generated.h">
+      <Filter>Protocol\PacketProtocol</Filter>
+    </ClInclude>
+    <ClInclude Include="Protocol\FBProtocol_generated.h">
+      <Filter>Protocol\PacketProtocol</Filter>
+    </ClInclude>
+    <ClInclude Include="Protocol\FBP_NetworkLatency_generated.h">
+      <Filter>Protocol\PacketProtocol</Filter>
+    </ClInclude>
+    <ClInclude Include="Protocol\FBP_Phero_generated.h">
+      <Filter>Protocol\PacketProtocol</Filter>
+    </ClInclude>
+    <ClInclude Include="Protocol\FBP_Player_generated.h">
+      <Filter>Protocol\PacketProtocol</Filter>
+    </ClInclude>
+    <ClInclude Include="Protocol\FBP_Bullet_generated.h">
+      <Filter>Protocol\PacketProtocol</Filter>
+    </ClInclude>
+    <ClInclude Include="Protocol\FBP_Chat_generated.h">
+      <Filter>Protocol\PacketProtocol</Filter>
+    </ClInclude>
+    <ClInclude Include="Protocol\FBP_Enemy_generated.h">
+      <Filter>Protocol\PacketProtocol</Filter>
+    </ClInclude>
+    <ClInclude Include="Protocol\FBP_Enter_generated.h">
+      <Filter>Protocol\PacketProtocol</Filter>
+    </ClInclude>
+    <ClInclude Include="Protocol\FBP_Item_generated.h">
+      <Filter>Protocol\PacketProtocol</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -948,9 +978,6 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Protocol\FBProtocol.fbs">
-      <Filter>Protocol\FlatBuffers</Filter>
-    </None>
     <None Include="Protocol\Struct.fbs">
       <Filter>Protocol\FlatBuffers</Filter>
     </None>
@@ -965,6 +992,36 @@
     </None>
     <None Include="Contents\Util\SimpleMath.inl">
       <Filter>Framework\Contents\Util</Filter>
+    </None>
+    <None Include="Protocol\FBP_LogIn.fbs">
+      <Filter>Protocol\PacketProtocol</Filter>
+    </None>
+    <None Include="Protocol\FBProtocol.fbs">
+      <Filter>Protocol\PacketProtocol</Filter>
+    </None>
+    <None Include="Protocol\FBP_Chat.fbs">
+      <Filter>Protocol\PacketProtocol</Filter>
+    </None>
+    <None Include="Protocol\FBP_NetworkLatency.fbs">
+      <Filter>Protocol\PacketProtocol</Filter>
+    </None>
+    <None Include="Protocol\FBP_Enter.fbs">
+      <Filter>Protocol\PacketProtocol</Filter>
+    </None>
+    <None Include="Protocol\FBP_Player.fbs">
+      <Filter>Protocol\PacketProtocol</Filter>
+    </None>
+    <None Include="Protocol\FBP_Enemy.fbs">
+      <Filter>Protocol\PacketProtocol</Filter>
+    </None>
+    <None Include="Protocol\FBP_Phero.fbs">
+      <Filter>Protocol\PacketProtocol</Filter>
+    </None>
+    <None Include="Protocol\FBP_Bullet.fbs">
+      <Filter>Protocol\PacketProtocol</Filter>
+    </None>
+    <None Include="Protocol\FBP_Item.fbs">
+      <Filter>Protocol\PacketProtocol</Filter>
     </None>
   </ItemGroup>
 </Project>

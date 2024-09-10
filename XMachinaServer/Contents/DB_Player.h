@@ -1,33 +1,19 @@
 #pragma once
-/// +-------------------------------
-///	       Player Data Base 
-/// ________________________________
-/// Manage Player Data In Game World 
-/// -------------------------------+
+#include "DB_Object.h"
 
-struct PlayerDataBase
+class DB_Player : public DB_Object
 {
-	std::string stringID;
-	std::string Name;
-
-	Vec3  Position;
-	float HP;
-	float MP;
-
-	//PlayerEnum::WeaponType mWeaponType;
-};
-
-class DB_Player
-{
-private:
-	concurrency::concurrent_unordered_map<UINT32, PlayerDataBase> mConnectedPlayers; /* Players Database Infos In Current Game Status */
+public:
 
 public:
 	DB_Player();
 	~DB_Player();
 
 public:
-	
+	virtual void FetchDataFromDataBase(const wchar_t* query); // DB 로 부터 데이터 읽는 전용 함수 
+	void LoadFromDataBase(int PK_ID);
 
 };
+
+
 
