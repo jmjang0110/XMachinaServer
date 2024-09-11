@@ -4,7 +4,7 @@
 class DB_EnemyStat : public DB_Object
 {
 public:
-    char PK_Name[50];
+    char        PK_Name[50];
 
     int         Level;
     int         PheroLevel;
@@ -17,11 +17,11 @@ public:
     float       AttackRange;
     float       AttackCoolTime;
 
-    char Attack1AnimName[50];
-    char Attack2AnimName[50];
-    char Attack3AnimName[50];
-    char GetHitAnimName[50];
-    char DeathAnimName[50];
+    char        Attack1AnimName[50];
+    char        Attack2AnimName[50];
+    char        Attack3AnimName[50];
+    char        GetHitAnimName[50];
+    char        DeathAnimName[50];
 
 public:
 	DB_EnemyStat();

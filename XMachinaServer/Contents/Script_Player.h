@@ -28,7 +28,7 @@ private:
 	SPtr<GameObject>													mDefaultWeapon       = {}; // H_Lock
 	SPtr<GameObject>													mCurrWeapon          = {};	
 	
-	ViewList															mViewListSnapShot    = {}; Lock::SRWLock mViewList_Lock;
+	ViewList								                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         							mViewListSnapShot    = {}; Lock::SRWLock mViewList_Lock;
 	ViewList															mViewList	         = {};
 	PlayerState															mPlayerState         = PlayerState::None;
 

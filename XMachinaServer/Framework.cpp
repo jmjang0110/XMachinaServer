@@ -228,6 +228,11 @@ void Framework::Launch()
 			});
 	}
 
+	// DB 전용 쓰레드르 만들어야한다. 
+	/// +---------------------- DB WORKER THREAD : 1 (worker Thread ---------------------------+
+
+
+
 	/// +-------------------------	TIMER THREAD : 1 (main) ------------------------------+
 	TIME_MGR->Launch();
 
