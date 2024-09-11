@@ -17,6 +17,14 @@ table CPkt_LogIn
 
 table SPkt_LogIn
 {
+	name	: string;
 	success : bool;			// 1 byte
+}
 
+table CPkt_SignUp
+{
+	name		: string;
+
+	id			: string;
+	password	: string;
 }
