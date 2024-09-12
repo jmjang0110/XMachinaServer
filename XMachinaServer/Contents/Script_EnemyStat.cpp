@@ -73,23 +73,23 @@ bool Script_EnemyStat::Hit(float damage, SPtr<GameObject> instigator)
 
 void Script_EnemyStat::SetDataFromDataBase(std::string PK_EnemyName)
 {
-    DB_EnemyStat DB = RESOURCE_MGR->GetEnemyStatInfo(PK_EnemyName);
+    auto DB = RESOURCE_MGR->GetEnemyStatInfo(PK_EnemyName);
     
-    mEnemyLevel          = DB.Level;
-    mPheroLevel          = DB.PheroLevel;
+    mEnemyLevel          = DB->Level;
+    mPheroLevel          = DB->PheroLevel;
     
-    mMoveSpeed           = DB.MoveSpeed;
-    mRotationSpeed       = DB.RotationSpeed;
-    mAttackRotationSpeed = DB.AttackRotationSpeed;
+    mMoveSpeed           = DB->MoveSpeed;
+    mRotationSpeed       = DB->RotationSpeed;
+    mAttackRotationSpeed = DB->AttackRotationSpeed;
 
-    mDetectionRange      = DB.DetectionRange;
-    mAttackRate          = DB.AttackRate;
-    mAttackRange         = DB.AttackRange;
-    mAttackCoolTime      = DB.AttackCoolTime;
+    mDetectionRange      = DB->DetectionRange;
+    mAttackRate          = DB->AttackRate;
+    mAttackRange         = DB->AttackRange;
+    mAttackCoolTime      = DB->AttackCoolTime;
                          
-    mAttack1AnimName     = DB.Attack1AnimName;
-    mAttack2AnimName     = DB.Attack2AnimName; 
-    mAttack3AnimName     = DB.Attack3AnimName;
-    mGetHitAnimName      = DB.GetHitAnimName;
-    mDeathAnimName       = DB.DeathAnimName;
+    mAttack1AnimName     = DB->Attack1AnimName;
+    mAttack2AnimName     = DB->Attack2AnimName; 
+    mAttack3AnimName     = DB->Attack3AnimName;
+    mGetHitAnimName      = DB->GetHitAnimName;
+    mDeathAnimName       = DB->DeathAnimName;
 }

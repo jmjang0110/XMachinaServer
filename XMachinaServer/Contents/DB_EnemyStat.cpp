@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "DB_EnemyStat.h"
+#include "DBController.h"
 
 DB_EnemyStat::DB_EnemyStat()
 	: DB_Object()
@@ -36,19 +37,9 @@ void DB_EnemyStat::FetchDataFromDataBase(const wchar_t* query)
 
     // Clean up
     ::SQLFreeHandle(SQL_HANDLE_STMT, mSQL_hStmt);
-}
-
-void DB_EnemyStat::LoadFromDataBase(std::string PK_Name)
-{ 
-    // Construct the query
-    wchar_t query[1024];
-    swprintf(query, 1024, L"SELECT Name, Level, PheroLevel, MoveSpeed, RotationSpeed, AttackRotationSpeed, DetectionRange, AttackRate, AttackRange, AttackCoolTime, Attack1AnimName, Attack2AnimName, Attack3AnimName, GetHitAnimName, DeathAnimName FROM EnemyStat WHERE Name = '%S'", PK_Name.c_str());
-
-    // Fetch data from the database
-    FetchDataFromDataBase(query);
 
     // Output fetched data for verification
-    std::wcout << L"Name: " << PK_Name.c_str() << L", Level: " << Level
+    std::wcout << L"Name: " << PK_Name << L", Level: " << Level
         << L", PheroLevel: " << PheroLevel
         << L", MoveSpeed: " << MoveSpeed
         << L", RotationSpeed: " << RotationSpeed
@@ -61,5 +52,14 @@ void DB_EnemyStat::LoadFromDataBase(std::string PK_Name)
         << L", Attack2AnimName: " << Attack2AnimName
         << L", Attack3AnimName: " << Attack3AnimName
         << L", GetHitAnimName: " << GetHitAnimName
-        << L", DeathAnimName: " << DeathAnimName<< "\n\n";
+        << L", DeathAnimName: " << DeathAnimName << "\n\n";
+}
+
+void DB_EnemyStat::LoadFromDataBase(std::string PK_Name)
+{ 
+    // Construct the query
+    wchar_t query[1024];
+    swprintf(query, 1024, L"SELECT Name, Level, PheroLevel, MoveSpeed, RotationSpeed, AttackRotationSpeed, DetectionRange, AttackRate, AttackRange, AttackCoolTime, Attack1AnimName, Attack2AnimName, Attack3AnimName, GetHitAnimName, DeathAnimName FROM EnemyStat WHERE Name = '%S'", PK_Name.c_str());
+
+    DB_CONTROLLER->PushDataBaseEvent(QueryPriority::None, DataBaseEventType::Query, shared_from_this(), query);
 }

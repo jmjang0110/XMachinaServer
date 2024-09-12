@@ -27,7 +27,6 @@ void DBController::Init()
 
 void DBController::Launch()
 {
-
 	while (mLaunchThread) {
 		DataBaseEvent ev;
 		/* 처리할 Event 를 꺼낸다. */
@@ -44,12 +43,8 @@ void DBController::Process_DataBaseEvent(DataBaseEvent ev)
 	DataBaseEventType type = ev.DBEventType;
 	switch (type)
 	{
-	case DataBaseEventType::None: {
-
-	}
-		break;
 	case DataBaseEventType::Query: {
-
+		ev.DBObject->FetchDataFromDataBase(ev.Query.c_str());
 	}
 		break;
 	default:
@@ -62,6 +57,31 @@ void DBController::PushDataBaseEvent(DataBaseEvent ev)
 {
 	mDBEventPQ.push(ev);
 }
+
+void DBController::PushDataBaseEvent(QueryPriority queryPriority, DataBaseEventType evType, SPtr<DB_Object> dbObj, const wchar_t* query)
+{
+	DataBaseEvent ev{};
+	ev.QPriority   = queryPriority;
+	ev.DBEventType = evType;
+	ev.DBObject    = dbObj;
+	ev.Query       = query;
+
+	PushDataBaseEvent(ev);
+}
+
+void DBController::ExecuteAllDataBaseEvents()
+{
+	while (!mDBEventPQ.empty()) {
+		DataBaseEvent ev;
+		/* 처리할 Event 를 꺼낸다. */
+		if (mDBEventPQ.try_pop(ev)) {
+
+			/* DataBase Event 실행 */
+			Process_DataBaseEvent(ev);
+		}
+	}
+}
+
 
 bool DBController::ConnectToDatabase(const wchar_t* dsn, const wchar_t* user, const wchar_t* password) {
 	SQLRETURN ret;

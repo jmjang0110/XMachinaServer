@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "DB_Phero.h"
+#include "DBController.h"
 
 DB_Phero::DB_Phero()
 	: DB_Object()
@@ -25,18 +26,16 @@ void DB_Phero::FetchDataFromDataBase(const wchar_t* query)
     // Clean up
     ::SQLFreeHandle(SQL_HANDLE_STMT, mSQL_hStmt);
 
+    // Now you can use phero.Level, phero.LifeTime_second, phero.Amount
+    std::wcout << L"Level: " << PK_Level << L", LifeTime_second: " << LifeTime_second << L", Amount: " << Amount << std::endl;
+
 }
 
 void DB_Phero::LoadFromDataBase(int Level)
 {
-
     // Construct the query
     wchar_t query[256];
     swprintf(query, 256, L"SELECT Level, LifeTime_second, Amount FROM Phero WHERE Level = %d", Level);
 
-    // Fetch data from the database
-    FetchDataFromDataBase(query);
-
-    // Now you can use phero.Level, phero.LifeTime_second, phero.Amount
-    std::wcout << L"Level: " << PK_Level << L", LifeTime_second: " << LifeTime_second << L", Amount: " << Amount << std::endl;
+    DB_CONTROLLER->PushDataBaseEvent(QueryPriority::None, DataBaseEventType::Query, shared_from_this(), query);
 }

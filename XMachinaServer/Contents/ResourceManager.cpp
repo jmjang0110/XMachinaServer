@@ -350,6 +350,7 @@ void ResourceManager::Init()
 {
 	LoadDB_PheroInfos();
 	LoadDB_EnemyStatInfos();
+	DB_CONTROLLER->ExecuteAllDataBaseEvents();
 
 	mTileMap = std::make_shared<TileMap>();
 
@@ -364,7 +365,7 @@ void ResourceManager::Init()
 
 }
 
-DB_Phero ResourceManager::GetPheroInfo(int key) const
+SPtr<DB_Phero> ResourceManager::GetPheroInfo(int key) const
 {
 	auto it = mPheroInfos.find(key);
 	if (it != mPheroInfos.end()) {
@@ -376,7 +377,7 @@ DB_Phero ResourceManager::GetPheroInfo(int key) const
 	}
 }
 
-DB_PheroDropInfo ResourceManager::GetPheroDropInfo(int key) const
+SPtr<DB_PheroDropInfo> ResourceManager::GetPheroDropInfo(int key) const
 {
 	auto it = mPheroDropInfos.find(key);
 	if (it != mPheroDropInfos.end()) {
@@ -388,7 +389,7 @@ DB_PheroDropInfo ResourceManager::GetPheroDropInfo(int key) const
 	}
 }
 
-DB_EnemyStat ResourceManager::GetEnemyStatInfo(const std::string& key) const
+SPtr<DB_EnemyStat> ResourceManager::GetEnemyStatInfo(const std::string& key) const
 {
 	auto it = mEnemyStatInfos.find(key);
 	if (it != mEnemyStatInfos.end()) {
@@ -403,15 +404,15 @@ void ResourceManager::LoadDB_PheroInfos()
 {
 	int MaxLevel = 3;
 	for (int level = 1; level <= MaxLevel; ++level) {
-		DB_Phero phero{};
-		phero.LoadFromDataBase(level);
+		auto phero = MEMORY->Make_Shared<DB_Phero>();
+		phero->LoadFromDataBase(level);
 		mPheroInfos.insert({ level, phero });
 	}
 
 	MaxLevel = 10;
 	for (int level = 1; level <= MaxLevel; ++level) {
-		DB_PheroDropInfo pheroDropInfo{};
-		pheroDropInfo.LoadFromDataBase(level);
+		auto pheroDropInfo = MEMORY->Make_Shared<DB_PheroDropInfo>();
+		pheroDropInfo->LoadFromDataBase(level);
 		mPheroDropInfos.insert({ level, pheroDropInfo });
 	}
 
@@ -438,8 +439,8 @@ void ResourceManager::LoadDB_EnemyStatInfos()
 	};
 
 	for (const auto& name : enemyNames) {
-		DB_EnemyStat enemyStat{};
-		enemyStat.LoadFromDataBase(name); // Fetch data based on the enemy name
+		SPtr<DB_EnemyStat> enemyStat = MEMORY->Make_Shared<DB_EnemyStat>();
+		enemyStat->LoadFromDataBase(name); // Fetch data based on the enemy name
 		mEnemyStatInfos.insert({ name, enemyStat });
 	}
 }

@@ -29,7 +29,7 @@ struct DataBaseEvent {
 	QueryPriority	  QPriority     = QueryPriority::None;
 	DataBaseEventType DBEventType   = DataBaseEventType::None;
 	SPtr<DB_Object>   DBObject      = nullptr;
-	std::string		  Query         = "";
+	std::wstring	  Query         = {};
 
 	bool operator< (const DataBaseEvent& rhs) const {
 		return static_cast<int>(this->QPriority) > static_cast<int>(rhs.QPriority); // 높은 숫자의 QueryPriority가 낮은 우선순위를 가지도록 설정
@@ -66,6 +66,8 @@ public:
 	void Launch();
 	void Process_DataBaseEvent(DataBaseEvent ev);
 	void PushDataBaseEvent(DataBaseEvent ev);
+	void PushDataBaseEvent(QueryPriority quryPriority, DataBaseEventType evType, SPtr<DB_Object> dbObj, const wchar_t* query);
+	void ExecuteAllDataBaseEvents();
 
 public:
 	bool ConnectToDatabase(const wchar_t* dsn, const wchar_t* user, const wchar_t* password);

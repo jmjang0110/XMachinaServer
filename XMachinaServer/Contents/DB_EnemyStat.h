@@ -28,7 +28,8 @@ public:
 	~DB_EnemyStat();
 
 public:
-	virtual void FetchDataFromDataBase(const wchar_t* query); // DB 로 부터 데이터 읽는 전용 함수 
+    // DB 로 부터 데이터 읽는 전용 함수 
+    virtual void FetchDataFromDataBase(const wchar_t* query) override;
 	void LoadFromDataBase(std::string PK_Name);
 
 };
