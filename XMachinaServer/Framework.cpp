@@ -210,6 +210,7 @@ void Framework::Launch()
 
 	/// +---------------------- IOCP WORKER THREAD : 4 (worker Thread ---------------------------+
 	/* 4 : IOCP Thread  1 : Timer Thread*/
+	
 	for (INT32 i = 1; i <= CoreNum ; ++i) { 
 	
 		THREAD_MGR->RunThread("Worker Threads : 4 (CoreNum - 1(Timer))" + std::to_string(i), [&]() {
@@ -227,13 +228,16 @@ void Framework::Launch()
 
 			});
 	}
+	LOG_MGR->Cout("Worker Threads (4) Successfully start!\n");
 
-	// DB 전용 쓰레드르 만들어야한다. 
-	/// +---------------------- DB WORKER THREAD : 1 (worker Thread ---------------------------+
-
-
+	/// +---------------------- DB WORKER THREAD : 1 ---------------------------+
+	THREAD_MGR->RunThread("Data Base Thread : 1", [&]() {
+			DB_CONTROLLER->Launch();
+		});
+	LOG_MGR->Cout("DataBase Thread (1) Successfully start!\n");
 
 	/// +-------------------------	TIMER THREAD : 1 (main) ------------------------------+
+	LOG_MGR->Cout("Time Thread (1) Successfully start!\n");
 	TIME_MGR->Launch();
 
 #ifdef  CONNECT_WITH_TEST_CLIENT
@@ -249,7 +253,7 @@ void Framework::Launch()
 		});
 #endif //  CONNECT_WITH_TEST_CLIENT
 
-
+	LOG_MGR->Cout("All Threas End... Good Bye X-Macina !\n");
 	THREAD_MGR->JoinAllThreads();
 }
 

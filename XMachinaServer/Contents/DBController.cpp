@@ -18,18 +18,49 @@ DBController::DBController()
 DBController::~DBController()
 {
 	SQLFreeHandle(SQL_HANDLE_ENV, mhEnv);
-	//MEMORY->Delete(mX_Machina_DB.MonsterDB);
-	//MEMORY->Delete(mX_Machina_DB.NPCDB);
-	//MEMORY->Delete(mX_Machina_DB.PlayerDB);
-
 }
 
 void DBController::Init()
 {
-	//mX_Machina_DB.MonsterDB = MEMORY->New<DB_Monster>();
-	//mX_Machina_DB.NPCDB     = MEMORY->New<DB_NPC>();
-	//mX_Machina_DB.PlayerDB  = MEMORY->New<DB_Player>();
 
+}
+
+void DBController::Launch()
+{
+
+	while (mLaunchThread) {
+		DataBaseEvent ev;
+		/* 처리할 Event 를 꺼낸다. */
+		if (mDBEventPQ.try_pop(ev)) {
+
+			/* DataBase Event 실행 */
+			Process_DataBaseEvent(ev);
+		}
+	}
+}
+
+void DBController::Process_DataBaseEvent(DataBaseEvent ev)
+{
+	DataBaseEventType type = ev.DBEventType;
+	switch (type)
+	{
+	case DataBaseEventType::None: {
+
+	}
+		break;
+	case DataBaseEventType::Query: {
+
+	}
+		break;
+	default:
+		assert(0);
+		break;
+	}
+}
+
+void DBController::PushDataBaseEvent(DataBaseEvent ev)
+{
+	mDBEventPQ.push(ev);
 }
 
 bool DBController::ConnectToDatabase(const wchar_t* dsn, const wchar_t* user, const wchar_t* password) {

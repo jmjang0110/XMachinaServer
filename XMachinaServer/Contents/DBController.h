@@ -11,16 +11,29 @@
 ///		 SQL Server Management Studio Express
 /// -----------------------------------------------+
 
-#include "DB_Player.h"
-#include "DB_NPC.h"
+#include "DB_Object.h"
 
+enum class DataBaseEventType {
+	None,
+	Query,
+	_count,
+};
 
+// 쿼리 실행 우선순위 
+enum class QueryPriority {
+	None,
 
-/* X-Machina Game Data Base */
-struct X_Machina_DB
-{
-	DB_Player*	PlayerDB  = nullptr;
-	DB_NPC*		NPCDB     = nullptr;
+	_count,
+};
+struct DataBaseEvent {
+	QueryPriority	  QPriority     = QueryPriority::None;
+	DataBaseEventType DBEventType   = DataBaseEventType::None;
+	SPtr<DB_Object>   DBObject      = nullptr;
+	std::string		  Query         = "";
+
+	bool operator< (const DataBaseEvent& rhs) const {
+		return static_cast<int>(this->QPriority) > static_cast<int>(rhs.QPriority); // 높은 숫자의 QueryPriority가 낮은 우선순위를 가지도록 설정
+	}
 };
 
 #define DB_CONTROLLER DBController::GetInst()
@@ -40,13 +53,19 @@ private:
 	std::string mPassword;
 
 private:
-	X_Machina_DB mX_Machina_DB;
+	Concurrency::concurrent_priority_queue<DataBaseEvent> mDBEventPQ;
+	bool mLaunchThread = true;
 
 public:
 	DBController();
 	~DBController();
 
 	void Init();
+
+public:
+	void Launch();
+	void Process_DataBaseEvent(DataBaseEvent ev);
+	void PushDataBaseEvent(DataBaseEvent ev);
 
 public:
 	bool ConnectToDatabase(const wchar_t* dsn, const wchar_t* user, const wchar_t* password);
