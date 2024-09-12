@@ -257,8 +257,7 @@ void BattleScene::LoadScriptExporter(std::ifstream& file, SPtr<GameObject> objec
 		int id;
 		exporter.GetData("ID", id);
 		exporter.GetData("Name", weaponName);
-		LOG_MGR->Cout(weaponName, '\n');
-			
+
 		/// > ------------------ Crate ------------------
 		crate->SetID(id);
 		crate->SetName(weaponName);

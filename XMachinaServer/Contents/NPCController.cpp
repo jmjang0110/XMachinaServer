@@ -30,15 +30,12 @@ NPCController::~NPCController()
 void NPCController::Init(SPtr<GameRoom> owner)
 {
 	mOwnerRoom = owner;
-
-	SectorController* sc = mOwnerRoom->GetSectorController();
-	Coordinate maxSectorIdx = sc->GetMaxSectorIndex();
-
-	InitMonsters(maxSectorIdx);
+	InitMonsters();
+	InitItems();
 }
 
 
-void NPCController::InitMonsters(Coordinate maxSectorIdx)
+void NPCController::InitMonsters()
 {
 	SectorController* sc = mOwnerRoom->GetSectorController();
 
@@ -84,6 +81,7 @@ void NPCController::InitItems()
 
 		// INIT
 		d_Item->Start();
+		d_Item->SetOwnerRoom(mOwnerRoom);
 	}
 
 
@@ -96,6 +94,7 @@ void NPCController::InitItems()
 
 		// INIT
 		s_Item->Start();
+		s_Item->SetOwnerRoom(mOwnerRoom);
 	}
 
 }
@@ -123,10 +122,6 @@ void NPCController::AddStaticItem(UINT32 id, SPtr<GameObject> item)
 	if (iter == mStaticItems.end()) {
 		mStaticItems.insert(std::make_pair(id, item));
 	}
-}
-
-void NPCController::AddBuilding(UINT32 id, SPtr<GameObject> buildings)
-{
 }
 
 SPtr<GameObject> NPCController::GetMonster(UINT32 monsterID)

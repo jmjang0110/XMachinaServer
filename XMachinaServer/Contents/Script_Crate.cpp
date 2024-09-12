@@ -41,5 +41,20 @@ void Script_Crate::Clone(SPtr<GameObject> target)
 
 bool Script_Crate::DoInteract(SPtr<GameObject> player)
 {
-    return false;
+    Vec3 player_position = player->GetTransform()->GetSnapShot().GetPosition();
+    Vec3 crate_position  = mOwner->GetTransform()->GetPosition();
+    Vec3 dist            = player_position - crate_position;
+
+    // dist의 길이를 계산하고 3.f 이내면 true 반환
+    float distance  = dist.Length();
+    bool interact   = distance <= 3.f;
+    if (interact) {
+        if (mCrateState == CrateState::Closed) {
+            mCrateState = CrateState::Open;
+        }
+        else if (mCrateState == CrateState::Open) {
+            mCrateState = CrateState::Closed;
+        }
+    }
+    return interact;
 }

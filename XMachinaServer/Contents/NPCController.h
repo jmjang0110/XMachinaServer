@@ -30,16 +30,13 @@ public:
 public:
 	void Init(SPtr<GameRoom> owner);
 
-	/* sectorIdx 에 따라서 다른 몬스터 종류를 생성 - monTypes에 있는 MonsterType 몬스터 생성*/
-	void InitMonsters(Coordinate maxSectorIdx);
+	void InitMonsters();
 	void InitItems();
 
 
 	void AddMonster(UINT32 id, SPtr<GameObject> monster);
 	void AddDynamicItem(UINT32 id, SPtr<GameObject> item);
 	void AddStaticItem(UINT32 id, SPtr<GameObject> item);
-	void AddBuilding(UINT32 id, SPtr<GameObject> buildings);
-
 
 	SPtr<GameRoom>			GetOwnerRoom() { return mOwnerRoom; }
 
