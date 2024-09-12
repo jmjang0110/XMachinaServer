@@ -36,6 +36,7 @@ void DBController::Launch()
 			Process_DataBaseEvent(ev);
 		}
 	}
+	
 }
 
 void DBController::Process_DataBaseEvent(DataBaseEvent ev)
@@ -80,6 +81,11 @@ void DBController::ExecuteAllDataBaseEvents()
 			Process_DataBaseEvent(ev);
 		}
 	}
+	LOG_MGR->SetColor(TextColor::Magenta);
+	LOG_MGR->Cout("Execute All DataBase Event Queue.\n");
+	LOG_MGR->SetColor(TextColor::Default);
+
+
 }
 
 
@@ -192,7 +198,7 @@ bool DBController::FetchData(const wchar_t* query) {
 			SQLULEN		colSize;
 
 			// 컬럼 메타 정보 가져오기
-			ret = SQLDescribeCol(hStmt, i, colName, sizeof(colName), &colNameLen, &colType, &colSize, &colScale, &colNullable);
+			ret = SQLDescribeCol(hStmt, static_cast<SQLSMALLINT>(i), colName, sizeof(colName), &colNameLen, &colType, &colSize, &colScale, &colNullable);
 			if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO) {
 				LOG_MGR->Cout("컬럼 설명 실패\n");
 				::SQLFreeHandle(SQL_HANDLE_STMT, hStmt);
@@ -207,26 +213,26 @@ bool DBController::FetchData(const wchar_t* query) {
 			case SQL_VARCHAR:
 			case SQL_LONGVARCHAR: {
 				SQLCHAR colData[256] = {};
-				ret = SQLGetData(hStmt, i, SQL_C_CHAR, colData, sizeof(colData), &colDataLen);
+				ret = SQLGetData(hStmt, static_cast<SQLSMALLINT>(i), SQL_C_CHAR, colData, sizeof(colData), &colDataLen);
 				std::cout << "col" << i << ": " << colData << std::endl;
 				break;
 			}
 			case SQL_INTEGER: {
 				SQLINTEGER intData = 0;
-				ret = SQLGetData(hStmt, i, SQL_C_SLONG, &intData, sizeof(intData), &colDataLen);
+				ret = SQLGetData(hStmt, static_cast<SQLSMALLINT>(i), SQL_C_SLONG, &intData, sizeof(intData), &colDataLen);
 				std::cout << "col" << i << ": " << intData << std::endl;
 				break;
 			}
 			case SQL_FLOAT: {
 				SQLFLOAT floatData = 0.0f;
-				ret = SQLGetData(hStmt, i, SQL_C_DOUBLE /*SQL_C_FLOAT*/, &floatData, sizeof(floatData), &colDataLen);
+				ret = SQLGetData(hStmt, static_cast<SQLSMALLINT>(i), SQL_C_DOUBLE /*SQL_C_FLOAT*/, &floatData, sizeof(floatData), &colDataLen);
 				std::cout << "col" << i << ": " << floatData << std::endl;
 				break;
 			}
 			case SQL_DOUBLE:
 			case SQL_REAL: {
 				SQLDOUBLE doubleData = 0;
-				ret = SQLGetData(hStmt, i, SQL_C_DOUBLE, &doubleData, sizeof(doubleData), &colDataLen);
+				ret = SQLGetData(hStmt, static_cast<SQLSMALLINT>(i), SQL_C_DOUBLE, &doubleData, sizeof(doubleData), &colDataLen);
 				std::cout << "col" << i << ": " << doubleData << std::endl;
 				break;
 			}
