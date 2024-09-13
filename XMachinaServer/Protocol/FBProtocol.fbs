@@ -26,6 +26,9 @@ enum FBsProtocolID : ubyte {
 
 	CPkt_LogIn,          
 	SPkt_LogIn,   
+
+	CPkt_SignUp,
+	SPkt_SignUp,
 	
 	CPkt_Chat,             
 	SPkt_Chat,       
@@ -33,6 +36,12 @@ enum FBsProtocolID : ubyte {
 	CPkt_NetworkLatency,   
 	SPkt_NetworkLatency, 
 	
+	CPkt_EnterLobby,
+	SPkt_EnterLobby,
+
+	CPkt_PlayGame,
+	SPkt_PlayGame,
+
 	CPkt_EnterGame,        
 	SPkt_EnterGame, 
 	

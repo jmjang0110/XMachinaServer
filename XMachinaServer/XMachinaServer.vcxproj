@@ -186,7 +186,7 @@
     <ClInclude Include="Contents\DB_Object.h" />
     <ClInclude Include="Contents\DB_Phero.h" />
     <ClInclude Include="Contents\DB_PheroDropInfo.h" />
-    <ClInclude Include="Contents\DB_Player.h" />
+    <ClInclude Include="Contents\DB_UserInfo.h" />
     <ClInclude Include="Contents\DB_Weapon.h" />
     <ClInclude Include="Contents\EntityTag.h" />
     <ClInclude Include="Contents\FileIO.h" />
@@ -316,7 +316,7 @@
     <ClCompile Include="Contents\DB_Object.cpp" />
     <ClCompile Include="Contents\DB_Phero.cpp" />
     <ClCompile Include="Contents\DB_PheroDropInfo.cpp" />
-    <ClCompile Include="Contents\DB_Player.cpp" />
+    <ClCompile Include="Contents\DB_UserInfo.cpp" />
     <ClCompile Include="Contents\DB_Weapon.cpp" />
     <ClCompile Include="Contents\FileIO.cpp" />
     <ClCompile Include="Contents\GameEntity.cpp" />

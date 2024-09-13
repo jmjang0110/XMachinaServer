@@ -12,6 +12,7 @@
 #include "Contents/NPCController.h"
 #include "Contents/PlayerController.h"
 #include "Contents/GameRoom.h"	
+#include "Contents/DBController.h"
 
 #include "Contents/GameObject.h"
 #include "Contents/Transform.h"
@@ -49,12 +50,28 @@ bool FBsPacketFactory::ProcessFBsPacket(SPtr_Session session, BYTE* packetBuf, U
 		Process_CPkt_LogIn(session, *packet);
 		break;
 	}
+	case FBProtocol::FBsProtocolID::FBsProtocolID_CPkt_EnterLobby:
+	{
+		LOG_MGR->Cout(session->GetID(), " - RECV - ", "[ CPkt_EnterLobby ]\n");
+		const FBProtocol::CPkt_EnterLobby* packet = flatbuffers::GetRoot<FBProtocol::CPkt_EnterLobby>(DataPtr);
+		if (!packet) return false;
+		Process_CPkt_EnterLobby(session, *packet);
+		break;
+	}
 	case FBProtocol::FBsProtocolID::FBsProtocolID_CPkt_EnterGame:
 	{
 		LOG_MGR->Cout(session->GetID(), " - RECV - ", "[ CPkt_EnterGame ]\n");
 		const FBProtocol::CPkt_EnterGame* packet = flatbuffers::GetRoot<FBProtocol::CPkt_EnterGame>(DataPtr);
 		if (!packet) return false;
 		Process_CPkt_EnterGame(session, *packet);
+		break;
+	}
+	case FBProtocol::FBsProtocolID::FBsProtocolID_CPkt_PlayGame:
+	{
+		LOG_MGR->Cout(session->GetID(), " - RECV - ", "[ CPkt_PlayGame ]\n");
+		const FBProtocol::CPkt_PlayGame* packet = flatbuffers::GetRoot<FBProtocol::CPkt_PlayGame>(DataPtr);
+		if (!packet) return false;
+		Process_CPkt_PlayGame(session, *packet);
 		break;
 	}
 	case FBProtocol::FBsProtocolID::FBsProtocolID_CPkt_Chat:
@@ -254,25 +271,37 @@ bool FBsPacketFactory::Process_CPkt_LogIn(SPtr_Session session, const FBProtocol
 	return true;
 #endif
 	SPtr<GameSession> gameSession = std::static_pointer_cast<GameSession>(session);
-	gameSession->GetPlayer()->GetTransform()->SetPosition(Vec3(65, 0, 240));
+	
+	std::string ID       = pkt.id()->c_str();
+	std::string Password = pkt.password()->c_str();
+
+	gameSession->LoadUserInfo(ID, Password);
 
 	LOG_MGR->SetColor(TextColor::BrightBlue);
 	LOG_MGR->Cout("LOG IN SESSION ID : ", gameSession->GetID());
-	LOG_MGR->WCout(L"-- LOG-IN-IP : IPv4-", gameSession->GetSocketData().GetIpAddress().c_str(), '\n');
+	LOG_MGR->WCout(L"-- LOG-IN-IP (Try...) : IPv4-", gameSession->GetSocketData().GetIpAddress().c_str(), '\n');
 	LOG_MGR->SetColor(TextColor::Default);
 
-	gameSession->GetPlayer()->Update();
+	//gameSession->GetPlayer()->GetTransform()->SetPosition(Vec3(65, 0, 240));
+	//gameSession->GetPlayer()->Update();
 
 	/// +--------------------------------
 	/// SEND LOG IN PKT TO ME ( SESSION )
 	/// --------------------------------+
 	/// +---------------------------------------------------------------------------------------------------------------
-	bool LogInSuccess  = true;						   // IS MY GAME PLAYER SUCCESS ?
+	//bool LogInSuccess  = true;						   // IS MY GAME PLAYER SUCCESS ?
 	/// ---------------------------------------------------------------------------------------------------------------+
 
-	auto SendPkt_LogIn     = FBS_FACTORY->SPkt_LogIn(LogInSuccess);
-	session->Send(SendPkt_LogIn);
+	//auto SendPkt_LogIn     = FBS_FACTORY->SPkt_LogIn(LogInSuccess);
+	//session->Send(SendPkt_LogIn);
 	
+	return true;
+}
+
+bool FBsPacketFactory::Process_CPkt_EnterLobby(SPtr_Session session, const FBProtocol::CPkt_EnterLobby& pkt)
+{
+	SPtr<GameSession> gameSession = std::static_pointer_cast<GameSession>(session);
+
 	return true;
 }
 
@@ -299,6 +328,13 @@ bool FBsPacketFactory::Process_CPkt_EnterGame(SPtr_Session session, const FBProt
 	/// ---------------------------------------------------------------------------------------+
 	auto SendPkt_NewPlayer = FBS_FACTORY->SPkt_NewPlayer(MyPlayer);
 	ROOM_MGR->BroadcastRoom(gameSession->GetPlayer()->GetOwnerRoom()->GetID(), SendPkt_NewPlayer, gameSession->GetID());
+	return true;
+}
+
+bool FBsPacketFactory::Process_CPkt_PlayGame(SPtr_Session session, const FBProtocol::CPkt_PlayGame& pkt)
+{
+	SPtr<GameSession> gameSession = std::static_pointer_cast<GameSession>(session);
+
 	return true;
 }
 
@@ -843,6 +879,72 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_EnterGame(SPtr<GameObject>& myinfo, std::
 
 	return SEND_FACTORY->CreatePacket(bufferPtr, serializedDataSize, FBProtocol::FBsProtocolID::FBsProtocolID_SPkt_EnterGame);
 
+}
+
+SPtr_SendPktBuf FBsPacketFactory::SPkt_EnterLobby(SPtr<GameObject>& myinfo, std::vector<SPtr<GameObject>>& players)
+{
+flatbuffers::FlatBufferBuilder builder;
+
+	std::vector<flatbuffers::Offset<FBProtocol::Player>> PlayerSnapShots_vector;
+
+	/// +-------------------------------------------------------------------------------------
+	///		INTERPRET MY PLAYER INFO 
+	/// -------------------------------------------------------------------------------------+	
+	auto transSNS          = myinfo.get()->GetTransform()->GetSnapShot(); 
+	Vec3 transPos          = transSNS.GetPosition();
+	Vec3 transRot          = transSNS.GetRotation();
+	Vec3 transSpineLookDir = transSNS.GetLook();
+
+	auto position      = FBProtocol::CreateVector3(builder, transPos.x, transPos.y, transPos.z);
+	auto rotation      = FBProtocol::CreateVector3(builder, transRot.x, transRot.y, transRot.z);
+	auto transform     = FBProtocol::CreateTransform(builder, position, rotation);
+	auto Spine_LookDir = FBProtocol::CreateVector3(builder, 0.f, 0.f, 0.f);
+	auto Myinfo        = CreatePlayer(builder, myinfo->GetID(), builder.CreateString(myinfo->GetName()), FBProtocol::OBJECT_TYPE::OBJECT_TYPE_PLAYER, transform, Spine_LookDir);
+
+
+	/// +-------------------------------------------------------------------------------------
+	///		INTERPRET REMOTE PLAYERS INFO 
+	/// -------------------------------------------------------------------------------------+	
+	for (auto& p : players) {
+		auto transSNS          = p->GetTransform()->GetSnapShot();
+		Vec3 transPos          = transSNS.GetPosition();
+		Vec3 transRot          = transSNS.GetRotation();
+		Vec3 transSpineLookDir = p->GetTransform()->GetLook(); // ??? 
+
+		auto ID             = p->GetID();
+		auto name           = builder.CreateString(p->GetName());
+		auto position       = FBProtocol::CreateVector3(builder, transPos.x, transPos.y, transPos.z);
+		auto rotation       = FBProtocol::CreateVector3(builder, transRot.x, transRot.y, transRot.z);
+		auto transform      = FBProtocol::CreateTransform(builder, position, rotation);
+		auto Spine_LookDir  = FBProtocol::CreateVector3(builder, transSpineLookDir.x, transSpineLookDir.y, transSpineLookDir.z);
+
+
+		auto PlayerSnapShot = CreatePlayer(builder, ID, name, FBProtocol::OBJECT_TYPE::OBJECT_TYPE_PLAYER, transform, Spine_LookDir); // CreatePlayerSnapShot는 스키마에 정의된 함수입니다.
+		PlayerSnapShots_vector.push_back(PlayerSnapShot);
+	}
+	auto PlayerSnapShotsOffset = builder.CreateVector(PlayerSnapShots_vector);
+
+
+	/// +-------------------------------------------------------------------------------------
+	///		SEND ENTER_GAME SPKT 
+	/// -------------------------------------------------------------------------------------+	
+	auto ServerPacket = FBProtocol::CreateSPkt_EnterLobby(builder, Myinfo, PlayerSnapShotsOffset);
+	builder.Finish(ServerPacket);
+	const uint8_t* bufferPtr = builder.GetBufferPointer();
+	const uint16_t serializedDataSize = static_cast<uint16_t>(builder.GetSize());
+
+	return SEND_FACTORY->CreatePacket(bufferPtr, serializedDataSize, FBProtocol::FBsProtocolID::FBsProtocolID_SPkt_EnterLobby);
+}
+
+SPtr_SendPktBuf FBsPacketFactory::SPkt_PlayGame()
+{
+	flatbuffers::FlatBufferBuilder builder;
+	auto ServerPacket = FBProtocol::CreateSPkt_PlayGame(builder);
+	builder.Finish(ServerPacket);
+	const uint8_t* bufferPtr = builder.GetBufferPointer();
+	const uint16_t serializedDataSize = static_cast<uint16_t>(builder.GetSize());
+
+	return SEND_FACTORY->CreatePacket(bufferPtr, serializedDataSize, FBProtocol::FBsProtocolID::FBsProtocolID_SPkt_PlayGame);
 }
 
 SPtr_SendPktBuf FBsPacketFactory::SPkt_NetworkLatency(long long timestamp)

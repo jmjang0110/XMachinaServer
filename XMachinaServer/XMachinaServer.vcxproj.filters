@@ -283,7 +283,7 @@
     <ClInclude Include="Contents\DB_NPC.h">
       <Filter>Framework\Contents\DataBase\Object</Filter>
     </ClInclude>
-    <ClInclude Include="Contents\DB_Player.h">
+    <ClInclude Include="Contents\DB_UserInfo.h">
       <Filter>Framework\Contents\DataBase\Object</Filter>
     </ClInclude>
     <ClInclude Include="Contents\TimeManager.h">
@@ -568,19 +568,13 @@
     <ClInclude Include="Contents\DB_EnemyStat.h">
       <Filter>Framework\Contents\DataBase\Object</Filter>
     </ClInclude>
-    <ClInclude Include="Protocol\FBP_LogIn_generated.h">
-      <Filter>Protocol\PacketProtocol</Filter>
-    </ClInclude>
     <ClInclude Include="Protocol\FBProtocol_generated.h">
       <Filter>Protocol\PacketProtocol</Filter>
     </ClInclude>
     <ClInclude Include="Protocol\FBP_NetworkLatency_generated.h">
       <Filter>Protocol\PacketProtocol</Filter>
     </ClInclude>
-    <ClInclude Include="Protocol\FBP_Phero_generated.h">
-      <Filter>Protocol\PacketProtocol</Filter>
-    </ClInclude>
-    <ClInclude Include="Protocol\FBP_Player_generated.h">
+    <ClInclude Include="Protocol\FBP_Enter_generated.h">
       <Filter>Protocol\PacketProtocol</Filter>
     </ClInclude>
     <ClInclude Include="Protocol\FBP_Bullet_generated.h">
@@ -592,10 +586,16 @@
     <ClInclude Include="Protocol\FBP_Enemy_generated.h">
       <Filter>Protocol\PacketProtocol</Filter>
     </ClInclude>
-    <ClInclude Include="Protocol\FBP_Enter_generated.h">
+    <ClInclude Include="Protocol\FBP_Item_generated.h">
       <Filter>Protocol\PacketProtocol</Filter>
     </ClInclude>
-    <ClInclude Include="Protocol\FBP_Item_generated.h">
+    <ClInclude Include="Protocol\FBP_Phero_generated.h">
+      <Filter>Protocol\PacketProtocol</Filter>
+    </ClInclude>
+    <ClInclude Include="Protocol\FBP_Player_generated.h">
+      <Filter>Protocol\PacketProtocol</Filter>
+    </ClInclude>
+    <ClInclude Include="Protocol\FBP_LogIn_generated.h">
       <Filter>Protocol\PacketProtocol</Filter>
     </ClInclude>
   </ItemGroup>
@@ -690,7 +690,7 @@
     <ClCompile Include="Contents\DB_NPC.cpp">
       <Filter>Framework\Contents\DataBase\Object</Filter>
     </ClCompile>
-    <ClCompile Include="Contents\DB_Player.cpp">
+    <ClCompile Include="Contents\DB_UserInfo.cpp">
       <Filter>Framework\Contents\DataBase\Object</Filter>
     </ClCompile>
     <ClCompile Include="Contents\TimeManager.cpp">
@@ -993,13 +993,7 @@
     <None Include="Contents\Util\SimpleMath.inl">
       <Filter>Framework\Contents\Util</Filter>
     </None>
-    <None Include="Protocol\FBP_LogIn.fbs">
-      <Filter>Protocol\PacketProtocol</Filter>
-    </None>
     <None Include="Protocol\FBProtocol.fbs">
-      <Filter>Protocol\PacketProtocol</Filter>
-    </None>
-    <None Include="Protocol\FBP_Chat.fbs">
       <Filter>Protocol\PacketProtocol</Filter>
     </None>
     <None Include="Protocol\FBP_NetworkLatency.fbs">
@@ -1008,19 +1002,25 @@
     <None Include="Protocol\FBP_Enter.fbs">
       <Filter>Protocol\PacketProtocol</Filter>
     </None>
-    <None Include="Protocol\FBP_Player.fbs">
+    <None Include="Protocol\FBP_Bullet.fbs">
+      <Filter>Protocol\PacketProtocol</Filter>
+    </None>
+    <None Include="Protocol\FBP_Chat.fbs">
       <Filter>Protocol\PacketProtocol</Filter>
     </None>
     <None Include="Protocol\FBP_Enemy.fbs">
       <Filter>Protocol\PacketProtocol</Filter>
     </None>
+    <None Include="Protocol\FBP_Item.fbs">
+      <Filter>Protocol\PacketProtocol</Filter>
+    </None>
     <None Include="Protocol\FBP_Phero.fbs">
       <Filter>Protocol\PacketProtocol</Filter>
     </None>
-    <None Include="Protocol\FBP_Bullet.fbs">
+    <None Include="Protocol\FBP_Player.fbs">
       <Filter>Protocol\PacketProtocol</Filter>
     </None>
-    <None Include="Protocol\FBP_Item.fbs">
+    <None Include="Protocol\FBP_LogIn.fbs">
       <Filter>Protocol\PacketProtocol</Filter>
     </None>
   </ItemGroup>

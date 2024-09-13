@@ -11,6 +11,9 @@
 #include "Script.h"
 #include "Script_Player.h"
 
+#include "DB_UserInfo.h"
+
+
 GameSession::GameSession() 
 {
 }
@@ -21,10 +24,12 @@ GameSession::~GameSession()
 		mPlayer->DeActivate();
 		mPlayer = nullptr;
 	}
+	mUserInfo = nullptr;
 }
 
 void GameSession::OnConnected()
 {
+	/* Player */
 	mPlayer = MEMORY->Make_Shared<GameObject>(this->GetID());
 	mPlayer->AddComponent<Transform>(Component::Type::Transform);
 	mPlayer->AddComponent<Collider>(Component::Type::Collider);
@@ -34,6 +39,10 @@ void GameSession::OnConnected()
 	mPlayer->Start();
 
 	ROOM_MGR->EnterInRoom(mPlayer); // WRITE Lock 
+
+	/* [DB] User Info */
+	mUserInfo = MEMORY->Make_Shared<DB_UserInfo>();
+	mUserInfo->SetOnwerGameSession(std::dynamic_pointer_cast<GameSession>(shared_from_this()));
 }
 
 void GameSession::OnDisconnected()
@@ -56,7 +65,7 @@ UINT32 GameSession::OnRecv(BYTE* buffer, UINT32 len)
 	/// +---------------------------------------
 	///	[ Packet 1 ][ Packet 2 ]...[ Packet N ]
 	///	ก่			ก่
-	/// buffer     (buffer + PRocessDataSize)
+	/// buffer     (buffer + ProcessDataSize)
 	/// ---------------------------------------+
 
 	UINT32 ProcessDataSize = mRemainDataSize;
@@ -78,6 +87,11 @@ UINT32 GameSession::OnRecv(BYTE* buffer, UINT32 len)
 	}
 
 	return len;
+}
+
+void GameSession::LoadUserInfo(std::string& id, std::string& password)
+{
+	mUserInfo->LoadFromDataBase(id, password);
 }
 
 SPtr<Script_Player> GameSession::GetPlayerEntity()

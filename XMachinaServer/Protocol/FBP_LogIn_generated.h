@@ -24,6 +24,9 @@ struct SPkt_LogInBuilder;
 struct CPkt_SignUp;
 struct CPkt_SignUpBuilder;
 
+struct SPkt_SignUp;
+struct SPkt_SignUpBuilder;
+
 struct CPkt_LogIn FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef CPkt_LogInBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
@@ -225,6 +228,85 @@ inline ::flatbuffers::Offset<CPkt_SignUp> CreateCPkt_SignUpDirect(
   auto id__ = id ? _fbb.CreateString(id) : 0;
   auto password__ = password ? _fbb.CreateString(password) : 0;
   return FBProtocol::CreateCPkt_SignUp(
+      _fbb,
+      name__,
+      id__,
+      password__);
+}
+
+struct SPkt_SignUp FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
+  typedef SPkt_SignUpBuilder Builder;
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
+    VT_NAME = 4,
+    VT_ID = 6,
+    VT_PASSWORD = 8
+  };
+  const ::flatbuffers::String *name() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_NAME);
+  }
+  const ::flatbuffers::String *id() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_ID);
+  }
+  const ::flatbuffers::String *password() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_PASSWORD);
+  }
+  bool Verify(::flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyOffset(verifier, VT_NAME) &&
+           verifier.VerifyString(name()) &&
+           VerifyOffset(verifier, VT_ID) &&
+           verifier.VerifyString(id()) &&
+           VerifyOffset(verifier, VT_PASSWORD) &&
+           verifier.VerifyString(password()) &&
+           verifier.EndTable();
+  }
+};
+
+struct SPkt_SignUpBuilder {
+  typedef SPkt_SignUp Table;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_name(::flatbuffers::Offset<::flatbuffers::String> name) {
+    fbb_.AddOffset(SPkt_SignUp::VT_NAME, name);
+  }
+  void add_id(::flatbuffers::Offset<::flatbuffers::String> id) {
+    fbb_.AddOffset(SPkt_SignUp::VT_ID, id);
+  }
+  void add_password(::flatbuffers::Offset<::flatbuffers::String> password) {
+    fbb_.AddOffset(SPkt_SignUp::VT_PASSWORD, password);
+  }
+  explicit SPkt_SignUpBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  ::flatbuffers::Offset<SPkt_SignUp> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = ::flatbuffers::Offset<SPkt_SignUp>(end);
+    return o;
+  }
+};
+
+inline ::flatbuffers::Offset<SPkt_SignUp> CreateSPkt_SignUp(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::String> name = 0,
+    ::flatbuffers::Offset<::flatbuffers::String> id = 0,
+    ::flatbuffers::Offset<::flatbuffers::String> password = 0) {
+  SPkt_SignUpBuilder builder_(_fbb);
+  builder_.add_password(password);
+  builder_.add_id(id);
+  builder_.add_name(name);
+  return builder_.Finish();
+}
+
+inline ::flatbuffers::Offset<SPkt_SignUp> CreateSPkt_SignUpDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    const char *name = nullptr,
+    const char *id = nullptr,
+    const char *password = nullptr) {
+  auto name__ = name ? _fbb.CreateString(name) : 0;
+  auto id__ = id ? _fbb.CreateString(id) : 0;
+  auto password__ = password ? _fbb.CreateString(password) : 0;
+  return FBProtocol::CreateSPkt_SignUp(
       _fbb,
       name__,
       id__,

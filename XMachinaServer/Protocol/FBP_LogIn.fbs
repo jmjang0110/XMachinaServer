@@ -28,3 +28,11 @@ table CPkt_SignUp
 	id			: string;
 	password	: string;
 }
+
+table SPkt_SignUp
+{
+	name		: string;
+
+	id			: string;
+	password	: string;
+}
