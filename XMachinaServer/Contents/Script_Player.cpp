@@ -126,7 +126,9 @@ void Script_Player::UpdateViewList(std::vector<SPtr<GameObject>> players, std::v
 	///	1. [PLAYER] VIEW LIST 
 	/// ---------------------------------------------------------------------------------+
 	for (int i = 0; i < players.size(); ++i) {
-		mViewList.TryInsertPlayer(players[i]->GetID(), players[i]);
+		const Vec3 otherPlayer_pos = players[i]->GetTransform()->GetSnapShot().GetPosition();
+		if ((otherPlayer_pos - mOwner->GetTransform()->GetPosition()).Length() <= mViewList.ViewRangeRadius)
+			mViewList.TryInsertPlayer(players[i]->GetID(), players[i]);
 	}
 
 	/// +--------------------------------------------------------------------------------

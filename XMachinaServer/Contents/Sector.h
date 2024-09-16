@@ -13,8 +13,8 @@
 class Sector : public GameObject
 {
 private:
-	SectorInfo::Type mType = SectorInfo::Type::None;
-	Coordinate		 mIndex = {};
+	SectorInfo::Type  mType = SectorInfo::Type::None;
+	Coordinate		  mIndex = {};
 	SectorController* mOwnerSC = nullptr;
 
 private:

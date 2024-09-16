@@ -49,9 +49,6 @@ private:
 	SPtr<GameRoom>								 mOwnerRoom; // 자신이 속해있는 Room 포인터 
 	
 private:
-	std::unordered_map<UINT32, SPtr<GameObject>> mPlayers;
-	Lock::SRWLock								 mPlayers_SRWLock;
-
 	std::array<std::array<Sector*, SectorInfo::Width>, SectorInfo::height> mSectors{};
 
 	Coordinate									mTotalSectorSize = {}; // Sector 전체 크기  ( Image )
@@ -60,7 +57,7 @@ private:
 
 public:
 	static Coordinate							Total_SectorSize; // Sector 전체 크기  ( Image )
-	static Coordinate							Each_SectorSize; // 각 Sector 크기	  
+	static Coordinate							Each_SectorSize;  // 각 Sector 크기	  
 	static Coordinate							SectorStartPos;
 
 

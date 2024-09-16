@@ -28,7 +28,7 @@ private:
 	SPtr<GameObject>													mDefaultWeapon       = {}; // H_Lock
 	SPtr<GameObject>													mCurrWeapon          = {};	
 	
-	ViewList								                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         							mViewListSnapShot    = {}; Lock::SRWLock mViewList_Lock;
+	ViewList								                            mViewListSnapShot    = {}; Lock::SRWLock mViewList_Lock;
 	ViewList															mViewList	         = {};
 	PlayerState															mPlayerState         = PlayerState::None;
 
@@ -62,5 +62,7 @@ public:
 
 	void SetState(PlayerState state)				{ mPlayerState  = state; }
 	void SetSessionOwner(SPtr<GameSession> session) { mSessionOwner = session; }
+	void SetWeapon(SPtr<GameObject> weapon) { mCurrWeapon = weapon; }
+
 };
 

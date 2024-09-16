@@ -2,10 +2,19 @@
 #include "Script_Entity.h"
 
 class GameObject;
+enum class ItemState {
+	None, 
+	Dropped, 
+	Using,
+	
+	_count,
+};
 class Script_Item : public Script_Entity
 {
 protected:
-	FBProtocol::ITEM_TYPE	mItemType = FBProtocol::ITEM_TYPE_NONE;
+	FBProtocol::ITEM_TYPE	mItemType    = FBProtocol::ITEM_TYPE_NONE;
+	ItemState				mItemState   = ItemState::None;
+	SPtr<GameObject>		mOwnerPlayer = nullptr;
 
 public:
 	Script_Item();
@@ -18,6 +27,8 @@ public:
 
 public:
 	virtual bool DoInteract(SPtr<GameObject> player);
+	virtual bool ThrowAway(SPtr<GameObject> player);
+
 
 };
 

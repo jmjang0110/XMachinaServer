@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "Script_Crate.h"
 #include "GameObject.h"
+#include "GameRoom.h"
+#include "NPCController.h"
+
 
 Script_Crate::Script_Crate(SPtr<GameObject> owner)
 	: Script_Item(owner)
@@ -51,10 +54,31 @@ bool Script_Crate::DoInteract(SPtr<GameObject> player)
     if (interact) {
         if (mCrateState == CrateState::Closed) {
             mCrateState = CrateState::Open;
+            if(mItem)
+                DropItem();
         }
         else if (mCrateState == CrateState::Open) {
             mCrateState = CrateState::Closed;
         }
     }
     return interact;
+}
+
+void Script_Crate::DropItem()
+{
+    auto npcController = mOwner->GetOwnerRoom()->GetNPCController();
+
+    // LOCK ! 
+
+    /* There is no item in crate */
+    mLock_Item.LockWrite();
+
+    if (!mItem)
+        return;
+
+    npcController->AddDroppedITem(mItem->GetID(), mItem);
+    mItem = nullptr;
+
+    mLock_Item.UnlockWrite();
+
 }

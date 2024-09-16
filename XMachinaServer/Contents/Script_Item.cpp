@@ -3,6 +3,8 @@
 #include "GameObject.h"
 #include "Collider.h"
 #include "Transform.h"
+#include "Script_Player.h"
+
 
 Script_Item::Script_Item()
 {
@@ -37,5 +39,37 @@ SPtr<Component> Script_Item::Clone(SPtr<Component> target)
 
 bool Script_Item::DoInteract(SPtr<GameObject> player)
 {
+    if (mItemState != ItemState::Dropped)
+        return false;
+
+    const Vec3 playerPos = player->GetTransform()->GetSnapShot().GetPosition();
+    const Vec3 ItemPos   = mOwner->GetTransform()->GetPosition();
+
+    int compareDist = 3.f;
+    if ((playerPos - ItemPos).Length() <= compareDist) {
+
+        mOwnerPlayer = player;
+        auto playerEntity = mOwnerPlayer->GetScriptEntity<Script_Player>();
+        playerEntity->SetWeapon(mOwner);
+        mItemState   = ItemState::Using;
+
+        return true;
+    }
     return false;
+}
+
+bool Script_Item::ThrowAway(SPtr<GameObject> player)
+{
+    if (!mOwnerPlayer)
+        return false;
+
+    if (player->GetID() != mOwnerPlayer->GetID())
+        return false;
+
+    auto playerEntity = mOwnerPlayer->GetScriptEntity<Script_Player>();
+    playerEntity->SetWeapon(nullptr);
+    mOwnerPlayer = nullptr;
+    mItemState   = ItemState::Dropped;
+
+    return true;
 }

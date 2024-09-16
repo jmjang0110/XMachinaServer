@@ -20,23 +20,25 @@ void DB_UserInfo::FetchDataFromDataBase(const wchar_t* query)
     DB_Object::FetchDataFromDataBase(query);
 
     // Variables to store fetched data
-    char ID[51]       = { 0 };    // VARCHAR(50) so 51 chars to include null terminator
-    char Password[51] = { 0 };    // VARCHAR(50) so 51 chars to include null terminator
-
+    char input_ID[51]       = { 0 };    // VARCHAR(50) so 51 chars to include null terminator
+    char input_Password[51] = { 0 };    // VARCHAR(50) so 51 chars to include null terminator
+    char input_Name[51]     = { 0 };
     // Fetch the data
     while ((mSQL_Ret = SQLFetch(mSQL_hStmt)) == SQL_SUCCESS || mSQL_Ret == SQL_SUCCESS_WITH_INFO) {
-        SQLGetData(mSQL_hStmt, 1, SQL_C_CHAR, ID, sizeof(ID), nullptr);  // Fetch the ID
-        SQLGetData(mSQL_hStmt, 2, SQL_C_CHAR, Password, sizeof(Password), nullptr); // Fetch the Password
+        SQLGetData(mSQL_hStmt, 1, SQL_C_CHAR, input_ID, sizeof(input_ID), nullptr);  // Fetch the ID
+        SQLGetData(mSQL_hStmt, 2, SQL_C_CHAR, input_Password, sizeof(input_Password), nullptr); // Fetch the Password
+        SQLGetData(mSQL_hStmt, 3, SQL_C_CHAR, input_Name, sizeof(input_Name), nullptr);
     }
 
     ::SQLFreeHandle(SQL_HANDLE_STMT, mSQL_hStmt);
 
     // Print the fetched results
-    std::wcout << L"ID: " << ID << L", Password: " << Password << std::endl;
-    bool IsSuccess = IsLoginSuccessful(ID, Password);
+    Name = input_Name;
+    bool IsSuccess = IsLoginSuccessful(input_ID, input_Password);
+    std::wcout << L"Name : " << input_Name << L" ID: " << input_ID << L", Password: " << input_Password << "IsSuccess : " << IsSuccess << std::endl;
 
     /* Send Log In Packet */
-    auto spkt = FBS_FACTORY->SPkt_LogIn(IsSuccess); // Fail Or Success 
+    auto spkt = FBS_FACTORY->SPkt_LogIn(Name, IsSuccess); // Fail Or Success 
     mOwnerSession->Send(spkt);
 
 }
@@ -48,7 +50,7 @@ void DB_UserInfo::LoadFromDataBase(std::string PK_ID, std::string inputPassword)
 
     // Construct the query
     wchar_t query[256];
-    swprintf(query, 256, L"SELECT ID, Password FROM UserInfo WHERE ID = '%S'", PK_ID.c_str());
+    swprintf(query, 256, L"SELECT ID, Password, Name FROM UserInfo WHERE ID = '%S'", PK_ID.c_str());
 
     // Push the database query event
     DB_CONTROLLER->PushDataBaseEvent(QueryPriority::None, DataBaseEventType::Query, shared_from_this(), query);

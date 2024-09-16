@@ -16,6 +16,7 @@ table CPkt_EnterLobby
 
 table SPkt_EnterLobby
 {
+	order   : int; // 로비에 들어온 순서 
 	myinfo  : Player;
 	players : [Player];
 }

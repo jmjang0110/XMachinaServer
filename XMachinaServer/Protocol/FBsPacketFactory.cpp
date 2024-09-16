@@ -302,6 +302,21 @@ bool FBsPacketFactory::Process_CPkt_EnterLobby(SPtr_Session session, const FBPro
 {
 	SPtr<GameSession> gameSession = std::static_pointer_cast<GameSession>(session);
 
+	int								ID                = pkt.player_id();
+	SPtr<GameObject>				MyPlayer          = gameSession->GetPlayer();
+	std::vector<SPtr<GameObject>>	RemotePlayers     = ROOM_MGR->GetAllPlayersInRoom(MyPlayer->GetOwnerRoom()->GetID());
+	int								player_EnterOrder = MyPlayer->GetOwnerRoom()->GetPlayerController()->GetPlayersSize();
+
+	auto spkt = FBS_FACTORY->SPkt_EnterLobby(player_EnterOrder, MyPlayer, RemotePlayers);
+	session->Send(spkt);
+
+	/// +---------------------------------------------------------------------------------------
+	/// SEND NEW PLAYER PKT TO SESSIONS IN ROOM ( SESSION->GET ROOM ID ) - EXCEPT ME ( SESSION )
+	/// ---------------------------------------------------------------------------------------+
+	auto SendPkt_NewPlayer = FBS_FACTORY->SPkt_NewPlayer(MyPlayer);
+	ROOM_MGR->BroadcastRoom(gameSession->GetPlayer()->GetOwnerRoom()->GetID(), SendPkt_NewPlayer, gameSession->GetID());
+
+
 	return true;
 }
 
@@ -323,11 +338,7 @@ bool FBsPacketFactory::Process_CPkt_EnterGame(SPtr_Session session, const FBProt
 	auto SendSPkt_EnterGame = FBS_FACTORY->SPkt_EnterGame(MyPlayer, RemotePlayers);
 	session->Send(SendSPkt_EnterGame);
 
-	/// +---------------------------------------------------------------------------------------
-	/// SEND NEW PLAYER PKT TO SESSIONS IN ROOM ( SESSION->GET ROOM ID ) - EXCEPT ME ( SESSION )
-	/// ---------------------------------------------------------------------------------------+
-	auto SendPkt_NewPlayer = FBS_FACTORY->SPkt_NewPlayer(MyPlayer);
-	ROOM_MGR->BroadcastRoom(gameSession->GetPlayer()->GetOwnerRoom()->GetID(), SendPkt_NewPlayer, gameSession->GetID());
+
 	return true;
 }
 
@@ -335,6 +346,14 @@ bool FBsPacketFactory::Process_CPkt_PlayGame(SPtr_Session session, const FBProto
 {
 	SPtr<GameSession> gameSession = std::static_pointer_cast<GameSession>(session);
 
+	auto room = gameSession->GetPlayer()->GetOwnerRoom();
+	UINT32 player_count = room->GetPlayerController()->GetPlayersSize();
+
+	int minPlayerCountToPlayGame = 1;
+	if (player_count >= minPlayerCountToPlayGame) {
+		auto spkt = FBS_FACTORY->SPkt_PlayGame();
+		ROOM_MGR->BroadcastRoom(room->GetID(), spkt);
+	}
 	return true;
 }
 
@@ -780,7 +799,7 @@ bool FBsPacketFactory::Process_CPkt_GetPhero(SPtr_Session session, const FBProto
 ///	◈ SEND [ LogIn, Chat, NetworkLatency ] PACKET ◈
 /// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------★
 
-SPtr_SendPktBuf FBsPacketFactory::SPkt_LogIn(bool success)
+SPtr_SendPktBuf FBsPacketFactory::SPkt_LogIn(std::string name, bool success)
 {
 	/// > ○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○
 	/// > table SPkt_LogIn
@@ -792,7 +811,8 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_LogIn(bool success)
 	flatbuffers::FlatBufferBuilder builder;
 
 	/* CREATE LOG IN PACKET */
-	auto ServerPacket = FBProtocol::CreateSPkt_LogIn(builder, success);
+	auto nameOffset   = builder.CreateString(name);
+	auto ServerPacket = FBProtocol::CreateSPkt_LogIn(builder, nameOffset, success);
 	builder.Finish(ServerPacket);
 
 	/* Create SendBuffer */
@@ -881,25 +901,25 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_EnterGame(SPtr<GameObject>& myinfo, std::
 
 }
 
-SPtr_SendPktBuf FBsPacketFactory::SPkt_EnterLobby(SPtr<GameObject>& myinfo, std::vector<SPtr<GameObject>>& players)
+SPtr_SendPktBuf FBsPacketFactory::SPkt_EnterLobby(int player_EnterOrder/*입장 순서*/, SPtr<GameObject>& myinfo, std::vector<SPtr<GameObject>>& players)
 {
-flatbuffers::FlatBufferBuilder builder;
+	flatbuffers::FlatBufferBuilder builder;
 
 	std::vector<flatbuffers::Offset<FBProtocol::Player>> PlayerSnapShots_vector;
 
 	/// +-------------------------------------------------------------------------------------
 	///		INTERPRET MY PLAYER INFO 
 	/// -------------------------------------------------------------------------------------+	
-	auto transSNS          = myinfo.get()->GetTransform()->GetSnapShot(); 
-	Vec3 transPos          = transSNS.GetPosition();
-	Vec3 transRot          = transSNS.GetRotation();
-	Vec3 transSpineLookDir = transSNS.GetLook();
+	auto transSNS			= myinfo.get()->GetTransform()->GetSnapShot(); 
+	Vec3 transPos			= transSNS.GetPosition();
+	Vec3 transRot			= transSNS.GetRotation();
+	Vec3 transSpineLookDir	= transSNS.GetLook();
 
-	auto position      = FBProtocol::CreateVector3(builder, transPos.x, transPos.y, transPos.z);
-	auto rotation      = FBProtocol::CreateVector3(builder, transRot.x, transRot.y, transRot.z);
-	auto transform     = FBProtocol::CreateTransform(builder, position, rotation);
-	auto Spine_LookDir = FBProtocol::CreateVector3(builder, 0.f, 0.f, 0.f);
-	auto Myinfo        = CreatePlayer(builder, myinfo->GetID(), builder.CreateString(myinfo->GetName()), FBProtocol::OBJECT_TYPE::OBJECT_TYPE_PLAYER, transform, Spine_LookDir);
+	auto position			= FBProtocol::CreateVector3(builder, transPos.x, transPos.y, transPos.z);
+	auto rotation			= FBProtocol::CreateVector3(builder, transRot.x, transRot.y, transRot.z);
+	auto transform			= FBProtocol::CreateTransform(builder, position, rotation);
+	auto Spine_LookDir		= FBProtocol::CreateVector3(builder, 0.f, 0.f, 0.f);
+	auto Myinfo				= CreatePlayer(builder, myinfo->GetID(), builder.CreateString(myinfo->GetName()), FBProtocol::OBJECT_TYPE::OBJECT_TYPE_PLAYER, transform, Spine_LookDir);
 
 
 	/// +-------------------------------------------------------------------------------------
@@ -928,7 +948,7 @@ flatbuffers::FlatBufferBuilder builder;
 	/// +-------------------------------------------------------------------------------------
 	///		SEND ENTER_GAME SPKT 
 	/// -------------------------------------------------------------------------------------+	
-	auto ServerPacket = FBProtocol::CreateSPkt_EnterLobby(builder, Myinfo, PlayerSnapShotsOffset);
+	auto ServerPacket = FBProtocol::CreateSPkt_EnterLobby(builder, player_EnterOrder, Myinfo, PlayerSnapShotsOffset);
 	builder.Finish(ServerPacket);
 	const uint8_t* bufferPtr = builder.GetBufferPointer();
 	const uint16_t serializedDataSize = static_cast<uint16_t>(builder.GetSize());

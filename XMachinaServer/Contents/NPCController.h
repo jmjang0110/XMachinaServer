@@ -23,6 +23,9 @@ private:
 	std::unordered_map<UINT32, SPtr<GameObject>>		mStaticItems;	// Client Scene과 동기화 ( 이미 만들어짐 )
 	std::unordered_map<UINT32, SPtr<GameObject>>		mDynamicItems;  // Server 에서만 관리  
 
+	/* Dropped Item In Battle Scene */
+	std::unordered_map<UINT32, SPtr<GameObject>>		mDroppedItems; // Server Managing Dropped ITem ;
+
 public:
 	NPCController();
 	~NPCController();
@@ -37,6 +40,9 @@ public:
 	void AddMonster(UINT32 id, SPtr<GameObject> monster);
 	void AddDynamicItem(UINT32 id, SPtr<GameObject> item);
 	void AddStaticItem(UINT32 id, SPtr<GameObject> item);
+
+	void AddDroppedITem(UINT32 id, SPtr<GameObject> item);
+
 
 	SPtr<GameRoom>			GetOwnerRoom() { return mOwnerRoom; }
 

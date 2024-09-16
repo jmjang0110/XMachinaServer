@@ -8,6 +8,9 @@
 #include "Rigidbody.h"
 #include "Animation.h"
 
+
+#include "DB_Phero.h"
+
 DEFINE_SINGLETON(DBController);
 
 DBController::DBController()

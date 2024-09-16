@@ -18,12 +18,6 @@ using FBSPKT_FACTORY = class FBsPacketFactory;
 
 #define FBS_FACTORY FBsPacketFactory::GetInst()
 
-namespace PLAYER_MOVE_STATE {
-	constexpr int32_t Start    = 0;
-	constexpr int32_t Progress = 1;
-	constexpr int32_t End      = 2;
-}
-
 class GameObject;
 class FBsPacketFactory
 {
@@ -75,9 +69,9 @@ private:
 
 public:
 	/* LOGIN, LATENCY, CHAT */
-	SPtr_SendPktBuf SPkt_LogIn(bool success);
+	SPtr_SendPktBuf SPkt_LogIn(std::string name, bool success);
 	SPtr_SendPktBuf SPkt_EnterGame(SPtr<GameObject>& myinfo, std::vector<SPtr<GameObject>>& players);
-	SPtr_SendPktBuf SPkt_EnterLobby(SPtr<GameObject>& myinfo, std::vector<SPtr<GameObject>>& players);
+	SPtr_SendPktBuf SPkt_EnterLobby(int player_EnterOrder, SPtr<GameObject>& myinfo, std::vector<SPtr<GameObject>>& players);
 	SPtr_SendPktBuf SPkt_PlayGame();
 	SPtr_SendPktBuf SPkt_NetworkLatency(long long timestamp);
 	SPtr_SendPktBuf SPkt_Chat(uint32_t player_id, std::string msg);

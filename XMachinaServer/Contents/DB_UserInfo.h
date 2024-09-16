@@ -9,6 +9,7 @@ public:
 
 public:
 	bool		IsLogInSuccess = false;
+	std::string Name{};
 	std::string ID{};
 	std::string Password{};
 

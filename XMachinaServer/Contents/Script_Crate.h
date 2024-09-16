@@ -25,6 +25,7 @@ public:
 	virtual void Clone(SPtr<GameObject> target);
 	
 	virtual bool DoInteract(SPtr<GameObject> player) override;
+	void DropItem();
 
 public:
 	/// ---------------------- Set ----------------------

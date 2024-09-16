@@ -25,6 +25,9 @@ NPCController::~NPCController()
 	for (auto& iter : mDynamicItems) {
 		iter.second = nullptr;
 	}
+	for (auto& iter : mDroppedItems) {
+		iter.second = nullptr;
+	}
 }
 
 void NPCController::Init(SPtr<GameRoom> owner)
@@ -121,6 +124,14 @@ void NPCController::AddStaticItem(UINT32 id, SPtr<GameObject> item)
 	const auto& iter = mStaticItems.find(id);
 	if (iter == mStaticItems.end()) {
 		mStaticItems.insert(std::make_pair(id, item));
+	}
+}
+
+void NPCController::AddDroppedITem(UINT32 id, SPtr<GameObject> item)
+{
+	const auto& iter = mDroppedItems.find(id);
+	if (iter == mDroppedItems.end()) {
+		mDroppedItems.insert(std::make_pair(id, item));
 	}
 }
 
