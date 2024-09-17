@@ -14,7 +14,7 @@ class Script_Crate : public Script_Item
 private:
 	CrateState			mCrateState = CrateState::None;
 	SPtr<GameObject>	mItem       = nullptr; Lock::SRWLock mLock_Item;
-
+	int32_t				mItemID     = -1;
 public:
 	Script_Crate() = default;
 	Script_Crate(SPtr<GameObject> owner);
@@ -24,12 +24,15 @@ public:
 	virtual SPtr<Component> Clone(SPtr<Component> target);
 	virtual void Clone(SPtr<GameObject> target);
 	
+	virtual void Start() override;
+
+
 	virtual bool DoInteract(SPtr<GameObject> player) override;
-	void DropItem();
+	bool DropItem(SPtr<GameObject> player);
 
 public:
 	/// ---------------------- Set ----------------------
-	void		SetItem(SPtr<GameObject> item) { mLock_Item.LockWrite();  mItem = item; mLock_Item.UnlockWrite(); }
+	void		SetItem(SPtr<GameObject> item)  { mLock_Item.LockWrite();  mItem = item; mLock_Item.UnlockWrite(); }
 	void		OpenCrate()						{ mCrateState = CrateState::Open; }
 	void		CloseCrate()					{ mCrateState = CrateState::Closed; }
 

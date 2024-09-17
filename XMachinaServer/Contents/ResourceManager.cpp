@@ -156,6 +156,19 @@ ObjectTag BattleScene::Load_SettingObjectTag(std::string loadname)
 	return tag;
 }
 
+SPtr<GameObject> BattleScene::GetDynamicItem(uint32_t id) {
+	auto it = mDynamicItems.find(id);
+	if (it != mDynamicItems.end()) {
+		return it->second;  // Return the found GameObject
+	}
+	else {
+		std::cout << "[ERROR - BattleScene] Item with ID " << id << " not found.\n";
+		return nullptr;  // Return nullptr if the id is not found
+	}
+}
+
+
+
 void BattleScene::AddMonster(SPtr<GameObject> object, std::string modelName)
 {
 	UINT32 ID = static_cast<UINT32>(mEnemies.size() + 1);
@@ -276,11 +289,11 @@ void BattleScene::LoadScriptExporter(std::ifstream& file, SPtr<GameObject> objec
 		crate_entity->SetItem(weapon); // Crate <----- Incrate ---- Weapon 
 
 		mStaticItems.push_back(crate);
-		mDynamicItems.push_back(weapon);
+		mDynamicItems.insert({ weapon->GetID(), weapon });
 	}
 		break;
 	case Hash("Bound"):
-	{
+	{    
 		const auto& collider = object->AddComponent<Collider>(Component::Type::Collider);
 
 		// sphere

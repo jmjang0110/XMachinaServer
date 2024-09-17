@@ -25,6 +25,7 @@
 #include "Contents/Script_Enemy.h"
 #include "Contents/Script_Player.h"
 #include "Contents/Script_Weapon.h"
+#include "Contents/Script_Item.h"
 
 DEFINE_SINGLETON(FBsPacketFactory);
 
@@ -323,10 +324,10 @@ bool FBsPacketFactory::Process_CPkt_EnterLobby(SPtr_Session session, const FBPro
 bool FBsPacketFactory::Process_CPkt_EnterGame(SPtr_Session session, const FBProtocol::CPkt_EnterGame& pkt)
 {
     /// �ܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡ�
-	///table CPkt_EnterGame
-	///{
-	///	player_id: uint;	// 8 bytes
-	///}
+	/// table CPkt_EnterGame
+	/// {
+	/// 	player_id: uint;	// 8 bytes
+	/// }
 	/// �ܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡ�
 
 	SPtr<GameSession> gameSession = std::static_pointer_cast<GameSession>(session);
@@ -746,6 +747,10 @@ bool FBsPacketFactory::Process_CPkt_Item_Interact(SPtr_Session session, const FB
 
 	auto npcC = player->GetOwnerRoom()->GetNPCController();
 	auto item = npcC->GetItem(item_id);
+	auto item_entity = item->GetScriptEntity<Script_Item>();
+	if (item_entity) {
+		item_entity->DoInteract(player);
+	}
 	//if (item) {
 	//	item->DoInteract(player);
 	//}

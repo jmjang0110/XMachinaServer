@@ -41,8 +41,6 @@ void NPCController::Init(SPtr<GameRoom> owner)
 void NPCController::InitMonsters()
 {
 	SectorController* sc = mOwnerRoom->GetSectorController();
-
-
 	/// ___________________________________________________________________
 	///							<SectorController>
 	///						   бщ					  бщ
@@ -75,32 +73,32 @@ void NPCController::InitItems()
 	SectorController* sc = mOwnerRoom->GetSectorController();
 
 	auto dynamicItemPrototypes = RESOURCE_MGR->GetBattleScene()->GetDynamicItems();
-	auto staticItemPrototypes  = RESOURCE_MGR->GetBattleScene()->GetStaticItems();
+	auto staticItemPrototypes = RESOURCE_MGR->GetBattleScene()->GetStaticItems();
 
-	for (int i = 0; i < dynamicItemPrototypes->size(); ++i) {
-		SPtr<GameObject> d_Item = (*dynamicItemPrototypes)[i]->Clone();
+	// Iterate through dynamic items in the unordered_map
+	for (const auto& [id, d_ItemPrototype] : *dynamicItemPrototypes) {
+		SPtr<GameObject> d_Item = d_ItemPrototype->Clone();
 
 		AddDynamicItem(d_Item->GetID(), d_Item);
 
 		// INIT
-		d_Item->Start();
 		d_Item->SetOwnerRoom(mOwnerRoom);
+		d_Item->Start();
 	}
 
-
+	// Iterate through static items as before (since static items are still a vector)
 	for (int i = 0; i < staticItemPrototypes->size(); ++i) {
 		auto item = (*staticItemPrototypes)[i];
 		SPtr<GameObject> s_Item = item->Clone();
 
 		AddStaticItem(s_Item->GetID(), s_Item);
 
-
 		// INIT
-		s_Item->Start();
 		s_Item->SetOwnerRoom(mOwnerRoom);
+		s_Item->Start();
 	}
-
 }
+
 
 void NPCController::AddMonster(UINT32 id, SPtr<GameObject> monster)
 {

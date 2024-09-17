@@ -40,7 +40,6 @@ public:
 	void AddMonster(UINT32 id, SPtr<GameObject> monster);
 	void AddDynamicItem(UINT32 id, SPtr<GameObject> item);
 	void AddStaticItem(UINT32 id, SPtr<GameObject> item);
-
 	void AddDroppedITem(UINT32 id, SPtr<GameObject> item);
 
 

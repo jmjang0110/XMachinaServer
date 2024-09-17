@@ -99,7 +99,8 @@ private:
 	std::vector<SPtr<GameObject>>	mBuildings{};
 	std::vector<SPtr<GameObject>>	mEnemies{};
 	std::vector<SPtr<GameObject>>	mStaticItems{};
-	std::vector<SPtr<GameObject>>	mDynamicItems{};
+
+	std::unordered_map<uint32_t, SPtr<GameObject>> mDynamicItems;
 
 
 public:
@@ -125,9 +126,14 @@ public:
 	}
 
 	// Getter for mDynamicItems
-	const std::vector<SPtr<GameObject>>* GetDynamicItems() const {
+	const std::unordered_map<uint32_t, SPtr<GameObject>>* GetDynamicItems() const {
 		return &mDynamicItems;
 	}
+
+	SPtr<GameObject> GetDynamicItem(uint32_t id);
+
+
+
 
 private:
 	void AddMonster(SPtr<GameObject> object, std::string modelName);
