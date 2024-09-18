@@ -93,9 +93,10 @@ std::vector<SPtr<GameObject>> GameRoom::GetallPlayers()
 
 bool GameRoom::CollideCheckWithNPC(SPtr<GameObject> obj, ObjectTag objTag)
 {
+	float CheckSectorRadius = 10.f;
 	bool isCollide = false;
 	if (ObjectTag::Building == objTag) {
-		std::vector<Coordinate> checkSectors = mSC->GetCheckSectors(obj->GetTransform()->GetSnapShot().GetPosition(), 10.f);
+		std::vector<Coordinate> checkSectors = mSC->GetCheckSectors(obj->GetTransform()->GetSnapShot().GetPosition(), CheckSectorRadius);
 		for (int i = 0; i < checkSectors.size(); ++i) {
 			isCollide = mSC->CollideCheck_WithBuildings(checkSectors[i], obj);
 			if (isCollide)
@@ -103,7 +104,7 @@ bool GameRoom::CollideCheckWithNPC(SPtr<GameObject> obj, ObjectTag objTag)
 		}
 	}
 	else if (ObjectTag::Enemy == objTag) {
-		std::vector<Coordinate> checkSectors = mSC->GetCheckSectors(obj->GetTransform()->GetSnapShot().GetPosition(), 10.f);
+		std::vector<Coordinate> checkSectors = mSC->GetCheckSectors(obj->GetTransform()->GetSnapShot().GetPosition(), CheckSectorRadius);
 		for (int i = 0; i < checkSectors.size(); ++i) {
 			isCollide = mSC->CollideCheck_WithEnemies(checkSectors[i], obj);
 			if (isCollide)

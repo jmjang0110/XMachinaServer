@@ -58,13 +58,12 @@ bool Script_Crate::DoInteract(SPtr<GameObject> player)
     Vec3 player_position = player->GetTransform()->GetSnapShot().GetPosition();
     Vec3 crate_position  = mOwner->GetTransform()->GetPosition();
     Vec3 dist            = player_position - crate_position;
+
     // dist의 길이를 계산하고 3.f 이내면 true 반환
     if (dist.Length() <= 3.f) {
         if (mCrateState == CrateState::Closed) {
             mCrateState = CrateState::Open;
-            if (DropItem(player)) {
-
-            }
+            DropItem(player);
         }
         else if (mCrateState == CrateState::Open) {
             mCrateState = CrateState::Closed;
@@ -89,11 +88,11 @@ bool Script_Crate::DropItem(SPtr<GameObject> player)
 
     npcController->AddDroppedITem(mItem->GetID(), mItem);
 
-    // 상자가 열림 
+    // [Broadcast Packet] 상자가 열림 
     auto spkt = FBS_FACTORY->SPkt_Item_Interact(player->GetID(), mOwner->GetID(), mItemType, mOwner->GetTransform()->GetPosition());
     ROOM_MGR->BroadcastRoom(player->GetOwnerRoom()->GetID(), spkt);
 
-    // 아이템이 드랍됐음을 알린다.
+    // [Broadcast Packet] 아이템이 드랍됐음을 알린다.
     auto item_entity = mItem->GetScriptEntity<Script_Item>();
     spkt = FBS_FACTORY->SPkt_Item_ThrowAway(0, mItem->GetID(), item_entity->GetItemType(), mItem->GetTransform()->GetPosition());
     ROOM_MGR->BroadcastRoom(player->GetOwnerRoom()->GetID(), spkt);

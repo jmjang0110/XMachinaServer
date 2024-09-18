@@ -138,11 +138,12 @@ table SPkt_Player_Animation
 
 table CPkt_Player_Weapon
 {
+	item_id     : uint;
 	weapon_type : ITEM_TYPE;	// 1 byte
 }
 
 table SPkt_Player_Weapon
-{
+{ 
 	player_id	: uint;			// 8 bytes
 	weapon_type : ITEM_TYPE;	// 1 byte
 }

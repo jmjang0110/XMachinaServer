@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Script_WeaponPipeLine.h"
 #include "GameObject.h"
-#include "Script_BasicBullet.h"
+#include "Script_RayCheckBullet.h"
 
 Script_WeaponPipeLine::Script_WeaponPipeLine(SPtr<GameObject> owner)
 	: Script_Weapon(owner)
@@ -46,7 +46,7 @@ void Script_WeaponPipeLine::Start()
         bullet->AddComponent<Transform>(Component::Type::Transform);
         bullet->AddComponent<Collider>(Component::Type::Collider);
         bullet->SetOwnerRoom(mOwner->GetOwnerRoom());
-        auto bullet_entity = bullet->SetScriptEntity<Script_BasicBullet>();
+        auto bullet_entity = bullet->SetScriptEntity<Script_RayCheckBullet>();
         bullet_entity->SetOwnerWeapon(mOwner);
         mBullets[i] = bullet;
         bullet->Start();

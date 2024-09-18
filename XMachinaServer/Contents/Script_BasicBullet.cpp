@@ -62,6 +62,5 @@ void Script_BasicBullet::Update()
 void Script_BasicBullet::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 {
 	MEMORY->Delete(overlapped);
-
-	mOwner->RegisterUpdate();
+	mOwner->Update();
 }

@@ -17,6 +17,7 @@ public:
 	virtual SPtr<Component> Clone(SPtr<Component> target);
 	virtual void SplashDamage() = 0;
 
+
 public:
 	void SetExplosionDamage(float damage) { mExplosionDamage = damage; }
 

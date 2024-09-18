@@ -167,11 +167,11 @@
     <Filter Include="Framework\Contents\GameWorld\Script\Enemy\Monster\Behavior Tree\BT\MonsterTask\CheckBT">
       <UniqueIdentifier>{ac7590a7-ed70-444a-8622-74163c449743}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Framework\Contents\GameWorld\Script\Item\Bullet">
-      <UniqueIdentifier>{b9792db6-a37d-434e-9f9d-9d4c4406d2bd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Protocol\PacketProtocol">
       <UniqueIdentifier>{da97ffe3-46e0-4abb-a1d8-46630385de8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Script\Item\Weapon\Bullet">
+      <UniqueIdentifier>{b9792db6-a37d-434e-9f9d-9d4c4406d2bd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -440,10 +440,10 @@
       <Filter>Framework\Contents\GameWorld\Script\Skill</Filter>
     </ClInclude>
     <ClInclude Include="Contents\Script_SpiderMine.h">
-      <Filter>Framework\Contents\GameWorld\Script\Item\Bullet</Filter>
+      <Filter>Framework\Contents\GameWorld\Script\Item\Weapon\Bullet</Filter>
     </ClInclude>
     <ClInclude Include="Contents\Script_Bullet.h">
-      <Filter>Framework\Contents\GameWorld\Script\Item\Bullet</Filter>
+      <Filter>Framework\Contents\GameWorld\Script\Item\Weapon\Bullet</Filter>
     </ClInclude>
     <ClInclude Include="Contents\Script_Entity.h">
       <Filter>Framework\Contents\GameWorld\Script</Filter>
@@ -548,13 +548,13 @@
       <Filter>Framework\Contents\Room</Filter>
     </ClInclude>
     <ClInclude Include="Contents\Script_ExplosiveBullet.h">
-      <Filter>Framework\Contents\GameWorld\Script\Item\Bullet</Filter>
+      <Filter>Framework\Contents\GameWorld\Script\Item\Weapon\Bullet</Filter>
     </ClInclude>
     <ClInclude Include="Contents\Script_BasicBullet.h">
-      <Filter>Framework\Contents\GameWorld\Script\Item\Bullet</Filter>
+      <Filter>Framework\Contents\GameWorld\Script\Item\Weapon\Bullet</Filter>
     </ClInclude>
     <ClInclude Include="Contents\Script_RayCheckBullet.h">
-      <Filter>Framework\Contents\GameWorld\Script\Item\Bullet</Filter>
+      <Filter>Framework\Contents\GameWorld\Script\Item\Weapon\Bullet</Filter>
     </ClInclude>
     <ClInclude Include="Contents\DB_Phero.h">
       <Filter>Framework\Contents\DataBase\Object</Filter>
@@ -850,10 +850,10 @@
       <Filter>Framework\Contents\GameWorld\Script\Skill</Filter>
     </ClCompile>
     <ClCompile Include="Contents\Script_SpiderMine.cpp">
-      <Filter>Framework\Contents\GameWorld\Script\Item\Bullet</Filter>
+      <Filter>Framework\Contents\GameWorld\Script\Item\Weapon\Bullet</Filter>
     </ClCompile>
     <ClCompile Include="Contents\Script_Bullet.cpp">
-      <Filter>Framework\Contents\GameWorld\Script\Item\Bullet</Filter>
+      <Filter>Framework\Contents\GameWorld\Script\Item\Weapon\Bullet</Filter>
     </ClCompile>
     <ClCompile Include="Contents\Script_Entity.cpp">
       <Filter>Framework\Contents\GameWorld\Script</Filter>
@@ -943,13 +943,13 @@
       <Filter>Framework\Contents\Room</Filter>
     </ClCompile>
     <ClCompile Include="Contents\Script_ExplosiveBullet.cpp">
-      <Filter>Framework\Contents\GameWorld\Script\Item\Bullet</Filter>
+      <Filter>Framework\Contents\GameWorld\Script\Item\Weapon\Bullet</Filter>
     </ClCompile>
     <ClCompile Include="Contents\Script_BasicBullet.cpp">
-      <Filter>Framework\Contents\GameWorld\Script\Item\Bullet</Filter>
+      <Filter>Framework\Contents\GameWorld\Script\Item\Weapon\Bullet</Filter>
     </ClCompile>
     <ClCompile Include="Contents\Script_RayCheckBullet.cpp">
-      <Filter>Framework\Contents\GameWorld\Script\Item\Bullet</Filter>
+      <Filter>Framework\Contents\GameWorld\Script\Item\Weapon\Bullet</Filter>
     </ClCompile>
     <ClCompile Include="Contents\DB_Phero.cpp">
       <Filter>Framework\Contents\DataBase\Object</Filter>

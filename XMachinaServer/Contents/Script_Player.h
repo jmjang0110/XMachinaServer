@@ -26,7 +26,7 @@ private:
 	std::array<SPtr<GameObject>, FBProtocol::PLAYER_SKILL_TYPE_END>		mSkills              = {};	
 
 	SPtr<GameObject>													mDefaultWeapon       = {}; // H_Lock
-	SPtr<GameObject>													mCurrWeapon          = {};	
+	SPtr<GameObject>													mCurrWeapon          = {}; Lock::SRWLock mWeapon_Lock;
 	
 	ViewList								                            mViewListSnapShot    = {}; Lock::SRWLock mViewList_Lock;
 	ViewList															mViewList	         = {};
@@ -56,13 +56,14 @@ public:
 	SPtr<Script_Skill>	GetSkillEntity(FBProtocol::PLAYER_SKILL_TYPE type);
 	SPtr<GameObject>	GetSKill(FBProtocol::PLAYER_SKILL_TYPE type)			{ return mSkills[type]; }
 	PlayerState			GetCurrState()											{ return mPlayerState; }
-	SPtr<GameObject>	GetWeapon()												{ return mCurrWeapon; }
+	SPtr<GameObject>	GetWeapon()												{ mWeapon_Lock.LockRead(); SPtr<GameObject> weapon = mCurrWeapon; mWeapon_Lock.UnlockRead(); return mCurrWeapon; }
 	SPtr<GameSession>	GetSessionOwner()										{ return mSessionOwner; }
 	ViewList			S_GetViewList()											{ mViewList_Lock.LockRead(); ViewList currViewList = mViewListSnapShot; mViewList_Lock.UnlockRead(); return currViewList; }
 
 	void SetState(PlayerState state)				{ mPlayerState  = state; }
 	void SetSessionOwner(SPtr<GameSession> session) { mSessionOwner = session; }
-	void SetWeapon(SPtr<GameObject> weapon) { mCurrWeapon = weapon; }
+	void SetWeapon(SPtr<GameObject> weapon);
+	
 
 };
 

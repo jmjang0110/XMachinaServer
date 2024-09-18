@@ -19,6 +19,7 @@
 #include "Contents/Component.h"
 #include "Contents/Animation.h"
 #include "Contents/Collider.h"
+#include "Contents/ResourceManager.h"
 
 
 #include "Contents/Script_EnemyController.h"
@@ -545,8 +546,13 @@ bool FBsPacketFactory::Process_CPkt_Player_Weapon(SPtr_Session session, const FB
 	///>�ܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡ�
 	SPtr<GameSession> gameSession = std::static_pointer_cast<GameSession>(session);
 
-	FBProtocol::ITEM_TYPE weaponType = pkt.weapon_type();
-	auto weapon = gameSession->GetPlayer()->GetScriptEntity<Script_Player>()->GetWeapon();
+	FBProtocol::ITEM_TYPE	weaponType = pkt.weapon_type();
+	int						weapon_id  = pkt.item_id();
+
+	//auto weapon = gameSession->GetPlayer()->GetScriptEntity<Script_Player>()->GetWeapon();
+	auto weapon		   = gameSession->GetPlayer()->GetOwnerRoom()->GetNPCController()->GetDynamicItem(weapon_id);
+	auto player_entity = gameSession->GetPlayerEntity();
+	player_entity->SetWeapon(weapon);
 
 	LOG_MGR->Cout(gameSession->GetID(), " - WEAPON TYPE : ", static_cast<int>(weaponType), "\n");
 

@@ -97,9 +97,11 @@ public:
 	float CollideCheckRay_MinimumDist(Coordinate sectorIdx, const Ray& ray) const;
 	bool  CollideCheck_WithBuildings(Coordinate sectorIndex, SPtr<GameObject> obj);
 	bool  CollideCheck_WithEnemies(Coordinate sectorIndex, SPtr<GameObject> obj);
+	std::vector<SPtr<GameObject>> GetEnemies_InRange(Coordinate sector_index, Vec3 center_pos, float radius);
 
 
 public:
 	static Coordinate GetSectorIdxByPosition(Vec3 Pos);
+	
 };
 

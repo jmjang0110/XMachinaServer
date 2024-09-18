@@ -172,6 +172,11 @@ float SectorController::CollideCheckRay_MinimumDist(Coordinate sectorIdx, const 
    return mSectors[sectorIdx.z][sectorIdx.x]->CollideCheckRay_MinimumDist(ray);
 }
 
+std::vector<SPtr<GameObject>> SectorController::GetEnemies_InRange(Coordinate sectorIdx, Vec3 center_pos, float radius)
+{
+    return mSectors[sectorIdx.z][sectorIdx.x]->GetEnemiesInRange(center_pos, radius);
+}
+
 bool SectorController::CollideCheck_WithBuildings(Coordinate sectorIndex, SPtr<GameObject> obj)
 {
     if (sectorIndex.x < 0 || sectorIndex.x >= mTotalSectorSize.x || sectorIndex.z >= mTotalSectorSize.z)
@@ -199,6 +204,8 @@ Coordinate SectorController::GetSectorIdxByPosition(Vec3 Pos)
     sectorIdx.z = static_cast<int>((Pos.z / SectorController::Each_SectorSize.z));
     return sectorIdx;
 }
+
+
 
 Coordinate SectorController::GetSectorStartPos(Coordinate sectorIdx)
 {

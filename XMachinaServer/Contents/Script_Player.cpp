@@ -271,3 +271,20 @@ SPtr<Script_Skill> Script_Player::GetSkillEntity(FBProtocol::PLAYER_SKILL_TYPE t
     return skill_entity;
 }
 
+void Script_Player::SetWeapon(SPtr<GameObject> weapon)
+{    
+	if (weapon == nullptr)
+		return;
+
+	if (mCurrWeapon != nullptr && mCurrWeapon != mDefaultWeapon) {
+		// [Broadcast Packet] 아이템이 드랍됐음을 알린다.
+		auto item_entity = mCurrWeapon->GetScriptEntity<Script_Item>();
+		//auto spkt = FBS_FACTORY->SPkt_Item_ThrowAway(0, mCurrWeapon->GetID(), item_entity->GetItemType(), mOwner->GetTransform()->GetPosition());
+		//ROOM_MGR->BroadcastRoom(mOwner->GetOwnerRoom()->GetID(), spkt);
+	}
+
+	mWeapon_Lock.LockWrite(); 
+	mCurrWeapon = weapon; 
+	mWeapon_Lock.UnlockWrite(); 
+}
+

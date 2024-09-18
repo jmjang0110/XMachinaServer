@@ -11,6 +11,8 @@
 
 #include "Script_Weapon.h"
 #include "Script_Player.h"
+#include "Script_Enemy.h"
+
 
 
 Script_SpiderMine::Script_SpiderMine()
@@ -108,19 +110,31 @@ void Script_SpiderMine::Update()
 
 void Script_SpiderMine::SplashDamage()
 {
+	// Bullet 주변 range 안에 있는 Monsters -> Splash Damage 
+	
+	Vec3					center_pos        = mOwner->GetTransform()->GetPosition();
+	auto					sector_controller = mOwner->GetOwnerRoom()->GetSectorController();
+	std::vector<Coordinate> sectors           = sector_controller->GetCheckSectors(mOwner->GetTransform()->GetPosition(), mSplashRangeRadius + 1.f);
+	
+	// Enemies in Splash Range On Hit!
+	for (Coordinate& sector : sectors) {
+		auto enemies = sector_controller->GetEnemies_InRange(sector, center_pos, mSplashRangeRadius);
+		for (auto& e :enemies) {
+			auto enemy_entity = e->GetScriptEntity<Script_Enemy>();
+			enemy_entity->Hit(mDamage);
+		}
+	}
+
 }
 
 void Script_SpiderMine::Explode()
 {
-	Script_Bullet::Explode();
+	Explode();
 	SplashDamage();
 }
 
 void Script_SpiderMine::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 {
 	MEMORY->Delete(overlapped);
-
-	mOwner->RegisterUpdate();
-
-
+	mOwner->Update();
 }

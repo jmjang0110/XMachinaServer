@@ -137,4 +137,22 @@ bool Sector::CollideCheck_WithEnemies(SPtr<GameObject> obj)
 	return false;
 }
 
+std::vector<SPtr<GameObject>> Sector::GetEnemiesInRange(Vec3 center_pos, float radius)
+{
+	std::vector<SPtr<GameObject>> enemies;
+	for (auto& Mon : mMonsters) {
+		Vec3 pos = Mon.second->GetTransform()->GetSnapShot().GetPosition(); /* Snap Shot - Position */
+
+		// x, z 좌표 간의 거리 계산
+		float distance = static_cast<float>(std::sqrt(std::pow(pos.x - center_pos.x, 2) + std::pow(pos.z - center_pos.z, 2)));
+
+		// 거리 비교
+		if (distance <= radius) {
+			enemies.push_back(Mon.second);
+		}
+	}
+
+	return enemies;
+}
+
 

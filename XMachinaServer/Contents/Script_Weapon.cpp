@@ -2,7 +2,13 @@
 #include "Script_Weapon.h"
 #include "GameObject.h"
 #include "Transform.h"
+#include "FBsPacketFactory.h"
+#include "RoomManager.h"
+#include "GameRoom.h"
+
+
 #include "Script_RayCheckBullet.h"
+#include "Script_Player.h"
 
 Script_Weapon::Script_Weapon(SPtr<GameObject> owner)
 	: Script_Item(owner)
@@ -102,8 +108,15 @@ bool Script_Weapon::DoInteract(SPtr<GameObject> player)
     float dist     = (playerPos - itemPos).Length();
     
     float interactDist = 3.f;
-    if (dist <= interactDist)
+    if (dist <= interactDist) {
+        auto player_entity = player->GetScriptEntity<Script_Player>();
+        player_entity->SetWeapon(mOwner);
+
+        // [Broadcast Packet] Item Interact (Update Current Equiped Weapon)
+        auto spkt = FBS_FACTORY->SPkt_Item_Interact(player->GetID(), mOwner->GetID(), mItemType, itemPos);
+        ROOM_MGR->BroadcastRoom(player->GetOwnerRoom()->GetID(), spkt);
         return true;
+    }
 
     return false;
 }
