@@ -11,6 +11,9 @@
 #include "Framework.h"
 #include "ServerLib/ServerNetwork.h"
 #include "ServerLib/MemoryManager.h"
+#include "CollisionManager.h"
+#include "Collider.h"
+
 GameRoom::GameRoom()
 {
 }
@@ -114,7 +117,36 @@ bool GameRoom::CollideCheckWithNPC(SPtr<GameObject> obj, ObjectTag objTag)
 	return isCollide;
 }
 
+bool GameRoom::CollideCheckWithPlayer(SPtr<GameObject> obj)
+{
+	bool Result = false;
+	auto A_Sphere_col = obj->GetCollider()->GetSnapShot();
+	auto players = mPC->GetAllPlayers();
 
+	for (auto& iter : players) {
+		ColliderSnapShot B_Box_col = iter->GetCollider()->GetColliderSnapShot();
+		Result = COLLISION_MGR->CollideCheck_Sphere(A_Sphere_col, B_Box_col);
+		if (Result)
+			return true;
+	}
+
+	return false;
+}
+
+std::vector<SPtr<GameObject>> GameRoom::GetPlayersInRange(Vec3 ceneter_pos, float range_radius)
+{
+	std::vector<SPtr<GameObject>> playersInRange;
+
+	auto players = mPC->GetAllPlayers();
+	for (auto& iter : players) {
+		Vec3 player_pos = iter->GetTransform()->GetSnapShot().GetPosition();
+		if ((player_pos - ceneter_pos).Length() <= range_radius) {
+			playersInRange.push_back(iter);
+		}
+	}
+
+	return playersInRange;
+}
 /// +-------------------------------------------------------------------
 ///	¢º¢º¢º NPC Controller 
 /// -------------------------------------------------------------------+

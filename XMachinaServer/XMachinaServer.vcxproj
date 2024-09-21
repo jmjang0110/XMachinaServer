@@ -206,6 +206,7 @@
     <ClInclude Include="Contents\Script_BasicBullet.h" />
     <ClInclude Include="Contents\Script_Building.h" />
     <ClInclude Include="Contents\Script_Bullet.h" />
+    <ClInclude Include="Contents\Script_BulletDeus_Phase_1.h" />
     <ClInclude Include="Contents\Script_Ceratoferox.h" />
     <ClInclude Include="Contents\Script_Crate.h" />
     <ClInclude Include="Contents\Script_Deus_Phase_1.h" />
@@ -226,6 +227,7 @@
     <ClInclude Include="Contents\Script_Weapon.h" />
     <ClInclude Include="Contents\Script_WeaponBurnout.h" />
     <ClInclude Include="Contents\Script_WeaponDBMS.h" />
+    <ClInclude Include="Contents\Script_WeaponDeus_Phase_1_Rifle.h" />
     <ClInclude Include="Contents\Script_WeaponHLock.h" />
     <ClInclude Include="Contents\Script_WeaponMineLauncher.h" />
     <ClInclude Include="Contents\Script_WeaponPipeLine.h" />
@@ -346,6 +348,7 @@
     <ClCompile Include="Contents\Script_BasicBullet.cpp" />
     <ClCompile Include="Contents\Script_Building.cpp" />
     <ClCompile Include="Contents\Script_Bullet.cpp" />
+    <ClCompile Include="Contents\Script_BulletDeus_Phase_1.cpp" />
     <ClCompile Include="Contents\Script_Ceratoferox.cpp" />
     <ClCompile Include="Contents\Script_Crate.cpp" />
     <ClCompile Include="Contents\Script_Deus_Phase_1.cpp" />
@@ -366,6 +369,7 @@
     <ClCompile Include="Contents\Script_Weapon.cpp" />
     <ClCompile Include="Contents\Script_WeaponBurnout.cpp" />
     <ClCompile Include="Contents\Script_WeaponDBMS.cpp" />
+    <ClCompile Include="Contents\Script_WeaponDeus_Phase_1_Rifle.cpp" />
     <ClCompile Include="Contents\Script_WeaponHLock.cpp" />
     <ClCompile Include="Contents\Script_WeaponMineLauncher.cpp" />
     <ClCompile Include="Contents\Script_WeaponPipeLine.cpp" />

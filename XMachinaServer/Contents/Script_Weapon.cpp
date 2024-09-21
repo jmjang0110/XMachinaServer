@@ -9,6 +9,7 @@
 
 #include "Script_RayCheckBullet.h"
 #include "Script_Player.h"
+#include "Script_Bullet.h"
 
 Script_Weapon::Script_Weapon(SPtr<GameObject> owner)
 	: Script_Item(owner)
@@ -93,6 +94,8 @@ int Script_Weapon::OnShoot(Vec3& center_pos, Vec3& fire_dir)
             mBullets[possibleIndex]->GetTransform()->SetRight(Vector3::Right);
             mBullets[possibleIndex]->GetTransform()->SetLook(fire_dir);
             mBullets[possibleIndex]->Activate(); // PQCS - Register Update !
+            mBullets[possibleIndex]->Start();
+
             return possibleIndex;
         }
     }

@@ -89,7 +89,7 @@ void Script_Player::Update()
 
 void Script_Player::Start()
 {
-	mViewListSnapShot.ViewRangeRadius = 10.f;
+	mViewListSnapShot.ViewRangeRadius = 30.f;
 	mViewList.ViewRangeRadius     = mViewListSnapShot.ViewRangeRadius;
 	
 	// H_Lock ( ±âº» ±ÇÃÑ ) 

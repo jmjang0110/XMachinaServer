@@ -1,21 +1,26 @@
 #include "pch.h"
 #include "Script_Deus_Phase_1.h"
 
+/* Script */
 #include "Script_EnemyController.h"
 #include "Script_Player.h"
+#include "Script_BehaviorTrees.h"
+#include "Script_BulletDeus_Phase_1.h"
+#include "Script_WeaponDeus_Phase_1_Rifle.h"
 
+/* Game Object */
 #include "FBsPacketFactory.h"
-
+#include "RoomManager.h"
+#include "GameObject.h"
 #include "GameRoom.h"
 #include "PlayerController.h"
-#include "RoomManager.h"
 
-#include "GameObject.h"
+/* Component */
 #include "Animation.h"
 #include "Transform.h"
 #include "Collider.h"
 #include "Rigidbody.h"
-#include "Script_BehaviorTrees.h"
+
 
 
 Script_Deus_Phase_1::Script_Deus_Phase_1(SPtr<GameObject> owner)
@@ -77,6 +82,15 @@ void Script_Deus_Phase_1::Clone(SPtr<GameObject> target)
 void Script_Deus_Phase_1::Start()
 {
     Script_Enemy::Start();
+
+    // H_Lock ( ±âº» ±ÇÃÑ ) 
+    mWeapon = MEMORY->Make_Shared<GameObject>(FBProtocol::ITEM_TYPE_WEAPON_H_LOOK);
+    mWeapon->AddComponent<Transform>(Component::Type::Transform);
+    auto weapon_entity = mWeapon->SetScriptEntity<Script_WeaponDeus_Phase_1_Rifle>();
+    mWeapon->SetOwnerRoom(mOwner->GetOwnerRoom());
+
+    weapon_entity->SetOwnerPlayer(mOwner);
+    mWeapon->Start();
 }
 
 void Script_Deus_Phase_1::StartAttack()
@@ -104,6 +118,20 @@ void Script_Deus_Phase_1::StartAttack()
     ROOM_MGR->BroadcastRoom(mOwner->GetOwnerRoom()->GetID(), spkt);
 }
 
+void Script_Deus_Phase_1::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
+{
+    MEMORY->Delete(overlapped);
+
+    int activeReference = mOwner->GetActivateRef();
+    if (activeReference > 0) {
+        mOwner->Update();
+        mOwner->RegisterUpdate();
+    }
+    else {
+        OnExitFromViewList();
+    }
+}
+
 void Script_Deus_Phase_1::MeleeAttack()
 {
     mCurrAttackStep = ScriptDeusPhase1AttackType::MeleeAttack;
@@ -111,13 +139,23 @@ void Script_Deus_Phase_1::MeleeAttack()
 
 void Script_Deus_Phase_1::RangeAttack()
 {
-   const float randValue = Math::RandF(0.f, 100.f);
-   if (randValue >= mkExplodeAttackRate) {
-       mCurrAttackStep = ScriptDeusPhase1AttackType::RangeAttack;
-   }
-   else {
-       mCurrAttackStep = ScriptDeusPhase1AttackType::ExplodeAttack;
-   }
+    const float randValue = Math::RandF(0.f, 100.f);
+    if (randValue >= mkExplodeAttackRate) {
+        Vec3 myPos = GetOwner()->GetTransform()->GetPosition() + Vec3{ 0.f, 3.f, 0.f };
+        Vec3 targetPos = mEnemyController->GetTarget()->GetTransform()->GetSnapShot().GetPosition();
+        Vec3 dir = Vector3::Normalized(targetPos - myPos);
+
+        mCurrAttackStep = ScriptDeusPhase1AttackType::RangeAttack;
+        auto weapon_entity = mWeapon->GetScriptEntity<Script_WeaponDeus_Phase_1_Rifle>();
+        if (weapon_entity) {
+            weapon_entity->OnShoot(myPos, dir);
+            LOG_MGR->Cout("³ª½ô¤»\n");
+        }
+        
+    }
+    else {
+        mCurrAttackStep = ScriptDeusPhase1AttackType::ExplodeAttack;
+    }
 }
 
 //void Script_Deus_Phase_1::SmashAttackCallback()

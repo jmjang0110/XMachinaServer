@@ -129,7 +129,7 @@ void Script_SpiderMine::SplashDamage()
 
 void Script_SpiderMine::Explode()
 {
-	Explode();
+	Script_ExplosiveBullet::Explode();
 	SplashDamage();
 }
 

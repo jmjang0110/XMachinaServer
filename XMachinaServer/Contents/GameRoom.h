@@ -50,7 +50,8 @@ public:
 	///	¢º¢º¢º NPC Controller 
 	/// -------------------------------------------------------------------+
 	bool CollideCheckWithNPC(SPtr<GameObject> obj, ObjectTag objTag);
-
+	bool CollideCheckWithPlayer(SPtr<GameObject> obj);
+	std::vector<SPtr<GameObject>> GetPlayersInRange(Vec3 ceneter_pos, float range_radius);
 
 public:
 	/// +-------------------------------------------------------------------

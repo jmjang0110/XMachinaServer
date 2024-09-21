@@ -20,6 +20,6 @@ public:
 
 public:
 	void SetExplosionDamage(float damage) { mExplosionDamage = damage; }
-
+	
 };
 

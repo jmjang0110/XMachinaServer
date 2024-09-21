@@ -60,9 +60,17 @@ void Script_Bullet::Clone(SPtr<GameObject> target)
     clonedScript->SetOwner(target);
 }
 
+void Script_Bullet::Start()
+{
+    Reset();
+}
+
 void Script_Bullet::Update()
 {
     Script::Update();
+
+    if (mIsExploded)
+        return;
 
 	mCurrLifeTime += DeltaTime();
 
@@ -112,10 +120,11 @@ void Script_Bullet::Fire(const Transform& transform, const Vec2& err)
 
 void Script_Bullet::Explode()
 {
-    ReturnPossibleIndexToWeapon();
-    Reset();
-    mIsExploded = true;
+    if (mIsExploded == true)
+        return;
 
+    ReturnPossibleIndexToWeapon();
+    mIsExploded = true;
     mOwner->DeActivate();
 }
 

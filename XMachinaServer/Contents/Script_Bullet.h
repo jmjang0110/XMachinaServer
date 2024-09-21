@@ -34,7 +34,8 @@ public:
 	virtual SPtr<Component> Clone(SPtr<Component> target);
 	virtual void Clone(SPtr<GameObject> target);
 
-	virtual void Update();
+	virtual void Start() override;
+	virtual void Update() override;
 
 public:
 	float GetDamage() const { return mDamage; }
