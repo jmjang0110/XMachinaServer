@@ -16,7 +16,25 @@ Script_AdvancedCombatDroid_5::Script_AdvancedCombatDroid_5(SPtr<GameObject> owne
    std::string name = "AdvancedCombatDroid_5";
    mType            = FBProtocol::MONSTER_TYPE_ADVANCED_COMBAT_DROIR_5;
    owner->SetName(name);
+#ifdef SET_DATA_FROM_DATABASE
    Script_EnemyStat::SetDataFromDataBase(name);
+#else
+   Script_EnemyStat::SetStat_EnemyLevel(3);
+   Script_EnemyStat::SetStat_PheroLevel(3);
+   Script_EnemyStat::SetStat_MoveSpeed(2.5);
+   Script_EnemyStat::SetStat_DetectionRange(15);
+   Script_EnemyStat::SetStat_RotationSpeed(150);
+   Script_EnemyStat::SetStat_AttackRotationSpeed(250);
+   Script_EnemyStat::SetStat_AttackRate(30);
+   Script_EnemyStat::SetStat_AttackRange(1.5);
+   Script_EnemyStat::SetStat_AttackCoolTime(0);
+   Script_EnemyStat::SetMaxHP(150);
+   Script_EnemyStat::SetStat_Attack1AnimName("2HitComboUnarmed");
+   Script_EnemyStat::SetStat_Attack2AnimName("None");
+   Script_EnemyStat::SetStat_Attack3AnimName("None");
+   Script_EnemyStat::SetStat_DeathAnimName("DeathFrontCombat");
+   Script_EnemyStat::SetStat_GetHitName("IdleCombat");
+#endif
    Script_EnemyStat::SetID(owner->GetID());
 }
 

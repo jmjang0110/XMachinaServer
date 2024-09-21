@@ -1,12 +1,21 @@
 #include "pch.h"
 #include "Script_PheroDropper.h"
 #include "Script_Phero.h"
+#include "Script_Enemy.h"
+#include "Script_EnemyStat.h"
+
 
 #include "GameObject.h"
 #include "Component.h"
 #include "Transform.h"
 #include "Collider.h"
 #include "Animation.h"
+#include "ResourceManager.h"
+
+
+#include "DBController.h"
+#include "DB_Phero.h"
+#include "DB_PheroDropInfo.h"
 
 Script_PheroDropper::Script_PheroDropper()
 {
@@ -60,103 +69,94 @@ void Script_PheroDropper::Start()
 	Init();
 }
 
+SPtr<GameObject> Script_PheroDropper::CreatePheroObject(int pheroUnique_id, int phero_level)
+{
+	/// > Phero Object 
+	std::shared_ptr<GameObject> phero = std::make_shared<GameObject>(pheroUnique_id);
+	phero->AddComponent<Transform>(Component::Type::Transform);
+	phero->AddComponent<Collider>(Component::Type::Collider);
+	auto phero_entity = phero->SetScriptEntity<Script_Phero>();
+	Vec3 offsetDist = Math::RandVec2(pheroUnique_id).xz();
+	phero_entity->SetOffsetDist(offsetDist);
+
+	/// > Phero Level 
+	// PheroDropInfo::Min_Phero_Level + std::rand() % PheroDropInfo::Max_Phero_Level; // 1 2 3 
+	phero_entity->SetLevel(phero_level);
+
+	return phero;
+}
+
 void Script_PheroDropper::Init()
 {
+	mPheroLevel                = mOwner->GetScriptEntity<Script_Enemy>()->GetStat_PheroLevel();
 	std::string AllPherosState = {};
-	/// > 5 ~ 30 (min ~ max) - ( pheros Count )
+	int			monsterID      = GetOwner()->GetID();
+
+	// 각 레벨별 페로 수 계산 (50%: Level 1, 30%: Level 2, 20%: Level 3)
+	int level1Count = 0;
+	int level2Count = 0;
+	int level3Count = 0;
+
+#ifdef SET_DATA_FROM_DATABASE
+
+	SPtr<DB_PheroDropInfo> pheroDropInfoDB = RESOURCE_MGR->GetPheroDropInfo(mPheroLevel);
+	int pherosCount = pheroDropInfoDB->MinPheroDropCount + std::rand() % (pheroDropInfoDB->MaxPheroDropCount - pheroDropInfoDB->MinPheroDropCount);
+
+	for (int i = 0; i < pherosCount; ++i) {
+		int randValue = std::rand() % 100; // 0에서 99 사이의 난수 생성
+
+		if (randValue < pheroDropInfoDB->L1PheroDropRate) {
+			++level1Count; // 레벨 1
+		}
+		else if (randValue < pheroDropInfoDB->L1PheroDropRate + pheroDropInfoDB->L2PheroDropRate) {
+			++level2Count; // 레벨 2
+		}
+		else {
+			++level3Count; // 레벨 3
+		}
+	}
+
+#else
+
 	int rand = PheroDropInfo::Min_Phero_Drop_Num + std::rand() % (PheroDropInfo::Max_Phero_Drop_Num - PheroDropInfo::Min_Phero_Drop_Num);
 	mPheros.reserve(rand);
+	int pherosCount = PheroDropInfo::Min_Phero_Drop_Num + std::rand() % (PheroDropInfo::Max_Phero_Drop_Num - PheroDropInfo::Min_Phero_Drop_Num);
 
-	int Level1_PDR = std::rand() % rand;
-	int Level2_PDR = std::rand() % (rand - Level1_PDR);
-	int Level3_PDR = rand - Level1_PDR - Level2_PDR;
+	for (int i = 0; i < pherosCount; ++i) {
+		int randValue = std::rand() % 100; // 0에서 99 사이의 난수 생성
 
-	for (int i = 0; i < Level1_PDR; ++i) {
-		/// +---------------------------------------------------------------
-		///							CREATE PHERO 
-		/// ---------------------------------------------------------------+
-		
-		/// > Phero Unique ID 
-		int monsterID     = GetOwner()->GetID();
-		int phero_index   = i;
-		int pheroUniqueID = CreateUniquePheroID(monsterID, phero_index);
-
-		/// > Phero Object 
-		std::shared_ptr<GameObject> phero = std::make_shared<GameObject>(pheroUniqueID);
-		phero->AddComponent<Transform>(Component::Type::Transform);
-		phero->AddComponent<Collider>(Component::Type::Collider);
-		auto phero_entity = phero->SetScriptEntity<Script_Phero>();
-		Vec3 offsetDist = Math::RandVec2(pheroUniqueID).xz();
-		phero_entity->SetOffsetDist(offsetDist);
-
-		/// > Phero Level 
-		int level = 1;// PheroDropInfo::Min_Phero_Level + std::rand() % PheroDropInfo::Max_Phero_Level; // 1 2 3 
-		phero_entity->SetLevel(level);
-		mPheros.push_back(phero);
-
-		/// > Store Phero states (All) "11231323123" = [1 lv]-(0) [1 lv]-(1) [2 lv]-(2)  ... [3 lv]
-		AllPherosState += std::to_string(level);
+		if (randValue < 40) {
+			++level1Count; // 레벨 1
+		}
+		else if (randValue < 60) {
+			++level2Count; // 레벨 2
+		}
+		else {
+			++level3Count; // 레벨 3
+		}
 	}
 
+#endif
 
-	for (int i = Level1_PDR; i < Level1_PDR + Level2_PDR; ++i) {
-		/// +---------------------------------------------------------------
-		///							CREATE PHERO 
-		/// ---------------------------------------------------------------+
-
-		/// > Phero Unique ID 
-		int monsterID = GetOwner()->GetID();
-		int phero_index = i;
-		int pheroUniqueID = CreateUniquePheroID(monsterID, phero_index);
-
-		/// > Phero Object 
-		std::shared_ptr<GameObject> phero = std::make_shared<GameObject>(pheroUniqueID);
-		phero->AddComponent<Transform>(Component::Type::Transform);
-		phero->AddComponent<Collider>(Component::Type::Collider);
-		auto phero_entity = phero->SetScriptEntity<Script_Phero>();
-
-		Vec3 offsetDist = Math::RandVec2(pheroUniqueID).xz();
-		phero_entity->SetOffsetDist(offsetDist);
-
-		/// > Phero Level 
-		int level = 2;// PheroDropInfo::Min_Phero_Level + std::rand() % PheroDropInfo::Max_Phero_Level; // 1 2 3 
-		phero_entity->SetLevel(level);
-		mPheros.push_back(phero);
-
-		/// > Store Phero states (All) "11231323123" = [1 lv]-(0) [1 lv]-(1) [2 lv]-(2)  ... [3 lv]
-		AllPherosState += std::to_string(level);
+	// 정렬된 순서로 페로 생성 (레벨 1 -> 레벨 2 -> 레벨 3)
+	for (int i = 0; i < level1Count; ++i) {
+		mPheros.push_back(CreatePheroObject(CreateUniquePheroID(monsterID, i), 1));
+		AllPherosState += "1"; // 레벨 1 상태 추가
 	}
 
-
-	for (int i = Level1_PDR + Level2_PDR; i < rand; ++i) {
-		/// +---------------------------------------------------------------
-		///							CREATE PHERO 
-		/// ---------------------------------------------------------------+
-
-		/// > Phero Unique ID 
-		int monsterID = GetOwner()->GetID();
-		int phero_index = i;
-		int pheroUniqueID = CreateUniquePheroID(monsterID, phero_index);
-
-		/// > Phero Object 
-		std::shared_ptr<GameObject> phero = std::make_shared<GameObject>(pheroUniqueID);
-		phero->AddComponent<Transform>(Component::Type::Transform);
-		phero->AddComponent<Collider>(Component::Type::Collider);
-		auto phero_entity = phero->SetScriptEntity<Script_Phero>();
-		Vec3 offsetDist = Math::RandVec2(pheroUniqueID).xz();
-		phero_entity->SetOffsetDist(offsetDist);
-
-		/// > Phero Level 
-		int level = 3;// PheroDropInfo::Min_Phero_Level + std::rand() % PheroDropInfo::Max_Phero_Level; // 1 2 3 
-		phero_entity->SetLevel(level);
-		mPheros.push_back(phero);
-
-		/// > Store Phero states (All) "11231323123" = [1 lv]-(0) [1 lv]-(1) [2 lv]-(2)  ... [3 lv]
-		AllPherosState += std::to_string(level);
+	for (int i = 0; i < level2Count; ++i) {
+		mPheros.push_back(CreatePheroObject(CreateUniquePheroID(monsterID, i + level1Count), 2));
+		AllPherosState += "2"; // 레벨 2 상태 추가
 	}
 
-	/// > Set Pheros States ( All Pheros Info )
+	for (int i = 0; i < level3Count; ++i) {
+		mPheros.push_back(CreatePheroObject(CreateUniquePheroID(monsterID, i + level1Count + level2Count), 3));
+		AllPherosState += "3"; // 레벨 3 상태 추가
+	}
+
+	// 모든 페로 상태 설정
 	mPherosString = AllPherosState;
+	//LOG_MGR->Cout("PHERO : ", mPherosString, "\n");
 }
 
 int Script_PheroDropper::CalculatePercentage(int totalNumber, double percentage)

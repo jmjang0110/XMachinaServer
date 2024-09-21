@@ -298,9 +298,6 @@
     <ClInclude Include="Contents\BTNode.h">
       <Filter>Framework\Contents\GameWorld\Script\Enemy\Monster\Behavior Tree\BT</Filter>
     </ClInclude>
-    <ClInclude Include="Contents\BTTask.h">
-      <Filter>Framework\Contents\GameWorld\Script\Enemy\Monster\Behavior Tree\BT</Filter>
-    </ClInclude>
     <ClInclude Include="Contents\Component.h">
       <Filter>Framework\Contents\GameWorld\GameObject\Component</Filter>
     </ClInclude>
@@ -598,6 +595,9 @@
     <ClInclude Include="Protocol\FBP_LogIn_generated.h">
       <Filter>Protocol\PacketProtocol</Filter>
     </ClInclude>
+    <ClInclude Include="Contents\BTTask.h">
+      <Filter>Framework\Contents\GameWorld\Script\Enemy\Monster\Behavior Tree\BT</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp">
@@ -680,9 +680,6 @@
     </ClCompile>
     <ClCompile Include="Contents\DB_Item.cpp">
       <Filter>Framework\Contents\DataBase\Item</Filter>
-    </ClCompile>
-    <ClCompile Include="Contents\DB_Weapon.cpp">
-      <Filter>Framework\Contents\DataBase\Item\Weapon</Filter>
     </ClCompile>
     <ClCompile Include="Contents\DB_Inventory.cpp">
       <Filter>Framework\Contents\DataBase\Item</Filter>
@@ -962,6 +959,9 @@
     </ClCompile>
     <ClCompile Include="Contents\DB_EnemyStat.cpp">
       <Filter>Framework\Contents\DataBase\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\DB_Weapon.cpp">
+      <Filter>Framework\Contents\DataBase\Item\Weapon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

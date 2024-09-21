@@ -30,6 +30,7 @@ void DB_PheroDropInfo::FetchDataFromDataBase(const wchar_t* query)
     ::SQLFreeHandle(SQL_HANDLE_STMT, mSQL_hStmt);
 
     // Output the data
+
     std::wcout << L"Level: " << PK_Level
         << L", MinPheroDropCount: " << MinPheroDropCount
         << L", MaxPheroDropCount: " << MaxPheroDropCount

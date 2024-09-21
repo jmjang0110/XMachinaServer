@@ -22,7 +22,25 @@ Script_Onyscidus::Script_Onyscidus(SPtr<GameObject> owner)
     std::string name = "Onyscidus";
     mType = FBProtocol::MONSTER_TYPE_ONYSCIDUS;
     owner->SetName(name);
+#ifdef SET_DATA_FROM_DATABASE
     Script_EnemyStat::SetDataFromDataBase(name);
+#else
+    Script_EnemyStat::SetStat_EnemyLevel(1);
+    Script_EnemyStat::SetStat_PheroLevel(1);
+    Script_EnemyStat::SetStat_MoveSpeed(2.5);
+    Script_EnemyStat::SetStat_DetectionRange(15);
+    Script_EnemyStat::SetStat_RotationSpeed(150);
+    Script_EnemyStat::SetStat_AttackRotationSpeed(250);
+    Script_EnemyStat::SetStat_AttackRate(10);
+    Script_EnemyStat::SetStat_AttackRange(4);
+    Script_EnemyStat::SetStat_AttackCoolTime(0);
+    Script_EnemyStat::SetMaxHP(70);
+    Script_EnemyStat::SetStat_Attack1AnimName("2HitComboClawsAttack");
+    Script_EnemyStat::SetStat_Attack2AnimName("None");
+    Script_EnemyStat::SetStat_Attack3AnimName("None");
+    Script_EnemyStat::SetStat_DeathAnimName("Death");
+    Script_EnemyStat::SetStat_GetHitName("BlockIdle");
+#endif
     Script_EnemyStat::SetID(owner->GetID());
 }
 

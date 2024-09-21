@@ -360,9 +360,11 @@ ResourceManager::~ResourceManager()
 
 void ResourceManager::Init()
 {
+#ifdef SET_DATA_FROM_DATABASE
 	LoadDB_PheroInfos();
 	LoadDB_EnemyStatInfos();
 	DB_CONTROLLER->ExecuteAllDataBaseEvents();
+#endif
 
 	mTileMap = std::make_shared<TileMap>();
 

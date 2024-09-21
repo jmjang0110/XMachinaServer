@@ -19,7 +19,25 @@ Script_Rapax::Script_Rapax(SPtr<GameObject> owner)
     std::string name = "Rapax";
     mType = FBProtocol::MONSTER_TYPE_RAPAX;
     owner->SetName(name);
+#ifdef SET_DATA_FROM_DATABASE
     Script_EnemyStat::SetDataFromDataBase(name);
+#else
+    Script_EnemyStat::SetStat_EnemyLevel(6);
+    Script_EnemyStat::SetStat_PheroLevel(6);
+    Script_EnemyStat::SetStat_MoveSpeed(4.5);
+    Script_EnemyStat::SetStat_DetectionRange(30);
+    Script_EnemyStat::SetStat_RotationSpeed(250);
+    Script_EnemyStat::SetStat_AttackRotationSpeed(250);
+    Script_EnemyStat::SetStat_AttackRate(200);
+    Script_EnemyStat::SetStat_AttackRange(2);
+    Script_EnemyStat::SetStat_AttackCoolTime(0);
+    Script_EnemyStat::SetMaxHP(300);
+    Script_EnemyStat::SetStat_Attack1AnimName("JumpClawsAttack");
+    Script_EnemyStat::SetStat_Attack2AnimName("None");
+    Script_EnemyStat::SetStat_Attack3AnimName("None");
+    Script_EnemyStat::SetStat_DeathAnimName("Death");
+    Script_EnemyStat::SetStat_GetHitName("GetHitFront");
+#endif
     Script_EnemyStat::SetID(owner->GetID());
 }
 

@@ -277,7 +277,13 @@ bool FBsPacketFactory::Process_CPkt_LogIn(SPtr_Session session, const FBProtocol
 	std::string ID       = pkt.id()->c_str();
 	std::string Password = pkt.password()->c_str();
 
+#ifdef SET_DATA_FROM_DATABASE
 	gameSession->LoadUserInfo(ID, Password);
+#else
+	/* Send Log In Packet */
+	auto spkt = FBS_FACTORY->SPkt_LogIn("No DataBase Version", true); 
+	session->Send(spkt);
+#endif
 
 	LOG_MGR->SetColor(TextColor::BrightBlue);
 	LOG_MGR->Cout("LOG IN SESSION ID : ", gameSession->GetID());
@@ -317,7 +323,6 @@ bool FBsPacketFactory::Process_CPkt_EnterLobby(SPtr_Session session, const FBPro
 	/// ---------------------------------------------------------------------------------------+
 	auto SendPkt_NewPlayer = FBS_FACTORY->SPkt_NewPlayer(MyPlayer);
 	ROOM_MGR->BroadcastRoom(gameSession->GetPlayer()->GetOwnerRoom()->GetID(), SendPkt_NewPlayer, gameSession->GetID());
-
 
 	return true;
 }

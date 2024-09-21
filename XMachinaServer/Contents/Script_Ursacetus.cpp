@@ -28,7 +28,25 @@ Script_Ursacetus::Script_Ursacetus(SPtr<GameObject> owner)
     std::string name = "Ursacetus";
     mType = FBProtocol::MONSTER_TYPE_URSACETUS;
     owner->SetName(name);
+#ifdef SET_DATA_FROM_DATABASE
     Script_EnemyStat::SetDataFromDataBase(name);
+#else
+    Script_EnemyStat::SetStat_EnemyLevel(4);
+    Script_EnemyStat::SetStat_PheroLevel(5);
+    Script_EnemyStat::SetStat_MoveSpeed(5);
+    Script_EnemyStat::SetStat_DetectionRange(20);
+    Script_EnemyStat::SetStat_RotationSpeed(150);
+    Script_EnemyStat::SetStat_AttackRotationSpeed(10);
+    Script_EnemyStat::SetStat_AttackRate(200);
+    Script_EnemyStat::SetStat_AttackRange(5);
+    Script_EnemyStat::SetStat_AttackCoolTime(0);
+    Script_EnemyStat::SetMaxHP(1000);
+    Script_EnemyStat::SetStat_Attack1AnimName("LeftHandAttack");
+    Script_EnemyStat::SetStat_Attack2AnimName("Roar1");
+    Script_EnemyStat::SetStat_Attack3AnimName("LeftFootStompAttack");
+    Script_EnemyStat::SetStat_DeathAnimName("Death");
+    Script_EnemyStat::SetStat_GetHitName("None");
+#endif
     Script_EnemyStat::SetID(owner->GetID());
 }
 

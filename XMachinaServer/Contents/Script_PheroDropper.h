@@ -14,6 +14,7 @@ class GameObject;
 class Script_PheroDropper : public Script
 {
 private:
+	int								mPheroLevel   = {};
 	std::string						mPherosString = {};
 	std::vector<SPtr<GameObject>>	mPheros       = {};
 
@@ -29,6 +30,7 @@ public:
 
 	virtual void Start();
 
+	SPtr<GameObject> CreatePheroObject(int pheroUnique_id, int phero_level);
 
 public:
 	void Init();

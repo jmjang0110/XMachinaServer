@@ -38,6 +38,7 @@ bool Script_Stat::Hit(float damage, SPtr<GameObject> instigator)
 	}
 	else {
 		mCrntHP -= damage;
+		LOG_MGR->Cout("ID : ", mOwner->GetID(), " HP : ", mCrntHP, "\n");
 		S_SetHp(mCrntHP); // Lock Write
 	}
 

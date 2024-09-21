@@ -60,6 +60,36 @@ void GameSession::OnSend(UINT32 len)
 
 UINT32 GameSession::OnRecv(BYTE* buffer, UINT32 len)
 {
+
+
+	/*
+		// 현재까지 처리된 데이터 크기
+	UINT32 ProcessDataSize = mRemainDataSize;
+	while (ProcessDataSize < len) {
+		UINT32 RemainSize = len - ProcessDataSize;
+
+		// 남은 데이터가 PacketHeader의 크기보다 작으면 다음 번 수신에서 처리
+		if (RemainSize < sizeof(PacketHeader)) {
+			mRemainDataSize = RemainSize;
+			break;
+		}
+		PacketHeader* packet = reinterpret_cast<PacketHeader*>(buffer + ProcessDataSize);
+
+		// 남은 데이터가 PacketHeader의 크기보다 작으면 다음 번 수신에서 처리
+		if (RemainSize < packet->PacketSize) {
+			mRemainDataSize = RemainSize;
+			break;
+		}
+
+		FBsPacketFactory::ProcessFBsPacket(static_pointer_cast<Session>(shared_from_this()), buffer + ProcessDataSize, packet->PacketSize);
+		ProcessDataSize += packet->PacketSize;
+		}
+
+		return len;
+	*/
+
+	
+
 	// 패킷 해석 
 	/* 뭉쳐서 들어온 패킷들을 처리한다. */
 	/// +---------------------------------------
@@ -67,24 +97,36 @@ UINT32 GameSession::OnRecv(BYTE* buffer, UINT32 len)
 	///	↑			↑
 	/// buffer     (buffer + ProcessDataSize)
 	/// ---------------------------------------+
+	// 현재까지 처리된 데이터 크기
+	UINT32 ProcessDataSize = 0;
 
-	UINT32 ProcessDataSize = mRemainDataSize;
-	while (ProcessDataSize < len) {
-		UINT32 RemainSize = len - ProcessDataSize;
+	// 기존 남은 데이터를 고려하여 전체 크기 계산
+	UINT32 TotalSize = len + mRemainDataSize;
+
+	while (ProcessDataSize < TotalSize) {
+		UINT32 RemainSize = TotalSize - ProcessDataSize;
+
+		// 남은 데이터가 PacketHeader의 크기보다 작으면 다음 번 수신에서 처리
 		if (RemainSize < sizeof(PacketHeader)) {
-			mRemainDataSize = RemainSize;
-			break;
-		}
-		PacketHeader* packet = reinterpret_cast<PacketHeader*>(buffer + ProcessDataSize);
-		if (RemainSize < packet->PacketSize) {
-			mRemainDataSize = RemainSize;
+			mRemainDataSize = RemainSize; // 남은 데이터 크기 저장
 			break;
 		}
 
-		/* 패킷 해석 */
+		PacketHeader* packet = reinterpret_cast<PacketHeader*>(buffer + ProcessDataSize);
+
+		// 남은 데이터가 패킷 전체 크기보다 적으면 다음 번 수신에서 처리
+		if (RemainSize < packet->PacketSize) {
+			mRemainDataSize = RemainSize; // 남은 데이터 크기 저장
+			break;
+		}
+
 		FBsPacketFactory::ProcessFBsPacket(static_pointer_cast<Session>(shared_from_this()), buffer + ProcessDataSize, packet->PacketSize);
-		ProcessDataSize += packet->PacketSize; 
+		// 처리된 데이터 크기만큼 증가
+		ProcessDataSize += packet->PacketSize;
 	}
+
+	// 남은 데이터 크기 갱신
+	mRemainDataSize = TotalSize - ProcessDataSize;
 
 	return len;
 }

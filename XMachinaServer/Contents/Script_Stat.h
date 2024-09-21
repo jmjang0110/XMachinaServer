@@ -22,7 +22,7 @@ public:
 
 private:
 	/// ---------------- HP ----------------
-	float mMaxHP        = {};
+	float mMaxHP        = { 1000.f }; // test
 	float mShieldAmount = {};
 
 	float mCrntHP       = {};
