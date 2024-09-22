@@ -344,8 +344,7 @@ bool FBsPacketFactory::Process_CPkt_EnterGame(SPtr_Session session, const FBProt
 	std::vector<SPtr<GameObject>>	RemotePlayers  = ROOM_MGR->GetAllPlayersInRoom(MyPlayer->GetOwnerRoom()->GetID());
 
 	auto SendSPkt_EnterGame = FBS_FACTORY->SPkt_EnterGame(MyPlayer, RemotePlayers);
-	ROOM_MGR->BroadcastRoom(gameSession->GetPlayer()->GetOwnerRoom()->GetID(), SendSPkt_EnterGame);
-
+	session->Send(SendSPkt_EnterGame);
 
 	return true;
 }

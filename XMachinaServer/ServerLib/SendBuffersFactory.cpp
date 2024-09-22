@@ -274,6 +274,9 @@ SPtr_PacketSendBuf SendBuffersFactory::CreateVarSendPacketBuf(const uint8_t* buf
 
 	pktHeader->PacketSize           = static_cast<UINT16>(memorySize);
 	pktHeader->ProtocolID           = ProtocolId;
+	if (ProtocolId == 0)
+		assert(0);
+
 	std::memcpy(&pktHeader[1], bufPtr, SerializedDataSize);
 
 	return sendBuf;
