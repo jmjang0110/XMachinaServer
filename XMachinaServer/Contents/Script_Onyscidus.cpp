@@ -98,6 +98,4 @@ void Script_Onyscidus::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
     else {
         OnExitFromViewList();
     }
-
-
 }

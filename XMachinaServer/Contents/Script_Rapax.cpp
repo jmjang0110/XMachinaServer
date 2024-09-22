@@ -87,4 +87,12 @@ void Script_Rapax::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 {
     MEMORY->Delete(overlapped);
 
+    int activeReference = mOwner->GetActivateRef();
+    if (activeReference > 0) {
+        mOwner->Update();
+        mOwner->RegisterUpdate();
+    }
+    else {
+        OnExitFromViewList();
+    }
 }

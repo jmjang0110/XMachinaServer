@@ -97,6 +97,14 @@ void Script_Ursacetus::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 {
     MEMORY->Delete(overlapped);
 
+    int activeReference = mOwner->GetActivateRef();
+    if (activeReference > 0) {
+        mOwner->Update();
+        mOwner->RegisterUpdate();
+    }
+    else {
+        OnExitFromViewList();
+    }
 }
 
 void Script_Ursacetus::BasicAttackCallback()

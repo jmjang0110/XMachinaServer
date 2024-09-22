@@ -258,6 +258,7 @@ void Script_Player::CollideCheckWithPheros(SPtr<GameObject> enemy)
 	Vec3 playerPos     = mOwner->GetTransform()->GetSnapShot().GetPosition();
 	uint32_t player_id = mOwner->GetID();
 
+
 	auto pheroDropper  = enemy->GetScript<Script_PheroDropper>();
 	auto pheros        = pheroDropper->GetPheros();
 
