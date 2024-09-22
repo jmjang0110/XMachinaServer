@@ -274,9 +274,6 @@
     <ClInclude Include="Contents\DB_Item.h">
       <Filter>Framework\Contents\DataBase\Item</Filter>
     </ClInclude>
-    <ClInclude Include="Contents\DB_Weapon.h">
-      <Filter>Framework\Contents\DataBase\Item\Weapon</Filter>
-    </ClInclude>
     <ClInclude Include="Contents\DB_Inventory.h">
       <Filter>Framework\Contents\DataBase\Item</Filter>
     </ClInclude>
@@ -597,6 +594,9 @@
     </ClInclude>
     <ClInclude Include="Contents\BTTask.h">
       <Filter>Framework\Contents\GameWorld\Script\Enemy\Monster\Behavior Tree\BT</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\DB_Weapon.h">
+      <Filter>Framework\Contents\DataBase\Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -961,7 +961,7 @@
       <Filter>Framework\Contents\DataBase\Object</Filter>
     </ClCompile>
     <ClCompile Include="Contents\DB_Weapon.cpp">
-      <Filter>Framework\Contents\DataBase\Item\Weapon</Filter>
+      <Filter>Framework\Contents\DataBase\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -20,7 +20,7 @@ public:
 		Deactive, Active, Dead, End, _count,
 	};
 
-private:
+protected:
 	/// ---------------- HP ----------------
 	float mMaxHP        = { 1000.f }; // test
 	float mShieldAmount = {};

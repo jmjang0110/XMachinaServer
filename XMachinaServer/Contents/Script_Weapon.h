@@ -10,11 +10,17 @@ namespace WeaponInfo {
 class Script_Weapon : public Script_Item
 {
 protected:
-	SPtr<GameObject>											mOwnerPlayer = {};
 	int															mMaxBullet   = {};
 	std::array<SPtr<GameObject>, WeaponInfo::MaxBulletsNum>		mBullets     = {};			// Bullets 
 	
 	Concurrency::concurrent_queue<int>							mPossibleBulletIndex;		// Possible To Shoot Bullets 
+
+	float														mAttackRate         = {};
+	float														mMaxReloadTime      = {};
+	float														mMaxDistance        = {};
+	int															mMaxMag             = {};
+	int															mBulletCountPerMag  = {};
+	int															mBulletCountPerShot = {};
 
 public:
 	Script_Weapon() = default;
@@ -35,6 +41,7 @@ public:
 
 
 public:
+	void SetDataFromDataBase(std::wstring weapon_name);
 	void ReturnPossibleBulletIndex(int index);
 	
 	void SetOwnerPlayer(SPtr<GameObject> owner) { mOwnerPlayer = owner; }

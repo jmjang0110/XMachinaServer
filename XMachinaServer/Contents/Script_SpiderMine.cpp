@@ -94,7 +94,7 @@ void Script_SpiderMine::Update()
 		auto room = mOwner->GetOwnerRoom();
 		if (room->CollideCheckWithNPC(mOwner, ObjectTag::Building)) {
 			if (mSpeed > 0) {
-				mSpeed *= -1; // º®¿¡ ºÎµúÄ¡¸é Åü±ä´Ù.
+				mSpeed *= -1; // ï¿½ï¿½ï¿½ï¿½ ï¿½Îµï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½.
 			}
 		}
 	}
@@ -110,7 +110,7 @@ void Script_SpiderMine::Update()
 
 void Script_SpiderMine::SplashDamage()
 {
-	// Bullet ÁÖº¯ range ¾È¿¡ ÀÖ´Â Monsters -> Splash Damage 
+	// Bullet ï¿½Öºï¿½ range ï¿½È¿ï¿½ ï¿½Ö´ï¿½ Monsters -> Splash Damage 
 	
 	Vec3					center_pos        = mOwner->GetTransform()->GetPosition();
 	auto					sector_controller = mOwner->GetOwnerRoom()->GetSectorController();

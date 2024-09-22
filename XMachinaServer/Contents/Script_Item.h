@@ -5,6 +5,7 @@ class GameObject;
 enum class ItemState {
 	None, 
 	Dropped, 
+	Owned,
 	Using,
 	
 	_count,
@@ -24,7 +25,7 @@ public:
 	virtual SPtr<Component> Clone(SPtr<Component> target);
 
 	FBProtocol::ITEM_TYPE GetItemType() { return mItemType; }
-
+	void SetItemState(ItemState state) { mItemState = state; }
 public:
 	virtual bool DoInteract(SPtr<GameObject> player);
 	virtual bool ThrowAway(SPtr<GameObject> player);

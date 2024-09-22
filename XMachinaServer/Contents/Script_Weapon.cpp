@@ -9,7 +9,8 @@
 
 #include "Script_RayCheckBullet.h"
 #include "Script_Player.h"
-#include "Script_Bullet.h"
+#include "ResourceManager.h"
+#include "DB_Weapon.h"
 
 Script_Weapon::Script_Weapon(SPtr<GameObject> owner)
 	: Script_Item(owner)
@@ -41,6 +42,13 @@ SPtr<Component> Script_Weapon::Clone(SPtr<Component> target)
     {
         // Call the base class Clone method first
         Script_Item::Clone(clonedScript);
+        clonedScript->mAttackRate         = this->mAttackRate;
+        clonedScript->mMaxReloadTime      = this->mMaxReloadTime;
+        clonedScript->mMaxDistance        = this->mMaxDistance;
+        clonedScript->mMaxMag             = this->mMaxMag;
+        clonedScript->mBulletCountPerMag  = this->mBulletCountPerMag;
+        clonedScript->mBulletCountPerShot = this->mBulletCountPerShot;
+
         return clonedScript;
     }
     else
@@ -67,6 +75,9 @@ int Script_Weapon::OnHitEnemy(int32_t checktargetID, Vec3& center_pos, Vec3& fir
 
         if (0 <= possibleIndex && possibleIndex < WeaponInfo::MaxBulletsNum) {
 
+            if (mBullets[possibleIndex]->IsActive() == true)
+                return -1;
+
             mBullets[possibleIndex]->GetTransform()->SetPosition(center_pos);
             mBullets[possibleIndex]->GetTransform()->SetRight(Vector3::Right);
             mBullets[possibleIndex]->GetTransform()->SetLook(fire_dir);
@@ -85,10 +96,10 @@ int Script_Weapon::OnHitEnemy(int32_t checktargetID, Vec3& center_pos, Vec3& fir
 int Script_Weapon::OnShoot(Vec3& center_pos, Vec3& fire_dir)
 {
  
-    int possibleIndex = -1;
-    if (mPossibleBulletIndex.try_pop(possibleIndex)) {
+	int possibleIndex = -1;
+	if (mPossibleBulletIndex.try_pop(possibleIndex)) {
 
-        if (0 <= possibleIndex && possibleIndex < WeaponInfo::MaxBulletsNum) {
+		if (0 <= possibleIndex && possibleIndex < WeaponInfo::MaxBulletsNum) {
 
             mBullets[possibleIndex]->GetTransform()->SetPosition(center_pos);
             mBullets[possibleIndex]->GetTransform()->SetRight(Vector3::Right);
@@ -100,7 +111,7 @@ int Script_Weapon::OnShoot(Vec3& center_pos, Vec3& fire_dir)
         }
     }
 
-    return -1;
+	return -1;
 }
 
 bool Script_Weapon::DoInteract(SPtr<GameObject> player)
@@ -114,6 +125,7 @@ bool Script_Weapon::DoInteract(SPtr<GameObject> player)
     if (dist <= interactDist) {
         auto player_entity = player->GetScriptEntity<Script_Player>();
         player_entity->SetWeapon(mOwner);
+        mOwnerPlayer = player;
 
         // [Broadcast Packet] Item Interact (Update Current Equiped Weapon)
         auto spkt = FBS_FACTORY->SPkt_Item_Interact(player->GetID(), mOwner->GetID(), mItemType, itemPos);
@@ -122,6 +134,17 @@ bool Script_Weapon::DoInteract(SPtr<GameObject> player)
     }
 
     return false;
+}
+
+void Script_Weapon::SetDataFromDataBase(std::wstring weapon_name)
+{
+	auto weapon_db            = RESOURCE_MGR->GetWeaponInfo(weapon_name);
+    this->mAttackRate         = weapon_db->AttackRate;
+    this->mMaxReloadTime      = weapon_db->MaxReloadTime;
+    this->mMaxDistance        = weapon_db->MaxDistance;
+    this->mMaxMag             = weapon_db->MaxMag;
+    this->mBulletCountPerMag  = weapon_db->BulletCountPerMag;
+    this->mBulletCountPerShot = weapon_db->BulletCountPerShot;
 }
 
 void Script_Weapon::ReturnPossibleBulletIndex(int index)

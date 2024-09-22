@@ -235,7 +235,8 @@ bool FBsPacketFactory::ProcessFBsPacket(SPtr_Session session, BYTE* packetBuf, U
 		Process_CPkt_Item_Interact(session, *packet);
 		break;
 	}
-	case FBProtocol::FBsProtocolID::FBsProtocolID_SPkt_Item_Interact:
+
+	case FBProtocol::FBsProtocolID::FBsProtocolID_CPkt_Item_ThrowAway:
 	{
 		const FBProtocol::CPkt_Item_ThrowAway* packet = flatbuffers::GetRoot<FBProtocol::CPkt_Item_ThrowAway>(DataPtr);
 		if (!packet) return false;
@@ -555,9 +556,12 @@ bool FBsPacketFactory::Process_CPkt_Player_Weapon(SPtr_Session session, const FB
 	int						weapon_id  = pkt.item_id();
 
 	//auto weapon = gameSession->GetPlayer()->GetScriptEntity<Script_Player>()->GetWeapon();
-	auto weapon		   = gameSession->GetPlayer()->GetOwnerRoom()->GetNPCController()->GetDynamicItem(weapon_id);
+	//auto weapon		   = gameSession->GetPlayer()->GetOwnerRoom()->GetNPCController()->GetDynamicItem(weapon_id);
 	auto player_entity = gameSession->GetPlayerEntity();
-	player_entity->SetWeapon(weapon);
+	auto weapon = player_entity->GetWeapon(weapon_id);
+	if (weapon) {
+		player_entity->SetWeapon(weapon);
+	}
 
 	LOG_MGR->Cout(gameSession->GetID(), " - WEAPON TYPE : ", static_cast<int>(weaponType), "\n");
 
@@ -696,7 +700,7 @@ bool FBsPacketFactory::Process_CPkt_Bullet_OnShoot(SPtr_Session session, const F
 	// On Shoot ! 
 	gameSession->GetPlayerEntity()->OnShoot(fire_pos, fire_dir);
 
-	auto weapon   = gameSession->GetPlayerEntity()->GetWeapon();
+	auto weapon   = gameSession->GetPlayerEntity()->GetCurrWeapon();
 	auto gun_id   = weapon->GetScriptEntity<Script_Item>()->GetItemType();
 	int bullet_id = -1; 
 
@@ -712,7 +716,7 @@ bool FBsPacketFactory::Process_CPkt_Bullet_OnHitEnemy(SPtr_Session session, cons
 	SPtr<GameSession> gameSession = std::static_pointer_cast<GameSession>(session);
 
 	int  player_id = gameSession->GetID(); // 플레이어 아이디
-	auto equiped_weapon = gameSession->GetPlayer()->GetScriptEntity<Script_Player>()->GetWeapon();
+	auto equiped_weapon = gameSession->GetPlayer()->GetScriptEntity<Script_Player>()->GetCurrWeapon();
 	equiped_weapon->GetScriptEntity<Script_Weapon>();
 
 
@@ -756,15 +760,14 @@ bool FBsPacketFactory::Process_CPkt_Item_Interact(SPtr_Session session, const FB
 	uint32_t				item_id   = pkt.item_id();
 	FBProtocol::ITEM_TYPE	item_type = pkt.item_type();
 
+	LOG_MGR->Cout(item_id, " ITEM ID Do Interact \n");
+
 	auto npcC = player->GetOwnerRoom()->GetNPCController();
 	auto item = npcC->GetItem(item_id);
 	auto item_entity = item->GetScriptEntity<Script_Item>();
 	if (item_entity) {
 		item_entity->DoInteract(player);
 	}
-	//if (item) {
-	//	item->DoInteract(player);
-	//}
 
 	return true;
 }
@@ -776,12 +779,16 @@ bool FBsPacketFactory::Process_CPkt_Item_ThrowAway(SPtr_Session session, const F
 
 	uint32_t				item_id = pkt.item_id();
 	FBProtocol::ITEM_TYPE	item_type = pkt.item_type();
+	LOG_MGR->Cout(item_id, " ITEM ID Do ThrowAway \n");
 
 	auto npcC = player->GetOwnerRoom()->GetNPCController();
 	auto item = npcC->GetItem(item_id);
-	//if (item) {
-	//	item->DoInteract(player);
-	//}
+	auto item_entity = item->GetScriptEntity<Script_Item>();
+	if (item_entity) {
+		item_entity->ThrowAway(player);
+
+	}
+
 	return true;
 }
 

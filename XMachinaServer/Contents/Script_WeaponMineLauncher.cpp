@@ -8,7 +8,11 @@ Script_WeaponMineLauncher::Script_WeaponMineLauncher(SPtr<GameObject> owner)
 	: Script_Weapon(owner)
 {
 	mItemType = FBProtocol::ITEM_TYPE_WEAPON_MINE_LAUNCHER;
+#ifdef SET_DATA_FROM_DATABASE
+    Script_Weapon::SetDataFromDataBase(L"MissileLauncher");
+#else
 
+#endif
 }
 
 Script_WeaponMineLauncher::~Script_WeaponMineLauncher()
@@ -49,6 +53,7 @@ void Script_WeaponMineLauncher::Start()
         bullet->SetOwnerRoom(mOwner->GetOwnerRoom());
 
         auto bullet_entity = bullet->SetScriptEntity<Script_SpiderMine>();
+        bullet_entity->SetDamage(mAttackRate);
         bullet_entity->SetOwnerWeapon(mOwner);
         bullet_entity->SetExplosionDamage(5.f);
 

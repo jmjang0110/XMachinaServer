@@ -40,6 +40,7 @@
 #include "DB_Phero.h"
 #include "DB_PheroDropInfo.h"
 #include "DB_EnemyStat.h"
+#include "DB_Weapon.h"
 
 namespace {
 	const std::string kTerrainDataPath            = "Contents/Resource/Terrain.bin";
@@ -363,6 +364,7 @@ void ResourceManager::Init()
 #ifdef SET_DATA_FROM_DATABASE
 	LoadDB_PheroInfos();
 	LoadDB_EnemyStatInfos();
+	LoadDB_WeaponInfos();
 	DB_CONTROLLER->ExecuteAllDataBaseEvents();
 #endif
 
@@ -432,6 +434,19 @@ void ResourceManager::LoadDB_PheroInfos()
 
 }
 
+void ResourceManager::LoadDB_WeaponInfos()
+{
+	// 무기 이름 리스트
+	std::vector<std::wstring> weaponNames = { L"MissileLauncher", L"DBMS", L"HLock", L"SkyLine", L"PipeLine" };
+
+	// 각 무기 정보를 로드하고 저장
+	for (const auto& weaponName : weaponNames) {
+		auto weaponDBInfo = MEMORY->Make_Shared<DB_Weapon>();
+		weaponDBInfo->LoadFromDataBase(weaponName.c_str()); // 무기 이름으로 데이터베이스에서 로드
+		mWeaponInfos.insert({ weaponName, weaponDBInfo });  // 로드한 정보를 맵에 저장
+	}
+}
+
 void ResourceManager::LoadDB_EnemyStatInfos()
 {    
 	// List of enemy names to load
@@ -482,6 +497,18 @@ void ResourceManager::LoadModels()
 	}
 }
 
+SPtr<DB_Weapon> ResourceManager::GetWeaponInfo(const std::wstring& key) const
+{
+	auto it = mWeaponInfos.find(key);
+	if (it != mWeaponInfos.end()) {
+		return it->second;
+	}
+	else {
+		// Handle the case where the key is not found
+		throw std::out_of_range("mWeaponInfos with the specified key does not exist.");
+	}
+}
+
 void ResourceManager::LoadAnimationClips()
 {
 	for (const auto& clipFolder : std::filesystem::directory_iterator(kAnimationClipDataPath)) {
@@ -505,6 +532,7 @@ void ResourceManager::LoadAnimatorControllers()
 		mAnimatorControllers[FileIO::RemoveExtension(fileName)] = FileIO::LoadAnimatorController(kAnimatorControllerDataPath + fileName);
 	}
 }
+
 
 void ScriptExporter::Load(std::ifstream& file)
 {

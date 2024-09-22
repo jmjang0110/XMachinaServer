@@ -1,6 +1,5 @@
 #pragma once
-#include "DB_Item.h"
-
+#include "DB_Object.h"
 
 
 namespace WeaponInfo {
@@ -59,8 +58,24 @@ namespace WeaponInfo {
 	};
 }
 
-class DB_Weapon : public DB_Item
+class DB_Weapon : public DB_Object
 {
+public:
+	float	AttackRate           = {};
+	float   MaxFireDelay         = {};
+	float	MaxReloadTime        = {};
+	float	MaxDistance          = {};
+	int		MaxMag               = {};
+	int		BulletCountPerMag    = {};
+	int		BulletCountPerShot   = {};
+
+public:
+	DB_Weapon();
+	~DB_Weapon();
+
+public:
+	virtual void FetchDataFromDataBase(const wchar_t* query); // DB 로 부터 데이터 읽는 전용 함수 
+	void LoadFromDataBase(const wchar_t* weapon_name );
 
 
 };

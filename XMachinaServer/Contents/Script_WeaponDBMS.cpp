@@ -8,7 +8,11 @@ Script_WeaponDBMS::Script_WeaponDBMS(SPtr<GameObject> owner)
 	: Script_Weapon(owner)
 {
 	mItemType = FBProtocol::ITEM_TYPE_WEAPON_DBMS;
+#ifdef SET_DATA_FROM_DATABASE
+    Script_Weapon::SetDataFromDataBase(L"DBMS");
+#else
 
+#endif
 }
 
 Script_WeaponDBMS::~Script_WeaponDBMS()
@@ -48,6 +52,7 @@ void Script_WeaponDBMS::Start()
         bullet->AddComponent<Collider>(Component::Type::Collider);
         bullet->SetOwnerRoom(mOwner->GetOwnerRoom());
         auto bullet_entity = bullet->SetScriptEntity<Script_RayCheckBullet>();
+        bullet_entity->SetDamage(mAttackRate);
         bullet_entity->SetOwnerWeapon(mOwner);
         mBullets[i] = bullet;
         bullet->Start();

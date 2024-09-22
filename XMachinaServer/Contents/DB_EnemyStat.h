@@ -23,6 +23,8 @@ public:
     char        GetHitAnimName[50];
     char        DeathAnimName[50];
 
+    float       HP;
+
 public:
 	DB_EnemyStat();
 	~DB_EnemyStat();

@@ -23,6 +23,9 @@
 #include "Script_SkillMindControl.h"
 #include "Script_SkillShield.h"
 
+#include "Script_Item.h"
+
+
 Script_Player::Script_Player()
     : Script_PlayerStat()
 {
@@ -271,20 +274,55 @@ SPtr<Script_Skill> Script_Player::GetSkillEntity(FBProtocol::PLAYER_SKILL_TYPE t
     return skill_entity;
 }
 
+SPtr<GameObject> Script_Player::GetWeapon(uint32_t id)
+{
+	SPtr<GameObject> weapon = nullptr;
+
+	mWeapons_Lock.LockRead();
+	auto iter = mWeapons.find(id);
+	if (iter != mWeapons.end()) {
+		weapon = iter->second;
+	}
+	mWeapons_Lock.UnlockRead();
+
+
+	return weapon;
+}
+
 void Script_Player::SetWeapon(SPtr<GameObject> weapon)
 {    
 	if (weapon == nullptr)
 		return;
 
-	if (mCurrWeapon != nullptr && mCurrWeapon != mDefaultWeapon) {
-		// [Broadcast Packet] 아이템이 드랍됐음을 알린다.
-		auto item_entity = mCurrWeapon->GetScriptEntity<Script_Item>();
-		//auto spkt = FBS_FACTORY->SPkt_Item_ThrowAway(0, mCurrWeapon->GetID(), item_entity->GetItemType(), mOwner->GetTransform()->GetPosition());
-		//ROOM_MGR->BroadcastRoom(mOwner->GetOwnerRoom()->GetID(), spkt);
-	}
+	mCurrWeapon_Lock.LockWrite();
+	mCurrWeapon = weapon;
+	mCurrWeapon_Lock.UnlockWrite();
+}
 
-	mWeapon_Lock.LockWrite(); 
-	mCurrWeapon = weapon; 
-	mWeapon_Lock.UnlockWrite(); 
+void Script_Player::AddWeapon(SPtr<GameObject> weapon)
+{
+	mWeapons_Lock.LockWrite();
+	if (mWeapons.find(weapon->GetID()) == mWeapons.end()) {
+		mWeapons.insert({weapon->GetID(), weapon});
+	}	
+	mWeapons_Lock.UnlockWrite();
+}
+
+void Script_Player::DropWeapon(uint32_t weapon_id)
+{
+	mWeapons_Lock.LockWrite();
+	auto weapon = mWeapons.find(weapon_id);
+	if (weapon != mWeapons.end()) {
+		mWeapons.unsafe_erase(weapon_id);
+	}
+	mWeapons_Lock.UnlockWrite();
+
+	// [Broadcast Packet] 
+	auto item_entity = mCurrWeapon->GetScriptEntity<Script_Item>();
+	item_entity->SetItemState(ItemState::Dropped);
+	auto spkt = FBS_FACTORY->SPkt_Item_ThrowAway(0, mCurrWeapon->GetID(), item_entity->GetItemType(), mOwner->GetTransform()->GetPosition());
+	ROOM_MGR->BroadcastRoom(mOwner->GetOwnerRoom()->GetID(), spkt);
+
+	SetWeapon(mDefaultWeapon);
 }
 

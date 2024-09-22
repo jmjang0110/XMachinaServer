@@ -50,8 +50,8 @@ bool Script_Item::DoInteract(SPtr<GameObject> player)
 
         mOwnerPlayer = player;
         auto playerEntity = mOwnerPlayer->GetScriptEntity<Script_Player>();
-        playerEntity->SetWeapon(mOwner);
-        mItemState   = ItemState::Using;
+        playerEntity->AddWeapon(mOwner);
+        mItemState   = ItemState::Owned;
 
         return true;
     }
@@ -66,8 +66,11 @@ bool Script_Item::ThrowAway(SPtr<GameObject> player)
     if (player->GetID() != mOwnerPlayer->GetID())
         return false;
 
+    Vec3 drop_pos = mOwnerPlayer->GetTransform()->GetSnapShot().GetPosition();
+    mOwner->GetTransform()->SetPosition(drop_pos);
+
     auto playerEntity = mOwnerPlayer->GetScriptEntity<Script_Player>();
-    playerEntity->SetWeapon(nullptr);
+    playerEntity->DropWeapon(mOwner->GetID());
     mOwnerPlayer = nullptr;
     mItemState   = ItemState::Dropped;
 

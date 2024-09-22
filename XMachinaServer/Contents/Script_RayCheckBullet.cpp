@@ -51,7 +51,8 @@ void Script_RayCheckBullet::Update()
 	// Ray Check 
 	RayCheck();
 
-	Explode();
+	if(!mIsExploded)
+		Explode();
 }
 
 void Script_RayCheckBullet::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
@@ -63,7 +64,6 @@ void Script_RayCheckBullet::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 
 void Script_RayCheckBullet::RayCheck()
 {
-
 	int raycheckID = mRayCheckTargetID;
 	if (raycheckID == -1)
 		return;
@@ -86,7 +86,8 @@ void Script_RayCheckBullet::RayCheck()
 			auto enemy_entity = enemy->GetScriptEntity<Script_Enemy>();
 			enemy_entity->Hit(mDamage);
 
-			Explode();
+			if (!mIsExploded)
+				Explode();
 		}
 	}
 	
