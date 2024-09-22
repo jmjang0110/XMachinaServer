@@ -24,6 +24,10 @@
 #include "Script_SkillShield.h"
 
 #include "Script_Item.h"
+#include "Script_PheroDropper.h"
+#include "Script_Phero.h"
+
+#include "CollisionManager.h"
 
 
 Script_Player::Script_Player()
@@ -87,6 +91,7 @@ void Script_Player::Update()
 {
 	auto sectorController = mOwner->GetOwnerRoom()->GetSectorController();
 	sectorController->UpdateViewList(mOwner.get(), mOwner->GetTransform()->GetPosition(), mViewListSnapShot.ViewRangeRadius);
+	CollideCheckWithMonsters(); // check Monsters -> (if Dead Mosnter) Chekc Pheros 
 
 }
 
@@ -235,6 +240,45 @@ void Script_Player::UpdateViewList(std::vector<SPtr<GameObject>> players, std::v
 	mViewList_Lock.LockWrite();
 	mViewListSnapShot = mViewList;
 	mViewList_Lock.UnlockWrite();
+}
+
+void Script_Player::CollideCheckWithMonsters()
+{
+	for (auto& iter : mViewList.VL_Monsters) {
+		auto enemy = iter.second;
+		Script_Stat::ObjectState enemystate = enemy->GetScriptEntity<Script_Enemy>()->S_GetObjectState();
+		if (enemystate == Script_Stat::ObjectState::Dead) {
+			CollideCheckWithPheros(enemy);
+		}
+	}
+}
+
+void Script_Player::CollideCheckWithPheros(SPtr<GameObject> enemy)
+{
+	Vec3 playerPos     = mOwner->GetTransform()->GetSnapShot().GetPosition();
+	uint32_t player_id = mOwner->GetID();
+
+	auto pheroDropper  = enemy->GetScript<Script_PheroDropper>();
+	auto pheros        = pheroDropper->GetPheros();
+
+	for (int i = 0; i < pheros.size(); ++i) {
+		auto phero_entity = pheros[i]->GetScriptEntity<Script_Phero>();
+		if (phero_entity->GetTargetPlayerID() != -1)
+			continue;
+		
+		Vec3 pheroPos = pheros[i]->GetTransform()->GetPosition();
+
+		playerPos.y = 0.f; pheroPos.y = 0.f;
+		bool IsCollide = COLLISION_MGR->CollideCheck(pheroPos, playerPos, 2.5f);
+		if (IsCollide) {
+			// Player Get Phero 
+			mOwner->GetScriptEntity<Script_Player>()->AddPheroAmount(phero_entity->GetAmount());
+			phero_entity->SetTargetPlayerID(player_id);
+
+			auto spkt = FBS_FACTORY->SPkt_GetPhero(pheros[i]->GetID(), player_id);
+			ROOM_MGR->BroadcastRoom(mOwner->GetOwnerRoom()->GetID(), spkt);
+		}
+	}
 }
 
 int Script_Player::OnShoot(Vec3& bullet_center, Vec3& bullet_dir)

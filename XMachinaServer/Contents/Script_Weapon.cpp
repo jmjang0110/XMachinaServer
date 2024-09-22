@@ -81,12 +81,14 @@ int Script_Weapon::OnHitEnemy(int32_t checktargetID, Vec3& center_pos, Vec3& fir
             mBullets[possibleIndex]->GetTransform()->SetPosition(center_pos);
             mBullets[possibleIndex]->GetTransform()->SetRight(Vector3::Right);
             mBullets[possibleIndex]->GetTransform()->SetLook(fire_dir);
+
             auto raycheck = mBullets[possibleIndex]->GetScriptEntity<Script_RayCheckBullet>();
             if (raycheck) {
                 raycheck->SetRayCheckTargetID(checktargetID);
-                mBullets[possibleIndex]->Activate(); // PQCS - Register Update !
-                return possibleIndex;
             }
+            mBullets[possibleIndex]->Activate(); // PQCS - Register Update !
+            mBullets[possibleIndex]->Start();
+            return possibleIndex;
         }
     }
 
@@ -101,9 +103,14 @@ int Script_Weapon::OnShoot(Vec3& center_pos, Vec3& fire_dir)
 
 		if (0 <= possibleIndex && possibleIndex < WeaponInfo::MaxBulletsNum) {
 
+
+            if (mBullets[possibleIndex]->IsActive() == true)
+                return -1;
+
             mBullets[possibleIndex]->GetTransform()->SetPosition(center_pos);
             mBullets[possibleIndex]->GetTransform()->SetRight(Vector3::Right);
             mBullets[possibleIndex]->GetTransform()->SetLook(fire_dir);
+
             mBullets[possibleIndex]->Activate(); // PQCS - Register Update !
             mBullets[possibleIndex]->Start();
 

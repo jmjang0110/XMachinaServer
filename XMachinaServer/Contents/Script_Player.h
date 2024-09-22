@@ -47,6 +47,8 @@ public:
 
 public:
 	void	UpdateViewList(std::vector<SPtr<GameObject>> players, std::vector<SPtr<GameObject>> montser);
+	void CollideCheckWithMonsters();
+	void CollideCheckWithPheros(SPtr<GameObject> enemy);
 
 	int		OnShoot(Vec3& bullet_center, Vec3& bullet_dir);
 	int		OnHitEnemy(int32_t monster_id, Vec3& bullet_center, Vec3& bullet_dir);
