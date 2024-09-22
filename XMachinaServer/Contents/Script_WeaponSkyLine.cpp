@@ -7,7 +7,11 @@ Script_WeaponSkyLine::Script_WeaponSkyLine(SPtr<GameObject> owner)
 	: Script_Weapon(owner)
 {
 	mItemType = FBProtocol::ITEM_TYPE_WEAPON_SKYLINE;
+#ifdef SET_DATA_FROM_DATABASE
+    Script_Weapon::SetDataFromDataBase(L"SkyLine");
+#else
 
+#endif
 }
 
 Script_WeaponSkyLine::~Script_WeaponSkyLine()
@@ -47,6 +51,7 @@ void Script_WeaponSkyLine::Start()
         bullet->AddComponent<Collider>(Component::Type::Collider);
         bullet->SetOwnerRoom(mOwner->GetOwnerRoom());
         auto bullet_entity = bullet->SetScriptEntity<Script_RayCheckBullet>();
+        bullet_entity->SetDamage(mAttackRate);
         bullet_entity->SetOwnerWeapon(mOwner);
         mBullets[i] = bullet;
         bullet->Start();

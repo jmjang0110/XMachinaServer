@@ -5,10 +5,17 @@
 
 
 Script_WeaponBurnout::Script_WeaponBurnout(SPtr<GameObject> owner)
-	: Script_Weapon(owner)
+    : Script_Weapon(owner)
 {
-	mItemType = FBProtocol::ITEM_TYPE_WEAPON_BURNOUT;
+    mItemType = FBProtocol::ITEM_TYPE_WEAPON_BURNOUT;
+
+#ifdef SET_DATA_FROM_DATABASE
+    Script_Weapon::SetDataFromDataBase(L"MissileLauncher");
+#else
+
+#endif
 }
+
 
 Script_WeaponBurnout::~Script_WeaponBurnout()
 {
@@ -48,6 +55,7 @@ void Script_WeaponBurnout::Start()
         bullet->AddComponent<Collider>(Component::Type::Collider);
         bullet->SetOwnerRoom(mOwner->GetOwnerRoom());
         auto bullet_entity = bullet->SetScriptEntity<Script_RayCheckBullet>();
+        bullet_entity->SetDamage(mAttackRate);
         bullet_entity->SetOwnerWeapon(mOwner);
         mBullets[i] = bullet;       
         bullet->Start();

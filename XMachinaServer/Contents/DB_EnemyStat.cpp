@@ -33,6 +33,7 @@ void DB_EnemyStat::FetchDataFromDataBase(const wchar_t* query)
         SQLGetData(mSQL_hStmt, 13, SQL_C_CHAR, &Attack3AnimName[0], 50, nullptr);
         SQLGetData(mSQL_hStmt, 14, SQL_C_CHAR, &GetHitAnimName[0],  50, nullptr);
         SQLGetData(mSQL_hStmt, 15, SQL_C_CHAR, &DeathAnimName[0],   50, nullptr);
+        SQLGetData(mSQL_hStmt, 16, SQL_C_FLOAT, &HP, 0, nullptr);
     }
 
     // Clean up
@@ -52,14 +53,16 @@ void DB_EnemyStat::FetchDataFromDataBase(const wchar_t* query)
         << L", Attack2AnimName: " << Attack2AnimName
         << L", Attack3AnimName: " << Attack3AnimName
         << L", GetHitAnimName: " << GetHitAnimName
-        << L", DeathAnimName: " << DeathAnimName << "\n\n";
+        << L", DeathAnimName: " << DeathAnimName 
+        << L", HP : " << HP 
+        << "\n\n";
 }
 
 void DB_EnemyStat::LoadFromDataBase(std::string PK_Name)
 { 
     // Construct the query
     wchar_t query[1024];
-    swprintf(query, 1024, L"SELECT Name, Level, PheroLevel, MoveSpeed, RotationSpeed, AttackRotationSpeed, DetectionRange, AttackRate, AttackRange, AttackCoolTime, Attack1AnimName, Attack2AnimName, Attack3AnimName, GetHitAnimName, DeathAnimName FROM EnemyStat WHERE Name = '%S'", PK_Name.c_str());
+    swprintf(query, 1024, L"SELECT Name, Level, PheroLevel, MoveSpeed, RotationSpeed, AttackRotationSpeed, DetectionRange, AttackRate, AttackRange, AttackCoolTime, Attack1AnimName, Attack2AnimName, Attack3AnimName, GetHitAnimName, DeathAnimName, HP FROM EnemyStat WHERE Name = '%S'", PK_Name.c_str());
 
     DB_CONTROLLER->PushDataBaseEvent(QueryPriority::None, DataBaseEventType::Query, shared_from_this(), query);
 }

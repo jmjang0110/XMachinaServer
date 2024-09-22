@@ -92,4 +92,6 @@ void Script_EnemyStat::SetDataFromDataBase(std::string PK_EnemyName)
     mAttack3AnimName     = DB->Attack3AnimName;
     mGetHitAnimName      = DB->GetHitAnimName;
     mDeathAnimName       = DB->DeathAnimName;
+
+    Script_Stat::mMaxHP  = DB->HP;
 }

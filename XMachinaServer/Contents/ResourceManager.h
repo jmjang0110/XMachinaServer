@@ -148,6 +148,7 @@ private:
 class DB_Phero;
 class DB_PheroDropInfo;
 class DB_EnemyStat;
+class DB_Weapon;
 
 class ResourceManager
 {
@@ -157,6 +158,7 @@ private:
 	std::unordered_map<int, SPtr<DB_Phero>>				mPheroInfos{};
 	std::unordered_map<int, SPtr<DB_PheroDropInfo>>		mPheroDropInfos{};
 	std::unordered_map<std::string, SPtr<DB_EnemyStat>>	mEnemyStatInfos{};
+	std::unordered_map<std::wstring, SPtr<DB_Weapon>>	mWeaponInfos{};
 
 private:
 	SPtr<HeightMapImage>										mHeightMapImg;
@@ -188,11 +190,13 @@ public:
 	SPtr<DB_Phero> GetPheroInfo(int key) const;
 	SPtr<DB_PheroDropInfo> GetPheroDropInfo(int key) const;
 	SPtr<DB_EnemyStat> GetEnemyStatInfo(const std::string& key) const;
+	SPtr<DB_Weapon> GetWeaponInfo(const std::wstring& key) const;
 
 
 private:
 	void LoadDB_PheroInfos();
 	void LoadDB_EnemyStatInfos();
+	void LoadDB_WeaponInfos();
 
 private:
 	void LoadTerrain();

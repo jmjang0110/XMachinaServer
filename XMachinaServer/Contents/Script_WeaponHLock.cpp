@@ -7,7 +7,11 @@ Script_WeaponHLock::Script_WeaponHLock(SPtr<GameObject> owner)
     : Script_Weapon(owner)
 {
     mItemType = FBProtocol::ITEM_TYPE_WEAPON_H_LOOK;
+#ifdef SET_DATA_FROM_DATABASE
+    Script_Weapon::SetDataFromDataBase(L"HLock");
+#else
 
+#endif
 }
 
 Script_WeaponHLock::~Script_WeaponHLock()
@@ -23,6 +27,7 @@ void Script_WeaponHLock::Start()
         bullet->AddComponent<Collider>(Component::Type::Collider);
         bullet->SetOwnerRoom(mOwner->GetOwnerRoom());
         auto bullet_entity = bullet->SetScriptEntity<Script_RayCheckBullet>();
+        bullet_entity->SetDamage(mAttackRate);
         bullet_entity->SetOwnerWeapon(mOwner);
         mBullets[i] = bullet;
         bullet->Start();
