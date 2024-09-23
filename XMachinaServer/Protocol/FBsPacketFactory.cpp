@@ -27,6 +27,8 @@
 #include "Contents/Script_Player.h"
 #include "Contents/Script_Weapon.h"
 #include "Contents/Script_Item.h"
+#include "Contents/Script_SkillMindControl.h"
+
 
 DEFINE_SINGLETON(FBsPacketFactory);
 
@@ -455,6 +457,11 @@ bool FBsPacketFactory::Process_CPkt_PlayerOnSkill(SPtr_Session session, const FB
 	auto npcController = gameSession->GetPlayer()->GetOwnerRoom()->GetNPCController();
 	mindControlMonster = npcController->GetMonster(mindcontrol_monster_id);
 	
+	if (type == FBProtocol::PLAYER_SKILL_TYPE::PLAYER_SKILL_TYPE_MIND_CONTROL) {
+		auto mindcontrol = player_entity->GetSKill(type)->GetScriptEntity<Script_SkillMindControl>();
+		mindcontrol->Init(mindControlMonster);
+	}
+
 	player_entity->OnSkill(type, mindControlMonster);
 
 	auto SPkt = FBS_FACTORY->SPkt_PlayerOnSkill(gameSession->GetPlayer()->GetID(), type, PheroAmount, mindcontrol_monster_id);

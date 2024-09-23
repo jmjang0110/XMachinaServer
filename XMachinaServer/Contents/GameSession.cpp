@@ -60,36 +60,6 @@ void GameSession::OnSend(UINT32 len)
 
 UINT32 GameSession::OnRecv(BYTE* buffer, UINT32 len)
 {
-
-
-	/*
-		// 현재까지 처리된 데이터 크기
-	UINT32 ProcessDataSize = mRemainDataSize;
-	while (ProcessDataSize < len) {
-		UINT32 RemainSize = len - ProcessDataSize;
-
-		// 남은 데이터가 PacketHeader의 크기보다 작으면 다음 번 수신에서 처리
-		if (RemainSize < sizeof(PacketHeader)) {
-			mRemainDataSize = RemainSize;
-			break;
-		}
-		PacketHeader* packet = reinterpret_cast<PacketHeader*>(buffer + ProcessDataSize);
-
-		// 남은 데이터가 PacketHeader의 크기보다 작으면 다음 번 수신에서 처리
-		if (RemainSize < packet->PacketSize) {
-			mRemainDataSize = RemainSize;
-			break;
-		}
-
-		FBsPacketFactory::ProcessFBsPacket(static_pointer_cast<Session>(shared_from_this()), buffer + ProcessDataSize, packet->PacketSize);
-		ProcessDataSize += packet->PacketSize;
-		}
-
-		return len;
-	*/
-
-	
-
 	// 패킷 해석 
 	/* 뭉쳐서 들어온 패킷들을 처리한다. */
 	/// +---------------------------------------

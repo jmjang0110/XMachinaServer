@@ -7,6 +7,8 @@
 Script_WeaponDeus_Phase_1_Rifle::Script_WeaponDeus_Phase_1_Rifle(SPtr<GameObject> owner)
     : Script_Weapon(owner)
 {
+    Script_Weapon::mAttackRate = 20.f;
+
 }
 
 Script_WeaponDeus_Phase_1_Rifle::~Script_WeaponDeus_Phase_1_Rifle()

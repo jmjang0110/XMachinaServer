@@ -11,7 +11,8 @@ Script_BulletDeus_Phase_1::Script_BulletDeus_Phase_1(SPtr<GameObject> owner)
 	: Script_ExplosiveBullet(owner)
 {
 	mSplashRangeRadius = 3.f;
-	mSpeed = 5.f * 2.f;
+	mSpeed             = 5.f * 2.f;
+	mDamage            = 20.f;
 }
 
 Script_BulletDeus_Phase_1::~Script_BulletDeus_Phase_1()
