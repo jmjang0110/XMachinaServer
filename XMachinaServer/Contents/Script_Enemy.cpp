@@ -146,12 +146,14 @@ void Script_Enemy::AttackCallback()
 		return;
 	}
 
+	LOG_MGR->Cout(mOwner->GetID()," : AttackCallback!\n");
 	// TODO : 타겟 주변 레인지 범위 공격
 	const Vec3& TargetPos = mEnemyController->GetTarget()->GetTransform()->GetSnapShot().GetPosition();
 	const Vec3& Pos = OwnerTransform()->GetPosition();
-	if (Vec3::Distance(TargetPos, Pos) <= mAttackRange) {
-		const auto& statScript = mEnemyController->GetTarget()->GetScript<Script_Stat>();
+	if (Vec3::Distance(TargetPos, Pos) <= 10.f) {
+		const auto& statScript = mEnemyController->GetTarget()->GetScriptEntity<Script_Stat>();
 		if (statScript) {
+			LOG_MGR->Cout(mOwner->GetID(), " : Hit! -> Target : ", mEnemyController->GetTarget()->GetID(), "\n");
 
 			statScript->Hit(mAttackRate, mOwner);
 			Script_Stat::ObjectState state =  statScript->S_GetObjectState();

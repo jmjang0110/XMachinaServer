@@ -116,6 +116,5 @@ void Script_SkillCloaking::DeActivate()
 	Script::DeActivate();
 
 	mTimer = 0.f;
-	mSkillState = SkillState::Possible;
 
 }

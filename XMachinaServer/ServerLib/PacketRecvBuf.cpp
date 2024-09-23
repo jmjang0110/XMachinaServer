@@ -2,7 +2,7 @@
 #include "PacketRecvBuf.h"
 #include "MemoryManager.h"
 #include "SListMemoryPool.h"
-
+#include "PacketHeader.h"
 
 
 PacketRecvBuf::PacketRecvBuf(UINT32 bufSize)

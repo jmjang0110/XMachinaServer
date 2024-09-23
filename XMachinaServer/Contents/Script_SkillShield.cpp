@@ -91,6 +91,20 @@ void Script_SkillShield::End()
 {
 }
 
+void Script_SkillShield::Activate()
+{
+	Script::Activate();
+
+	mSkillState = SkillState::Active;
+}
+
+void Script_SkillShield::DeActivate()
+{
+	Script::DeActivate();
+
+	mTimer = 0.f;
+}
+
 void Script_SkillShield::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 {
 	MEMORY->Delete(overlapped);

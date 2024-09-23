@@ -613,6 +613,9 @@
     <ClInclude Include="Contents\DB_Skill.h">
       <Filter>Framework\Contents\DataBase\Object</Filter>
     </ClInclude>
+    <ClInclude Include="Protocol\FBP_Custom_generated.h">
+      <Filter>Protocol\PacketProtocol</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp">
@@ -1045,6 +1048,9 @@
       <Filter>Protocol\PacketProtocol</Filter>
     </None>
     <None Include="Protocol\FBP_LogIn.fbs">
+      <Filter>Protocol\PacketProtocol</Filter>
+    </None>
+    <None Include="Protocol\FBP_Custom.fbs">
       <Filter>Protocol\PacketProtocol</Filter>
     </None>
   </ItemGroup>

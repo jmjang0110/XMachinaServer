@@ -79,7 +79,8 @@ public:
 	void SetPathTargetObject(SPtr<GameObject> target)			{ mPathTarget    = target; }
 	void SetInvoker(SPtr<GameObject> invoker)					{ mInvoker       = invoker; }
 	
-	void SetTarget(SPtr<GameObject> target)						{ Lock_Target.LockWrite(); mPrevTarget = mTarget;  mTarget = target; Lock_Target.UnlockWrite(); }
+	void SetTarget(SPtr<GameObject> target)						{ Lock_Target.LockWrite();  mTarget = target; Lock_Target.UnlockWrite(); }
+	void SetPrevTarget()										{ mPrevTarget = GetTarget(); }
 	void SetBTType(FBProtocol::MONSTER_BT_TYPE btType)			{ mLock_BTType.LockWrite(); mBTType = btType; mLock_BTType.UnlockWrite(); }
 
 

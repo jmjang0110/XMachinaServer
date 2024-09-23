@@ -13,7 +13,7 @@ Script_SkillMindControl::Script_SkillMindControl(SPtr<GameObject> owner)
 	Script_Skill::SetDataFromDataBase("MindControl");
 	mCoolTime -= 1.f;
 	mActiveDuration -= 1.f;
-
+	mSkillState = SkillState::Possible;
 #else
 
 #endif
@@ -91,7 +91,7 @@ void Script_SkillMindControl::Dispatch(OverlappedObject* overlapped, UINT32 byte
 void Script_SkillMindControl::Init(SPtr<GameObject> monster)
 {
 	if (monster == nullptr)
-		assert(0);
+		return;
 
 	auto Invoker = GetOwnerPlayer();
 	auto entity  = monster->GetScriptEntity<Script_Enemy>();
@@ -100,5 +100,6 @@ void Script_SkillMindControl::Init(SPtr<GameObject> monster)
 		entity->GetController()->SetInvoker(Invoker);
 	}
 	mMindControlMonster = monster;
+	mSkillState = SkillState::Active;
 
 }

@@ -21,6 +21,9 @@ public:
 	virtual void LateUpdate();
 	virtual void End();
 
+	virtual void Activate() override;
+	virtual void DeActivate();
+
 	virtual void Dispatch(class OverlappedObject* overlapped, UINT32 bytes = 0) override;
 };
 

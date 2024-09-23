@@ -382,6 +382,11 @@ bool FBsPacketFactory::Process_CPkt_Chat(SPtr_Session session, const FBProtocol:
 	return true;
 }
 
+bool FBsPacketFactory::Process_CPkt_Custom(SPtr_Session session, const FBProtocol::CPkt_Custom& pkt)
+{
+	return false;
+}
+
 bool FBsPacketFactory::Process_CPkt_NetworkLatency(SPtr_Session session, const FBProtocol::CPkt_NetworkLatency& pkt)
 {
 	///>  �ܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡ�
@@ -868,6 +873,21 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_Chat(uint32_t player_id, std::string msg)
 	const uint16_t serializedDataSize = static_cast<uint16_t>(builder.GetSize());
 
 	return SEND_FACTORY->CreatePacket(bufferPtr, serializedDataSize, FBProtocol::FBsProtocolID::FBsProtocolID_SPkt_Chat);
+}
+
+SPtr_SendPktBuf FBsPacketFactory::SPkt_Custom(std::string trooperName)
+{
+	flatbuffers::FlatBufferBuilder builder;
+
+	auto msgOffset = builder.CreateString(trooperName);
+	auto ServerPacket = FBProtocol::CreateSPkt_Custom(builder, msgOffset);
+
+	builder.Finish(ServerPacket);
+
+	const uint8_t* bufferPtr = builder.GetBufferPointer();
+	const uint16_t serializedDataSize = static_cast<uint16_t>(builder.GetSize());
+
+	return SEND_FACTORY->CreatePacket(bufferPtr, serializedDataSize, FBProtocol::FBsProtocolID::FBsProtocolID_SPkt_Custom);
 }
 
 SPtr_SendPktBuf FBsPacketFactory::SPkt_EnterGame(SPtr<GameObject>& myinfo, std::vector<SPtr<GameObject>>& players)

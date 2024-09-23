@@ -21,15 +21,15 @@ void Script_Stat::Start()
 
 	mCrntHP = mMaxHP;
 	mPrevHP = mMaxHP;
-
 }
 
 
 bool Script_Stat::Hit(float damage, SPtr<GameObject> instigator)
 {
-	//LOG_MGR->Cout(" -- Script_Stat::Hit - HP : ", mCrntHP, "\n");
+	LOG_MGR->Cout(mOwner->GetID(), "  : -- Script_Stat::Hit - HP : ", mCrntHP, "\n");
 
 	if (mCrntHP <= 0) {
+		Dead();
 		return true;
 	}
 

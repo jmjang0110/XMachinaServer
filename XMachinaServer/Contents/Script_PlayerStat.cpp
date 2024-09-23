@@ -5,6 +5,7 @@
 
 
 Script_PlayerStat::Script_PlayerStat()
+	: Script_Stat()
 {
 
 
@@ -58,7 +59,6 @@ void Script_PlayerStat::Clone(SPtr<GameObject> target)
 void Script_PlayerStat::Start()
 {
 	Script_Stat::Start();
-	Script_Stat::SetMaxHP(1000000.f); // TODO : Test HP 
 }
 
 void Script_PlayerStat::SetSpawn(const Vec3& pos)

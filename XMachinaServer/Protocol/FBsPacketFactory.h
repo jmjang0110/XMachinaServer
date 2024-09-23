@@ -35,6 +35,8 @@ private:
 	static bool Process_CPkt_PlayGame(SPtr_Session session, const FBProtocol::CPkt_PlayGame& pkt);
 	static bool Process_CPkt_NetworkLatency(SPtr_Session session, const FBProtocol::CPkt_NetworkLatency& pkt);
 	static bool Process_CPkt_Chat(SPtr_Session session, const FBProtocol::CPkt_Chat& pkt);
+	static bool Process_CPkt_Custom(SPtr_Session session, const FBProtocol::CPkt_Custom& pkt);
+
 
 	/* PLAYER */
 	static bool Process_CPkt_NewPlayer(SPtr_Session session, const FBProtocol::CPkt_NewPlayer& pkt);
@@ -75,6 +77,9 @@ public:
 	SPtr_SendPktBuf SPkt_PlayGame();
 	SPtr_SendPktBuf SPkt_NetworkLatency(long long timestamp);
 	SPtr_SendPktBuf SPkt_Chat(uint32_t player_id, std::string msg);
+
+	SPtr_SendPktBuf SPkt_Custom(std::string trooperName);
+
 
 	/* PLAYER */
 	SPtr_SendPktBuf SPkt_NewPlayer(SPtr<GameObject>& newplayer);

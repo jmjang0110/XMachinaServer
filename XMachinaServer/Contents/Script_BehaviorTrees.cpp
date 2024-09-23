@@ -70,8 +70,7 @@ void Script_DefaultEnemyBT::Update()
 
 		auto pkt = FBS_FACTORY->SPkt_Monster_Target(monster_id, target_player_id, target_monster_id);
 		ROOM_MGR->BroadcastRoom(mRoot->GetEnemyController()->GetOwnerRoom()->GetID(), pkt);
-		mRoot->GetEnemyController()->SetTarget(target); // Update PrevTarget & Target sync
-
+		mRoot->GetEnemyController()->SetPrevTarget(); // Update PrevTarget & Target sync
 	}
 
 }

@@ -89,6 +89,7 @@ void Script_Player::Clone(SPtr<GameObject> target)
 
 void Script_Player::Update()
 {
+
 	auto sectorController = mOwner->GetOwnerRoom()->GetSectorController();
 	sectorController->UpdateViewList(mOwner.get(), mOwner->GetTransform()->GetPosition(), mViewListSnapShot.ViewRangeRadius);
 	CollideCheckWithMonsters(); // check Monsters -> (if Dead Mosnter) Chekc Pheros 
@@ -97,6 +98,8 @@ void Script_Player::Update()
 
 void Script_Player::Start()
 {
+	Script_PlayerStat::Start();
+
 	mViewListSnapShot.ViewRangeRadius = 25.f;
 	mViewList.ViewRangeRadius     = mViewListSnapShot.ViewRangeRadius;
 	
@@ -232,6 +235,9 @@ void Script_Player::UpdateViewList(std::vector<SPtr<GameObject>> players, std::v
 	/// 5. SEND REMOVE MOSNTERS PACKET 
 	/// ------------------------------------------------------------------------------------------------------+
 	for (int i = 0; i < RemoveMonsters.size(); ++i) {
+		if (RemoveMonsters[i]->GetID() == 10)
+			int k = 0;
+
 		const auto& RemoveMonster_serverPacket = FBS_FACTORY->SPkt_RemoveMonster(RemoveMonsters[i]->GetID());
 		mSessionOwner->Send(RemoveMonster_serverPacket);
 	}
