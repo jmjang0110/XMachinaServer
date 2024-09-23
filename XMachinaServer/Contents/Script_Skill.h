@@ -50,5 +50,7 @@ public:
 	float							GetCoolTime()				{ return mCoolTime; }
 	float							GetActiveDuration()			{ return mActiveDuration; }
 	SPtr<GameObject>				GetOwnerPlayer()			{ return mOwnerPlayer; }
+
+	void SetDataFromDataBase(std::string skill_name);
 };
 

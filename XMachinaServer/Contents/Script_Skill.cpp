@@ -3,6 +3,9 @@
 #include "GameObject.h"
 #include "Script_Stat.h"
 #include "Script_Player.h"
+#include "DBController.h"
+#include "ResourceManager.h"
+#include "DB_Skill.h"
 
 Script_Skill::Script_Skill()
 {
@@ -52,6 +55,16 @@ void Script_Skill::Update()
 {
 	float deltatime = mOwner->DeltaTime();
 	mTimer += deltatime;
+
+}
+
+void Script_Skill::SetDataFromDataBase(std::string skill_name)
+{
+
+    auto DB = RESOURCE_MGR->GetSkillInfo(skill_name);
+    mOwner->SetName(skill_name);
+    mActiveDuration = DB->ActiveDurationTime;
+    mCoolTime       = DB->CoolTime;
 
 }
 

@@ -149,16 +149,18 @@ class DB_Phero;
 class DB_PheroDropInfo;
 class DB_EnemyStat;
 class DB_Weapon;
+class DB_Skill;
 
 class ResourceManager
 {
 	DECLARE_SINGLETON(ResourceManager);
 
 private:
-	std::unordered_map<int, SPtr<DB_Phero>>				mPheroInfos{};
-	std::unordered_map<int, SPtr<DB_PheroDropInfo>>		mPheroDropInfos{};
-	std::unordered_map<std::string, SPtr<DB_EnemyStat>>	mEnemyStatInfos{};
-	std::unordered_map<std::wstring, SPtr<DB_Weapon>>	mWeaponInfos{};
+	std::unordered_map<int, SPtr<DB_Phero>>				    mPheroInfos{};
+	std::unordered_map<int, SPtr<DB_PheroDropInfo>>		    mPheroDropInfos{};
+	std::unordered_map<std::string, SPtr<DB_EnemyStat>>	    mEnemyStatInfos{};
+	std::unordered_map<std::wstring, SPtr<DB_Weapon>>	    mWeaponInfos{};
+	std::unordered_map<std::string, SPtr<DB_Skill>>			mSkillInfos{};
 
 private:
 	SPtr<HeightMapImage>										mHeightMapImg;
@@ -191,12 +193,15 @@ public:
 	SPtr<DB_PheroDropInfo> GetPheroDropInfo(int key) const;
 	SPtr<DB_EnemyStat> GetEnemyStatInfo(const std::string& key) const;
 	SPtr<DB_Weapon> GetWeaponInfo(const std::wstring& key) const;
+	SPtr<DB_Skill> GetSkillInfo(const std::string& key) const;
 
-
+		
 private:
 	void LoadDB_PheroInfos();
 	void LoadDB_EnemyStatInfos();
 	void LoadDB_WeaponInfos();
+	void LoadDB_SkillInfos();
+
 
 private:
 	void LoadTerrain();

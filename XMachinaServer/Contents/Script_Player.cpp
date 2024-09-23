@@ -276,6 +276,7 @@ void Script_Player::CollideCheckWithPheros(SPtr<GameObject> enemy)
 			mOwner->GetScriptEntity<Script_Player>()->AddPheroAmount(phero_entity->GetAmount());
 			phero_entity->SetTargetPlayerID(player_id);
 
+			// [BROADCAST PACKET]
 			auto spkt = FBS_FACTORY->SPkt_GetPhero(pheros[i]->GetID(), player_id);
 			ROOM_MGR->BroadcastRoom(mOwner->GetOwnerRoom()->GetID(), spkt);
 		}

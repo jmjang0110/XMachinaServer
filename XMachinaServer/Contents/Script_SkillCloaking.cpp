@@ -9,6 +9,13 @@ Script_SkillCloaking::Script_SkillCloaking(SPtr<GameObject> owner)
 {
 	mSkillType = FBProtocol::PLAYER_SKILL_TYPE_CLOACKING;
 
+#ifdef SET_DATA_FROM_DATABASE
+	Script_Skill::SetDataFromDataBase("Cloaking");
+	mCoolTime -= 1.f;
+	mActiveDuration -= 1.f;
+#else
+
+#endif
 }
 
 Script_SkillCloaking::~Script_SkillCloaking()

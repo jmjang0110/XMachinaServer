@@ -440,29 +440,25 @@ bool FBsPacketFactory::Process_CPkt_PlayerOnSkill(SPtr_Session session, const FB
 	///> }s
 	///> �ܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡܡ�
 	SPtr<GameSession> gameSession                          = std::static_pointer_cast<GameSession>(session);
-
-	FBProtocol::PLAYER_SKILL_TYPE	type				  =  pkt.skill_type();
-	auto							playerScript          = gameSession->GetPlayer()->GetScriptEntity<Script_Player>();
-	float							PheroAmount           = playerScript->GetPhero();
+	FBProtocol::PLAYER_SKILL_TYPE	type				   =  pkt.skill_type();
+	auto							playerScript           = gameSession->GetPlayer()->GetScriptEntity<Script_Player>();
+	float							PheroAmount            = playerScript->GetPhero();
 	int								mindcontrol_monster_id = pkt.mindcontrol_monster_id();
+
+	auto player        = gameSession->GetPlayer();
+	auto player_entity = gameSession->GetPlayer()->GetScriptEntity<Script_Player>();
 
 	/// +---------------------------------------------------------------------------------------
 	/// SEND NEW PLAYER PKT TO SESSIONS IN ROOM ( SESSION->GET ROOM ID ) - EXCEPT ME ( SESSION )
 	/// ---------------------------------------------------------------------------------------+
 	sptr<GameObject> mindControlMonster = nullptr;
-	if (type == FBProtocol::PLAYER_SKILL_TYPE_MIND_CONTROL) {
-		auto npcController = gameSession->GetPlayer()->GetOwnerRoom()->GetNPCController();
+	auto npcController = gameSession->GetPlayer()->GetOwnerRoom()->GetNPCController();
+	mindControlMonster = npcController->GetMonster(mindcontrol_monster_id);
+	
+	player_entity->OnSkill(type, mindControlMonster);
 
-		mindControlMonster = npcController->GetMonster(mindcontrol_monster_id);
-		if (mindControlMonster != nullptr) {
-			gameSession->GetPlayer()->GetScriptEntity<Script_Player>()->OnSkill(type, mindControlMonster);
-		}
-	}
-	else {
-		gameSession->GetPlayer()->GetScriptEntity<Script_Player>()->OnSkill(type, nullptr);
-	}
-
-
+	auto SPkt = FBS_FACTORY->SPkt_PlayerOnSkill(gameSession->GetPlayer()->GetID(), type, PheroAmount, mindcontrol_monster_id);
+	ROOM_MGR->BroadcastRoom(player->GetOwnerRoom()->GetID(), SPkt, gameSession->GetPlayer()->GetID());
 
 	return true;
 }

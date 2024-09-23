@@ -41,6 +41,8 @@
 #include "DB_PheroDropInfo.h"
 #include "DB_EnemyStat.h"
 #include "DB_Weapon.h"
+#include "DB_Skill.h"
+
 
 namespace {
 	const std::string kTerrainDataPath            = "Contents/Resource/Terrain.bin";
@@ -362,9 +364,12 @@ ResourceManager::~ResourceManager()
 void ResourceManager::Init()
 {
 #ifdef SET_DATA_FROM_DATABASE
+
 	LoadDB_PheroInfos();
 	LoadDB_EnemyStatInfos();
 	LoadDB_WeaponInfos();
+	LoadDB_SkillInfos();
+
 	DB_CONTROLLER->ExecuteAllDataBaseEvents();
 #endif
 
@@ -437,7 +442,13 @@ void ResourceManager::LoadDB_PheroInfos()
 void ResourceManager::LoadDB_WeaponInfos()
 {
 	// 무기 이름 리스트
-	std::vector<std::wstring> weaponNames = { L"MissileLauncher", L"DBMS", L"HLock", L"SkyLine", L"PipeLine" };
+	std::vector<std::wstring> weaponNames = { 
+		 	L"MissileLauncher", 
+			L"DBMS", 
+			L"HLock", 
+			L"SkyLine", 
+			L"PipeLine" 
+		};
 
 	// 각 무기 정보를 로드하고 저장
 	for (const auto& weaponName : weaponNames) {
@@ -445,6 +456,22 @@ void ResourceManager::LoadDB_WeaponInfos()
 		weaponDBInfo->LoadFromDataBase(weaponName.c_str()); // 무기 이름으로 데이터베이스에서 로드
 		mWeaponInfos.insert({ weaponName, weaponDBInfo });  // 로드한 정보를 맵에 저장
 	}
+}
+
+void ResourceManager::LoadDB_SkillInfos()
+{
+	std::vector<std::string> skillNames = { 
+		"Cloaking", 
+		"MindControl",
+		"Shield" 
+	};
+
+	for (const auto& skillname : skillNames) {
+		auto skillDBInfo = MEMORY->Make_Shared<DB_Skill>();
+		skillDBInfo->LoadFromDataBase(skillname.c_str());
+		mSkillInfos.insert({ skillname, skillDBInfo });
+	}
+
 }
 
 void ResourceManager::LoadDB_EnemyStatInfos()
@@ -464,7 +491,6 @@ void ResourceManager::LoadDB_EnemyStatInfos()
 		"Ursacetus",
 		"Deus_Phase_1",
 		"Deus_Phase_2"
-
 	};
 
 	for (const auto& name : enemyNames) {
@@ -472,6 +498,7 @@ void ResourceManager::LoadDB_EnemyStatInfos()
 		enemyStat->LoadFromDataBase(name); // Fetch data based on the enemy name
 		mEnemyStatInfos.insert({ name, enemyStat });
 	}
+
 }
 
 /// +----------------------------------------------------
@@ -509,6 +536,19 @@ SPtr<DB_Weapon> ResourceManager::GetWeaponInfo(const std::wstring& key) const
 	}
 }
 
+SPtr<DB_Skill> ResourceManager::GetSkillInfo(const std::string& key) const
+{
+	auto it = mSkillInfos.find(key);
+	if (it != mSkillInfos.end()) {
+		return it->second;
+	}
+	else {
+		// Handle the case where the key is not found
+		throw std::out_of_range("mSkillInfos with the specified key does not exist.");
+	}
+}
+
+
 void ResourceManager::LoadAnimationClips()
 {
 	for (const auto& clipFolder : std::filesystem::directory_iterator(kAnimationClipDataPath)) {
@@ -532,6 +572,7 @@ void ResourceManager::LoadAnimatorControllers()
 		mAnimatorControllers[FileIO::RemoveExtension(fileName)] = FileIO::LoadAnimatorController(kAnimatorControllerDataPath + fileName);
 	}
 }
+
 
 
 void ScriptExporter::Load(std::ifstream& file)

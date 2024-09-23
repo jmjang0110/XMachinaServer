@@ -9,7 +9,14 @@ Script_SkillMindControl::Script_SkillMindControl(SPtr<GameObject> owner)
 	: Script_Skill(owner)
 {
 	mSkillType = FBProtocol::PLAYER_SKILL_TYPE_MIND_CONTROL;
+#ifdef SET_DATA_FROM_DATABASE
+	Script_Skill::SetDataFromDataBase("MindControl");
+	mCoolTime -= 1.f;
+	mActiveDuration -= 1.f;
 
+#else
+
+#endif
 }
 
 Script_SkillMindControl::~Script_SkillMindControl()
@@ -76,6 +83,9 @@ void Script_SkillMindControl::Update()
 
 void Script_SkillMindControl::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 {
+	MEMORY->Delete(overlapped);
+
+	mOwner->Update();
 }
 
 void Script_SkillMindControl::Init(SPtr<GameObject> monster)

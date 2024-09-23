@@ -61,7 +61,6 @@ void Script_WeaponBurnout::Start()
         bullet->Start();
 
         mPossibleBulletIndex.push(i);
-
     }
 }
 

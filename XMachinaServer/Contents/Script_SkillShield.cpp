@@ -6,6 +6,14 @@ Script_SkillShield::Script_SkillShield(SPtr<GameObject> owner)
 	: Script_Skill(owner)
 {
 	mSkillType = FBProtocol::PLAYER_SKILL_TYPE_SHIELD;
+
+#ifdef SET_DATA_FROM_DATABASE
+	Script_Skill::SetDataFromDataBase("Shield");
+	mCoolTime -= 1.f;
+	mActiveDuration -= 1.f;
+#else
+
+#endif
 }
 
 Script_SkillShield::~Script_SkillShield()
@@ -85,4 +93,7 @@ void Script_SkillShield::End()
 
 void Script_SkillShield::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 {
+	MEMORY->Delete(overlapped);
+
+	mOwner->Update();
 }

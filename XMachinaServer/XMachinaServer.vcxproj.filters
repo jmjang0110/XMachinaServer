@@ -173,6 +173,12 @@
     <Filter Include="Framework\Contents\GameWorld\Script\Item\Weapon\Bullet">
       <UniqueIdentifier>{b9792db6-a37d-434e-9f9d-9d4c4406d2bd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Script\Item\Weapon\Bullet\Monster_Bullet">
+      <UniqueIdentifier>{c91e02d0-664b-4ad1-9555-dd5577fe2eda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Contents\GameWorld\Script\Item\Weapon\Monster_Weapon">
+      <UniqueIdentifier>{a85c2282-708e-4e43-9316-db1a705e48d4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework.h">
@@ -598,6 +604,15 @@
     <ClInclude Include="Contents\DB_Weapon.h">
       <Filter>Framework\Contents\DataBase\Object</Filter>
     </ClInclude>
+    <ClInclude Include="Contents\Script_BulletDeus_Phase_1.h">
+      <Filter>Framework\Contents\GameWorld\Script\Item\Weapon\Bullet\Monster_Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Script_WeaponDeus_Phase_1_Rifle.h">
+      <Filter>Framework\Contents\GameWorld\Script\Item\Weapon\Monster_Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\DB_Skill.h">
+      <Filter>Framework\Contents\DataBase\Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp">
@@ -961,6 +976,15 @@
       <Filter>Framework\Contents\DataBase\Object</Filter>
     </ClCompile>
     <ClCompile Include="Contents\DB_Weapon.cpp">
+      <Filter>Framework\Contents\DataBase\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Script_BulletDeus_Phase_1.cpp">
+      <Filter>Framework\Contents\GameWorld\Script\Item\Weapon\Bullet\Monster_Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Script_WeaponDeus_Phase_1_Rifle.cpp">
+      <Filter>Framework\Contents\GameWorld\Script\Item\Weapon\Monster_Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\DB_Skill.cpp">
       <Filter>Framework\Contents\DataBase\Object</Filter>
     </ClCompile>
   </ItemGroup>
