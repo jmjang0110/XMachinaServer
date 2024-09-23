@@ -1,6 +1,6 @@
 #pragma once
 
-#define SET_DATA_FROM_DATABASE
+//#define SET_DATA_FROM_DATABASE
 
 #include "ServerLib/NetworkHeaders.h"
 #include "Contents/Util/Common.h"
