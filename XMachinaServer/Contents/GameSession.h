@@ -23,7 +23,7 @@ public:
 
 public:
 	void LoadUserInfo(std::string& id, std::string& password);
-
+	void UpdateUserInfo();
 
 public:
 	SPtr<GameObject> GetPlayer() { return mPlayer; };

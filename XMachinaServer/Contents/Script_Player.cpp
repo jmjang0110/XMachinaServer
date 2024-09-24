@@ -383,18 +383,22 @@ void Script_Player::AddWeapon(SPtr<GameObject> weapon)
 
 void Script_Player::DropWeapon(uint32_t weapon_id)
 {
+	SPtr<Script_Item> item_entity;
+
 	mWeapons_Lock.LockWrite();
 	auto weapon = mWeapons.find(weapon_id);
 	if (weapon != mWeapons.end()) {
+		item_entity = mWeapons[weapon_id]->GetScriptEntity<Script_Item>();
 		mWeapons.unsafe_erase(weapon_id);
 	}
 	mWeapons_Lock.UnlockWrite();
 
 	// [Broadcast Packet] 
-	auto item_entity = mCurrWeapon->GetScriptEntity<Script_Item>();
-	item_entity->SetItemState(ItemState::Dropped);
-	auto spkt = FBS_FACTORY->SPkt_Item_ThrowAway(0, mCurrWeapon->GetID(), item_entity->GetItemType(), mOwner->GetTransform()->GetPosition());
-	ROOM_MGR->BroadcastRoom(mOwner->GetOwnerRoom()->GetID(), spkt);
+	if (item_entity) {
+		item_entity->SetItemState(ItemState::Dropped);
+		auto spkt = FBS_FACTORY->SPkt_Item_ThrowAway(0, item_entity->GetOwner()->GetID(), item_entity->GetItemType(), mOwner->GetTransform()->GetPosition());
+		ROOM_MGR->BroadcastRoom(mOwner->GetOwnerRoom()->GetID(), spkt);
+	}
 
 	SetWeapon(mDefaultWeapon);
 }

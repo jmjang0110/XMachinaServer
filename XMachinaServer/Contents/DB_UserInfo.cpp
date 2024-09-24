@@ -38,6 +38,7 @@ void DB_UserInfo::FetchDataFromDataBase(const wchar_t* query)
     std::wcout << L"Name : " << input_Name << L" ID: " << input_ID << L", Password: " << input_Password << "IsSuccess : " << IsSuccess << std::endl;
 
     /* Send Log In Packet */
+    mOwnerSession->SetName(Name);
     auto spkt = FBS_FACTORY->SPkt_LogIn(Name, IsSuccess); // Fail Or Success 
     mOwnerSession->Send(spkt);
 

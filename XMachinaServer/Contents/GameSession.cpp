@@ -108,6 +108,11 @@ void GameSession::LoadUserInfo(std::string& id, std::string& password)
 	mUserInfo->LoadFromDataBase(id, password);
 }
 
+void GameSession::UpdateUserInfo()
+{
+	mPlayer->SetName(mUserInfo->Name);
+}
+
 SPtr<Script_Player> GameSession::GetPlayerEntity()
 {
 	return mPlayer->GetScriptEntity<Script_Player>();

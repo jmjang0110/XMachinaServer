@@ -152,6 +152,8 @@ int Script_Weapon::OnShoot(Vec3& center_pos, Vec3& fire_dir)
 
 bool Script_Weapon::DoInteract(SPtr<GameObject> player)
 {
+    Script_Item::DoInteract(player);
+
     // 거리차이로 계산
     Vec3 playerPos = player->GetTransform()->GetSnapShot().GetPosition();
     Vec3 itemPos   = mOwner->GetTransform()->GetPosition();

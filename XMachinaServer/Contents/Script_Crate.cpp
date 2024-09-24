@@ -94,6 +94,7 @@ bool Script_Crate::DropItem(SPtr<GameObject> player)
 
     // [Broadcast Packet] 아이템이 드랍됐음을 알린다.
     auto item_entity = mItem->GetScriptEntity<Script_Item>();
+    item_entity->SetItemState(ItemState::Dropped);
     spkt = FBS_FACTORY->SPkt_Item_ThrowAway(0, mItem->GetID(), item_entity->GetItemType(), mItem->GetTransform()->GetPosition());
     ROOM_MGR->BroadcastRoom(player->GetOwnerRoom()->GetID(), spkt);
 

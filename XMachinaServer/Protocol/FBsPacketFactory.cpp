@@ -327,6 +327,7 @@ bool FBsPacketFactory::Process_CPkt_EnterLobby(SPtr_Session session, const FBPro
 	std::vector<SPtr<GameObject>>	RemotePlayers     = ROOM_MGR->GetAllPlayersInRoom(MyPlayer->GetOwnerRoom()->GetID());
 	int								player_EnterOrder = MyPlayer->GetOwnerRoom()->GetPlayerController()->GetPlayersSize();
 
+	gameSession->UpdateUserInfo();
 	auto spkt = FBS_FACTORY->SPkt_EnterLobby(player_EnterOrder, MyPlayer, RemotePlayers);
 	session->Send(spkt);
 
@@ -991,6 +992,9 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_EnterLobby(int player_EnterOrder/*ÀÔÀå ¼ø
 	///		INTERPRET REMOTE PLAYERS INFO 
 	/// -------------------------------------------------------------------------------------+	
 	for (auto& p : players) {
+		if (p->GetName() == "") {
+			continue;
+		}
 		auto transSNS          = p->GetTransform()->GetSnapShot();
 		Vec3 transPos          = transSNS.GetPosition();
 		Vec3 transRot          = transSNS.GetRotation();
