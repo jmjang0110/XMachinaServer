@@ -48,3 +48,14 @@ public:
 protected:
 	virtual BTNode* SetupTree() override;
 };
+
+class Script_LightBipedMechBT : public Script_DefaultEnemyBT
+{
+public:
+	virtual SPtr<Component> Clone(SPtr<Component> target);
+	virtual void Clone(SPtr<GameObject> target);
+	Script_LightBipedMechBT(SPtr<GameObject> owner) : Script_DefaultEnemyBT(owner) {}
+
+protected:
+	virtual BTNode* SetupTree() override;
+};

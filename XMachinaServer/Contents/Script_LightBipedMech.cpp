@@ -28,7 +28,7 @@ Script_LightBipedMech::Script_LightBipedMech(SPtr<GameObject> owner)
     Script_EnemyStat::SetStat_AttackRotationSpeed(0);
     Script_EnemyStat::SetStat_AttackRate(250);
     Script_EnemyStat::SetStat_AttackRange(6);
-    Script_EnemyStat::SetStat_AttackCoolTime(0);
+    Script_EnemyStat::SetStat_AttackCoolTime(1.5f);
     Script_EnemyStat::SetMaxHP(600);
     Script_EnemyStat::SetStat_Attack1AnimName("None");
     Script_EnemyStat::SetStat_Attack2AnimName("None");

@@ -214,7 +214,7 @@ void BattleScene::AddMonster(SPtr<GameObject> object, std::string modelName)
 	}
 	else if (modelName == "LightBipedMech") {
 		object->SetScriptEntity<Script_LightBipedMech>();
-		object->AddScript<Script_MindControlledEnemyBT>();
+		object->AddScript<Script_LightBipedMechBT>();
 	}
 	else if (modelName == "MiningMech") {
 		object->SetScriptEntity<Script_MiningMech>();
@@ -235,7 +235,6 @@ void BattleScene::AddMonster(SPtr<GameObject> object, std::string modelName)
 	else if (modelName == "Deus_Phase_2") {
 		object->SetScriptEntity<Script_Deus_Phase_2>();
 		object->AddScript<Script_DeusPhase1BT>();
-
 	}
 	else
 		assert(0);
