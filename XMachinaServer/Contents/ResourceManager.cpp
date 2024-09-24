@@ -447,7 +447,8 @@ void ResourceManager::LoadDB_WeaponInfos()
 			L"DBMS", 
 			L"HLock", 
 			L"SkyLine", 
-			L"PipeLine" 
+			L"PipeLine" ,
+			L"AirStrike"
 		};
 
 	// 각 무기 정보를 로드하고 저장

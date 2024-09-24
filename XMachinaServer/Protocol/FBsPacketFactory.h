@@ -78,7 +78,7 @@ public:
 	SPtr_SendPktBuf SPkt_NetworkLatency(long long timestamp);
 	SPtr_SendPktBuf SPkt_Chat(uint32_t player_id, std::string msg);
 
-	SPtr_SendPktBuf SPkt_Custom(std::string trooperName);
+	SPtr_SendPktBuf SPkt_Custom(int player_id, std::string trooperName);
 
 
 	/* PLAYER */

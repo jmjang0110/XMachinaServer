@@ -28,6 +28,7 @@
 #include "Script_Phero.h"
 
 #include "CollisionManager.h"
+#include "Script_WeaponAirStrike.h"
 
 
 Script_Player::Script_Player()
@@ -111,6 +112,16 @@ void Script_Player::Start()
 
 	weapon_entity->SetOwnerPlayer(mOwner);
 	mDefaultWeapon->Start();
+
+
+	// AirStrike
+	mAirStrike = MEMORY->Make_Shared<GameObject>(FBProtocol::ITEM_TYPE_WEAPON_AIR_STRIKE);
+	mAirStrike->AddComponent<Transform>(Component::Type::Transform);
+	auto airstrike = mAirStrike->SetScriptEntity<Script_WeaponAirStrike>();
+	mAirStrike->SetOwnerRoom(mOwner->GetOwnerRoom());
+
+	airstrike->SetOwnerPlayer(mOwner);
+	mAirStrike->Start();
 
 	// Skills
 	for (int i = 0; i < FBProtocol::PLAYER_SKILL_TYPE_END; ++i) { mSkills[i] = MEMORY->Make_Shared<GameObject>(i); }
@@ -349,6 +360,11 @@ void Script_Player::SetWeapon(SPtr<GameObject> weapon)
 	mCurrWeapon_Lock.LockWrite();
 	mCurrWeapon = weapon;
 	mCurrWeapon_Lock.UnlockWrite();
+}
+
+void Script_Player::SetAirStrike()
+{
+	SetWeapon(mAirStrike);
 }
 
 void Script_Player::AddWeapon(SPtr<GameObject> weapon)

@@ -28,7 +28,8 @@ private:
 	SPtr<GameObject>													mDefaultWeapon       = {}; // H_Lock
 	concurrency::concurrent_unordered_map<uint32_t, SPtr<GameObject>>	mWeapons;					Lock::SRWLock mWeapons_Lock;
 	SPtr<GameObject>													mCurrWeapon          = {};	Lock::SRWLock mCurrWeapon_Lock;
-	
+	SPtr<GameObject>													mAirStrike			 = {};
+
 	ViewList								                            mViewListSnapShot    = {};	Lock::SRWLock mViewList_Lock;
 	ViewList															mViewList	         = {};
 	PlayerState															mPlayerState         = PlayerState::None;
@@ -47,8 +48,8 @@ public:
 
 public:
 	void	UpdateViewList(std::vector<SPtr<GameObject>> players, std::vector<SPtr<GameObject>> montser);
-	void CollideCheckWithMonsters();
-	void CollideCheckWithPheros(SPtr<GameObject> enemy);
+	void    CollideCheckWithMonsters();
+	void    CollideCheckWithPheros(SPtr<GameObject> enemy);
 
 	int		OnShoot(Vec3& bullet_center, Vec3& bullet_dir);
 	int		OnHitEnemy(int32_t monster_id, Vec3& bullet_center, Vec3& bullet_dir);
@@ -67,7 +68,8 @@ public:
 	void SetState(PlayerState state)				{ mPlayerState  = state; }
 	void SetSessionOwner(SPtr<GameSession> session) { mSessionOwner = session; }
 	void SetWeapon(SPtr<GameObject> weapon);
-	
+	void SetAirStrike();
+
 
 public:
 	void AddWeapon(SPtr<GameObject> weapon);

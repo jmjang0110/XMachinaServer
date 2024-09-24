@@ -153,9 +153,9 @@ void Script_Enemy::AttackCallback()
 	if (Vec3::Distance(TargetPos, Pos) <= 10.f) {
 		const auto& statScript = mEnemyController->GetTarget()->GetScriptEntity<Script_Stat>();
 		if (statScript) {
-			LOG_MGR->Cout(mOwner->GetID(), " : Hit! -> Target : ", mEnemyController->GetTarget()->GetID(), "\n");
+			//LOG_MGR->Cout(mOwner->GetID(), " : Hit! -> Target : ", mEnemyController->GetTarget()->GetID(), "\n");
 
-			statScript->Hit(mAttackRate, mOwner);
+			//statScript->Hit(mAttackRate, mOwner);
 			Script_Stat::ObjectState state =  statScript->S_GetObjectState();
 			if (state == Script_Stat::ObjectState::Dead) {
 				mEnemyController->SetTarget(nullptr);

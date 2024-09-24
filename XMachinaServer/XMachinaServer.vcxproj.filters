@@ -616,6 +616,12 @@
     <ClInclude Include="Protocol\FBP_Custom_generated.h">
       <Filter>Protocol\PacketProtocol</Filter>
     </ClInclude>
+    <ClInclude Include="Contents\Script_WeaponAirStrike.h">
+      <Filter>Framework\Contents\GameWorld\Script\Item\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Script_BulletAirStrike.h">
+      <Filter>Framework\Contents\GameWorld\Script\Item\Weapon\Bullet</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp">
@@ -989,6 +995,12 @@
     </ClCompile>
     <ClCompile Include="Contents\DB_Skill.cpp">
       <Filter>Framework\Contents\DataBase\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Script_WeaponAirStrike.cpp">
+      <Filter>Framework\Contents\GameWorld\Script\Item\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Script_BulletAirStrike.cpp">
+      <Filter>Framework\Contents\GameWorld\Script\Item\Weapon\Bullet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -107,8 +107,13 @@ void Script_SkillCloaking::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 void Script_SkillCloaking::Activate()
 {
 	Script::Activate();
+	if (mSkillState == SkillState::Active) {
+		mSkillState = SkillState::CoolTime_Start;
+	}
+	else {
+		mSkillState = SkillState::Possible;
+	}
 
-	mSkillState = SkillState::Possible;
 }
 
 void Script_SkillCloaking::DeActivate()

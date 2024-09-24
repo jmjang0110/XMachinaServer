@@ -86,6 +86,15 @@ bool FBsPacketFactory::ProcessFBsPacket(SPtr_Session session, BYTE* packetBuf, U
 		Process_CPkt_Chat(session, *packet);
 		break;
 	}
+
+	case FBProtocol::FBsProtocolID::FBsProtocolID_CPkt_Custom:
+	{
+		const FBProtocol::CPkt_Custom* packet = flatbuffers::GetRoot<FBProtocol::CPkt_Custom>(DataPtr);
+		if (!packet) return false;
+		Process_CPkt_Custom(session, *packet);
+		break;
+	}
+
 	case FBProtocol::FBsProtocolID::FBsProtocolID_CPkt_NetworkLatency:
 	{
 		// LOG_MGR->Cout(session->GetID(), " - RECV - ", "[ CPkt_NetworkLatency ]\n");
@@ -384,7 +393,13 @@ bool FBsPacketFactory::Process_CPkt_Chat(SPtr_Session session, const FBProtocol:
 
 bool FBsPacketFactory::Process_CPkt_Custom(SPtr_Session session, const FBProtocol::CPkt_Custom& pkt)
 {
-	return false;
+	SPtr<GameSession> gameSession = std::static_pointer_cast<GameSession>(session);
+	std::string trooperskin = pkt.trooperskin()->c_str();
+
+	auto spkt = FBS_FACTORY->SPkt_Custom(session->GetID(), trooperskin);
+	ROOM_MGR->BroadcastRoom(gameSession->GetPlayer()->GetOwnerRoom()->GetID(), spkt, session->GetID());
+
+	return true;
 }
 
 bool FBsPacketFactory::Process_CPkt_NetworkLatency(SPtr_Session session, const FBProtocol::CPkt_NetworkLatency& pkt)
@@ -562,16 +577,19 @@ bool FBsPacketFactory::Process_CPkt_Player_Weapon(SPtr_Session session, const FB
 	FBProtocol::ITEM_TYPE	weaponType = pkt.weapon_type();
 	int						weapon_id  = pkt.item_id();
 
-	//auto weapon = gameSession->GetPlayer()->GetScriptEntity<Script_Player>()->GetWeapon();
-	//auto weapon		   = gameSession->GetPlayer()->GetOwnerRoom()->GetNPCController()->GetDynamicItem(weapon_id);
 	auto player_entity = gameSession->GetPlayerEntity();
-	auto weapon = player_entity->GetWeapon(weapon_id);
-	if (weapon) {
-		player_entity->SetWeapon(weapon);
+
+	if (weaponType == FBProtocol::ITEM_TYPE_WEAPON_AIR_STRIKE) {
+		player_entity->SetAirStrike();
+	}
+	else {
+		auto weapon = player_entity->GetWeapon(weapon_id);
+		if (weapon) {
+			player_entity->SetWeapon(weapon);
+		}
 	}
 
 	LOG_MGR->Cout(gameSession->GetID(), " - WEAPON TYPE : ", static_cast<int>(weaponType), "\n");
-
 
 	auto spkt = FBS_FACTORY->SPkt_Player_Weapon(session->GetID(), weaponType);
 	ROOM_MGR->BroadcastRoom(gameSession->GetPlayer()->GetOwnerRoom()->GetID(), spkt, session->GetID());
@@ -875,12 +893,12 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_Chat(uint32_t player_id, std::string msg)
 	return SEND_FACTORY->CreatePacket(bufferPtr, serializedDataSize, FBProtocol::FBsProtocolID::FBsProtocolID_SPkt_Chat);
 }
 
-SPtr_SendPktBuf FBsPacketFactory::SPkt_Custom(std::string trooperName)
+SPtr_SendPktBuf FBsPacketFactory::SPkt_Custom(int player_id, std::string trooperName)
 {
 	flatbuffers::FlatBufferBuilder builder;
 
 	auto msgOffset = builder.CreateString(trooperName);
-	auto ServerPacket = FBProtocol::CreateSPkt_Custom(builder, msgOffset);
+	auto ServerPacket = FBProtocol::CreateSPkt_Custom(builder, player_id, msgOffset);
 
 	builder.Finish(ServerPacket);
 
