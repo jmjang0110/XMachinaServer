@@ -27,9 +27,5 @@ public:
 
 public:
 	virtual void Start() override;
-	virtual void StartAttack() override;
-
-protected:
-	void MeleeAttack();
-	void RangeAttack();
+	virtual void Dispatch(class OverlappedObject* overlapped, UINT32 bytes = 0) override;
 };

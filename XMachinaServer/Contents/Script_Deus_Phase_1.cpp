@@ -32,14 +32,14 @@ Script_Deus_Phase_1::Script_Deus_Phase_1(SPtr<GameObject> owner)
 #ifdef SET_DATA_FROM_DATABASE
     Script_EnemyStat::SetDataFromDataBase(name);
 #else
-    Script_EnemyStat::SetStat_EnemyLevel(7);
-    Script_EnemyStat::SetStat_PheroLevel(6);
-    Script_EnemyStat::SetStat_MoveSpeed(5.5);
+    Script_EnemyStat::SetStat_EnemyLevel(10);
+    Script_EnemyStat::SetStat_PheroLevel(10);
+    Script_EnemyStat::SetStat_MoveSpeed(3.5);
     Script_EnemyStat::SetStat_DetectionRange(20);
     Script_EnemyStat::SetStat_RotationSpeed(150);
     Script_EnemyStat::SetStat_AttackRotationSpeed(100);
     Script_EnemyStat::SetStat_AttackRate(300);
-    Script_EnemyStat::SetStat_AttackRange(10);
+    Script_EnemyStat::SetStat_AttackRange(20);
     Script_EnemyStat::SetStat_AttackCoolTime(0);
     Script_EnemyStat::SetMaxHP(1500);
     Script_EnemyStat::SetStat_Attack1AnimName("Attack_01");

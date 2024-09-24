@@ -83,7 +83,6 @@ void Script_Onyscidus::Start()
 
     AnimController->FindMotionByName(mAttack1AnimName)->AddCallback(std::bind(&Script_Onyscidus::AttackCallback, this), 17);
     AnimController->FindMotionByName(mAttack1AnimName)->AddCallback(std::bind(&Script_Onyscidus::AttackCallback, this), 44);
-
 }
 
 void Script_Onyscidus::Dispatch(OverlappedObject* overlapped, UINT32 bytes)

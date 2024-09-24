@@ -33,6 +33,10 @@ void Script_DefaultEnemyBT::Update()
 		return;
 	}
 
+	if (mOwner->GetID() == 122) {
+		int a = 3;
+	}
+
 	// ¡å 1. Send Monster State Server Packet 
 	FBProtocol::MONSTER_BT_TYPE PrevType = mRoot->GetEnemyController()->GetMontserPrevBTType();
 	FBProtocol::MONSTER_BT_TYPE CurrType = mRoot->GetEnemyController()->GetMonsterCurrBTType();

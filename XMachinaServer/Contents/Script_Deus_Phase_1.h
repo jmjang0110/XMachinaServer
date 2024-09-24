@@ -6,12 +6,10 @@ class GameObject;
 class Script_Deus_Phase_1 : public Script_Enemy
 {
 private:
-	SPtr<GameObject>	mWeapon = {}; 
-
+	SPtr<GameObject> mWeapon = {}; 
 
 private:
-
-	static constexpr float mkMeleeAttackRange  = 3.f;
+	static constexpr float mkMeleeAttackRange  = 5.f;
 	static constexpr float mkExplodeAttackRate = 30.f;
 
 protected:
