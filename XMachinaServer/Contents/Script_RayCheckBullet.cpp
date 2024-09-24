@@ -82,7 +82,7 @@ void Script_RayCheckBullet::RayCheck()
 		// Ray Check! 
 		raycheck = COLLISION_MGR->CollideCheckRay(lhs, rhs);
 		if (raycheck) {
-			LOG_MGR->Cout(enemy->GetID(), " Enemy <-- On (O) Hit --> Bullet ", mOwner->GetID(), "\n");
+			//LOG_MGR->Cout(enemy->GetID(), " Enemy <-- On (O) Hit --> Bullet ", mOwner->GetID(), "\n");
 			auto enemy_entity = enemy->GetScriptEntity<Script_Enemy>();
 			enemy_entity->Hit(mDamage);
 

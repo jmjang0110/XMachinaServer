@@ -17,5 +17,7 @@ public:
 	virtual void Start();
 	virtual void Update();
 
+	virtual int	OnShoot(Vec3& center_pos, Vec3& fire_dir);
+
 };
 

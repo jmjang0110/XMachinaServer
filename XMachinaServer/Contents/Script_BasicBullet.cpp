@@ -53,8 +53,9 @@ void Script_BasicBullet::Update()
 	mOwner->GetTransform()->MoveForward(deltatime * mSpeed);
 	
 	bool IsCollide = false;
-	IsCollide = mOwner->GetOwnerRoom()->CollideCheckWithNPC(mOwner, ObjectTag::Enemy);
-	IsCollide = mOwner->GetOwnerRoom()->CollideCheckWithNPC(mOwner, ObjectTag::Building);
+	IsCollide = mOwner->GetOwnerRoom()->CollideCheckWithNPC(mOwner, ObjectTag::Enemy, 10.f);
+	IsCollide = mOwner->GetOwnerRoom()->CollideCheckWithNPC(mOwner, ObjectTag::Building, 15.f);
+	
 	if (IsCollide)
 		Explode();
 }

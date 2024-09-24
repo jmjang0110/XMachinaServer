@@ -68,3 +68,8 @@ void Script_WeaponMineLauncher::Start()
 void Script_WeaponMineLauncher::Update()
 {
 }
+
+int Script_WeaponMineLauncher::OnShoot(Vec3& center_pos, Vec3& fire_dir)
+{
+    return -1;
+}

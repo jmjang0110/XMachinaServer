@@ -12,6 +12,9 @@
 #include "ResourceManager.h"
 #include "DB_Weapon.h"
 
+#include "GameObject.h"
+#include "NPCController.h"
+
 Script_Weapon::Script_Weapon(SPtr<GameObject> owner)
 	: Script_Item(owner)
 {
@@ -88,6 +91,32 @@ int Script_Weapon::OnHitEnemy(int32_t checktargetID, Vec3& center_pos, Vec3& fir
             }
             mBullets[possibleIndex]->Activate(); // PQCS - Register Update !
             mBullets[possibleIndex]->Start();
+            return possibleIndex;
+        }
+    }
+
+    return -1;
+}
+
+int Script_Weapon::OnHitExpEnemy(int32_t monster_id)
+{
+    auto monster = mOwner->GetOwnerRoom()->GetNPCController()->GetMonster(monster_id);
+    if (!monster)
+        return -1;
+
+    Vec3 center_pos = monster->GetTransform()->GetSnapShot().GetPosition();
+
+    int possibleIndex = -1;
+    if (mPossibleBulletIndex.try_pop(possibleIndex)) {
+
+        if (0 <= possibleIndex && possibleIndex < WeaponInfo::MaxBulletsNum) {
+
+            if (mBullets[possibleIndex]->IsActive() == true)
+                return -1;
+
+            mBullets[possibleIndex]->GetTransform()->SetPosition(center_pos);
+            mBullets[possibleIndex]->Activate(); // PQCS - Register Update !
+            mBullets[possibleIndex]->Start(); 
             return possibleIndex;
         }
     }

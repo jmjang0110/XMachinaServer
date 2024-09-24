@@ -52,14 +52,14 @@ void Script_BulletAirStrike::Update()
 
 	bool IsCollide{};
 	// Collide Check
-	if (IsCollide = mOwner->GetOwnerRoom()->CollideCheckWithNPC(mOwner, ObjectTag::Enemy)) {
-		LOG_MGR->Cout("[", mOwner->GetID(), "] : ", "Collide With Enemy!\n");
+	if (IsCollide = mOwner->GetOwnerRoom()->CollideCheckWithNPC(mOwner, ObjectTag::Enemy, 10.f)){
+		//LOG_MGR->Cout("[", mOwner->GetID(), "] : ", "Collide With Enemy!\n");
 	}
-	else if (IsCollide = mOwner->GetOwnerRoom()->CollideCheckWithNPC(mOwner, ObjectTag::Building)) {
-		LOG_MGR->Cout("[", mOwner->GetID(), "] : ", "Collide With Building!\n");
+	else if (IsCollide = mOwner->GetOwnerRoom()->CollideCheckWithNPC(mOwner, ObjectTag::Building, 15.f)) {
+		//LOG_MGR->Cout("[", mOwner->GetID(), "] : ", "Collide With Building!\n");
 	}
 	else if (IsCollide = bullet_pos.y <= 0.f) {
-		LOG_MGR->Cout("[", mOwner->GetID(), "] : ", "Collide With Ground!\n");
+		//LOG_MGR->Cout("[", mOwner->GetID(), "] : ", "Collide With Ground!\n");
 
 	}
 

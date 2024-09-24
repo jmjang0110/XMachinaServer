@@ -30,6 +30,11 @@ public:
 	virtual void SplashDamage();
 	virtual void Explode();
 
+	void Move(float deltatime);
+	void Plant();
+
+
+
 
 	virtual void Dispatch(class OverlappedObject* overlapped, UINT32 bytes = 0);
 };

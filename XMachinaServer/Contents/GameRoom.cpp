@@ -58,6 +58,9 @@ void GameRoom::Init(int roomid)
 
 bool GameRoom::IsPossibleToEnter()
 {
+	if (GetRoomState() == RoomState::Battle)
+		return false;
+
 	if (mPC->GetPlayersSize() < RoomInfo::MaxSessionSize)
 		return true;
 
@@ -94,9 +97,8 @@ std::vector<SPtr<GameObject>> GameRoom::GetallPlayers()
 	return mPC->GetAllPlayers();
 }
 
-bool GameRoom::CollideCheckWithNPC(SPtr<GameObject> obj, ObjectTag objTag)
+bool GameRoom::CollideCheckWithNPC(SPtr<GameObject> obj, ObjectTag objTag, int CheckSectorRadius)
 {
-	float CheckSectorRadius = 10.f;
 	bool isCollide = false;
 	if (ObjectTag::Building == objTag) {
 		std::vector<Coordinate> checkSectors = mSC->GetCheckSectors(obj->GetTransform()->GetSnapShot().GetPosition(), CheckSectorRadius);

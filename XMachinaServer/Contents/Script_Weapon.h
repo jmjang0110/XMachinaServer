@@ -36,6 +36,8 @@ public:
 
 public:
 	virtual int OnHitEnemy(int32_t checktargetID, Vec3& center_pos, Vec3& fire_dir);
+	virtual int OnHitExpEnemy(int32_t monster_id);
+
 	virtual int	OnShoot(Vec3& center_pos, Vec3& fire_dir);
 	virtual bool DoInteract(SPtr<GameObject> player) override;
 

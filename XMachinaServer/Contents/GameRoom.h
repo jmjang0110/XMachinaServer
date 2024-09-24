@@ -5,6 +5,12 @@ class NPCController;
 class SectorController;
 
 class GameObject;
+
+enum class RoomState
+{
+	Lobby,
+	Battle,
+};
 namespace RoomInfo
 {
 	constexpr int MaxSessionSize = 10; /* 하나의 Room 에 10 명의 Session 을 받도록 한다. */
@@ -18,6 +24,7 @@ private:
 	NPCController*		mNC = {};
 	SectorController*	mSC = {};
 
+	RoomState mRoomState = RoomState::Lobby; Lock::SRWLock mLock_Roomstate;
 
 public:
 	GameRoom();
@@ -49,7 +56,7 @@ public:
 	/// +-------------------------------------------------------------------
 	///	▶▶▶ NPC Controller 
 	/// -------------------------------------------------------------------+
-	bool CollideCheckWithNPC(SPtr<GameObject> obj, ObjectTag objTag);
+	bool CollideCheckWithNPC(SPtr<GameObject> obj, ObjectTag objTag, int CheckSectorRadius);
 	bool CollideCheckWithPlayer(SPtr<GameObject> obj);
 	std::vector<SPtr<GameObject>> GetPlayersInRange(Vec3 ceneter_pos, float range_radius);
 
@@ -67,5 +74,7 @@ public:
 	NPCController*		 GetNPCController()			{ return mNC; }
 	SectorController*	 GetSectorController()		{ return mSC; }
 
+	void SetRoomState(RoomState roomstate) { mLock_Roomstate.LockWrite(); mRoomState = roomstate; mLock_Roomstate.UnlockWrite(); return; }
+	RoomState GetRoomState() { mLock_Roomstate.LockRead(); RoomState roomstate = mRoomState; mLock_Roomstate.UnlockRead(); return roomstate; }
 };
 

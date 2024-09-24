@@ -321,7 +321,12 @@ int Script_Player::OnHitEnemy(int32_t monster_id, Vec3& bullet_center, Vec3& bul
 
 int Script_Player::OnHitExpEnemy(int32_t monster_id)
 {
-    return 0;
+	if (!mCurrWeapon)
+		return -1;
+
+	// Check Hit Enemy...
+	int bulletID = mCurrWeapon->GetScriptEntity<Script_Weapon>()->OnHitExpEnemy(monster_id);
+	return bulletID;
 }
 
 bool Script_Player::OnSkill(FBProtocol::PLAYER_SKILL_TYPE type, SPtr<GameObject> mindControlledMonster)

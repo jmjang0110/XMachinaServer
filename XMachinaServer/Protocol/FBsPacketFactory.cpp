@@ -371,6 +371,8 @@ bool FBsPacketFactory::Process_CPkt_PlayGame(SPtr_Session session, const FBProto
 	if (player_count >= minPlayerCountToPlayGame) {
 		auto spkt = FBS_FACTORY->SPkt_PlayGame();
 		ROOM_MGR->BroadcastRoom(room->GetID(), spkt);
+		room->SetRoomState(RoomState::Battle);
+
 	}
 	return true;
 }
