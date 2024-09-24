@@ -168,6 +168,7 @@
     <ClInclude Include="Contents\BTTaskM_CheckMindDetectionRange.h" />
     <ClInclude Include="Contents\BTTaskM_CheckPatrolRange.h" />
     <ClInclude Include="Contents\BTTaskM_GetHit.h" />
+    <ClInclude Include="Contents\BTTaskM_LightBipedAttack.h" />
     <ClInclude Include="Contents\BTTaskM_MoveToMindControlInvoker.h" />
     <ClInclude Include="Contents\BTTaskM_MoveToPath.h" />
     <ClInclude Include="Contents\BTTaskM_MoveToTarget.h" />
@@ -310,6 +311,7 @@
     <ClCompile Include="Contents\BTTask.cpp" />
     <ClCompile Include="Contents\BTTaskM_CheckMindControlBT.cpp" />
     <ClCompile Include="Contents\BTTaskM_CheckMindControlBTToEnd.cpp" />
+    <ClCompile Include="Contents\BTTaskM_LightBipedAttack.cpp" />
     <ClCompile Include="Contents\BTTaskM_MoveToMindControlInvoker.cpp" />
     <ClCompile Include="Contents\Collider.cpp" />
     <ClCompile Include="Contents\CollisionManager.cpp" />

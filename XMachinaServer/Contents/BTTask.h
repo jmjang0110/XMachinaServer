@@ -3,6 +3,7 @@
 enum class BTTaskType : UINT16 {
 	/* Monster Task */
 	MonT_Attack,
+	MonT_LightBipedAttack,
 	MonT_GetHit,
 	MonT_Patrol,
 	

@@ -19,6 +19,7 @@
 #include "BTTaskM_CheckMindControlBT.h"
 #include "BTTaskM_CheckMindControlBTToEnd.h"
 #include "BTTaskM_CheckMindDetectionRange.h"
+#include "BTTaskM_LightBipedAttack.h"
 
 #include "FBsPacketFactory.h"
 #include "RoomManager.h"
@@ -253,6 +254,41 @@ BTNode* Script_DeusPhase1BT::SetupTree()
 			MEMORY->New<MonsterTask::CheckDetectionRange>(mOwner),
 				MEMORY->New<BTNode_Selector>(mOwner, std::vector<BTNode*>{
 				MEMORY->New<MonsterTask::MoveToTarget>(mOwner)})})});
+
+	mRoot->SetRoot();
+	return mRoot;
+}
+
+SPtr<Component> Script_LightBipedMechBT::Clone(SPtr<Component> target)
+{
+	// Try to cast the target to Script_LightBipedMechBT
+	auto clonedScript = std::dynamic_pointer_cast<Script_LightBipedMechBT>(target);
+	if (clonedScript)
+	{
+		Script_DefaultEnemyBT::Clone(clonedScript);
+		return clonedScript;
+	}
+	else
+	{
+		std::cout << "Clone failed: target is not of type Script_LightBipedMechBT" << std::endl;
+		return nullptr;
+	}
+}
+
+void Script_LightBipedMechBT::Clone(SPtr<GameObject> target)
+{
+	auto clonedScript = target->AddScript<Script_LightBipedMechBT>();
+	this->Clone(clonedScript);
+}
+
+BTNode* Script_LightBipedMechBT::SetupTree()
+{
+	SPtr<Script_Enemy> enemy = mOwner->GetScriptEntity<Script_Enemy>();
+
+	mRoot =
+		MEMORY->New<BTNode_Selector>(mOwner, std::vector<BTNode*>{
+			MEMORY->New<MonsterTask::CheckDeath>(mOwner, std::bind(&Script_Enemy::Dead, enemy)),
+			MEMORY->New<MonsterTask::LightBipedAttack>(mOwner)}),
 
 	mRoot->SetRoot();
 	return mRoot;
