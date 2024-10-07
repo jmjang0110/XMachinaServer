@@ -139,7 +139,8 @@ bool Framework::Init(HINSTANCE& hInst)
 		LOG_MGR->SetColor(TextColor::Default);
 
 		LOG_MGR->Cout("Server IP ют╥б : ");
-		std::wcin >> mServerIP;
+		//std::wcin >> mServerIP;
+		mServerIP = L"210.93.52.235";
 		LOG_MGR->WCout(L"IPv4 Address : ", mServerIP, '\n');
 	}
 

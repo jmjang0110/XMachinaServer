@@ -10,6 +10,8 @@ Script_WeaponDBMS::Script_WeaponDBMS(SPtr<GameObject> owner)
 	mItemType = FBProtocol::ITEM_TYPE_WEAPON_DBMS;
 #ifdef SET_DATA_FROM_DATABASE
     Script_Weapon::SetDataFromDataBase(L"DBMS");
+    mAttackRate *= 3;
+
 #else
 
 #endif

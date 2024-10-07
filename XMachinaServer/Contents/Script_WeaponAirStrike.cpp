@@ -11,6 +11,7 @@ Script_WeaponAirStrike::Script_WeaponAirStrike(SPtr<GameObject> owner)
 
 #ifdef SET_DATA_FROM_DATABASE
     Script_Weapon::SetDataFromDataBase(L"AirStrike");
+
 #else
 
 #endif

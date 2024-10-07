@@ -485,7 +485,14 @@ bool FBsPacketFactory::Process_CPkt_PlayerOnSkill(SPtr_Session session, const FB
 		mindcontrol->Init(mindControlMonster);
 	}
 
-	player_entity->OnSkill(type, mindControlMonster);
+	if (player_entity->GetSkillEntity(type)->GetCurrSkillState() == SkillState::Active) {
+		player_entity->GetSkillEntity(type)->SetSkillState(SkillState::CoolTime_Start);
+		player_entity->GetSKill(type)->DeActivate();
+	}
+	else {
+		player_entity->OnSkill(type, mindControlMonster);
+
+	}
 
 	auto SPkt = FBS_FACTORY->SPkt_PlayerOnSkill(gameSession->GetPlayer()->GetID(), type, PheroAmount, mindcontrol_monster_id);
 	ROOM_MGR->BroadcastRoom(player->GetOwnerRoom()->GetID(), SPkt, gameSession->GetPlayer()->GetID());

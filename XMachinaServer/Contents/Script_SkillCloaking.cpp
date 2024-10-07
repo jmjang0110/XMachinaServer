@@ -11,7 +11,7 @@ Script_SkillCloaking::Script_SkillCloaking(SPtr<GameObject> owner)
 
 #ifdef SET_DATA_FROM_DATABASE
 	Script_Skill::SetDataFromDataBase("Cloaking");
-	mCoolTime -= 1.f;
+	mCoolTime = 0.f;
 	mActiveDuration -= 1.f;
 #else
 
@@ -107,12 +107,12 @@ void Script_SkillCloaking::Dispatch(OverlappedObject* overlapped, UINT32 bytes)
 void Script_SkillCloaking::Activate()
 {
 	Script::Activate();
-	if (mSkillState == SkillState::Active) {
+	/*if (mSkillState == SkillState::Active) {
 		mSkillState = SkillState::CoolTime_Start;
 	}
-	else {
+	else {*/
 		mSkillState = SkillState::Possible;
-	}
+	//}
 
 }
 

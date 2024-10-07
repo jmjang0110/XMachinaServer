@@ -30,6 +30,8 @@ Script_Ursacetus::Script_Ursacetus(SPtr<GameObject> owner)
     owner->SetName(name);
 #ifdef SET_DATA_FROM_DATABASE
     Script_EnemyStat::SetDataFromDataBase(name);
+    mMaxHP *= 5.f;
+
 #else
     Script_EnemyStat::SetStat_EnemyLevel(4);
     Script_EnemyStat::SetStat_PheroLevel(5);

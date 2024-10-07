@@ -9,6 +9,7 @@ Script_WeaponSkyLine::Script_WeaponSkyLine(SPtr<GameObject> owner)
 	mItemType = FBProtocol::ITEM_TYPE_WEAPON_SKYLINE;
 #ifdef SET_DATA_FROM_DATABASE
     Script_Weapon::SetDataFromDataBase(L"SkyLine");
+    mAttackRate *= 5;
 #else
 
 #endif

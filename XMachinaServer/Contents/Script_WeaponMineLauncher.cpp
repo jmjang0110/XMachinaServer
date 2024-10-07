@@ -10,6 +10,8 @@ Script_WeaponMineLauncher::Script_WeaponMineLauncher(SPtr<GameObject> owner)
 	mItemType = FBProtocol::ITEM_TYPE_WEAPON_MINE_LAUNCHER;
 #ifdef SET_DATA_FROM_DATABASE
     Script_Weapon::SetDataFromDataBase(L"MissileLauncher");
+    mAttackRate *= 5;
+
 #else
 
 #endif

@@ -9,6 +9,8 @@ Script_WeaponPipeLine::Script_WeaponPipeLine(SPtr<GameObject> owner)
 	mItemType = FBProtocol::ITEM_TYPE_WEAPON_PIPELINE;
 #ifdef SET_DATA_FROM_DATABASE
     Script_Weapon::SetDataFromDataBase(L"PipeLine");
+    mAttackRate *= 5;
+
 #else
 
 #endif

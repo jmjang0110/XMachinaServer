@@ -52,5 +52,6 @@ public:
 	SPtr<GameObject>				GetOwnerPlayer()			{ return mOwnerPlayer; }
 
 	void SetDataFromDataBase(std::string skill_name);
+	void SetSkillState(SkillState state) { mSkillState  = state; }
 };
 

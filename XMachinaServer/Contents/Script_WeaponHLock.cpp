@@ -9,6 +9,8 @@ Script_WeaponHLock::Script_WeaponHLock(SPtr<GameObject> owner)
     mItemType = FBProtocol::ITEM_TYPE_WEAPON_H_LOOK;
 #ifdef SET_DATA_FROM_DATABASE
     Script_Weapon::SetDataFromDataBase(L"HLock");
+    mAttackRate *= 3;
+
 #else
 
 #endif
