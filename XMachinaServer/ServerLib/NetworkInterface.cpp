@@ -53,9 +53,9 @@ bool NetworkInterface::WorkerThread(UINT32 msTimeOut)
 	auto listener = FRAMEWORK->GetServerNetwork()->GetListener();
 
 	bool IsTaskExisted = ::GetQueuedCompletionStatus(mIocpHandle
-												, OUT &BytesTransferred
-												, OUT &key
-												, OUT &lpOverlapped/*reinterpret_cast<LPOVERLAPPED*>(&overObj)*/
+												, &BytesTransferred
+												, &key
+												, &lpOverlapped/*reinterpret_cast<LPOVERLAPPED*>(&overObj)*/
 												, msTimeOut);
 	if (TRUE == IsTaskExisted) {
 		/// +------------

@@ -217,14 +217,15 @@ void Framework::Launch()
 		THREAD_MGR->RunThread("Worker Threads : 4 (CoreNum - 1(Timer))" + std::to_string(i), [&]() {
 
 			UINT32 msTimeOut = 0;
-			double time = 0;
-			double prev = 0;
 			while (!stop.load())
 			{
-				TLS_MGR->Get_TlsInfoData()->TimeMgr.Tick(240.f);
+				int size = 16 + rand() % 100;
+				//void* ptr = MEMORY->Allocate(size);
+				//LOG_MGR->Cout("[", TLS_MGR->Get_TlsInfoData()->id, "] - Allocate : ", ptr, "\n");
+				//TLS_MGR->Get_TlsInfoData()->TimeMgr.Tick(240.f);
 				mServer->WorkerThread(msTimeOut);
-				time += TLS_MGR->Get_TlsInfoData()->TimeMgr.GetTimeElapsed();
-
+				//MEMORY->Delete(ptr);
+				//LOG_MGR->Cout("[", TLS_MGR->Get_TlsInfoData()->id, "] - Delete : ", ptr, "\n");
 			}
 
 			});

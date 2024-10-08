@@ -622,6 +622,10 @@
     <ClInclude Include="Contents\Script_BulletAirStrike.h">
       <Filter>Framework\Contents\GameWorld\Script\Item\Weapon\Bullet</Filter>
     </ClInclude>
+    <ClInclude Include="Contents\BTTaskM_LightBipedAttack.h" />
+    <ClInclude Include="ServerLib\ServerMemoryPool.h">
+      <Filter>ServerLib\Memory</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp">
@@ -1001,6 +1005,10 @@
     </ClCompile>
     <ClCompile Include="Contents\Script_BulletAirStrike.cpp">
       <Filter>Framework\Contents\GameWorld\Script\Item\Weapon\Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\BTTaskM_LightBipedAttack.cpp" />
+    <ClCompile Include="ServerLib\ServerMemoryPool.cpp">
+      <Filter>ServerLib\Memory</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

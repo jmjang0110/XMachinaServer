@@ -9,6 +9,8 @@
 
 
 #include "SListMemoryPool.h"
+#include "ServerMemoryPool.h"
+
 
 enum class MemorySize : UINT16
 {
@@ -18,7 +20,9 @@ enum class MemorySize : UINT16
 	BYTES_256  = 256,
 	BYTES_512  = 512, 
 	BYTES_1024 = 1024,
-
+	BYTES_2048 = 2048,
+	BYTES_4096 = 4096,
+	BYTES_8192 = 8192,
 };
 
 enum class MemoryCnt : UINT16
@@ -46,8 +50,10 @@ private:
 	//std::vector<SListMemoryPool*>	mSListMemoryPools = {};
 	std::atomic_flag				mAtomicFlag       = ATOMIC_FLAG_INIT; // Atomic flag for thread safety
 
-	std::unordered_map<std::string, SListMemoryPool*> mSLMemPoolsDict_Name = {};
-	std::unordered_map<MemorySize, SListMemoryPool*>  mSLMemPoolsDict_Size = {};
+	//std::unordered_map<std::string, SListMemoryPool*> mSLMemPoolsDict_Name = {};
+	//std::unordered_map<MemorySize, SListMemoryPool*>  mSLMemPoolsDict_Size = {};
+	std::unordered_map<std::string, ServerMemoryPool*> mSLMemPoolsDict_Name = {};
+	std::unordered_map<MemorySize, ServerMemoryPool*>  mSLMemPoolsDict_Size = {};
 
 public:
 	MemoryManager();
@@ -56,9 +62,9 @@ public:
 public:
 	bool InitMemories();
 
+	void AddMemoryPool(MemorySize memSize, size_t memoryBlockCnt = 0);
+	void AddMemoryPool(std::string memName, size_t memSize, size_t memoryBlockCnt = 0);
 
-	void  AddSListMemoryPool(std::string mpName, size_t MemorySize);
-	void  AddSListMemoryPool(MemorySize memSize);
 
 	void* Allocate(size_t size);
 	void* Allocate(std::string name);

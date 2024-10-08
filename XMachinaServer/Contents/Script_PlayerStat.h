@@ -33,21 +33,21 @@ namespace PlayerInfo
 class Script_PlayerStat : public Script_Stat
 {
 protected:
-	Vec3				mRespawn_Position = {};		// 리스폰 지점
-	int					mScore            = {};
+	Vec3				mRespawn_Position	= {};		// 리스폰 지점
+	int					mScore				= {};
 
 	/// +-------------------------------------------
 	///	 >> Phero
 	/// -------------------------------------------+	
-	float mStartPheroAmount		= {};
-	float mMaxPheroAmount		= {};
+	float				mStartPheroAmount	= {};
+	float				mMaxPheroAmount		= {};
 
-	float mPheroRegenRate		= {};
+	float				mPheroRegenRate		= {};
 
 	/// +-------------------------------------------
 	///	 >> Speed
 	/// -------------------------------------------+	
-	float	mVelocity			= {};
+	float				mVelocity			= {};
 
 public:
 	Script_PlayerStat();
