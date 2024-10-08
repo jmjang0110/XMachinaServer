@@ -211,9 +211,6 @@
     <ClInclude Include="ServerLib\NetworkHeaders.h">
       <Filter>ServerLib\Network\Iocp\Netowork</Filter>
     </ClInclude>
-    <ClInclude Include="ServerLib\SListMemoryPool.h">
-      <Filter>ServerLib\Memory</Filter>
-    </ClInclude>
     <ClInclude Include="ServerLib\ClientNetwork.h">
       <Filter>ServerLib\Network\Iocp\Netowork\Interface</Filter>
     </ClInclude>
@@ -626,6 +623,9 @@
     <ClInclude Include="ServerLib\ServerMemoryPool.h">
       <Filter>ServerLib\Memory</Filter>
     </ClInclude>
+    <ClInclude Include="ServerLib\SListMemoryPool.h">
+      <Filter>ServerLib\Memory</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp">
@@ -651,9 +651,6 @@
     </ClCompile>
     <ClCompile Include="ServerLib\PacketSendBuf.cpp">
       <Filter>ServerLib\Network\Packet</Filter>
-    </ClCompile>
-    <ClCompile Include="ServerLib\SListMemoryPool.cpp">
-      <Filter>ServerLib\Memory</Filter>
     </ClCompile>
     <ClCompile Include="ServerLib\ClientNetwork.cpp">
       <Filter>ServerLib\Network\Iocp\Netowork\Interface</Filter>
@@ -1008,6 +1005,9 @@
     </ClCompile>
     <ClCompile Include="Contents\BTTaskM_LightBipedAttack.cpp" />
     <ClCompile Include="ServerLib\ServerMemoryPool.cpp">
+      <Filter>ServerLib\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerLib\SListMemoryPool.cpp">
       <Filter>ServerLib\Memory</Filter>
     </ClCompile>
   </ItemGroup>

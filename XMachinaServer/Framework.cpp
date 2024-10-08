@@ -63,20 +63,6 @@ bool Framework::Init(HINSTANCE& hInst)
 
 	LOG_MGR->Cout("[SUCCESS] LOG_MGR INIT\n");
 
-	/// +------------------------------------------------------------------------------
-	///						( X - 서버 성능 저하로 인해 폐지함. )
-	/// _______________________________________________________________________________
-	///	 XMachina Window Server UI : Dx12, Imgui - 서버 상태를 Imgui를 이용해 렌더링한다. 
-	/// ------------------------------------------------------------------------------+
-//	if (FALSE == WINDOW_UI->Init(hInst, { 1366,768 })) {
-//		LOG_MGR->SetColor(TextColor::Red);
-//		LOG_MGR->Cout("[FAIL] WINDOW_UI INIT\n");
-//		LOG_MGR->SetColor(TextColor::Default);
-//
-//		return false;
-//	}
-//	LOG_MGR->Cout("[SUCCESS] WINDOW_UI INIT\n");
-
 	/// +----------------------------------------------------------------
 	///	Network Manager : 2.2버젼 Winsock 초기화 및 비동기 함수 Lpfn 초기화
 	/// ----------------------------------------------------------------+
@@ -122,9 +108,9 @@ bool Framework::Init(HINSTANCE& hInst)
 	/// -----------------------------------------+
 	DB_CONTROLLER->Init();
 	DB_CONTROLLER->ConnectToDatabase(L"X_Machina_DB", L"jmjang016", L"1234");
+	
 	RESOURCE_MGR->Init();	// Scene, Models ... ( Game Resources ) Load 
 	ROOM_MGR->Init();		// Room - PlayerController, SectorController, NPCController ( Init )
-
 
 	LOG_MGR->Cout("[SUCCESS] ROOM_MGR INIT\n");
 
@@ -150,15 +136,12 @@ bool Framework::Init(HINSTANCE& hInst)
 	LOG_MGR->Cout("[ING...] ( PLEASE WAIT ) ServerNetwork INIT \n");
 	{
 		mServer = Memory::Make_Shared<ServerNetwork>();
-		mServer->SetMaxSessionCnt(MAX_SESSION_NUM); /* 최대 접속 세션 */
-		mServer->SetSessionConstructorFunc(std::make_shared<GameSession>); /* GameSession으로 관리 */
-
+		mServer->SetMaxSessionCnt(MAX_SESSION_NUM); 
+		mServer->SetSessionConstructorFunc(std::make_shared<GameSession>); 
 		//mServerIP = L"127.0.0.1";
-		mServer->Start(mServerIP, 7777); /* Bind-Listen-AcceptEx.. */
+		mServer->Start(mServerIP, 7777); 
 	}	
 	LOG_MGR->Cout("[SUCCESS] ServerNetwork INIT\n");
-
-
 
 
 	/// +-------------------------------------------------------------------
@@ -219,13 +202,28 @@ void Framework::Launch()
 			UINT32 msTimeOut = 0;
 			while (!stop.load())
 			{
-				int size = 16 + rand() % 100;
-				//void* ptr = MEMORY->Allocate(size);
-				//LOG_MGR->Cout("[", TLS_MGR->Get_TlsInfoData()->id, "] - Allocate : ", ptr, "\n");
-				//TLS_MGR->Get_TlsInfoData()->TimeMgr.Tick(240.f);
-				mServer->WorkerThread(msTimeOut);
-				//MEMORY->Delete(ptr);
-				//LOG_MGR->Cout("[", TLS_MGR->Get_TlsInfoData()->id, "] - Delete : ", ptr, "\n");
+				// 시간 측정 시작
+				auto start = std::chrono::high_resolution_clock::now();
+				
+				LOG_MGR->Cout("[", TLS_MGR->Get_TlsInfoData()->id, "] - Start ", "\n");
+
+				for (int i = 0; i < 100000000; ++i) {
+					size_t size = 16 + rand() % 100;
+					size_t* ptr = reinterpret_cast<size_t*>(MEMORY->Allocate(sizeof(size_t)));
+					//LOG_MGR->Cout("[", TLS_MGR->Get_TlsInfoData()->id, "] - Allocate : ", ptr, "\n");
+					MEMORY->Delete(ptr);
+					//LOG_MGR->Cout("[", TLS_MGR->Get_TlsInfoData()->id, "] - Delete : ", ptr, "\n");
+				}
+
+				// 시간 측정 종료
+				auto end = std::chrono::high_resolution_clock::now();
+				std::chrono::duration<double, std::milli> elapsed = end - start;
+
+				// 경과 시간 출력
+				LOG_MGR->Cout("[", TLS_MGR->Get_TlsInfoData()->id, "] - Time taken : ", elapsed.count(), " ms\n");
+
+				//mServer->WorkerThread(msTimeOut);
+
 			}
 
 			});

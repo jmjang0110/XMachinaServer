@@ -289,7 +289,6 @@
     <ClInclude Include="ServerLib\PacketHeader.h" />
     <ClInclude Include="ServerLib\ServerMemoryPool.h" />
     <ClInclude Include="ServerLib\SessionController.h" />
-    <ClInclude Include="ServerLib\SListMemoryPool.h" />
     <ClInclude Include="ServerLib\NetworkHeaders.h" />
     <ClInclude Include="ServerLib\NetworkInterface.h" />
     <ClInclude Include="ServerLib\NetworkManager.h" />
@@ -300,6 +299,7 @@
     <ClInclude Include="ServerLib\SendBuffersFactory.h" />
     <ClInclude Include="ServerLib\ServerNetwork.h" />
     <ClInclude Include="ServerLib\Session.h" />
+    <ClInclude Include="ServerLib\SListMemoryPool.h" />
     <ClInclude Include="ServerLib\SocketData.h" />
     <ClInclude Include="ServerLib\ThreadManager.h" />
     <ClInclude Include="ServerLib\UtilityMacro.h" />
@@ -435,7 +435,6 @@
     <ClCompile Include="ServerLib\PacketHeader.cpp" />
     <ClCompile Include="ServerLib\ServerMemoryPool.cpp" />
     <ClCompile Include="ServerLib\SessionController.cpp" />
-    <ClCompile Include="ServerLib\SListMemoryPool.cpp" />
     <ClCompile Include="ServerLib\NetworkInterface.cpp" />
     <ClCompile Include="ServerLib\NetworkManager.cpp" />
     <ClCompile Include="ServerLib\NetworkObject.cpp" />
@@ -445,6 +444,7 @@
     <ClCompile Include="ServerLib\SendBuffersFactory.cpp" />
     <ClCompile Include="ServerLib\ServerNetwork.cpp" />
     <ClCompile Include="ServerLib\Session.cpp" />
+    <ClCompile Include="ServerLib\SListMemoryPool.cpp" />
     <ClCompile Include="ServerLib\SocketData.cpp" />
     <ClCompile Include="ServerLib\ThreadManager.cpp" />
     <ClCompile Include="WindowUI\WindowUI.cpp" />
