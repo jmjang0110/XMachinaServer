@@ -119,8 +119,6 @@ void ThreadLocalStorageManager::Init_TlsSendBufFactory(std::string factoryID)
 	/* Fill Data Info */
 	std::lock_guard<std::mutex> lock(mMutexArr[TlsIndexIdx]);
 	TlsData->strFactoryID				= factoryID;
-	TlsData->SendBufFactory				= std::make_shared<SendBuffersFactory>();
-	TlsData->SendBufFactory->InitPacketMemoryPools();
 
 	/* Set Value Tls Data */
 	::TlsSetValue(mTlsIndex[TlsIndexIdx], TlsData);

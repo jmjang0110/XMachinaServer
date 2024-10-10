@@ -10,16 +10,16 @@ class PacketRecvBuf
 public:
 	enum class Info {
 		bufferCount = 10,
-		Size = 0x50'000 // 64KB
+		Size = 0x50'000 
 	};
 
 private:
 	std::vector<BYTE> mBuffer;
-	UINT32 mCapacity   = 0;
-	UINT32 mBufferSize = 0;
-	UINT32 mRead_Idx   = 0;
-	UINT32 mWrite_Idx  = 0;
-	UINT32 mDataSize   = 0;  // 현재 데이터 크기
+	UINT32 mCapacity      = 0;
+	UINT32 mBufferSize    = 0;
+	UINT32 mReadPointer   = 0;
+	UINT32 mWritePointer  = 0;
+	UINT32 mDataSize      = 0;  // 현재 데이터 크기
 
 	void* mReturnBlockPtr = nullptr;
 
@@ -33,8 +33,8 @@ public:
 	bool OnRead(UINT32 numOfBytes); 
 	bool OnWrite(UINT32 numOfBytes);
 
-	BYTE*   GetReadPos()    { return &mBuffer[mRead_Idx]; }
-	BYTE*   GetWritePos()   { return &mBuffer[mWrite_Idx]; }
+	BYTE*   GetReadPos()    { return &mBuffer[mReadPointer]; }
+	BYTE*   GetWritePos()   { return &mBuffer[mWritePointer]; }
 	UINT32	GetDataSize()   { return mDataSize; }
 	UINT32	GetFreeSize();
 

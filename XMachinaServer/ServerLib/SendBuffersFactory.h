@@ -29,14 +29,15 @@ namespace SendPktInfo {
 	};
 
 	/* Variable - 크기에 맞는 바이트 메모리 풀에 가변길이 데이터를 Write */
-	enum class Var : UINT8 {
-		BYTES_32,
-		BYTES_64,
-		BYTES_128,
-		BYTES_256,
-		BYTES_512,
-		BYTES_1024,
-		BYTES_2048,
+	enum class Var : UINT16 {
+		BYTES_32 = 32,
+		BYTES_64 = 64,
+		BYTES_128 = 128,
+		BYTES_256 = 256,
+		BYTES_512 = 512,
+		BYTES_1024 = 1024,
+		BYTES_2048 = 2048,
+		BYTES_4096 = 4096,
 	};
 	/* Fixed */
 	enum class Fix : UINT8 {
@@ -54,9 +55,9 @@ namespace SendPktInfo {
 class SendBuffersFactory : public std::enable_shared_from_this<SendBuffersFactory>
 {
 private:
-	SPtr_SListMemoryPool									   mMemPools_SptrSendPkt = {}; // SendPkt 메모리 풀 
-	std::unordered_map<SendPktInfo::Var, SPtr_SListMemoryPool> mMemPools_VarPkt      = {}; // 가변길이 패킷 전용 메모리 풀 
-	std::unordered_map<SendPktInfo::Fix, SPtr_SListMemoryPool> mMemPools_FixPkt      = {}; // 고정길이 패킷 전용 메모리 풀 
+	SPtr<ServerMemoryPool>									   mMemPools_SptrSendPkt = {}; // SendPkt 메모리 풀 
+	std::unordered_map<SendPktInfo::Var, SPtr<ServerMemoryPool>> mMemPools_VarPkt      = {}; // 가변길이 패킷 전용 메모리 풀 
+	std::unordered_map<SendPktInfo::Fix, SPtr<ServerMemoryPool>> mMemPools_FixPkt      = {}; // 고정길이 패킷 전용 메모리 풀 
 
 	std::atomic_int mPushCount = 0;;
 	std::atomic_int mPullCount = 0;;
@@ -81,6 +82,8 @@ public:
 
 	SPtr_PacketSendBuf CreateVarSendPacketBuf(const uint8_t* bufPtr, const uint16_t SerializedDataSize, uint16_t ProtocolId, size_t memorySize);
 	SPtr_PacketSendBuf CreateFixSendPacketBuf(SendPktInfo::Fix pktDataType);
+
+	void AddMemoryPool(SendPktInfo::Var memoryBlockSize, int cnt);
 
 public:
 	/// +---------------------

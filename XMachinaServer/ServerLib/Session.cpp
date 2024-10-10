@@ -207,8 +207,6 @@ void Session::ProcessIO(OverlappedIO::Type IoType, INT32 BytesTransferred)
 		mOverlapped.Connect.DecRef_NetObj(); // Shared_ptr -> release
 		mIsConnected.store(true);
 
-		//std::wstring SessionName = std::to_wstring(static_cast<long>(GetSocketData().GetSocket()));
-		//GetOwnerNI()->AddSession(SessionName, std::static_pointer_cast<Session>(shared_from_this()));
 		UINT32 sessionID = static_cast<UINT32>(GetSocketData().GetSocket());
 		GetOwnerNI()->AddSession(sessionID, std::static_pointer_cast<Session>(shared_from_this()));
 
@@ -229,7 +227,6 @@ void Session::ProcessIO(OverlappedIO::Type IoType, INT32 BytesTransferred)
 
 		OnDisconnected();
 		GetOwnerNI()->DeleteSession(NetworkObject::mID); /* ID : protected */
-		//GetOwnerNI()->ReleaseSession(std::static_pointer_cast<Session>(shared_from_this()));
 
 	}
 	break;
@@ -250,14 +247,12 @@ void Session::ProcessIO(OverlappedIO::Type IoType, INT32 BytesTransferred)
 
 		OnSend(BytesTransferred);
 
-		/* TODO : Lock °ÉÀÚ!*/
 		/* ´Ù º¸³¿ */
 		{
 			mSRWLock_AccessToSendPktQ.LockWrite();
 
 			if (mPacketBuffer.SendPkt_Queue.empty() == true) {
 				mPacketBuffer.IsSendRegistered.store(false);
-
 			}
 
 			/* ´Ù ¾Èº¸³¿ */

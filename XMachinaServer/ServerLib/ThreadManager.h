@@ -57,7 +57,6 @@ namespace TLS {
 
 	struct TlsSendPacketFactory {
 		std::string			strFactoryID;
-		SPtr_SendBufFactory SendBufFactory;
 	};
 
 }

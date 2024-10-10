@@ -96,7 +96,6 @@ UINT32 GameSession::OnRecv(BYTE* buffer, UINT32 len)
 		// 처리된 데이터 크기만큼 증가 
 		ProcessDataSize += packet->PacketSize;
 	}
-
 	// 남은 데이터 크기 갱신 
 	mRemainDataSize = TotalSize - ProcessDataSize;
 

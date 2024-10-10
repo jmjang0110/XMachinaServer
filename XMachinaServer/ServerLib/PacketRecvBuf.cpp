@@ -42,7 +42,7 @@ void PacketRecvBuf::Clean()
 {
 	if (mDataSize == 0) {
 		// 읽기 및 쓰기 인덱스를 초기화
-		mRead_Idx = mWrite_Idx = 0;
+		mReadPointer = mWritePointer = 0;
 	}
 }
 
@@ -51,7 +51,7 @@ bool PacketRecvBuf::OnRead(UINT32 numOfBytes)
 	if (numOfBytes > mDataSize)
 		return false;
 
-	IncrementIndex(mRead_Idx, numOfBytes);
+	IncrementIndex(mReadPointer, numOfBytes);
 	mDataSize -= numOfBytes;
 	return true;
 }
@@ -61,7 +61,7 @@ bool PacketRecvBuf::OnWrite(UINT32 numOfBytes)
 	if (numOfBytes > GetFreeSize())
 		return false;
 
-	IncrementIndex(mWrite_Idx, numOfBytes);
+	IncrementIndex(mWritePointer, numOfBytes);
 	mDataSize += numOfBytes;
 	return true;
 }
@@ -73,10 +73,10 @@ void PacketRecvBuf::IncrementIndex(UINT32& index, UINT32 numOfBytes)
 
 UINT32 PacketRecvBuf::GetFreeSize()
 {
-	if (mWrite_Idx >= mRead_Idx) {
-		return mCapacity - mWrite_Idx + mRead_Idx - 1; // -1 to avoid overwrite
+	if (mWritePointer >= mReadPointer) {
+		return mCapacity - mWritePointer + mReadPointer - 1; // -1 to avoid overwrite
 	}
 	else {
-		return mRead_Idx - mWrite_Idx - 1;
+		return mReadPointer - mWritePointer - 1;
 	}
 }

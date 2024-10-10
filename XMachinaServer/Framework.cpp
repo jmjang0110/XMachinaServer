@@ -198,34 +198,10 @@ void Framework::Launch()
 	for (INT32 i = 1; i <= CoreNum ; ++i) { 
 	
 		THREAD_MGR->RunThread("Worker Threads : 4 (CoreNum - 1(Timer))" + std::to_string(i), [&]() {
-
-			UINT32 msTimeOut = 0;
-			while (!stop.load())
-			{
-				// 시간 측정 시작
-				auto start = std::chrono::high_resolution_clock::now();
-				
-				LOG_MGR->Cout("[", TLS_MGR->Get_TlsInfoData()->id, "] - Start ", "\n");
-
-				for (int i = 0; i < 100000000; ++i) {
-					size_t size = 16 + rand() % 100;
-					size_t* ptr = reinterpret_cast<size_t*>(MEMORY->Allocate(sizeof(size_t)));
-					//LOG_MGR->Cout("[", TLS_MGR->Get_TlsInfoData()->id, "] - Allocate : ", ptr, "\n");
-					MEMORY->Delete(ptr);
-					//LOG_MGR->Cout("[", TLS_MGR->Get_TlsInfoData()->id, "] - Delete : ", ptr, "\n");
+				UINT32 msTimeOut = 0;
+				while (!stop.load()) {
+					mServer->WorkerThread(msTimeOut);
 				}
-
-				// 시간 측정 종료
-				auto end = std::chrono::high_resolution_clock::now();
-				std::chrono::duration<double, std::milli> elapsed = end - start;
-
-				// 경과 시간 출력
-				LOG_MGR->Cout("[", TLS_MGR->Get_TlsInfoData()->id, "] - Time taken : ", elapsed.count(), " ms\n");
-
-				//mServer->WorkerThread(msTimeOut);
-
-			}
-
 			});
 	}
 	LOG_MGR->Cout("Worker Threads (4) Successfully start!\n");

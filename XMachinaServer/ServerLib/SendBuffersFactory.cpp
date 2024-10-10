@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "SendBuffersFactory.h"
-#include "SListMemoryPool.h"
+#include "ServerMemoryPool.h"
 #include "MemoryManager.h"
 #include "../Framework.h"
 #include "Contents/GameObject.h"
@@ -37,124 +37,26 @@ SendBuffersFactory::~SendBuffersFactory()
 
 void SendBuffersFactory::InitPacketMemoryPools()
 {
-	{
-		SPtr_SListMemoryPool Pool = MEMORY->Make_Shared<SListMemoryPool>(sizeof(PacketSendBuf));
-		mMemPools_SptrSendPkt = Pool;
-		for (size_t i = 0; i < SendPktInfo::MemoryNum; ++i) {
-			mMemPools_SptrSendPkt->AddMemory();
-		}
-	}
+	mMemPools_SptrSendPkt = MEMORY->Make_Shared<ServerMemoryPool>();
+	mMemPools_SptrSendPkt->Init(sizeof(PacketSendBuf), 100);
 
 /// +-------------------------
 ///	  Variable Length Buffer
 /// -------------------------+
-
-	/* BYTES_32 */
-	{
-		const size_t MemoryBlockSize = 32;
-		SPtr_SListMemoryPool Pool = MEMORY->Make_Shared<SListMemoryPool>(MemoryBlockSize);
-		//SPtr_SListMemoryPool Pool = new SListMemoryPool(MemoryBlockSize);
-		mMemPools_VarPkt[SendPktInfo::Var::BYTES_32] = Pool;
-		for (UINT16 i = 1; i < SendPktInfo::MemoryNum; ++i) {
-			mMemPools_VarPkt[SendPktInfo::Var::BYTES_32]->AddMemory();
-		}
-	}
-	/* BYTES_64 */
-	{
-		const size_t MemoryBlockSize = 64;
-		SPtr_SListMemoryPool Pool = MEMORY->Make_Shared<SListMemoryPool>(MemoryBlockSize);
-		mMemPools_VarPkt[SendPktInfo::Var::BYTES_64] = Pool;
-		for (UINT16 i = 1; i < SendPktInfo::MemoryNum; ++i) {
-			mMemPools_VarPkt[SendPktInfo::Var::BYTES_64]->AddMemory();
-		}
-	}
-
-	/* BYTES_128 */
-	{
-		const size_t MemoryBlockSize = 128;
-		SPtr_SListMemoryPool Pool = MEMORY->Make_Shared<SListMemoryPool>(MemoryBlockSize);
-		mMemPools_VarPkt[SendPktInfo::Var::BYTES_128] = Pool;
-		for (UINT16 i = 1; i < SendPktInfo::MemoryNum; ++i) {
-			mMemPools_VarPkt[SendPktInfo::Var::BYTES_128]->AddMemory();
-		}
-	}
-
-	/* BYTES_256 */
-	{
-		const size_t MemoryBlockSize = 256;
-		SPtr_SListMemoryPool Pool = MEMORY->Make_Shared<SListMemoryPool>(MemoryBlockSize);
-		mMemPools_VarPkt[SendPktInfo::Var::BYTES_256] = Pool;
-		for (UINT16 i = 1; i < SendPktInfo::MemoryNum; ++i) {
-			mMemPools_VarPkt[SendPktInfo::Var::BYTES_256]->AddMemory();
-		}
-	}
-
-	/* BYTES_512 */
-	{
-		const size_t MemoryBlockSize = 512;
-		SPtr_SListMemoryPool Pool = MEMORY->Make_Shared<SListMemoryPool>(MemoryBlockSize);
-		mMemPools_VarPkt[SendPktInfo::Var::BYTES_512] = Pool;
-		for (UINT16 i = 1; i < SendPktInfo::MemoryNum; ++i) {
-			mMemPools_VarPkt[SendPktInfo::Var::BYTES_512]->AddMemory();
-		}
-	}
-
-	/* BYTES_1024 */
-	{
-		const size_t MemoryBlockSize = 1024;
-		SPtr_SListMemoryPool Pool = MEMORY->Make_Shared<SListMemoryPool>(MemoryBlockSize);
-		mMemPools_VarPkt[SendPktInfo::Var::BYTES_1024] = Pool;
-		for (UINT16 i = 1; i < SendPktInfo::MemoryNum; ++i) {
-			mMemPools_VarPkt[SendPktInfo::Var::BYTES_1024]->AddMemory();
-		}
-	}
-
-	/* BYTES_2048 */
-	{
-		const size_t MemoryBlockSize = 2048;
-		SPtr_SListMemoryPool Pool = MEMORY->Make_Shared<SListMemoryPool>(MemoryBlockSize);
-		mMemPools_VarPkt[SendPktInfo::Var::BYTES_2048] = Pool;
-		for (UINT16 i = 1; i < SendPktInfo::MemoryNum; ++i) {
-			mMemPools_VarPkt[SendPktInfo::Var::BYTES_2048]->AddMemory();
-		}
-	}
-
-	/* BYTES_4096 */
-	//{
-	//	const size_t MemoryBlockSize = 4096;
-	//	SPtr_SListMemoryPool Pool = MEMORY->Make_Shared<SListMemoryPool>(MemoryBlockSize);
-	//	mMemPools_VarPkt[SendPktInfo::Var::BYTES_4096] = Pool;
-	//	for (UINT16 i = 1; i < SendPktInfo::MemoryNum; ++i) {
-	//		mMemPools_VarPkt[SendPktInfo::Var::BYTES_4096]->AddMemory();
-	//	}
-	//}
-
-
-
-	/// +-------------------------
-	///	  Variable Length Buffer
-	/// -------------------------+
-		/* LogIn */
-		/*{
-			const size_t MemoryBlockSize = sizeof(LogIn);
-			const size_t NumBlock = 1;
-			SListMemoryPool* Pool = new SListMemoryPool(MemoryBlockSize, NumBlock);
-			mMemPools_VarPkt[SendPktInfo::Fix::LogIn] = Pool;
-			for (UINT16 i = 1; i < SendPktInfo::MemoryNum; ++i) {
-				SListMemoryPool* Pool = new SListMemoryPool(MemoryBlockSize, NumBlock);
-				mMemPools_VarPkt[SendPktInfo::Fix::LogIn]->AddMemory();
-			}
-		}*/
-
+	AddMemoryPool(SendPktInfo::Var::BYTES_32, 10'0);
+	AddMemoryPool(SendPktInfo::Var::BYTES_64, 10'0);
+	AddMemoryPool(SendPktInfo::Var::BYTES_128, 10'0);
+	AddMemoryPool(SendPktInfo::Var::BYTES_256, 1000'000);
+	AddMemoryPool(SendPktInfo::Var::BYTES_512, 50000);
+	AddMemoryPool(SendPktInfo::Var::BYTES_1024, 50000);
+	AddMemoryPool(SendPktInfo::Var::BYTES_2048, 50000);
+	AddMemoryPool(SendPktInfo::Var::BYTES_4096, 5000);
 }
 
 void* SendBuffersFactory::Pull_SendPkt()
 {
 	mPullCount.fetch_add(1);
 	void* ptr = mMemPools_SptrSendPkt->Pull();
-	//LOG_MGR->Cout("SENDPKT PULL :", ptr, "\n");
-//	LOG_MGR->Cout("PULL COUNT : ", mPullCount.load(), "\n");
-
 	return ptr;
 
 }
@@ -183,6 +85,10 @@ void* SendBuffersFactory::Pull_VarPkt(size_t memorySize)
 	else if (1024 < memorySize && memorySize <= 2048) {
 		return mMemPools_VarPkt[SendPktInfo::Var::BYTES_2048]->Pull();
 	}
+	else if (2048 < memorySize && memorySize <= 4096) {
+		return mMemPools_VarPkt[SendPktInfo::Var::BYTES_4096]->Pull();
+	}
+
 	return nullptr;
 }
 
@@ -217,6 +123,9 @@ void SendBuffersFactory::Push_VarPkt(size_t memorySize, void* ptr)
 	else if (1024 < memorySize && memorySize <= 2048) {
 		mMemPools_VarPkt[SendPktInfo::Var::BYTES_2048]->Push(ptr);
 	}
+	else if (2048 < memorySize && memorySize <= 4096) {
+		mMemPools_VarPkt[SendPktInfo::Var::BYTES_4096]->Push(ptr);
+	}
 }
 
 void SendBuffersFactory::Push_FixPkt(SendPktInfo::Fix type, void* ptr)
@@ -227,9 +136,6 @@ void SendBuffersFactory::Push_FixPkt(SendPktInfo::Fix type, void* ptr)
 void SendBuffersFactory::Push_SendPkt(void* ptr)
 {
 	mPushCount.fetch_add(1);
-	//LOG_MGR->Cout("SENDPKT PUSH : ", ptr, "\n");
-	//LOG_MGR->Cout("REMAIN COUNT : ", mPullCount.load() - mPushCount.load(), "\n");
-
 	mMemPools_SptrSendPkt->Push(ptr);
 }
 
@@ -260,7 +166,9 @@ SPtr_PacketSendBuf SendBuffersFactory::CreateVarSendPacketBuf(const uint8_t* buf
 	else if (memorySize <= 2048) {
 		offsetMemSize = 2048 - memorySize;
 	}
-
+	else if (memorySize <= 4096) {
+		offsetMemSize = 4096 - memorySize;
+	}
 	if (offsetMemSize < 0)
 		return nullptr;
 
@@ -287,6 +195,15 @@ SPtr_PacketSendBuf SendBuffersFactory::CreateFixSendPacketBuf(SendPktInfo::Fix p
 	SPtr_PacketSendBuf sendBuf{};
 
 	return sendBuf;
+}
+
+void SendBuffersFactory::AddMemoryPool(SendPktInfo::Var memoryBlockSize, int cnt)
+{
+	if (mMemPools_VarPkt.find(memoryBlockSize) != mMemPools_VarPkt.end())
+		return;
+
+	mMemPools_VarPkt[memoryBlockSize] = MEMORY->Make_Shared<ServerMemoryPool>();
+	mMemPools_VarPkt[memoryBlockSize]->Init(static_cast<size_t>(memoryBlockSize), cnt);
 }
 
 SPtr_PacketSendBuf SendBuffersFactory::CreatePacket(const uint8_t* bufPtr, const uint16_t SerializedDataSize, uint16_t ProtocolId)

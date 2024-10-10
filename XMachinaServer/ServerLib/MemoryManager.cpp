@@ -31,8 +31,8 @@ MemoryManager::~MemoryManager()
 bool MemoryManager::InitMemories()
 {
     ///* Memory를 미리 할당해놓자! */
-    AddMemoryPool(MemorySize::BYTES_32, 100000);
-    AddMemoryPool(MemorySize::BYTES_64, 1000000);
+    AddMemoryPool(MemorySize::BYTES_32, 100000); 
+    AddMemoryPool(MemorySize::BYTES_64, 100000);
     AddMemoryPool(MemorySize::BYTES_128, 100000);
     AddMemoryPool(MemorySize::BYTES_256, 100000);
     AddMemoryPool(MemorySize::BYTES_512, 100000);

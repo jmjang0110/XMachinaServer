@@ -5,13 +5,12 @@
 ///             Memory Pool
 /// ______________________________________
 /// [ | | | | | | | | | | | | | | | | | | ] ( Memory Count )
-/// [ ] => 32 memory Size 
+/// [ ] => 32 , 64, 128, 256, 512 ,,, Memory Size 
 ///  ก่ Index 0
 /// 
 /// Available Index
 /// [0][1][2][3][4][5][6]...[MemoryCount - 1]
 /// 
-
 
 class ServerMemoryPool
 {

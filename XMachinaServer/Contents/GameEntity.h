@@ -15,10 +15,6 @@
 ///					GameEntity
 ///						↓
 ///			 		GameObject 
-///				↓			    ↓ 
-///			GameObject		GameObject 
-///				↓
-///		Monster_Ursacetus
 /// -------------------------------+
 
 // Overlapped 에 넣을 때 Owner로 저장하기 위해서 .. ( Socket 관련 네트워크 기능은 사용하지 않음 )
