@@ -156,7 +156,7 @@ void Script_SpiderMine::Move(float deltatime)
 	// Collide Check With Buildings <---> Spider Mine Bullet 
 	if (!mIsPlanted) {
 		auto room = mOwner->GetOwnerRoom();
-		if (room->CollideCheckWithNPC(mOwner, ObjectTag::Building, 15.f)) {
+		if (room->CollideCheckWithNPC(mOwner, ObjectTag::Building, 15)) {
 			LOG_MGR->Cout("spider mine Collide with buildings!! ********************* \n");
 			if (mSpeed > 0) {
 				mSpeed *= -1;
@@ -175,7 +175,7 @@ void Script_SpiderMine::Move(float deltatime)
 
 void Script_SpiderMine::Plant() 
 {
-	if (mOwner->GetOwnerRoom()->CollideCheckWithNPC(mOwner, ObjectTag::Enemy, 15.f))
+	if (mOwner->GetOwnerRoom()->CollideCheckWithNPC(mOwner, ObjectTag::Enemy, 15))
 		Explode();
 
 	mIsPlanted = true;

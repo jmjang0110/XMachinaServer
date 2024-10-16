@@ -64,7 +64,7 @@ void Script_BulletDeus_Phase_1::Update()
 	if (IsCollide = mOwner->GetOwnerRoom()->CollideCheckWithPlayer(mOwner)) {
 		//LOG_MGR->Cout("[", mOwner->GetID(), "] : ", "Collide With Player!\n");
 	}
-	else if (IsCollide = mOwner->GetOwnerRoom()->CollideCheckWithNPC(mOwner, ObjectTag::Building, 15.f)) {
+	else if (IsCollide = mOwner->GetOwnerRoom()->CollideCheckWithNPC(mOwner, ObjectTag::Building, 15)) {
 		//LOG_MGR->Cout("[", mOwner->GetID(), "] : ", "Collide With Building!\n");
 	}
 	else if (IsCollide = bullet_pos.y <= 0.f) {

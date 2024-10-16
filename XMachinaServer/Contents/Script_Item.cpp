@@ -45,7 +45,7 @@ bool Script_Item::DoInteract(SPtr<GameObject> player)
     const Vec3 playerPos = player->GetTransform()->GetSnapShot().GetPosition();
     const Vec3 ItemPos   = mOwner->GetTransform()->GetPosition();
 
-    int compareDist = 3.f;
+    float compareDist = 3.f;
     if ((playerPos - ItemPos).Length() <= compareDist) {
 
         mOwnerPlayer = player;
