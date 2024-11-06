@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "PacketSendBuf.h"
-#include "SListMemoryPool.h"
 #include "SendBuffersFactory.h"
 #include "../ServerLib/ThreadManager.h"
 #include "../Framework.h"

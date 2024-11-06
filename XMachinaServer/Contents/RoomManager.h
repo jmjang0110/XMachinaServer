@@ -17,9 +17,9 @@ class RoomManager
 
 private:
 	std::vector<SPtr<GameRoom>>  mRooms         = {};
-	UINT32						mRoomMaxCnt    = {};
+	UINT32						 mRoomMaxCnt    = {};
 
-	Lock::SRWLock				mSRWLock       = {};
+	Lock::SRWLock				 mSRWLock       = {};
 
 public:
 	RoomManager();

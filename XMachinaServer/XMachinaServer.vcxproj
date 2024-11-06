@@ -299,7 +299,6 @@
     <ClInclude Include="ServerLib\SendBuffersFactory.h" />
     <ClInclude Include="ServerLib\ServerNetwork.h" />
     <ClInclude Include="ServerLib\Session.h" />
-    <ClInclude Include="ServerLib\SListMemoryPool.h" />
     <ClInclude Include="ServerLib\SocketData.h" />
     <ClInclude Include="ServerLib\ThreadManager.h" />
     <ClInclude Include="ServerLib\UtilityMacro.h" />
@@ -444,7 +443,6 @@
     <ClCompile Include="ServerLib\SendBuffersFactory.cpp" />
     <ClCompile Include="ServerLib\ServerNetwork.cpp" />
     <ClCompile Include="ServerLib\Session.cpp" />
-    <ClCompile Include="ServerLib\SListMemoryPool.cpp" />
     <ClCompile Include="ServerLib\SocketData.cpp" />
     <ClCompile Include="ServerLib\ThreadManager.cpp" />
     <ClCompile Include="WindowUI\WindowUI.cpp" />

@@ -169,7 +169,7 @@ void Session::RegisterIO(OverlappedIO::Type IoType)
 
 		/* ::WSARecv */
 		WSABUF wsaBuf{};
-		wsaBuf.buf = reinterpret_cast<char*>(mPacketBuffer.RecvPkt->GetWritePos());
+		wsaBuf.buf = reinterpret_cast<char*>(mPacketBuffer.RecvPkt->GetWritePointer());
 		wsaBuf.len = mPacketBuffer.RecvPkt->GetFreeSize();
 
 		DWORD numOfBytes = 0;
@@ -286,7 +286,7 @@ void Session::ProcessIO(OverlappedIO::Type IoType, INT32 BytesTransferred)
 
 		/* On Recv */
 		UINT32 DataSize = mPacketBuffer.RecvPkt->GetDataSize();
-		UINT32 ProcessLen = OnRecv(mPacketBuffer.RecvPkt->GetReadPos(), DataSize);
+		UINT32 ProcessLen = OnRecv(mPacketBuffer.RecvPkt->GetReadPointer(), DataSize);
 		if (FALSE == (ProcessLen < 0 || DataSize < ProcessLen || mPacketBuffer.RecvPkt->OnRead(ProcessLen))) {
 			Disconnect(L"OnRead Overflow - Disconnect!");
 			break;

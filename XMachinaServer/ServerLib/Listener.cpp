@@ -38,7 +38,7 @@ void Listener::Register_OverlappedIO_Accept(Overlapped_Accept* overlapped)
 
 	SOCKET ListenSock  = GetSocketData().GetSocket();
 	SOCKET ClientSock  = session->GetSocketData().GetSocket();
-	BYTE*  RecvBufPtr  = session->GetRecvPktBuf().GetWritePos();
+	BYTE*  RecvBufPtr  = session->GetRecvPktBuf().GetWritePointer();
 	bool result        = NETWORK_MGR->AcceptEx()(ListenSock
 											  , ClientSock 
 											  , RecvBufPtr 

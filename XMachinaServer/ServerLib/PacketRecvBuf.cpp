@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "PacketRecvBuf.h"
 #include "MemoryManager.h"
-#include "SListMemoryPool.h"
 #include "PacketHeader.h"
 
 PacketRecvBuf::PacketRecvBuf(UINT32 bufSize)
@@ -46,23 +45,23 @@ void PacketRecvBuf::Clean()
 	}
 }
 
-bool PacketRecvBuf::OnRead(UINT32 numOfBytes)
+bool PacketRecvBuf::OnRead(UINT32 bytes)
 {
-	if (numOfBytes > mDataSize)
+	if (bytes > mDataSize)
 		return false;
 
-	IncrementIndex(mReadPointer, numOfBytes);
-	mDataSize -= numOfBytes;
+	IncrementIndex(mReadPointer, bytes);
+	mDataSize -= bytes;
 	return true;
 }
 
-bool PacketRecvBuf::OnWrite(UINT32 numOfBytes)
+bool PacketRecvBuf::OnWrite(UINT32 bytes)
 {
-	if (numOfBytes > GetFreeSize())
+	if (bytes > GetFreeSize())
 		return false;
 
-	IncrementIndex(mWritePointer, numOfBytes);
-	mDataSize += numOfBytes;
+	IncrementIndex(mWritePointer, bytes);
+	mDataSize += bytes;
 	return true;
 }
 

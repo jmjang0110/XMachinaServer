@@ -30,12 +30,12 @@ public:
 
 public:
 	void Clean();
-	bool OnRead(UINT32 numOfBytes); 
-	bool OnWrite(UINT32 numOfBytes);
+	bool OnRead(UINT32 bytes); 
+	bool OnWrite(UINT32 bytes);
 
-	BYTE*   GetReadPos()    { return &mBuffer[mReadPointer]; }
-	BYTE*   GetWritePos()   { return &mBuffer[mWritePointer]; }
-	UINT32	GetDataSize()   { return mDataSize; }
+	BYTE*   GetReadPointer()    { return &mBuffer[mReadPointer]; }
+	BYTE*   GetWritePointer()   { return &mBuffer[mWritePointer]; }
+	UINT32	GetDataSize()		{ return mDataSize; }
 	UINT32	GetFreeSize();
 
 
