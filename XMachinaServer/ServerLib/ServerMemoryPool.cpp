@@ -28,16 +28,19 @@ void* ServerMemoryPool::Pull()
     }
 
     // 사용 가능한 블록이 없으면 nullptr 반환
-    return nullptr;
+    return ::operator new(mMemoryBlockSize);
 }
 
-void ServerMemoryPool::Push(void* ptr)
+bool ServerMemoryPool::Push(void* ptr)
 {
     // ptr을 char*로 변환하여 인덱스를 계산
     size_t index = static_cast<char*>(ptr) - static_cast<char*>(mBasePtr);
     index /= mMemoryBlockSize; // 메모리 블록 크기로 나누어 인덱스 추출
 
-    assert(index < mMemoryBlockCnt); // 인덱스가 범위 내에 있는지 확인
+    if (index < mMemoryBlockCnt || index >= mMemoryBlockCnt)
+        return false;
+
+    assert(index < mMemoryBlockCnt || index >= mMemoryBlockCnt); // 인덱스가 범위 내에 있는지 확인
 
     // 반환된 인덱스를 다시 큐에 넣음
     mAvailableIndexes.push(index);

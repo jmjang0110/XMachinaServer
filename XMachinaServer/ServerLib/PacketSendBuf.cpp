@@ -23,7 +23,8 @@ PacketSendBuf::~PacketSendBuf()
 	//LOG_MGR->Cout("MEMO : ", mPtrFromMemPool, "\n");
 
 	void* MemPtr = static_cast<BYTE*>(mBuffer) - ((mMemoryPoolSize - mBufferTotalSize));
-	FRAMEWORK->GetSendFactory()->Push_VarPkt(mMemoryPoolSize, MemPtr); /* 메모리 풀에 반납! */
+	if (!FRAMEWORK->GetSendFactory()->Push_VarPkt(mMemoryPoolSize, MemPtr)) /* 메모리 풀에 반납! */
+		delete MemPtr;
 	FRAMEWORK->GetSendFactory()->Push_SendPkt(reinterpret_cast<void*>(this));
 	//FRAMEWORK->GetSendFactory()->Push_SendPkt(mPtrFromMemPool);
 

@@ -13,7 +13,7 @@ enum class RoomState
 };
 namespace RoomInfo
 {
-	constexpr int MaxSessionSize = 10; /* 하나의 Room 에 10 명의 Session 을 받도록 한다. */
+	constexpr int MaxSessionSize = 500; /* 하나의 Room 에 10 명의 Session 을 받도록 한다. */
 };
 class GameRoom : public GameEntity
 {

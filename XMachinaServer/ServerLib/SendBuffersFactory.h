@@ -75,9 +75,9 @@ public:
 	void* Pull_FixPkt(SendPktInfo::Fix type);
 
 	/*  메모리 풀에 메모리를 반납한다. */
-	void  Push_VarPkt(size_t memorySize, void* ptr);
-	void  Push_FixPkt(SendPktInfo::Fix type, void* ptr); 
-	void  Push_SendPkt(void* ptr);
+	bool  Push_VarPkt(size_t memorySize, void* ptr);
+	bool  Push_FixPkt(SendPktInfo::Fix type, void* ptr);
+	bool  Push_SendPkt(void* ptr);
 
 
 	SPtr_PacketSendBuf CreateVarSendPacketBuf(const uint8_t* bufPtr, const uint16_t SerializedDataSize, uint16_t ProtocolId, size_t memorySize);

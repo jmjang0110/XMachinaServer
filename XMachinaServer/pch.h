@@ -1,6 +1,7 @@
 #pragma once
 
-#define SET_DATA_FROM_DATABASE
+//#define SET_DATA_FROM_DATABASE
+#define SERVER_STRESS_TEST
 
 #include "ServerLib/NetworkHeaders.h"
 #include "Contents/Util/Common.h"
@@ -66,7 +67,7 @@ using SPtr = std::shared_ptr<T>;
 
 
 
-constexpr UINT32 MAX_SESSION_NUM = 50;
+constexpr UINT32 MAX_SESSION_NUM = 5000;
 
 /* ÁÂÇ¥ */
 struct Coordinate

@@ -38,15 +38,15 @@ SendBuffersFactory::~SendBuffersFactory()
 void SendBuffersFactory::InitPacketMemoryPools()
 {
 	mMemPools_SptrSendPkt = MEMORY->Make_Shared<ServerMemoryPool>();
-	mMemPools_SptrSendPkt->Init(sizeof(PacketSendBuf), 100);
+	mMemPools_SptrSendPkt->Init(sizeof(PacketSendBuf), 10000);
 
 /// +-------------------------
 ///	  Variable Length Buffer
 /// -------------------------+
-	AddMemoryPool(SendPktInfo::Var::BYTES_32, 10'0);
-	AddMemoryPool(SendPktInfo::Var::BYTES_64, 10'0);
-	AddMemoryPool(SendPktInfo::Var::BYTES_128, 10'0);
-	AddMemoryPool(SendPktInfo::Var::BYTES_256, 1000'000);
+	AddMemoryPool(SendPktInfo::Var::BYTES_32, 10000);
+	AddMemoryPool(SendPktInfo::Var::BYTES_64, 10000);
+	AddMemoryPool(SendPktInfo::Var::BYTES_128, 10000);
+	AddMemoryPool(SendPktInfo::Var::BYTES_256, 10000);
 	AddMemoryPool(SendPktInfo::Var::BYTES_512, 50000);
 	AddMemoryPool(SendPktInfo::Var::BYTES_1024, 50000);
 	AddMemoryPool(SendPktInfo::Var::BYTES_2048, 50000);
@@ -57,8 +57,8 @@ void* SendBuffersFactory::Pull_SendPkt()
 {
 	mPullCount.fetch_add(1);
 	void* ptr = mMemPools_SptrSendPkt->Pull();
-	return ptr;
 
+	return ptr;
 }
 
 /* PULL */
@@ -88,6 +88,9 @@ void* SendBuffersFactory::Pull_VarPkt(size_t memorySize)
 	else if (2048 < memorySize && memorySize <= 4096) {
 		return mMemPools_VarPkt[SendPktInfo::Var::BYTES_4096]->Pull();
 	}
+	else {
+		return ::operator new(memorySize);
+	}
 
 	return nullptr;
 }
@@ -99,7 +102,7 @@ void* SendBuffersFactory::Pull_FixPkt(SendPktInfo::Fix type)
 
 
 /* PUSH */
-void SendBuffersFactory::Push_VarPkt(size_t memorySize, void* ptr)
+bool SendBuffersFactory::Push_VarPkt(size_t memorySize, void* ptr)
 {
 
 	if (memorySize <= 32) {
@@ -126,17 +129,26 @@ void SendBuffersFactory::Push_VarPkt(size_t memorySize, void* ptr)
 	else if (2048 < memorySize && memorySize <= 4096) {
 		mMemPools_VarPkt[SendPktInfo::Var::BYTES_4096]->Push(ptr);
 	}
+	else
+		return false;
+	return true;
+
 }
 
-void SendBuffersFactory::Push_FixPkt(SendPktInfo::Fix type, void* ptr)
+bool SendBuffersFactory::Push_FixPkt(SendPktInfo::Fix type, void* ptr)
 {
-	mMemPools_FixPkt[type]->Push(ptr);
+	if (mMemPools_FixPkt[type]->Push(ptr))
+		return true;
+	return false;
 }
 
-void SendBuffersFactory::Push_SendPkt(void* ptr)
+bool SendBuffersFactory::Push_SendPkt(void* ptr)
 {
-	mPushCount.fetch_add(1);
-	mMemPools_SptrSendPkt->Push(ptr);
+	if (mMemPools_SptrSendPkt->Push(ptr))
+		mPushCount.fetch_add(1);
+	else
+		return false;
+	return true;
 }
 
 SPtr_PacketSendBuf SendBuffersFactory::CreateVarSendPacketBuf(const uint8_t* bufPtr, const uint16_t SerializedDataSize, uint16_t ProtocolId, size_t memorySize)

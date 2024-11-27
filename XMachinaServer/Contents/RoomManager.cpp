@@ -50,6 +50,7 @@ bool RoomManager::EnterInRoom(SPtr<GameObject> player, int roomid)
 			bool checkin = mRooms[i].get()->IsPossibleToEnter();
 			if (checkin) {
 				mRooms[i].get()->EnterPlayer(player);
+				session_count++;
 				return true;
 			}
 		}
@@ -60,6 +61,7 @@ bool RoomManager::EnterInRoom(SPtr<GameObject> player, int roomid)
 		bool checkin = mRooms[roomid].get()->IsPossibleToEnter();
 		if (checkin) {
 			mRooms[roomid].get()->EnterPlayer(player);
+			session_count++;
 			return true;
 
 		}

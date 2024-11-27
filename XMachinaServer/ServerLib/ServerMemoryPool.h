@@ -27,7 +27,7 @@ public:
 
 public:
     void* Pull();
-    void Push(void* ptr);
+    bool Push(void* ptr);
     void Init(size_t memoryBlockSize = 0, size_t memoryBlockCnt = 0);
 
 };

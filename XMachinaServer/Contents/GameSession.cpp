@@ -38,7 +38,12 @@ void GameSession::OnConnected()
 
 	mPlayer->Start();
 
-	ROOM_MGR->EnterInRoom(mPlayer); // WRITE Lock 
+	if (!ROOM_MGR->EnterInRoom(mPlayer)) // WRITE Lock 
+	{
+		LOG_MGR->Cout("Enter In Room Failed : ", mPlayer->GetID(),"\n");
+	}
+	LOG_MGR->Cout(ROOM_MGR->session_count.load(), "\n");
+
 
 	/* [DB] User Info */
 	mUserInfo = MEMORY->Make_Shared<DB_UserInfo>();
@@ -47,6 +52,14 @@ void GameSession::OnConnected()
 
 void GameSession::OnDisconnected()
 {
+	LOG_MGR->Cout("-- OnDisconnected ", mID, "\n");
+
+	// Room 에 들어가지 못한 Session
+	if (mPlayer->GetOwnerRoom() == nullptr) {
+		mPlayer = nullptr;
+		return;
+	}
+
 	SPtr_SendPktBuf removePkt = FBS_FACTORY->SPkt_RemovePlayer(GetID());
 	ROOM_MGR->BroadcastRoom(mPlayer->GetOwnerRoom()->GetID(), removePkt, GetID()); /* SEND REMOVE PKT TO SESSIONS IN ROOM */
 	ROOM_MGR->ExitInRoom(mPlayer); // WRITE Lock

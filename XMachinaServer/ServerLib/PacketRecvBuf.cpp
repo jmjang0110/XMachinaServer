@@ -12,13 +12,17 @@ PacketRecvBuf::PacketRecvBuf(UINT32 bufSize)
     const size_t MemoryBlockSize = mCapacity;
 
     // 객체의 주소를 문자열로 변환하여 유니크한 이름 생성
-    std::string uniqueName = "RecvBuf_" + std::to_string(reinterpret_cast<std::uintptr_t>(this));
-    MEMORY->AddMemoryPool(uniqueName.c_str(), MemoryBlockSize, 1);
+
+    //std::string uniqueName = "RecvBuf_" + std::to_string(reinterpret_cast<std::uintptr_t>(this));
+    //std::string uniqueName = "RecvBuf_" + std::to_string(id);
+    //MEMORY->AddMemoryPool(uniqueName.c_str(), MemoryBlockSize, 1);
 
     /* RecvBuf MemoryBlock 사용 */
     mBuffer.reserve(MemoryBlockSize);
-    void* blockPtr = MEMORY->Allocate(uniqueName.c_str());
+    //void* blockPtr = MEMORY->Allocate(uniqueName.c_str());
+    void* blockPtr = new BYTE[MemoryBlockSize]; // 동적 메모리 할당
     mReturnBlockPtr = blockPtr;
+
 
     if (blockPtr) {
         ZeroMemory(blockPtr, MemoryBlockSize);
@@ -33,8 +37,10 @@ PacketRecvBuf::PacketRecvBuf(UINT32 bufSize)
 PacketRecvBuf::~PacketRecvBuf()
 {
     // 객체의 주소를 문자열로 변환하여 동일한 이름 사용
+    delete[] static_cast<BYTE*>(mReturnBlockPtr); // 할당된 메모리 해제
+    
     std::string uniqueName = "RecvBuf_" + std::to_string(reinterpret_cast<std::uintptr_t>(this));
-    MEMORY->Free(uniqueName.c_str(), mReturnBlockPtr);
+   // MEMORY->Free(uniqueName.c_str(), mReturnBlockPtr);
 }
 
 void PacketRecvBuf::Clean()

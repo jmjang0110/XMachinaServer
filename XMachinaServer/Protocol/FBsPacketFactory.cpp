@@ -320,6 +320,7 @@ bool FBsPacketFactory::Process_CPkt_LogIn(SPtr_Session session, const FBProtocol
 
 bool FBsPacketFactory::Process_CPkt_EnterLobby(SPtr_Session session, const FBProtocol::CPkt_EnterLobby& pkt)
 {
+	LOG_MGR->Cout("Process_CPkt_EnterLobby\n");
 	SPtr<GameSession> gameSession = std::static_pointer_cast<GameSession>(session);
 
 	int								ID                = pkt.player_id();
@@ -331,12 +332,16 @@ bool FBsPacketFactory::Process_CPkt_EnterLobby(SPtr_Session session, const FBPro
 	auto spkt = FBS_FACTORY->SPkt_EnterLobby(player_EnterOrder, MyPlayer, RemotePlayers);
 	session->Send(spkt);
 
+
+#ifdef SERVER_STRESS_TEST
+
+#else
 	/// +---------------------------------------------------------------------------------------
 	/// SEND NEW PLAYER PKT TO SESSIONS IN ROOM ( SESSION->GET ROOM ID ) - EXCEPT ME ( SESSION )
 	/// ---------------------------------------------------------------------------------------+
 	auto SendPkt_NewPlayer = FBS_FACTORY->SPkt_NewPlayer(MyPlayer);
 	ROOM_MGR->BroadcastRoom(gameSession->GetPlayer()->GetOwnerRoom()->GetID(), SendPkt_NewPlayer, gameSession->GetID());
-
+#endif	
 	return true;
 }
 
@@ -938,7 +943,9 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_EnterGame(SPtr<GameObject>& myinfo, std::
 	auto Spine_LookDir = FBProtocol::CreateVector3(builder, 0.f, 0.f, 0.f);
 	auto Myinfo        = CreatePlayer(builder, myinfo->GetID(), builder.CreateString(myinfo->GetName()), FBProtocol::OBJECT_TYPE::OBJECT_TYPE_PLAYER, transform, Spine_LookDir);
 
-
+#ifdef  SERVER_STRESS_TEST
+	auto PlayerSnapShotsOffset = 0;
+#else 
 	/// +-------------------------------------------------------------------------------------
 	///		INTERPRET REMOTE PLAYERS INFO 
 	/// -------------------------------------------------------------------------------------+	
@@ -960,6 +967,10 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_EnterGame(SPtr<GameObject>& myinfo, std::
 		PlayerSnapShots_vector.push_back(PlayerSnapShot);
 	}
 	auto PlayerSnapShotsOffset = builder.CreateVector(PlayerSnapShots_vector);
+
+
+#endif //  SERVER_STRESS_TEST
+
 
 
 	/// +-------------------------------------------------------------------------------------
@@ -994,7 +1005,9 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_EnterLobby(int player_EnterOrder/*입장 순
 	auto Spine_LookDir		= FBProtocol::CreateVector3(builder, 0.f, 0.f, 0.f);
 	auto Myinfo				= CreatePlayer(builder, myinfo->GetID(), builder.CreateString(myinfo->GetName()), FBProtocol::OBJECT_TYPE::OBJECT_TYPE_PLAYER, transform, Spine_LookDir);
 
-
+#ifdef SERVER_STRESS_TEST
+	auto PlayerSnapShotsOffset = 0;
+#else 
 	/// +-------------------------------------------------------------------------------------
 	///		INTERPRET REMOTE PLAYERS INFO 
 	/// -------------------------------------------------------------------------------------+	
@@ -1019,7 +1032,7 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_EnterLobby(int player_EnterOrder/*입장 순
 		PlayerSnapShots_vector.push_back(PlayerSnapShot);
 	}
 	auto PlayerSnapShotsOffset = builder.CreateVector(PlayerSnapShots_vector);
-
+#endif
 
 	/// +-------------------------------------------------------------------------------------
 	///		SEND ENTER_GAME SPKT 

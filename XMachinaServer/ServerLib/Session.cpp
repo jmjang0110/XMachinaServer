@@ -25,6 +25,8 @@ Session::Session() : NetworkObject()
 
 Session::~Session()
 {
+	LOG_MGR->Cout("~Session : ", mID, "\n");
+
 	SAFE_DELETE(mPacketBuffer.RecvPkt);
 
 }

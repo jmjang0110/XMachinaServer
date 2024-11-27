@@ -31,14 +31,14 @@ MemoryManager::~MemoryManager()
 bool MemoryManager::InitMemories()
 {
     ///* Memory를 미리 할당해놓자! */
-    AddMemoryPool(MemorySize::BYTES_32, 100000); 
-    AddMemoryPool(MemorySize::BYTES_64, 100000);
-    AddMemoryPool(MemorySize::BYTES_128, 100000);
-    AddMemoryPool(MemorySize::BYTES_256, 100000);
-    AddMemoryPool(MemorySize::BYTES_512, 100000);
-    AddMemoryPool(MemorySize::BYTES_1024, 50000);
-    AddMemoryPool(MemorySize::BYTES_2048, 5000);
-    AddMemoryPool(MemorySize::BYTES_4096, 5000);
+    AddMemoryPool(MemorySize::BYTES_32, 100000 * 50); 
+    AddMemoryPool(MemorySize::BYTES_64, 100000 * 50);
+    AddMemoryPool(MemorySize::BYTES_128, 100000 * 50);
+    AddMemoryPool(MemorySize::BYTES_256, 100000 * 50);
+    AddMemoryPool(MemorySize::BYTES_512, 100000 * 50);
+    AddMemoryPool(MemorySize::BYTES_1024, 50000 * 50);
+    AddMemoryPool(MemorySize::BYTES_2048, 5000 * 50);
+    AddMemoryPool(MemorySize::BYTES_4096, 5000 * 50);
 
     return true;
 }
@@ -114,6 +114,10 @@ void* MemoryManager::Allocate(std::string name)
             break;
         }
     }
+
+    if (ptr == nullptr)
+        int i = 0;
+
     return ptr;
 }
 

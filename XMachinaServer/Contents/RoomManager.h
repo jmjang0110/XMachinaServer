@@ -15,7 +15,10 @@ class RoomManager
 {
 	DECLARE_SINGLETON(RoomManager);
 
+public:
+	std::atomic_int session_count = 0;
 private:
+
 	std::vector<SPtr<GameRoom>>  mRooms         = {};
 	UINT32						 mRoomMaxCnt    = {};
 
