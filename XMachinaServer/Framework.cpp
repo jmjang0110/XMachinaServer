@@ -138,7 +138,7 @@ bool Framework::Init(HINSTANCE& hInst)
 		mServer = Memory::Make_Shared<ServerNetwork>();
 		mServer->SetMaxSessionCnt(MAX_SESSION_NUM); 
 		mServer->SetSessionConstructorFunc(std::make_shared<GameSession>); 
-		mServerIP = L"127.0.0.1";
+		//mServerIP = L"127.0.0.1";
 		mServer->Start(mServerIP, 7777); 
 	}	
 	LOG_MGR->Cout("[SUCCESS] ServerNetwork INIT\n");

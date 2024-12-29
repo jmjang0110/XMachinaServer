@@ -589,9 +589,6 @@
     <ClInclude Include="Protocol\FBP_Phero_generated.h">
       <Filter>Protocol\PacketProtocol</Filter>
     </ClInclude>
-    <ClInclude Include="Protocol\FBP_Player_generated.h">
-      <Filter>Protocol\PacketProtocol</Filter>
-    </ClInclude>
     <ClInclude Include="Protocol\FBP_LogIn_generated.h">
       <Filter>Protocol\PacketProtocol</Filter>
     </ClInclude>
@@ -624,6 +621,9 @@
     </ClInclude>
     <ClInclude Include="Contents\BTTaskM_LightBipedAttack.h">
       <Filter>Framework\Contents\GameWorld\Script\Enemy\Monster\Behavior Tree\BT\MonsterTask\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="Protocol\FBP_Player_generated.h">
+      <Filter>Protocol\PacketProtocol</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1062,13 +1062,13 @@
     <None Include="Protocol\FBP_Phero.fbs">
       <Filter>Protocol\PacketProtocol</Filter>
     </None>
-    <None Include="Protocol\FBP_Player.fbs">
-      <Filter>Protocol\PacketProtocol</Filter>
-    </None>
     <None Include="Protocol\FBP_LogIn.fbs">
       <Filter>Protocol\PacketProtocol</Filter>
     </None>
     <None Include="Protocol\FBP_Custom.fbs">
+      <Filter>Protocol\PacketProtocol</Filter>
+    </None>
+    <None Include="Protocol\FBP_Player.fbs">
       <Filter>Protocol\PacketProtocol</Filter>
     </None>
   </ItemGroup>

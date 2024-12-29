@@ -373,14 +373,14 @@ bool FBsPacketFactory::Process_CPkt_PlayGame(SPtr_Session session, const FBProto
 	auto room = gameSession->GetPlayer()->GetOwnerRoom();
 	UINT32 player_count = room->GetPlayerController()->GetPlayersSize();
 
-	int minPlayerCountToPlayGame = 1;
+	int minPlayerCountToPlayGame = 500;
 	if (player_count >= minPlayerCountToPlayGame) {
 		auto spkt = FBS_FACTORY->SPkt_PlayGame();
 		ROOM_MGR->BroadcastRoom(room->GetID(), spkt);
 		room->SetRoomState(RoomState::Battle);
 
 	}
-	return true;
+	return true; 
 }
 
 bool FBsPacketFactory::Process_CPkt_Chat(SPtr_Session session, const FBProtocol::CPkt_Chat& pkt)
@@ -538,8 +538,10 @@ bool FBsPacketFactory::Process_CPkt_Player_Transform(SPtr_Session session, const
 	float					animparam_h = pkt.animparam_h();
 	float					animparam_v = pkt.animparam_v();
 
+	long long				move_time	= pkt.move_time(); // 그대로 다시 보낸다. 
+	
 	/* Boradcast Player's Transform Update */
-	SPtr_SendPktBuf SendPkt = FBS_FACTORY->SPkt_Player_Transform(id, move_state, latency, velocity, movedir, pos, rot, spine_look, animparam_h, animparam_v);
+	SPtr_SendPktBuf SendPkt = FBS_FACTORY->SPkt_Player_Transform(pkt.client_id(), id, move_state, latency, velocity, movedir, pos, rot, spine_look, animparam_h, animparam_v, move_time);
 	ROOM_MGR->BroadcastRoom(gameSession->GetPlayer()->GetOwnerRoom()->GetID(), SendPkt, id);
 
 
@@ -1155,8 +1157,8 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_PlayerOnSkill(uint32_t player_id, FBProto
 	return sendBuffer;
 }
 
-SPtr_SendPktBuf FBsPacketFactory::SPkt_Player_Transform(uint32_t player_id, int32_t move_state, long long latency
-	, float velocity, Vec3 movedir, Vec3 pos, Vec3 rot , Vec3 spine_look, float animparam_h, float animparam_v)
+SPtr_SendPktBuf FBsPacketFactory::SPkt_Player_Transform(uint32_t client_id, uint32_t player_id, int32_t move_state, long long latency
+	, float velocity, Vec3 movedir, Vec3 pos, Vec3 rot , Vec3 spine_look, float animparam_h, float animparam_v, long long move_time)
 {
 	/// > ○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○
 	/// > table SPkt_Player_Transform
@@ -1186,8 +1188,8 @@ SPtr_SendPktBuf FBsPacketFactory::SPkt_Player_Transform(uint32_t player_id, int3
 	auto transform     = FBProtocol::CreateTransform(builder, position, rotation);
 	auto Spine_LookDir = FBProtocol::CreateVector3(builder, spine_look.x, spine_look.y, spine_look.z);
 
-	auto ServerPacket = FBProtocol::CreateSPkt_Player_Transform(builder, player_id,
-		static_cast<FBProtocol::PLAYER_MOTION_STATE_TYPE>(move_state), latency, velocity, MoveDirection, transform, Spine_LookDir, animparam_h, animparam_v);
+	auto ServerPacket = FBProtocol::CreateSPkt_Player_Transform(builder, client_id, player_id,
+		static_cast<FBProtocol::PLAYER_MOTION_STATE_TYPE>(move_state), latency, velocity, MoveDirection, transform, Spine_LookDir, animparam_h, animparam_v, move_time);
 
 	builder.Finish(ServerPacket);
 
