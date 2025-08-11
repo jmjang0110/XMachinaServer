@@ -1,7 +1,5 @@
 # XMachinaServer
 
-2018180035 장재문 
-한국공학대학교 게임공학과
 X-Machina Server ( IOCP )
  
 ![image](https://github.com/jmjang0110/XMachinaServer/assets/90159618/0219ca81-5678-47cf-a91a-de02d34fbdf8)
