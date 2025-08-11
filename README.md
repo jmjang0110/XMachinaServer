@@ -1,7 +1,10 @@
 # XMachinaServer
 
 X-Machina Server ( IOCP )
- 
+
+play video : https://youtu.be/XIGSI3dVBKU?si=ZslVoJ9VweRZBqVs
+<img width="1037" height="545" alt="image" src="https://github.com/user-attachments/assets/27169668-5bed-4fb2-a68c-323e3234e45c" />
+
 ![image](https://github.com/jmjang0110/XMachinaServer/assets/90159618/0219ca81-5678-47cf-a91a-de02d34fbdf8)
 ![image](https://github.com/jmjang0110/XMachinaServer/assets/90159618/9eb87d22-bab9-42bc-9919-e4d1e5c4fbb7)
 ![image](https://github.com/jmjang0110/XMachinaServer/assets/90159618/d85f0632-7f6c-4818-a3ce-e19a37e92dea)
